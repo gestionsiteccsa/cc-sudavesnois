@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/comptes-rendus.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Comptes-rendus des Conseils Communautaires</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto mb-8">Consultez les délibérations et décisions prises lors des conseils communautaires du Sud-Avesnois</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Accès aux comptes-rendus</h2>
+                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+                        Les comptes-rendus des conseils communautaires sont des documents publics qui retracent les décisions prises par les élus lors des séances du conseil. Ils sont publiés après approbation lors du conseil suivant.
+                    </p>
+                    
+                    <div class="flex items-center p-4 bg-blue-50 dark:bg-blue-900 rounded-md mb-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary dark:text-blue-400 mr-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-gray-700 dark:text-gray-300">
+                            Conformément à l'article L. 2121-25 du Code général des collectivités territoriales, le compte rendu de la séance du conseil communautaire est affiché dans la huitaine et mis en ligne sur le site internet de la communauté de communes.
+                        </p>
+                    </div>
+
+                    <!-- Lien vers Google Drive -->
+                    <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6 text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Accéder à l'ensemble des comptes-rendus</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">
+                            Tous les comptes-rendus des conseils communautaires sont disponibles sur notre espace de stockage en ligne. Cliquez sur le bouton ci-dessous pour y accéder.
+                        </p>
+                        {% if comptes_rendus %}
+                        <a href="{{comptes_rendus.link}}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-primary dark:bg-blue-600 text-white rounded-md font-medium hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Accéder aux comptes-rendus
+                        </a>
+                        {% else %}
+                        <div class="inline-flex items-center px-6 py-3 bg-primary dark:bg-blue-600 text-white rounded-md font-medium hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Non disponible.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendrier des prochains conseils -->
+    <section class="py-12 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Calendrier des prochains conseils</h2>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Heure</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Lieu</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ordre du jour</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            {% if conseils %}
+                            {% for conseil in conseils %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{conseil.date}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{ conseil.hour.hour }}h{{ conseil.hour.minute|stringformat:"02d" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{conseil.place}}</td>
+                                {% if conseil.day_order %}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                                    <a href="{{conseil.day_order.url}}" class="text-primary dark:text-blue-400 hover:underline">Consulter</a>
+                                </td>
+                                {% else %}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                                    <p class="text-gray-400 dark:text-gray-400">À venir</p>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 dark:text-gray-400 td2" colspan="4" align="center">Aucun conseil disponible.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 bg-blue-50 dark:bg-blue-900 p-4 rounded-md">
+                    <p class="text-gray-700 dark:text-gray-300 text-center">
+                        Les séances du conseil communautaire sont ouvertes au public, sauf lorsqu'il est décidé le huis clos.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

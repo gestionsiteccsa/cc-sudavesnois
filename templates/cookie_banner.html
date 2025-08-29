@@ -1,0 +1,70 @@
+<!-- Bannière de consentement aux cookies RGPD -->
+<div id="cookie-banner"
+     class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg px-4 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+     style="display: none;">
+  <div>
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Gestion des cookies</h2>
+    <p class="text-gray-700 dark:text-gray-200 text-sm">
+      Ce site utilise des cookies pour améliorer votre expérience et mesurer l'audience. 
+      <span class="font-semibold">Aucun cookie non essentiel n'est déposé sans votre consentement.</span>
+    </p>
+  </div>
+  <div class="flex gap-2 flex-col md:flex-row">
+    <button id="accept-cookies"
+            class="px-5 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+      Accepter tous les cookies
+    </button>
+    <button id="refuse-cookies"
+            class="px-5 py-2 rounded bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition">
+      Refuser les cookies non essentiels
+    </button>
+  </div>
+</div>
+
+<script>
+// Bannière de consentement aux cookies RGPD
+// Affiche la bannière si aucun choix n'a été fait, stocke le choix dans localStorage
+// N'active aucun cookie non essentiel sans consentement
+
+document.addEventListener('DOMContentLoaded', function () {
+  const banner = document.getElementById('cookie-banner');
+  const acceptBtn = document.getElementById('accept-cookies');
+  const refuseBtn = document.getElementById('refuse-cookies');
+
+  // Vérifie si un choix a déjà été fait
+  const consent = localStorage.getItem('cookieConsent');
+  if (!consent) {
+    banner.style.display = 'flex';
+  }
+
+  // Fonction à appeler pour activer les cookies non essentiels (ex: Matomo, Google Analytics)
+  function enableNonEssentialCookies() {
+    // Exemple : initialiser Matomo ou autre ici
+    // var _paq = window._paq = window._paq || [];
+    // _paq.push(['trackPageView']);
+    // _paq.push(['enableLinkTracking']);
+    // (function() { ... })();
+  }
+
+  // Fonction à appeler pour désactiver/supprimer les cookies non essentiels si besoin
+  function disableNonEssentialCookies() {
+    // Exemple : suppression des cookies d'audience si déjà présents
+    // document.cookie = '_pk_id=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
+    // document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
+  }
+
+  // Accepter tous les cookies
+  acceptBtn.addEventListener('click', function () {
+    localStorage.setItem('cookieConsent', 'accepted');
+    enableNonEssentialCookies();
+    banner.style.display = 'none';
+  });
+
+  // Refuser les cookies non essentiels
+  refuseBtn.addEventListener('click', function () {
+    localStorage.setItem('cookieConsent', 'refused');
+    disableNonEssentialCookies();
+    banner.style.display = 'none';
+  });
+});
+</script> 

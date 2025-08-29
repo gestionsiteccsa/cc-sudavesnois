@@ -1,0 +1,151 @@
+/* Styles pour l'organigramme interactif */
+.org-chart {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.org-chart-container {
+    min-width: 1000px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.org-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.org-level {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.org-box {
+    position: relative;
+    padding: 15px;
+    margin: 0 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    min-width: 180px;
+}
+
+.org-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.org-box.direction {
+    background-color: #2563eb;
+    color: white;
+}
+
+.org-box.service {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.org-box.sous-service {
+    background-color: #60a5fa;
+    color: white;
+}
+
+.org-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.org-name {
+    font-size: 12px;
+}
+
+.org-connector {
+    width: 2px;
+    height: 20px;
+    background-color: #94a3b8;
+    margin: 0 auto;
+}
+
+.org-horizontal-line {
+    height: 2px;
+    background-color: #94a3b8;
+    margin: 0 auto;
+}
+
+.org-tooltip {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 300px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    display: none;
+    color: #1e293b;
+    text-align: left;
+}
+
+.org-box:hover .org-tooltip {
+    display: block;
+}
+
+.org-tooltip-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #1e40af;
+}
+
+.org-tooltip-content {
+    font-size: 14px;
+}
+
+.org-tooltip-list {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.org-tooltip-list li {
+    margin-bottom: 5px;
+}
+
+/* Dark mode */
+.dark .org-box {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark .org-box.direction {
+    background-color: #1d4ed8;
+}
+
+.dark .org-box.service {
+    background-color: #2563eb;
+}
+
+.dark .org-box.sous-service {
+    background-color: #3b82f6;
+}
+
+.dark .org-tooltip {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.dark .org-tooltip-title {
+    color: #60a5fa;
+}
+
+.dark .org-connector, .dark .org-horizontal-line {
+    background-color: #64748b;
+}

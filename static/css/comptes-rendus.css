@@ -1,0 +1,153 @@
+/* Styles spécifiques pour la page des comptes-rendus */
+
+/* Carte des comptes-rendus */
+.compte-rendu-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+}
+
+.compte-rendu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
+}
+
+/* Animation d'apparition */
+.compte-rendu-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Délai d'animation pour chaque carte */
+.compte-rendu-card:nth-child(1) { animation-delay: 0.1s; }
+.compte-rendu-card:nth-child(2) { animation-delay: 0.2s; }
+.compte-rendu-card:nth-child(3) { animation-delay: 0.3s; }
+.compte-rendu-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Mode nuit pour les cartes des comptes-rendus */
+.dark .compte-rendu-card:hover {
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.dark .compte-rendu-card a {
+    color: #60a5fa; /* Bleu clair pour les liens en mode nuit */
+}
+
+.dark .compte-rendu-card a svg {
+    stroke: #60a5fa;
+}
+
+/* Mode contraste élevé pour les cartes des comptes-rendus */
+.high-contrast .compte-rendu-card {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    box-shadow: none !important;
+}
+
+.high-contrast .compte-rendu-card h3 {
+    color: #ffff00 !important;
+}
+
+.high-contrast .compte-rendu-card span {
+    background-color: #000 !important;
+    color: #00ffff !important;
+    border: 1px solid #00ffff !important;
+}
+
+.high-contrast .compte-rendu-card a {
+    color: #00ffff !important;
+    text-decoration: underline !important;
+}
+
+.high-contrast .compte-rendu-card a svg {
+    stroke: #00ffff !important;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .compte-rendu-card {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
+    .compte-rendu-card:hover {
+        transform: none !important;
+    }
+}
+
+/* Tableau des prochains conseils */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+}
+
+.td2 {
+    text-align: center;
+}
+
+thead th {
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr {
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+    }
+    
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50% !important;
+        text-align: right;
+    }
+    
+    td:before {
+        position: absolute;
+        top: 50%;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        transform: translateY(-50%);
+        text-align: left;
+        font-weight: bold;
+        content: attr(data-label);
+    }
+    
+    td:nth-of-type(1):before { content: "Date"; }
+    td:nth-of-type(2):before { content: "Heure"; }
+    td:nth-of-type(3):before { content: "Lieu"; }
+    td:nth-of-type(4):before { content: "Ordre du jour"; }
+}
+
+@media (max-width: 640px) {
+    .compte-rendu-card {
+        margin-bottom: 1.5rem;
+    }
+}

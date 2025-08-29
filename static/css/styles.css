@@ -1,0 +1,542 @@
+/* Styles personnalisés pour la Communauté de Communes du Sud Avesnois */
+
+/* Styles pour l'accessibilité */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Améliorations de contraste WCAG */
+.bg-primary {
+    background-color: #006ab3; /* Couleur primaire originale */
+}
+
+/* Amélioration du contraste des textes sur fond primaire */
+.bg-primary label,
+.bg-primary p,
+.bg-primary h2,
+.bg-primary h3 {
+    color: #ffffff; /* Blanc pur pour un meilleur contraste */
+}
+
+/* Amélioration du contraste pour les textes d'aide dans le formulaire */
+#email-format,
+#tel-format,
+.bg-primary .text-sm:not(.text-red-300) {
+    color: #ffffff !important; /* Blanc pur au lieu de gris clair */
+    font-weight: 500; /* Légèrement plus gras pour améliorer la lisibilité */
+}
+
+/* Amélioration du contraste pour le pied de page */
+.footer p,
+.footer a.text-gray-300 {
+    color: #ffffff !important; /* Blanc pur au lieu de gris clair */
+}
+
+/* Amélioration du contraste pour les boutons secondaires */
+.bg-secondary {
+    background-color: #4c5f0c; /* Couleur secondaire originale */
+}
+
+.bg-secondary:hover {
+    background-color: #789712 !important; /* Version légèrement plus foncée pour le hover */
+}
+
+/* Amélioration du contraste pour les cases à cocher */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+}
+/* Mode contraste élevé */
+.high-contrast {
+    --tw-bg-opacity: 1;
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.high-contrast a {
+    color: #00ffff !important;
+    text-decoration: underline !important;
+}
+
+.high-contrast a:not(.btn) {
+    color: #00ffff !important;
+    text-decoration: underline !important;
+}
+
+.high-contrast button, 
+.high-contrast input, 
+.high-contrast select, 
+.high-contrast textarea {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+}
+
+.high-contrast header,
+.high-contrast footer,
+.high-contrast nav,
+.high-contrast section {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+.high-contrast .bg-primary {
+    background-color: #ffff00 !important;
+    color: #000 !important;
+}
+
+.high-contrast .bg-secondary {
+    background-color: #00ffff !important;
+    color: #000 !important;
+}
+
+.high-contrast .text-primary {
+    color: #ffff00 !important;
+}
+
+.high-contrast .text-secondary {
+    color: #00ffff !important;
+}
+
+.high-contrast .border-gray-200,
+.high-contrast .border-gray-300 {
+    border-color: #fff !important;
+}
+
+.high-contrast img {
+    filter: grayscale(100%) contrast(150%);
+}
+
+.high-contrast .footer,
+.high-contrast .newsletter {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.high-contrast .footer a,
+.high-contrast .newsletter a {
+    color: #fff !important;
+}
+
+/* Correction pour les cartes et éléments avec fond blanc */
+.high-contrast .bg-white,
+.high-contrast [class*="bg-gray-"],
+.high-contrast [class*="bg-primary/"] {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+.high-contrast h1, 
+.high-contrast h2, 
+.high-contrast h3, 
+.high-contrast h4, 
+.high-contrast h5, 
+.high-contrast h6,
+.high-contrast p,
+.high-contrast span,
+.high-contrast li {
+    color: #fff !important;
+}
+
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800,
+.high-contrast .text-gray-900 {
+    color: #fff !important;
+}
+
+/* Améliorations supplémentaires pour le mode contraste élevé */
+.high-contrast .bg-blue-50 {
+    background-color: #000 !important;
+    border: 1px solid #00ffff !important;
+}
+
+.high-contrast svg {
+    stroke: #ffff00 !important;
+}
+
+.high-contrast a svg {
+    stroke: #00ffff !important;
+}
+
+.high-contrast .shadow-md,
+.high-contrast .shadow-lg,
+.high-contrast .shadow-xl {
+    box-shadow: none !important;
+}
+
+.high-contrast a.bg-white,
+.high-contrast a.bg-secondary {
+    border: 2px solid #fff !important;
+    text-decoration: none !important;
+}
+
+.high-contrast a.bg-white {
+    background-color: #000 !important;
+    color: #00ffff !important;
+}
+
+.high-contrast a.bg-secondary {
+    background-color: #000 !important;
+    color: #00ffff !important;
+}
+
+.high-contrast a:hover {
+    text-decoration: underline !important;
+}
+
+/* Interlignage augmenté */
+.increased-line-height {
+    line-height: 1.8 !important;
+}
+
+.increased-line-height p, 
+.increased-line-height li, 
+.increased-line-height h1, 
+.increased-line-height h2, 
+.increased-line-height h3, 
+.increased-line-height h4, 
+.increased-line-height h5, 
+.increased-line-height h6 {
+    line-height: 1.8 !important;
+}
+
+/* Espacement des caractères augmenté */
+.increased-letter-spacing {
+    letter-spacing: 0.12em !important;
+}
+
+.increased-letter-spacing p, 
+.increased-letter-spacing li, 
+.increased-letter-spacing h1, 
+.increased-letter-spacing h2, 
+.increased-letter-spacing h3, 
+.increased-letter-spacing h4, 
+.increased-letter-spacing h5, 
+.increased-letter-spacing h6 {
+    letter-spacing: 0.12em !important;
+}
+
+/* Animation de révélation au défilement */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Styles pour la carte */
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    z-index: 10;
+}
+
+/* Styles pour la carte interactive */
+#interactive-map {
+    height: 500px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFF;
+    overflow: hidden;
+}
+
+#interactive-map img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media (max-width: 768px) {
+    #interactive-map {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 640px) {
+    #interactive-map {
+        min-height: 350px;
+    }
+}
+
+#commune-info {
+    transition: opacity 0.3s ease;
+}
+
+.commune-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Styles pour le menu d'accessibilité */
+.accessibility-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    border-radius: 0 0 0 0.5rem;
+    padding: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.accessibility-menu[aria-hidden="false"] {
+    display: block;
+}
+
+/* Styles pour le contraste élevé */
+/* déjà inclus dans le code précédent */
+
+/* Styles pour le texte large */
+.large-text {
+    font-size: 120% !important;
+}
+
+.large-text h1 {
+    font-size: 3.6rem !important;
+}
+
+.large-text h2 {
+    font-size: 3rem !important;
+}
+
+.large-text h3 {
+    font-size: 2.4rem !important;
+}
+
+/* Animations */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Délais d'animation pour les éléments en cascade */
+.animate-delay-100 {
+    transition-delay: 0.1s;
+}
+
+.animate-delay-200 {
+    transition-delay: 0.2s;
+}
+
+.animate-delay-300 {
+    transition-delay: 0.3s;
+}
+
+.animate-delay-400 {
+    transition-delay: 0.4s;
+}
+
+.animate-delay-500 {
+    transition-delay: 0.5s;
+}
+
+/* Styles pour les cartes de services */
+.service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Styles pour le bouton de retour en haut */
+#back-to-top {
+    z-index: 50;
+}
+
+/* Styles pour le pied de page */
+.footer {
+    position: relative;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to top right, transparent 49.5%, #1f2937 50%);
+}
+
+/* Styles pour les liens */
+a:focus-visible {
+    outline: 2px solid #006ab3;
+    outline-offset: 2px;
+}
+
+/* Styles pour les formulaires */
+input:focus, 
+textarea:focus, 
+select:focus {
+    outline: 2px solid #006ab3;
+    outline-offset: 2px;
+}
+
+/* Styles pour le focus des boutons */
+button:focus-visible {
+    outline: 2px solid #006ab3;
+    outline-offset: 2px;
+}
+
+/* Styles pour skip-to-content */
+.skip-to-content {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.skip-to-content:focus {
+    left: 0;
+    top: 0;
+    width: auto;
+    height: auto;
+    padding: 0.75rem 1.25rem;
+    background-color: #006ab3;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Styles pour les médias */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .animate-on-scroll,
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none !important;
+    }
+}
+
+/* Styles pour le formulaire de contact */
+.form-message {
+    transition: opacity 0.3s ease;
+}
+
+/* Styles pour les sous-menus */
+.nav-dropdown {
+    position: relative;
+}
+
+/* Correction pour les sous-menus qui se superposent */
+.submenu-level-1 {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 20;
+    display: none; /* Masqué par défaut */
+}
+
+/* Styles pour les sous-menus de niveau 2 */
+.submenu-level-2 {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    z-index: 30;
+    display: none; /* Masqué par défaut */
+}
+
+/* Classe pour afficher les sous-menus */
+.submenu-visible {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+/* Décalage pour éviter la superposition des sous-menus */
+.submenu-level-1.submenu-right,
+.submenu-level-2.submenu-right {
+    left: auto;
+    right: 100%;
+}
+
+/* Ajustement pour les sous-menus qui dépasseraient de l'écran */
+@media (max-width: 1200px) {
+    .submenu-level-2 {
+        left: auto;
+        right: 100%;
+    }
+}
+
+/* Styles pour le menu mobile */
+@media (max-width: 768px) {
+    .submenu-level-1,
+    .submenu-level-2 {
+        position: static;
+        width: 100% !important;
+        box-shadow: none;
+        border: none;
+        margin-left: 1rem;
+    }
+}
+
+/* Styles d'impression */
+@media print {
+    header, 
+    footer, 
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        font-size: 12pt;
+        color: #000;
+        background-color: #fff;
+    }
+    
+    a {
+        color: #000;
+        text-decoration: underline;
+    }
+    
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+}
+
+/* Style pour les boutons qui doivent respecter la taille minimale */
+button, 
+input[type="button"], 
+input[type="submit"], 
+input[type="reset"] {
+    min-width: 44px;
+    min-height: 44px;
+}

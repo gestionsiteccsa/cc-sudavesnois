@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Accessibilité du site - Communauté de Communes Sud-Avesnois{% endblock %}
+{% block meta_description %}Déclaration d'accessibilité du site de la Communauté de Communes Sud-Avesnois. Informations sur la conformité RGAA, les améliorations en cours et les moyens d'assistance pour tous les utilisateurs.{% endblock %}
+{% block content %}
+
+<!-- Bannière -->
+<section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 flex items-center justify-center gap-3" tabindex="0">
+                Accessibilité du site
+            </h1>
+        </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+</section>
+
+
+<main class="max-w-3xl mx-auto py-12 px-4 md:px-0 text-gray-800 dark:text-gray-100">
+  
+  <!-- 1. Introduction -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">1. Introduction</h2>
+    <p class="mb-2">La Communauté de Communes Sud-Avesnois s’engage à garantir l’accessibilité numérique de son site internet à tous les utilisateurs, quel que soit leur handicap ou leur technologie d’assistance.</p>
+    <p>L’accessibilité est une priorité pour notre collectivité afin de permettre à chacun d’accéder à l’information et aux services en ligne.</p>
+  </section>
+
+  <!-- 2. Conformité aux normes -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">✅ 2. Conformité aux normes</h2>
+    <p>Notre site vise une conformité au <strong>RGAA 4.1</strong> (Référentiel Général d’Amélioration de l’Accessibilité), niveau AA.</p>
+  </section>
+
+  <!-- 3. Fonctionnalités d’accessibilité -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">🔎 3. Fonctionnalités d’accessibilité</h2>
+    <ul class="list-disc pl-6 space-y-1">
+      <li>Navigation au clavier complète sur toutes les pages</li>
+      <li>Contraste de couleurs suffisant en mode clair et sombre</li>
+      <li>Alternatives textuelles pour toutes les images</li>
+      <li>Site responsive et accessible sur mobile et tablette</li>
+      <li>Compatibilité avec les lecteurs d’écran</li>
+      <li>Taille de texte ajustable via les réglages du navigateur</li>
+      <li>Absence de contenus animés clignotants ou distractifs</li>
+    </ul>
+  </section>
+
+  <!-- 4. Aide à l’utilisation -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">🧰 4. Aide à l’utilisation</h2>
+    <p>Pour naviguer efficacement sur notre site&nbsp;:</p>
+    <ul class="list-disc pl-6 mb-2">
+      <li>Utilisez la touche <kbd>Tab</kbd> pour passer d’un lien ou bouton à l’autre</li>
+      <li>Utilisez <kbd>Entrée</kbd> pour activer un lien ou un bouton</li>
+      <li>Les menus déroulants sont accessibles au clavier et aux lecteurs d’écran</li>
+      <li>Le site propose des zones de navigation rapide (menu principal, pied de page, accès direct au contenu principal)</li>
+    </ul>
+    <p>Si vous utilisez un lecteur d’écran ou une technologie d’assistance et que vous rencontrez des difficultés, contactez-nous (voir ci-dessous).</p>
+  </section>
+
+  <!-- 5. Contact accessibilité -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">📩 5. Contact pour signaler un problème d’accessibilité</h2>
+    <p>Si vous constatez un défaut d’accessibilité, merci de nous le signaler afin que nous puissions améliorer nos services&nbsp;:</p>
+    <ul class="list-disc pl-6">
+      <li>Email&nbsp;: <a href="mailto:contact@cc-sudavesnois.fr" class="text-primary underline hover:text-secondary">contact@cc-sudavesnois.fr</a></li>
+      <li>Formulaire en ligne&nbsp;: <a href="/contact/" class="text-primary underline hover:text-secondary">Formulaire de contact</a></li>
+      <li>Téléphone&nbsp;: <a href="tel:0327611234" class="text-primary underline hover:text-secondary">03&nbsp;27&nbsp;61&nbsp;12&nbsp;34</a></li>
+    </ul>
+    <p>Nous nous engageons à vous répondre dans les meilleurs délais.</p>
+  </section>
+
+  <!-- 6. Voies de recours -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">📃 6. Voies de recours</h2>
+    <p>Si vous n’obtenez pas de réponse satisfaisante à votre demande, vous pouvez contacter le <strong>Défenseur des droits</strong>&nbsp;:</p>
+    <ul class="list-disc pl-6">
+      <li>Formulaire en ligne&nbsp;: <a href="https://formulaire.defenseurdesdroits.fr/" target="_blank" rel="noopener" class="text-primary underline hover:text-secondary">https://formulaire.defenseurdesdroits.fr/</a></li>
+    </ul>
+  </section>
+
+  <!-- 7. Date de mise à jour -->
+  <section>
+    <h2 class="text-2xl font-semibold mb-2">📅 7. Date de mise à jour</h2>
+    <p>Déclaration d’accessibilité mise à jour le 3 juin 2025.</p>
+  </section>
+</main>
+{% endblock %}

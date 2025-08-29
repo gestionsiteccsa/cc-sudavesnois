@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Politique de confidentialité - Communauté de Communes Sud-Avesnois{% endblock %}
+
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 flex items-center justify-center gap-3" tabindex="0">
+                    <span aria-hidden="true" class="text-4xl">📜</span> Politique de confidentialité et gestion des données personnelles
+                </h1>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto space-y-8">
+                <!-- 1. Responsable du traitement -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Responsable du traitement">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">1. Responsable du traitement</h2>
+                    <ul class="text-gray-700 dark:text-gray-300 space-y-1">
+                        <li><span class="font-semibold">Communauté de Communes Sud-Avesnois (CCSA)</span></li>
+                        <li>SIREN : 200 043 404</li>
+                        <li>Siège : 2 rue du Général Raymond Chomel, 59610 FOURMIES</li>
+                        <li>Téléphone : <a href="tel:0327606524" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">03 27 60 65 24</a></li>
+                        <li>Site web : <a href="https://www.cc-sudavesnois.fr" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">www.cc-sudavesnois.fr</a></li>
+                        <li>Contact RGPD / DPO : <a href="mailto:avanlerberghe@siavesnoislab.fr" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">avanlerberghe@siavesnoislab.fr</a></li>
+                    </ul>
+                </div>
+                <!-- 2. Finalités et bases légales des traitements -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Finalités et bases légales des traitements">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">2. Finalités et bases légales des traitements</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>🔹 Répondre à vos demandes via le formulaire de contact <span class="italic">(base légale : intérêt légitime – art. 6.1.f RGPD)</span></li>
+                        <li>🔹 Vous envoyer des informations institutionnelles ou répondre à une sollicitation <span class="italic">(base légale : consentement – art. 6.1.a RGPD)</span></li>
+                        <li>🔹 Assurer le bon fonctionnement technique du site et réaliser des statistiques de fréquentation anonymisées <span class="italic">(base légale : consentement – art. 6.1.a RGPD)</span></li>
+                        <li>🔹 Gérer les éventuelles relations contractuelles ou administratives <span class="italic">(base légale : exécution d’un contrat – art. 6.1.b RGPD)</span></li>
+                    </ul>
+                </div>
+                <!-- 3. Catégories de données collectées -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Catégories de données collectées">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">3. Catégories de données collectées</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>🔸 Données d’identité : nom, prénom, structure, fonction</li>
+                        <li>🔸 Coordonnées : adresse e-mail, numéro de téléphone, adresse postale</li>
+                        <li>🔸 Données de navigation : adresse IP anonymisée, pages visitées, durée de la visite (via PIKI)</li>
+                        <li>🔸 Données collectées par cookies (détails en section « Cookies »)</li>
+                    </ul>
+                </div>
+                <!-- 4. Durées de conservation -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Durées de conservation">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">4. Durées de conservation</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>📌 Données de contact (formulaire) : 3 ans à compter du dernier contact si vous n’êtes pas usager régulier</li>
+                        <li>📌 Données liées à une relation contractuelle ou administrative : 5 ans</li>
+                        <li>📌 Cookies et données de navigation : 13 mois maximum (conformément aux recommandations CNIL)</li>
+                        <li>📌 Données techniques (logs de sécurité) : 12 mois</li>
+                    </ul>
+                </div>
+                <!-- 5. Destinataires des données -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Destinataires des données">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">5. Destinataires des données</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>🔸 Aux services internes habilités de la CCSA</li>
+                        <li>🔸 À nos prestataires techniques (hébergeur OVH et autres sous-traitants) intervenant dans le strict cadre des finalités définies</li>
+                    </ul>
+                    <p class="text-gray-700 dark:text-gray-300">Aucune donnée n’est vendue ni transférée à des tiers non autorisés.</p>
+                </div>
+                <!-- 6. Transfert hors Union européenne -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Transfert hors Union européenne">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">6. Transfert hors Union européenne</h2>
+                    <p class="text-gray-700 dark:text-gray-300">Aucun transfert de vos données personnelles en dehors de l’Union européenne n’est effectué par la CCSA.</p>
+                </div>
+                <!-- 7. Sécurité -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Sécurité">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">7. Sécurité</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>🔒 Accès restreint aux seules personnes autorisées</li>
+                        <li>🔒 Hébergement sécurisé (OVH, France)</li>
+                        <li>🔒 Pare-feu, antivirus, sauvegardes régulières</li>
+                        <li>🔒 Sensibilisation et formation des agents</li>
+                    </ul>
+                    <p class="text-gray-700 dark:text-gray-300">La CCSA met en œuvre des mesures techniques et organisationnelles adaptées, conformément au <a href="https://www.cnil.fr/fr/principes-cles/guide-de-la-securite-des-donnees-personnelles" target="_blank" rel="noopener" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Guide sécurité des données personnelles de la CNIL</a>.</p>
+                </div>
+                <!-- 8. Cookies -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Cookies">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">8. Cookies</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>🍪 Assurer le bon fonctionnement technique du site (cookies strictement nécessaires)</li>
+                        <li>🍪 Réaliser des statistiques anonymisées de fréquentation (via PIKI, outil conforme CNIL)</li>
+                        <li>🔸 Aucun cookie publicitaire ou de suivi tiers n’est utilisé.</li>
+                    </ul>
+                    <p class="text-gray-700 dark:text-gray-300">Un bandeau de gestion des cookies vous permet de donner ou retirer votre consentement à tout moment, conformément aux recommandations CNIL.</p>
+                </div>
+                <!-- 9. Exercice de vos droits -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Exercice de vos droits">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">9. Exercice de vos droits</h2>
+                    <ul class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>🔹 Droit d’accès, de rectification, d’effacement</li>
+                        <li>🔹 Droit à la limitation du traitement</li>
+                        <li>🔹 Droit d’opposition</li>
+                        <li>🔹 Droit à la portabilité de vos données</li>
+                        <li>🔹 Droit de retirer votre consentement à tout moment</li>
+                    </ul>
+                    <p class="text-gray-700 dark:text-gray-300 mb-2">Pour exercer ces droits, contactez :</p>
+                    <ul class="text-gray-700 dark:text-gray-300 space-y-1">
+                        <li>📩 Email : <a href="mailto:avanlerberghe@siavesnoislab.fr" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">avanlerberghe@siavesnoislab.fr</a></li>
+                        <li>📮 Adresse : Communauté de Communes Sud-Avesnois, 2 rue du Général Raymond Chomel, 59610 FOURMIES</li>
+                    </ul>
+                    <p class="text-gray-700 dark:text-gray-300">Votre demande sera traitée dans un délai maximum d’un mois, prolongeable de deux mois en cas de complexité.</p>
+                    <p class="text-gray-700 dark:text-gray-300">Vous pouvez également introduire une réclamation auprès de la CNIL :<br>
+                        🌐 <a href="https://www.cnil.fr" target="_blank" rel="noopener" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">www.cnil.fr</a>
+                    </p>
+                </div>
+                <!-- 10. Mise à jour de la politique -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Mise à jour de la politique">
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">10. Mise à jour de la politique</h2>
+                    <p class="text-gray-700 dark:text-gray-300">La CCSA se réserve le droit de modifier la présente politique de confidentialité pour se conformer à l’évolution législative et réglementaire. Nous vous invitons à la consulter régulièrement.</p>
+                </div>
+                <div class="text-center text-gray-600 dark:text-gray-400 text-sm mt-10" aria-live="polite">
+                    <p><span class="font-semibold">Dernière mise à jour :</span> 26 mai 2025</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

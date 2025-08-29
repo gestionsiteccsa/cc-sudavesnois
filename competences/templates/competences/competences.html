@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}Compétences de la CCSA Sud-Avesnois | {{ block.super }}{% endblock %}
+{% block meta_description %}Découvrez les compétences exercées par la Communauté de Communes Sud-Avesnois : compétences obligatoires, optionnelles et facultatives expliquées.{% endblock %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/competences.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Compétences</h1>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Compétences obligatoires -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Compétences Obligatoires</h2>
+                
+                <div class="space-y-8">
+                    <!-- Compétence 1 -->
+                    {% if c_obligatoires %}
+                    {% for comp in c_obligatoires %}
+                    <div class="competence-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    {{ comp.icon|safe }}
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{forloop.counter}}. {{comp.title}}</h3>
+                            </div>
+                            {{comp.description|safe}}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-6">
+                            <p class="text-gray-600 dark:text-gray-300">Aucune compétence obligatoire n'est disponible.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compétences optionnelles -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Compétences Optionnelles</h2>
+                
+                <div class="space-y-8">
+                    <!-- Compétence 1 -->
+                    {% if c_optionnelles %}
+                    {% for comp in c_optionnelles %}
+                    <div class="competence-card bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    {{ comp.icon|safe }}
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{forloop.counter}}. {{comp.title}}</h3>
+                            </div>
+                            {{comp.description|safe}}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-6">
+                            <p class="text-gray-600 dark:text-gray-300">Aucune compétence optionnelle n'est disponible.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compétences facultatives -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Compétences Facultatives</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Compétences -->
+                    {% if c_facultatives %}
+                    {% for comp in c_facultatives %}
+                    <!-- Compétence XL -->
+                        {% if comp.is_big %}
+                        <div class="competence-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg col-span-1 md:col-span-2">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Actions et subventions communautaires</h3>
+                                </div>
+                                <div class="text-gray-600 dark:text-gray-300">
+                                    {{comp.description|safe}}
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Compétence normale -->
+                        <div class="competence-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                        {{ comp.icon|safe }}
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{comp.title}}</h3>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    {{comp.description|safe}}
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <div class="competence-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg col-span-1 md:col-span-2">
+                        <div class="p-6">
+                            <p class="text-gray-600 dark:text-gray-300">Aucune compétence facultative n'est disponible.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

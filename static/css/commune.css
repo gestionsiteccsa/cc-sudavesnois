@@ -1,0 +1,99 @@
+/* Styles spécifiques pour la page de commune */
+
+/* Carte d'information */
+.info-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
+}
+
+/* Image de la commune */
+.commune-image-wrapper {
+    overflow: hidden;
+    position: relative;
+    padding-top: 56.25%; /* Ratio 16:9 pour l'image */
+}
+
+.commune-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.commune-image-wrapper:hover img {
+    transform: scale(1.05);
+}
+
+/* Statistiques */
+.stat-value {
+    color: #006ab3;
+    font-weight: 700;
+}
+
+/* Animation d'apparition */
+.info-card, .stat-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Délai d'animation pour chaque élément */
+.info-card:nth-child(1), .stat-item:nth-child(1) { animation-delay: 0.1s; }
+.info-card:nth-child(2), .stat-item:nth-child(2) { animation-delay: 0.2s; }
+.info-card:nth-child(3), .stat-item:nth-child(3) { animation-delay: 0.3s; }
+.info-card:nth-child(4), .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+/* Mode contraste élevé pour les cartes d'information */
+.high-contrast .info-card {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+.high-contrast .info-card h3 {
+    color: #ffff00 !important;
+}
+
+.high-contrast .stat-value {
+    color: #00ffff !important;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .info-card, .stat-item {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
+    .info-card:hover {
+        transform: none !important;
+    }
+    
+    .commune-image-wrapper:hover img {
+        transform: none !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .info-card {
+        margin-bottom: 1.5rem;
+    }
+}

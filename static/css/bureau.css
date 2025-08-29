@@ -1,0 +1,91 @@
+/* Styles spécifiques pour la page du bureau communautaire */
+
+/* Carte des communes */
+.commune-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+}
+
+.commune-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
+}
+
+/* Filtres */
+.filter-button {
+    transition: all 0.3s ease;
+}
+
+.filter-button.active {
+    background-color: #006ab3;
+    color: white;
+}
+
+/* Animation d'apparition */
+.commune-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Délai d'animation pour chaque carte */
+.commune-card:nth-child(1) { animation-delay: 0.1s; }
+.commune-card:nth-child(2) { animation-delay: 0.2s; }
+.commune-card:nth-child(3) { animation-delay: 0.3s; }
+.commune-card:nth-child(4) { animation-delay: 0.4s; }
+.commune-card:nth-child(5) { animation-delay: 0.5s; }
+.commune-card:nth-child(6) { animation-delay: 0.6s; }
+.commune-card:nth-child(7) { animation-delay: 0.7s; }
+.commune-card:nth-child(8) { animation-delay: 0.8s; }
+.commune-card:nth-child(9) { animation-delay: 0.9s; }
+.commune-card:nth-child(10) { animation-delay: 1s; }
+.commune-card:nth-child(11) { animation-delay: 1.1s; }
+.commune-card:nth-child(12) { animation-delay: 1.2s; }
+
+/* Mode contraste élevé pour les cartes des communes */
+.high-contrast .commune-card {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+.high-contrast .commune-card h3 {
+    color: #ffff00 !important;
+}
+
+.high-contrast .commune-card ul li {
+    color: #fff !important;
+}
+
+.high-contrast .bg-primary\/10 {
+    background-color: #000 !important;
+    border-bottom: 1px solid #fff !important;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .commune-card {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
+    .commune-card:hover {
+        transform: none !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .commune-card {
+        margin-bottom: 1.5rem;
+    }
+}

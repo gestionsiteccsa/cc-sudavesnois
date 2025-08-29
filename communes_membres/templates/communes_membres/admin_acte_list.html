@@ -1,0 +1,80 @@
+{% extends 'admin_base.html' %}
+{% block title %}Gestion des actes locaux - Conseil Communautaire{% endblock %}
+{% block content %}
+<!-- Fil d'Ariane et bouton retour -->
+<div class="flex items-center justify-between mb-8">
+  <nav class="flex text-sm text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:underline">Accueil</a>
+    <span class="mx-1">/</span>
+    <span class="text-primary font-semibold">Actes locaux</span>
+  </nav>
+  <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Admin
+  </a>
+</div>
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-3xl font-extrabold text-primary mb-8 flex items-center gap-2">
+  <span class="icofont-law-document text-3xl"></span>
+  Gestion des actes locaux par commune
+</h1>
+                <div class="flex flex-col md:flex-row gap-2 mb-8">
+  <a href="{% url 'communes-membres:admin_acte_add' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark transition font-medium shadow" title="Ajouter un acte local">
+    <span class="icofont-plus"></span> Ajouter un acte
+  </a>
+  <a href="{% url 'conseil_communautaire:admin_add_city' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-secondary text-white hover:bg-secondary-dark transition font-medium shadow" title="Ajouter une commune">
+    <span class="icofont-plus"></span> Ajouter une commune
+  </a>
+</div>
+                
+{% if actes_locaux %}
+  <div class="grid gap-6">
+    {% for acte in actes_locaux %}
+      <div class="rounded-lg shadow-md bg-gray-50 dark:bg-gray-700 p-6 border border-gray-200 dark:border-gray-600">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div class="font-bold text-lg text-primary flex items-center gap-2">
+            <span class="icofont-building-alt text-2xl"></span>
+            {{ acte.commune.city_name }}
+          </div>
+          {% if acte.id > 0 %}
+          <div class="text-sm text-gray-500 dark:text-gray-300 font-semibold">
+            {{acte.title}}<span class="mx-2">·</span><span class="italic">{{ acte.date|date:"d M Y" }}</span>
+          </div>
+          
+          <div class="flex gap-2 mt-2 md:mt-0">
+            <a href="{{acte.file.url}}" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition shadow" title="Voir le document">
+              <span class="icofont-eye"></span> Voir
+            </a>
+           
+            <a href="{% url 'communes-membres:admin_acte_update' id=acte.id %}" class="inline-flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition shadow" title="Modifier l'acte">
+              <span class="icofont-edit"></span> Modifier
+            </a>
+            <a href="{% url 'communes-membres:admin_acte_delete' id=acte.id %}" class="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition shadow" title="Supprimer l'acte">
+              <span class="icofont-trash"></span> Supprimer
+            </a>
+            
+          </div>
+          {% endif %}
+        </div>
+        <div class="mt-4 text-gray-700 dark:text-gray-200">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Description :</p>
+          <p class="text-sm text-gray-500 dark:text-gray-300 break-words">
+            {{ acte.description|default:'Aucune description.' }}
+          </p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="rounded-lg bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 p-6 text-center text-yellow-800 dark:text-yellow-200 shadow">
+    <span class="icofont-warning text-2xl mr-2"></span> Aucun acte local trouvé.
+  </div>
+{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

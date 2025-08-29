@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/mutuelle.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Mutuelle intercommunautaire</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Une solution santé accessible pour tous les habitants du territoire</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Section principale -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <!-- Introduction -->
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900 mb-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Une mutuelle pour tous</h2>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                La Communauté de Communes Sud Avesnois met à disposition de l'ensemble des habitants, une mutuelle intercommunautaire.
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                L'offre intercommunautaire permet à chacun, quel que soit son profil, de bénéficier d'une couverture santé de haute qualité à tarifs avantageux !
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Permanence sur Fourmies et Trélon sur rendez-vous.
+                            </p>
+                            <!-- Bouton d'action -->
+                            <div class="mt-6">
+                                <a href="https://www.just.fr/recueil-besoins" target="_blank" class="inline-flex items-center px-5 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Demander un devis
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rounded-lg overflow-hidden shadow-lg">
+                            <img src="{% static 'img/Mutuelle-Just.jpg' %}" alt="Mutuelle JUST" class="w-full h-auto" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vidéo de présentation -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Présentation de la mutuelle intercommunautaire</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6 text-center">
+                        La Mutuelle Just vous présente dans une vidéo de 2 minutes le concept de mutuelle intercommunale :
+                    </p>
+                    <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
+                        <iframe src="https://www.youtube.com/embed/emVQUcH9JjY" title="Présentation de la mutuelle intercommunautaire" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>
+                    </div>
+                </div>
+
+                <!-- Cartes d'information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <!-- Carte Contact -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg hover:translate-y-[-5px]">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Contactez la Mutuelle Just</h3>
+                            </div>
+                            <div class="ml-14">
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Pour toute information ou pour souscrire à la mutuelle intercommunautaire, contactez les conseillers de la Mutuelle Just :
+                                </p>
+                                <div class="bg-white dark:bg-gray-600 p-4 rounded-lg text-center mb-4">
+                                    <p class="text-gray-700 dark:text-gray-300 text-lg">Numéro de téléphone</p>
+                                    <p class="text-primary dark:text-blue-400 text-2xl font-bold">0 809 546 000</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">(service gratuit + prix d'un appel)</p>
+                                </div>
+                                <div class="text-center">
+                                    <a href="tel:0809546000" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                        </svg>
+                                        Appeler maintenant
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Permanences -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg hover:translate-y-[-5px]">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Permanences</h3>
+                            </div>
+                            <div class="ml-14">
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Des permanences sont organisées régulièrement sur rendez-vous dans les communes du territoire.
+                                </p>
+                                <div class="bg-white dark:bg-gray-600 p-4 rounded-lg mb-4">
+                                    <div class="flex items-start mb-2">
+                                        <svg class="h-5 w-5 text-primary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span class="text-gray-600 dark:text-gray-400">Fourmies : sur rendez-vous</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <svg class="h-5 w-5 text-primary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span class="text-gray-600 dark:text-gray-400">Trélon : sur rendez-vous</span>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <a href="https://www.just.fr/nos-agences/trelon" target="_blank" class="inline-flex items-center px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        Voir l'agence de Trélon
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

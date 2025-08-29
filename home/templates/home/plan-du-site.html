@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Plan du site | CCSA{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold text-primary dark:text-secondary mb-8" tabindex="0">Plan du site</h1>
+      <nav aria-label="Plan du site" class="space-y-8">
+        <ul class="list-none p-0 space-y-4">
+          <li>
+            <a href="{% url 'home' %}" class="font-semibold text-blue-700 dark:text-blue-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors" tabindex="0">Accueil</a>
+          </li>
+          <li>
+            <a href="{% url 'presentation' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Présentation</a>
+          </li>
+          <li>
+            <a href="{% url 'equipe' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Équipe</a>
+          </li>
+          <li>
+            <a href="{% url 'collecte_dechets' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Collecte des déchets</a>
+          </li>
+          <li>
+            <a href="{% url 'dechetteries' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Déchetteries</a>
+          </li>
+          <li>
+            <a href="{% url 'encombrants' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Encombrants</a>
+          </li>
+          <li>
+            <a href="{% url 'habitat' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Habitat</a>
+          </li>
+          <li>
+            <a href="{% url 'maisons_sante' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Maisons de santé</a>
+          </li>
+          <li>
+            <a href="{% url 'mutuelle' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Mutuelle</a>
+          </li>
+          <li>
+            <a href="{% url 'mobilite' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Mobilité</a>
+          </li>
+          <li>
+            <a href="{% url 'plui' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">PLUi</a>
+          </li>
+          <li>
+            <a href="{% url 'projet_plui' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Projet PLUi</a>
+          </li>
+          <li>
+            <a href="{% url 'conseil_communautaire:conseil' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Conseil communautaire</a>
+          </li>
+          <li>
+            <a href="{% url 'rapports_activite:rapports_activite' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Rapports d'activité</a>
+          </li>
+          <li>
+            <a href="{% url 'marches_publics' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Marchés publics</a>
+          </li>
+          <li>
+            <a href="{% url 'mentions_legales' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Mentions légales</a>
+          </li>
+          <li>
+            <a href="{% url 'politique_confidentialite' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Politique de confidentialité</a>
+          </li>
+          <li>
+            <a href="{% url 'cookies' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Gestion des cookies</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="mt-10 text-sm text-gray-500 dark:text-gray-400" aria-hidden="true">
+        <span>Dernière mise à jour : 30 mai 2025</span>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

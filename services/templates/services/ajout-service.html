@@ -1,0 +1,106 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Ajouter un service - Communauté de Communes Sud-Avesnois{% endblock %}
+
+{% block meta_description %}Ajoutez un nouveau service à la Communauté de Communes Sud-Avesnois (CCSA).{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Ajouter un service</h1>
+                
+                <!-- Légende pour les champs obligatoires -->
+                <p class="text-sm mb-6 text-gray-600 dark:text-gray-400">Les champs marqués d'un astérisque (*) sont obligatoires.</p>
+                
+                <!-- Div pour les messages d'erreur/succès avec aria-live -->
+                <div id="form-feedback" aria-live="polite" class="mb-6 hidden"></div>
+                
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-2">
+                        <label for="{{ service_form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Titre <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>
+                        </label>
+                        {% render_field service_form.title class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Titre du service" %}
+                        {% if service_form.title.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ service_form.title.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ service_form.icon.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Icône <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>
+                        </label>
+                        {% render_field service_form.icon class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="<i class=fa-solid fa-house></i>" %}
+                        {% if service_form.icon.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ service_form.icon.errors.0 }}</p>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            Exemple: &lt;i class="fa-solid fa-house"&gt;&lt;/i&gt; ou &lt;i class="icofont-accessibility"&gt;&lt;/i&gt;
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ service_form.content.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Contenu <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>
+                        </label>
+                        {% render_field service_form.content class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Descriptif du service" rows="4" %}
+                        {% if service_form.content.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ service_form.content.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
+                            Ajouter le service
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <a href="{% url 'services:admin_services_list' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
+                            Retour
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+      .create(document.querySelector('#id_content'), {
+        toolbar: [
+          'bold',
+          'italic',
+          'link',
+          'bulletedList',
+          'numberedList',
+          'blockQuote',
+          'insertTable',
+          'undo',
+          'redo',
+          'heading'
+        ],
+        menuBar : {
+            is_visible: true,
+        }
+      })
+      .then(editor => {
+        console.log('CKEditor prêt à l\'emploi !', editor);
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement de CKEditor :', error);
+      });
+  </script>
+{% endblock %}

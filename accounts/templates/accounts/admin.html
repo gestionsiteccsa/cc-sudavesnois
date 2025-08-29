@@ -1,0 +1,96 @@
+{% extends 'admin_base.html' %}
+{% load group_tags %}
+
+{% block content %}
+<!-- Fil d'Ariane -->
+<nav class="mb-4 text-sm flex items-center gap-2 text-gray-400">
+  <a href="/" class="hover:underline">Accueil</a>
+  <span class="mx-1">/</span>
+  <span class="text-primary font-semibold">Dashboard</span>
+</nav>
+
+<!-- Feedback utilisateur -->
+{% if messages %}
+  <div class="mb-6">
+    {% for message in messages %}
+      <div class="p-4 mb-2 rounded-lg shadow {{ message.tags }} bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100 border-l-4 border-green-500" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Titre -->
+<h1 class="text-4xl font-extrabold mb-8 text-primary flex items-center gap-3 tracking-tight">
+  <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14"/><path d="M16 10v6l4 2"/></svg>
+  Dashboard
+</h1>
+
+<!-- Grille de cartes d'accès rapide -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+  {% if user.is_superuser %}
+  <!-- Carte Utilisateurs -->
+  <a href="{% url 'accounts:admin_user_list' %}" class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:bg-primary hover:text-white dark:hover:bg-primary transition duration-200 ease-in-out cursor-pointer">
+    <div class="flex items-center gap-3">
+      <span class="icofont-users-alt text-3xl group-hover:text-white text-primary"></span>
+      <span class="text-lg font-semibold">Utilisateurs</span>
+    </div>
+    <span class="text-sm text-gray-500 dark:text-gray-300 group-hover:text-white">Gérer les comptes utilisateurs, invitations, droits…</span>
+  </a>
+  {% endif %}
+  {% if user|is_in_group:'moderator' or user.is_superuser %}
+  <!-- Carte Documents -->
+  <a href="{% url 'bureau-communautaire:admin_documents_list' %}" class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:bg-secondary hover:text-white dark:hover:bg-secondary transition duration-200 ease-in-out cursor-pointer">
+    <div class="flex items-center gap-3">
+      <span class="icofont-file-document text-3xl group-hover:text-white text-secondary"></span>
+      <span class="text-lg font-semibold">Documents</span>
+    </div>
+    <span class="text-sm text-gray-500 dark:text-gray-300 group-hover:text-white">Ajouter, modifier ou supprimer les documents officiels.</span>
+  </a>
+  <!-- Carte Élus -->
+  <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition duration-200 ease-in-out cursor-pointer">
+    <div class="flex items-center gap-3">
+      <span class="icofont-users text-3xl group-hover:text-white text-blue-600"></span>
+      <span class="text-lg font-semibold">Élus</span>
+    </div>
+    <span class="text-sm text-gray-500 dark:text-gray-300 group-hover:text-white">Voir et gérer la liste des élus communautaires.</span>
+  </a>
+  <!-- Carte Membres -->
+  <a href="{% url 'conseil_communautaire:admin_membres_list' %}" class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:bg-teal-600 hover:text-white dark:hover:bg-teal-600 transition duration-200 ease-in-out cursor-pointer">
+    <div class="flex items-center gap-3">
+      <span class="icofont-group text-3xl group-hover:text-white text-teal-600"></span>
+      <span class="text-lg font-semibold">Membres</span>
+    </div>
+    <span class="text-sm text-gray-500 dark:text-gray-300 group-hover:text-white">Gestion des membres des collectivités.</span>
+  </a>
+  <!-- Carte Commissions -->
+  <a href="{% url 'commissions:admin_list_commissions' %}" class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:bg-pink-600 hover:text-white dark:hover:bg-pink-600 transition duration-200 ease-in-out cursor-pointer">
+    <div class="flex items-center gap-3">
+      <span class="icofont-people text-3xl group-hover:text-white text-pink-600"></span>
+      <span class="text-lg font-semibold">Commissions</span>
+    </div>
+    <span class="text-sm text-gray-500 dark:text-gray-300 group-hover:text-white">Commissions, groupes de travail, etc.</span>
+  </a>
+  <!-- Carte Services -->
+  <a href="{% url 'services:admin_services_list' %}" class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 transition duration-200 ease-in-out cursor-pointer">
+    <div class="flex items-center gap-3">
+      <span class="icofont-gear text-3xl group-hover:text-white text-yellow-500"></span>
+      <span class="text-lg font-semibold">Services</span>
+    </div>
+    <span class="text-sm text-gray-500 dark:text-gray-300 group-hover:text-white">Gestion des services institutionnels.</span>
+  </a>
+</div>
+{% endif %}
+
+  {% if messages %}
+  <div class="mb-6">
+    {% for message in messages %}
+      <div class="p-4 mb-2 rounded-md shadow-md {{ message.tags }} bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

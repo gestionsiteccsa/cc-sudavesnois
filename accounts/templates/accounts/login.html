@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion - Communauté de Communes Sud-Avesnois{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Connexion</h1>
+                
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative dark:bg-red-900 dark:text-red-200 dark:border-red-700" role="alert">
+                        <span class="block sm:inline">Adresse email ou mot de passe incorrect.</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="space-y-2">
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ form.username.label }}
+                        </label>
+                        <input type="email" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                               {% if form.username.value %}value="{{ form.username.value }}"{% endif %} required>
+                        {% if form.username.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ form.password.label }}
+                        </label>
+                        <input type="password" name="{{ form.password.html_name }}" id="{{ form.password.id_for_label }}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                        {% if form.password.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.password.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
+                            <label for="remember_me" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                Se souvenir de moi
+                            </label>
+                        </div>
+                        
+                        <div class="text-sm">
+                            <a href="{% url 'accounts:password_reset' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
+                            Se connecter
+                        </button>
+                    </div>
+                </form>
+                
+                {% if user_count == 0 %}
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Pas encore de compte ? 
+                        <a href="{% url 'accounts:register' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
+                            Créer le premier compte administrateur
+                        </a>
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

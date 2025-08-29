@@ -1,0 +1,63 @@
+{% extends 'admin_base.html' %}
+{% block title %}Liste des élus - Conseil Communautaire{% endblock %}
+{% block content %}
+<!-- Fil d'Ariane et bouton retour -->
+<div class="flex items-center justify-between mb-8">
+  <nav class="flex text-sm text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:underline">Accueil</a>
+    <span class="mx-1">/</span>
+    <span class="text-primary font-semibold">Conseil communautaire</span>
+  </nav>
+  <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Admin
+  </a>
+</div>
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Liste des élus</h1>
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prénom</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ville</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Suppléant</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for member in members_list %}
+                        <tr>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ member.last_name|title }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ member.first_name|title }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ member.city.city_name }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{% if member.is_suppleant %}<span class="text-xs text-gray-600">Oui</span>{% else %}Non{% endif %}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">
+                                {% if member.linked_commission %}
+                                    <span title="{{ member.linked_commission.title }}">
+                                        {{ member.linked_commission.title|truncatechars:30 }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-xs text-gray-600">Aucune</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-2 whitespace-nowrap space-x-2">
+                                <a href="{% url 'conseil_communautaire:admin_member_edit' id=member.id %}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs">Modifier</a>
+                                <a href="{% url 'conseil_communautaire:admin_member_delete' id=member.id %}" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Supprimer</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="mt-6 text-center">
+                    <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="inline-block px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Ajouter un membre</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

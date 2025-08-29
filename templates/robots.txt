@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Interdire l'accès à l'administration
+Disallow: /ccsa-admin/
+Disallow: /admin/
+
+# Sitemap
+Sitemap: https://www.cc-sudavesnois.fr/sitemap.xml

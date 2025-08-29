@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #1c7ed6; /* Couleur bleue principale du site */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .info {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .contact-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f5ff; /* Ton clair du bleu */
+            border-radius: 4px;
+            border: 1px solid #d0e9ff;
+        }
+        .contact-info h2 {
+            font-size: 1.1em;
+            color: #1c7ed6;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmation de contact</h1>
+        </div>
+        <div class="content">
+            <p>Bonjour {{ first_name|default:'Non renseigné' }} ;
+            <br>
+            Votre demande de contact à bien été transmise.
+            Nous reviendrons vers vous dès que possible depuis l'adresse mail que vous avez renseignée.
+            </p>
+            <br>
+            <h3>Voici les informations que vous avez renseigné dans le formulaire de contact :</h3>
+        </p>
+
+            <div class="contact-info">
+                <h2>Vos informations :</h2>
+                <p><span class="label">Nom :</span> <span class="info">{{ last_name|default:'Non renseigné' }}</span></p>
+                <p><span class="label">Prénom :</span> <span class="info">{{ first_name|default:'Non renseigné' }}</span></p>
+                <p><span class="label">Email :</span> <span class="info">{{ email|default:'Non renseigné' }}</span></p>
+                <p><span class="label">Téléphone :</span> <span class="info">{{ phone|default:'Non renseigné' }}</span></p>
+            </div>
+
+            <div>
+                <p><span class="label">Message :</span></p>
+                <div class="info" style="white-space: pre-wrap;">{{ message|default:'Aucun message' }}</div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Ceci est un message automatique, merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html>

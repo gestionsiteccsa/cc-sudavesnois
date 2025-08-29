@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/presentation.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Communauté de Communes</h1>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-700 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Présentation</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Née en 2014 et située au sud du département du Nord, limitrophe de l’Aisne et de la Belgique, la Communauté de Communes Sud-Avesnois compte {{nb_habitants}} habitants répartis sur {{nb_communes}} communes. Elle se compose d’un pôle urbain central, Fourmies, chef-lieu de canton depuis 2014 et d’un réseau de petites villes (Anor, Glageon, Ohain, Trélon, Wignehies) et de villages ruraux (Baives, Eppe-Sauvage, Féron, Moustier-en-Fagne, Wallers-en-Fagne et Willies).
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Parmi ses compétences, on compte l’aménagement de l’espace communautaire, la santé, l’organisation de la mobilité, la promotion du tourisme, la ruralité, la politique du logement et du cadre de vie, la coordination du réseau de lecture publique médi@’pass, la collecte et le traitement des déchets et bien sûr le développement économique.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Le siège social et les bureaux administratifs sont domiciliés au PIDE, 2 rue du général Chomel à Fourmies. Le public y est accueilli du lundi au vendredi, de 8h30 à 12h et de 13h30 à 17h. Les services techniques et environnement sont situés rue Théophile Legrand.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nos communes -->
+    <section class="py-12 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Les communes du Sud-Avesnois</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Commune 1 -->
+                    {% if communes %}
+                    {% for com in communes %}
+                    <div class="commune-card bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{{com.city_name}}</h3>
+                            {% if com.nb_habitants %}
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{{com.nb_habitants}} habitants</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="commune-card bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Indisponible.</h3>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>                
+            </div>
+        </div>
+    </section>
+
+</main>
+{% endblock %}

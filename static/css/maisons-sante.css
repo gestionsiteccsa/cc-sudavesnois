@@ -1,0 +1,52 @@
+/* Styles spécifiques pour la page des maisons de santé pluridisciplinaires */
+
+/* Animation pour les cartes */
+.hover\:translate-y-\[-5px\]:hover {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Styles pour les images */
+.rounded-lg img {
+    transition: transform 0.3s ease;
+}
+
+.rounded-lg:hover img {
+    transform: scale(1.02);
+}
+
+/* Styles pour les liens */
+a.text-primary {
+    transition: all 0.2s ease;
+}
+
+a.text-primary:hover {
+    text-decoration: underline;
+}
+
+/* Styles pour les cartes d'information */
+.bg-gray-50 {
+    transition: all 0.3s ease;
+}
+
+.bg-gray-50:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Styles spécifiques pour le mode sombre */
+@media (prefers-color-scheme: dark) {
+    .bg-gray-50:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .grid-cols-1 {
+        gap: 1.5rem;
+    }
+    
+    .py-16 {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+}

@@ -1,0 +1,47 @@
+{% extends 'admin_base.html' %}
+{% block title %}Gestion des commissions - Commissions{% endblock %}
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Gestion des commissions</h1>
+                <a href="{% url 'commissions:admin_add_commission' %}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Ajouter une commission</a>                
+                {% if document %}
+                <a href="{{document.file.url}}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Voir le document</a>
+                <a href="{% url 'commissions:edit_document' document_id=document.id%}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Modifier le document</a> 
+                <a href="{% url 'commissions:delete_document' document_id=document.id %}" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Supprimer le doc</a>
+                {% else %}
+                <a href="{% url 'commissions:upload_commission_doc' %}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Ajouter un document</a> 
+                {% endif %}
+                <a href="{% url 'commissions:edit_mandat' mandat_id=mandat.id %}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Modifier les dates du mandat</a> 
+                {% if commissions %}
+                {% for commission in commissions %}
+                <div class="mb-4 border-b pb-4">
+                    <div class="flex items-center justify-between">
+                        <!-- Icon aligned left -->
+                        <div class="flex items-center space-x-4 flex-1">
+                            <div class="w-8 flex-shrink-0 flex items-center justify-center">
+                                {{ commission.icon|safe }}
+                            </div>
+                            <!-- Title centered -->
+                            <div class="flex-1 text-center">
+                                <div class="font-bold text-lg text-primary">{{ commission.title }}</div>
+                            </div>
+                        </div>
+                        <!-- Buttons aligned right -->
+                        <div class="space-x-2 flex-shrink-0">
+                            <a href="{% url 'commissions:admin_edit_commission' commission_id=commission.id %}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Modifier</a>
+                            <a href="{% url 'commissions:admin_delete_commission' commission_id=commission.id %}" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-gray-500">Aucune commission trouvée.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

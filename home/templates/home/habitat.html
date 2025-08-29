@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Habitat - France Rénov' - Guichet Unique{% endblock %}
+{% block meta_description %}Découvrez le Guichet Unique France Rénov' pour la rénovation énergétique de l'habitat dans le Sud-Avesnois. Conseils, accompagnement et aides pour vos projets de rénovation.{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/habitat.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Habitat</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">France Rénov' : Guichet Unique pour la rénovation énergétique de l'Habitat !</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Section principale avec image et informations -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <!-- Contenu en deux colonnes -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <!-- Colonne gauche : image et boutons d'action -->
+                    <div>
+                        <!-- Image principale -->
+                        <div class="mb-6 rounded-lg overflow-hidden shadow-lg">
+                            <img src="{% static 'img/CCSA-DEPLIANT_GUICHET_UNIQUE_HABITAT_2023-1-722x1024.png' %}" alt="Dépliant Guichet Unique Habitat" class="w-full h-auto" loading="lazy">
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="space-y-4">
+                            <a href="mailto:habitat@parc-naturel-avesnois.com" class="w-full inline-flex items-center justify-center px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg text-lg font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                Contacter par email
+                            </a>
+                            <a href="https://calendly.com/habitat-hfi/rdvtelephonique-francerenovavesnois" target="_blank" class="w-full inline-flex items-center justify-center px-6 py-4 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors duration-300 shadow-md hover:shadow-lg text-lg font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                Prendre rendez-vous en ligne
+                            </a>
+                            <a href="tel:0750720020" class="w-full inline-flex items-center justify-center px-6 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-md hover:shadow-lg text-lg font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                                Appeler au 07 50 72 00 20
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Colonne droite : informations -->
+                    <div>
+                        <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Besoin d'aide pour rénover votre logement ?</h2>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Vous avez froid chez vous ? Vous avez de grosses factures d'énergie ? Vous souhaitez faire des travaux et connaître les aides mobilisables ou être accompagné ?
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Le Parc Naturel Régional de l'Avesnois propose depuis 2022 un espace conseil France Rénov' pour répondre à vos questions sur le sujet, et vous aiguiller dans votre projet.
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Cet espace est financé par les Communauté de Communes Sud-Avesnois, Cœur de l'Avesnois, Pays de Mormal et la région Hauts-de-France. C'est un service gratuit, neutre et indépendant mis à disposition de tous les propriétaires du territoire et aux entreprises du petit tertiaire privé (TPE, commerces, artisans, bureaux, restaurants).
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg p-6 mb-8">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Un accompagnement pour tous</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 ml-14">
+                                Tous les habitants du territoire peuvent être accompagnés quel que soit leur niveau de revenu. Ce Guichet Unique de l'Habitat vous orientera en fonction de votre projet et votre situation vers le dispositif adéquat.
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Permanences physiques</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 ml-14 mb-4">
+                                Permanences physiques tous les jeudis après-midi en Sud-Avesnois :
+                            </p>
+                            <ul class="space-y-2 ml-14">
+                                <li class="flex items-start">
+                                    <svg class="h-5 w-5 text-primary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                                    </svg>
+                                    <span class="text-gray-600 dark:text-gray-400">En mairie de Trélon le premier jeudi du mois</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="h-5 w-5 text-primary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                                    </svg>
+                                    <span class="text-gray-600 dark:text-gray-400">Au PIDE, à Fourmies dans les locaux de la Communauté de Communes les autres jeudis</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section ADIL -->
+                <div class="mt-12 bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Vous avez des questions sur le logement ? L'ADIL propose des permanences !</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        L'ADIL (Agence départementale d'information sur le logement) vous apporte une information complète, objective et gratuite sur toutes les questions de logement !
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Une question sur les règles de la location, l'habitat dégradé, les impayés ou les expulsions, sur l'accession à la propriété et son financement, ou encore la fiscalité, contactez l'ADIL.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Prendre rendez-vous</h3>
+                            <div class="space-y-4">
+                                <a href="https://adilnpdc.fr/booking" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    Rendez-vous en ligne
+                                </a>
+                                <a href="tel:0359616259" class="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-md hover:shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                    03 59 61 62 59
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Calendrier des permanences</h3>
+                            <div class="space-y-3">
+                                <h4 class="font-medium text-gray-700 dark:text-gray-300">À la mairie de Trélon :</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Le 9 janvier, le 6 mars, le 15 mai, le 3 juillet, le 2 octobre, le 4 décembre</p>
+                                
+                                <h4 class="font-medium text-gray-700 dark:text-gray-300">Au PIDE à Fourmies :</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Le 20 février, le 17 avril, le 19 juin, le 18 septembre, le 20 novembre</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avantages de France Rénov' -->
+                <div class="mt-12">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 text-center mb-8">Les avantages de France Rénov'</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg hover:translate-y-[-5px] p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-4 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Service gratuit</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Un accompagnement totalement gratuit pour tous les propriétaires du territoire
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg hover:translate-y-[-5px] p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-4 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Conseils neutres</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Des conseils indépendants et objectifs pour vous guider dans vos choix
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg hover:translate-y-[-5px] p-6 text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-4 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Expertise locale</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Une connaissance approfondie des spécificités du territoire et des aides disponibles
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

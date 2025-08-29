@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Calendrier Semestriel des Manifestations - CCSA{% endblock %}
+
+{% block meta_description %}Consultez le calendrier semestriel des manifestations de la Communauté de Communes Sud-Avesnois (CCSA). Retrouvez toutes les dates des événements à venir sur notre territoire.{% endblock %}
+
+{% block content %}
+<!-- Bannière -->
+<section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Calendrier Semestriel des Manifestations</h1>
+            <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Découvrez toutes les manifestations et événements organisés sur le territoire de la Communauté de Communes Sud-Avesnois pour les mois à venir.</p>
+        </div>
+    </div>
+    <!-- Motif décoratif -->
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+</section>
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="p-6 md:p-8">                
+                <div class="mb-8">
+                    <div class="relative group">
+                        {% if content.picture %}
+                        <img src="{{content.picture.url}}" alt="Calendrier semestriel des manifestations" class="w-full h-auto rounded-lg shadow-md transition-transform duration-300 group-hover:scale-[1.01]" loading="lazy">
+                        <a href="{{content.picture.url}}" target="_blank" class="absolute inset-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-end">
+                            <div class="p-4 w-full">
+                                <p class="text-white text-center font-medium">Cliquez pour agrandir</p>
+                            </div>
+                        </div>
+                    </a>
+                        {% else %}
+                        <p class="text-gray-700 dark:text-gray-300">Aucune image disponible pour le calendrier semestriel.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg mb-6">
+                    {% if content.file %}
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Télécharger le calendrier</h2>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Vous pouvez télécharger le calendrier semestriel des manifestations au format PDF pour le consulter hors ligne ou l'imprimer.
+                    </p>
+                    <a href="{{content.file.url}}" class="inline-flex items-center px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Télécharger le PDF
+                    </a>
+                    {% else %}
+                    <p class="text-gray-700 dark:text-gray-300">Aucun calendrier disponible à télécharger pour le moment.</p>
+                    {% endif %}
+                </div>
+                
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Informations complémentaires</h2>
+                    <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
+                        <li>Le calendrier est mis à jour régulièrement, consultez cette page pour les dernières informations.</li>
+                        <li>Pour proposer un événement à inclure dans le prochain calendrier, contactez le service communication.</li>
+                        <li>Les dates peuvent être sujettes à modification, nous vous invitons à vérifier les informations avant de vous déplacer.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

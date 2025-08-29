@@ -1,0 +1,66 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Supprimer le service ?</h1>
+                
+                <!-- Div pour les messages d'erreur/succès avec aria-live -->
+                <div id="form-feedback" aria-live="polite" class="mb-6 hidden"></div>
+                
+                <form method="POST" class="space-y-4" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-2">
+                        <label for="{{ service.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Titre <span class="text-red-600 dark:text-red-400" aria-hidden="true">
+                        </label>
+                        {{ service.title }}
+                        {% if service.title.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ service.title.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2 bg-primary rounded-md p-4 mb-4">
+                        <label for="{{ service.icon.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Icône <span class="text-red-600 dark:text-red-400" aria-hidden="true">
+                        </label>
+                        {{ service.icon|safe}}
+                        {% if service.icon.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ service.icon.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ service.content.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Contenu <span class="text-red-600 dark:text-red-400" aria-hidden="true">
+                        </label>
+                        {{ service.content }}
+                        {% if service.content.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ service.content.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="w-full bg-red-600 text-white font-medium px-8 py-3 rounded-md hover:bg-lime/70 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary">
+                            Supprimer
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <a href="{% url 'services:admin_services_list' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
+                            Retour à la liste
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

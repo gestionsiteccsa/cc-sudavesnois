@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/journal.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Journal Mon Sud Avesnois</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Notre publication semestrielle pour vous tenir informés</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+
+    <!-- Introduction -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-700 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">À propos du journal</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Le journal "Mon Sud Avesnois" est la publication semestrielle de la Communauté de Communes Sud-Avesnois. 
+                        Il vous permet de suivre l'actualité du territoire, les projets en cours et à venir, ainsi que toutes les informations 
+                        utiles concernant les services et les événements organisés par la Communauté de Communes.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Distribué gratuitement dans toutes les boîtes aux lettres du territoire, il est également disponible en version numérique 
+                        sur cette page. Retrouvez ci-dessous tous les numéros du journal "Mon Sud Avesnois".
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Liste des journaux -->
+<section class="py-12 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Tous les numéros</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Journal 1 -->
+                {% if journals %}
+                {% for journal in journals %}
+                <div class="journal-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                    <div class="relative aspect-[3/4] overflow-hidden bg-gray-200 dark:bg-gray-600">
+                        {% if journal.get_cover_size%}
+                            <img src="{{ journal.cover.url }}" alt="Couverture du journal n°{{ journal.number }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy">
+                        {% else %}
+                            <div class="p-2 mt-2 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded flex items-center gap-2" role="alert" aria-live="polite">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-1.414 1.414A8 8 0 016.05 17.95l-1.414 1.414" /></svg>
+                                <span>Image indisponible sur le serveur</span>
+                            </div>
+                        {% endif %}
+                        <div class="absolute top-0 right-0 bg-primary text-white px-3 py-1 text-sm font-semibold">
+                            N°{{ journal.number }}
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{ journal.titre }}</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-3">{{ journal.release_date|date:'F Y'|capfirst }}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">{{ journal.page_number }} page(s)</span>
+                            {% if journal.get_document_size %}
+                            <a href="{{ journal.document.url }}" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Télécharger
+                            </a>
+                            {% else %}
+                            <span class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-500 rounded cursor-not-allowed">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <div class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
+                                <span>Indisponible</span>
+                            </div>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center">
+                        <p class="text-gray-600 dark:text-gray-300">Aucun journal disponible pour le moment.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Pagination -->
+            {% if journals.has_other_pages %}
+            <div class="mt-12 flex justify-center">
+                <nav class="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    {% if journals.has_previous %}
+                    <a href="?page={{ journals.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <span class="sr-only">Précédent</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    {% else %}
+                    <span class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-300 cursor-not-allowed">
+                        <span class="sr-only">Précédent</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    {% endif %}
+
+                    {% for i in journals.paginator.page_range %}
+                        {% if journals.number == i %}
+                            <span aria-current="page" class="relative inline-flex items-center px-4 py-2 border border-primary bg-primary text-sm font-medium text-white">{{ i }}</span>
+                        {% else %}
+                            <a href="?page={{ i }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">{{ i }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                        
+                    {% if journals.has_next %}
+                    <a href="?page={{ journals.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <span class="sr-only">Suivant</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    {% else %}
+                        <span class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-300 cursor-not-allowed">
+                            <span class="sr-only">Suivant</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+</main>
+{% endblock %}

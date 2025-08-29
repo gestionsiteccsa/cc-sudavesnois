@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Commissions - Organisation et missions de la CCSA Sud-Avesnois | {{ block.super }}{% endblock %}
+{% block meta_description %}Présentation des commissions de la Communauté de Communes Sud-Avesnois : missions, organisation et documents à télécharger.{% endblock %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/commissions.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Commissions</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Retrouvez les commissions dans le document PDF ci-dessous</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-700 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Rôle des commissions</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Méconnues du grand public, les commissions communautaires ont pour mission, en liaison avec le Bureau (composé du Président et des 8 VP), d'élaborer les projets, de suivre les réalisations en cours ou encore de réfléchir au développement des services.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Composés d'élus communautaires issus de chaque commune du Sud-Avesnois, elles travaillent en étroite collaboration avec les agents de la collectivité.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Chacune d'entre elles travaille sur des thématiques particulières et est rattachée à des vice présidences qui en assurent l'animation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Liste des commissions -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Pour le mandat {{mandat.start_year}}-{{mandat.end_year}}, la CCSA compte {{ nb_commissions }} commission{% if nb_commissions > 1 %}s{% endif %}</h2>
+                <div class="space-y-8">
+                    <!-- Commissions -->
+                    {% if commissions %}
+                    {% for com in commissions %}
+                    <div class="commission-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div style="width: 58px;" class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                    {{com.icon|safe}}
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{com.title}}</h3>
+                            </div>
+                            {% for elu in elus %}
+                                {% if elu.linked_commission == com %}
+                                    <a href="{% url 'bureau-communautaire:elus' %}">
+                                        {{ elu.first_name }} {{ elu.last_name }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            {% for membre in membres %}
+                                {% if membre.linked_commission == com %}
+                                    <a href="{% url 'conseil_communautaire:conseil' %}">
+                                        {{ membre.first_name }} {{ membre.last_name }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                <!-- Téléchargement du tableau -->
+                {% if document %}
+                <div class="mt-12 text-center">
+                    <a href="{{document.file.url}}" class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Tableau des Commissions
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

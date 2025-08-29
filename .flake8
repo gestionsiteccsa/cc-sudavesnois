@@ -1,0 +1,28 @@
+[flake8]
+# Ignore les répertoires virtuels et autres non pertinents
+exclude =
+    .git,
+    _pycache_,
+    env,
+    venv,
+    .venv,
+    build,
+    dist,
+    migrations,
+    static,
+    media,
+    tests.py,
+    management,
+    scripts
+# Longueur maximale d'une ligne
+max-line-length = 88
+
+# Montrer les sources des erreurs (utile pour comprendre les erreurs)
+show-source = true
+
+# Format de sortie (facultatif)
+format = default
+
+# Ignore E501 (lignes trop longues) uniquement dans tous les fichiers tests.py
+per-file-ignores =
+    */tests.py:E501

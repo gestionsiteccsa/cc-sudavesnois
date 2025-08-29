@@ -1,0 +1,66 @@
+/* Styles spécifiques pour la page Journal Mon Sud Avesnois */
+
+.journal-card {
+    transition: all 0.3s ease;
+}
+
+.journal-card:hover {
+    transform: translateY(-5px);
+}
+
+.journal-card .aspect-\[3\/4\] {
+    position: relative;
+}
+
+.journal-card img {
+    transition: transform 0.5s ease;
+}
+
+.journal-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Styles pour les boutons de téléchargement */
+.journal-card a.inline-flex {
+    transition: all 0.3s ease;
+}
+
+.journal-card a.inline-flex:hover {
+    background-color: #0056b3; /* Couleur plus foncée au survol */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles pour la pagination */
+nav[aria-label="Pagination"] a {
+    transition: all 0.2s ease;
+}
+
+nav[aria-label="Pagination"] a:hover:not([aria-current="page"]) {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+/* Styles pour le formulaire d'abonnement */
+form input:focus, 
+form select:focus, 
+form textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+form button {
+    transition: all 0.3s ease;
+}
+
+form button:hover {
+    background-color: #1e40af;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .journal-card {
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

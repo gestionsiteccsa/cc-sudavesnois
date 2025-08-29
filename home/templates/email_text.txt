@@ -1,0 +1,15 @@
+Nouvelle demande de contact
+
+Vous avez reçu un nouveau message de contact via le site web.
+
+Informations de l'expéditeur :
+
+Nom : {{ last_name|default:'Non renseigné' }}
+Prénom : {{ first_name|default:'Non renseigné' }}
+Email : {{ email|default:'Non renseigné' }}
+Téléphone : {{ phone|default:'Non renseigné' }}
+
+Message :
+{{ message|default:'Aucun message' }}
+
+Ceci est un message automatique du formulaire de contact du site du CCSA.

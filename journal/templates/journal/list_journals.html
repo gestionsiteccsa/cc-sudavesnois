@@ -1,0 +1,68 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12 min-h-screen">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Gestion des journaux</h1>
+                {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="p-3 rounded text-sm mb-2 {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% elif message.tags == 'error' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% else %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200{% endif %}" role="alert" aria-live="polite">
+                            {% if message.tags == 'success' %}<span aria-hidden="true">✔️</span>{% elif message.tags == 'error' %}<span aria-hidden="true">❌</span>{% else %}<span aria-hidden="true">ℹ️</span>{% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="mb-6 text-right">
+                    <a href="{% url 'journal:add_journal' %}" class="inline-block px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300">+ Ajouter un journal</a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-200">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-2">Titre</th>
+                                <th class="px-4 py-2">Numéro</th>
+                                <th class="px-4 py-2">Date</th>
+                                <th class="px-4 py-2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for journal in journaux %}
+                            <tr class="border-b dark:border-gray-700">
+                                <td class="px-4 py-2">{{ journal.title }} 
+                                    {% if not journal.get_cover_size %}
+                                        <span class="text-red-500 text-xs">⚠️Couverture manquante⚠️</span>
+                                    {% endif %}
+                                    {% if not journal.get_document_size %}
+                                        <span class="text-red-500 text-xs">⚠️Document manquant⚠️</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-2">{{ journal.number }}</td>
+                                <td class="px-4 py-2">{{ journal.release_date|date:'d/m/Y' }}</td>
+                                <td class="px-4 py-2 flex gap-2">
+                                    <a href="{% url 'journal:edit_journal' journal.id %}" class="px-3 py-1 bg-yellow-400 text-gray-800 rounded hover:bg-yellow-500 text-xs">Modifier</a>
+                                    <a href="{% url 'journal:delete_journal' journal.id %}" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs">Supprimer</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">Aucun journal disponible.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6 text-center">
+                    <a href="{% url 'journal:journal' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
+                        Retour à la page publique des journaux
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

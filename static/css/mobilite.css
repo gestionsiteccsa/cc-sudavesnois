@@ -1,0 +1,88 @@
+/* Styles spécifiques pour la page de mobilité */
+
+/* Animation pour les cartes */
+.bg-gray-50 {
+    transition: all 0.3s ease;
+}
+
+/* Style pour les icônes */
+.bg-primary\/10 {
+    transition: all 0.3s ease;
+}
+
+.bg-gray-50:hover .bg-primary\/10 {
+    background-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.1);
+}
+
+/* Style pour les titres des cartes */
+.bg-gray-50 h3 {
+    transition: color 0.3s ease;
+}
+
+.bg-gray-50:hover h3 {
+    color: #3b82f6;
+}
+
+/* Style pour l'image principale */
+.rounded-lg.overflow-hidden {
+    transition: all 0.5s ease;
+}
+
+.rounded-lg.overflow-hidden:hover {
+    transform: scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Style pour les numéros de téléphone et app */
+.bg-primary, .bg-secondary {
+    transition: all 0.3s ease;
+}
+
+.bg-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+
+.bg-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+/* Style pour les boutons d'application */
+.inline-flex.items-center {
+    transition: all 0.3s ease;
+}
+
+.inline-flex.items-center:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Style pour les listes à puces */
+.flex.items-start svg {
+    transition: all 0.3s ease;
+}
+
+.flex.items-start:hover svg {
+    transform: scale(1.2);
+    color: #3b82f6;
+}
+
+/* Style pour le prix */
+.text-primary.text-3xl {
+    transition: all 0.3s ease;
+}
+
+.bg-gray-50:hover .text-primary.text-3xl {
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ml-14 {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+}

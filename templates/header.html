@@ -1,0 +1,407 @@
+{% load static %}
+{% load group_tags %}
+<header class="sticky top-0 bg-white dark:bg-gray-800 shadow-md z-50">
+    <div class="container mx-auto px-4 md:px-6 flex items-center justify-between h-20">
+        <div class="flex-shrink-0">
+            <a href="{% url 'home' %}" class="block" aria-label="Accueil - Communauté de Communes Sud-Avesnois">
+                <img src="{% static 'img/logo/Logo_S-A.png' %}" alt="Communauté de Communes Sud-Avesnois" width="200" height="80" class="h-16 w-auto">
+            </a>
+        </div>
+        
+        <nav class="hidden md:block ml-auto" aria-label="Menu principal">
+            <ul class="flex space-x-1">
+                <li class="relative nav-dropdown">
+                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-communaute">
+                        Communauté de Communes
+                        <span class="inline-block ml-1 w-0 h-0 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-700 dark:border-t-gray-200 transition-colors duration-300"></span>
+                    </button>
+                    <ul id="submenu-communaute" class="submenu-level-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                        <li><a href="{% url 'presentation' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Présentation</a></li>
+                        <li class="relative nav-dropdown">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-communes">
+                                Les Communes Membres
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            {% if cities %}
+                            <ul id="submenu-communes" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                {% for commune in cities %}
+                                <li>
+                                    <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">{{commune.city_name}}</a></li>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <ul id="submenu-communes" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                <li>
+                                    <li><p class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Indisponible.</p></li>
+                                </li>
+                            </ul>
+                            {% endif %}
+                        </li>
+                        <li class="relative nav-dropdown">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-organisation">
+                                Organisation et Fonctionnement
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-organisation" class="submenu-level-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                <li><a href="{% url 'conseil_communautaire:conseil' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Conseil Communautaire</a></li>
+                                <li><a href="{% url 'bureau-communautaire:elus' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Bureau Communautaire</a></li>
+                                <li><a href="{% url 'commissions:commissions' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Commissions</a></li>
+                                <li><a href="{% url 'competences:competences' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Compétences</a></li>
+                                <li><a href="{% url 'equipe' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">L'Équipe Administrative & Technique</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'marches_publics' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Marchés Publics</a></li>
+                        <li class="relative nav-dropdown">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-publications">
+                                Publications
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-publications" class="submenu-level-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                <li><a href="{% url 'journal:journal' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Journal « Mon Sud Avesnois »</a></li>
+                                <li><a href="{% url 'semestriels:semestriel' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Semestriels</a></li>
+                                <li><a href="{% url 'comptes_rendus:comptes_rendus' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Comptes-rendus & délibérations</a></li>
+                                <li><a href="{% url 'rapports_activite:rapports_activite' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Rapports d'activité</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="relative nav-dropdown">
+                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-services">
+                        Services
+                        <span class="inline-block ml-1 w-0 h-0 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-700 dark:border-t-gray-200 transition-colors duration-300"></span>
+                    </button>
+                    <ul id="submenu-services" class="submenu-level-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10">
+                        <li><a href="{% url 'mobilite' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mobilité</a></li>
+                        <li><a href="{% url 'habitat' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Habitat</a></li>
+                        <li class="relative nav-dropdown">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-dechets">
+                                Collecte et Valorisation des déchets
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-dechets" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                <li><a href="{% url 'collecte_dechets' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Collecte des déchets</a></li>
+                                <li><a href="{% url 'encombrants' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Encombrants</a></li>
+                                <li><a href="{% url 'dechetteries' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Déchetteries</a></li>
+                            </ul>
+                        </li>
+                        <li class="relative nav-dropdown">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-sante">
+                                Santé
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-sante" class="submenu-level-2 submenu-right w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                <li><a href="{% url 'maisons_sante' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Maisons de Santé Pluridisciplinaires</a></li>
+                                <li><a href="{% url 'mutuelle' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mutuelle intercommunautaire</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'plui' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Urbanisme (PLUi)</a></li>
+                    </ul>
+                </li>
+                <li class="relative">
+                    <a href="https://ccsa.reseaubibli.fr/" target="_blank" rel="noopener" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300">
+                        Médi@'pass
+                        <span class="inline-block ml-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </span>
+                    </a>
+                </li>
+                <li class="relative">
+                    <a href="https://sud-avesnois-invest.com/" target="_blank" rel="noopener" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300">
+                        Développement Économique
+                        <span class="inline-block ml-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </span>
+                    </a>
+                </li>                   
+                <li>
+                    <a href="{% url 'home' %}#contact" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300">Contact</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="flex items-center">
+            {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}" class="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="Mon profil">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#1878b9" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l362.8 0c-5.4-9.4-8.6-20.3-8.6-32l0-128c0-2.1 .1-4.2 .3-6.3c-31-26-71-41.7-114.6-41.7l-91.4 0zM528 240c17.7 0 32 14.3 32 32l0 48-64 0 0-48c0-17.7 14.3-32 32-32zm-80 32l0 48c-17.7 0-32 14.3-32 32l0 128c0 17.7 14.3 32 32 32l160 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32l0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"/></svg>
+            </a>
+                {% if user|is_in_group:'moderator' %}
+                    <a href="{% url 'accounts:admin_dashboard' %}" class="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="Panneau d'administration">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></svg>
+                    </a>
+                {% endif %}
+            {% endif %}
+            <button class="p-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-expanded="false" aria-controls="accessibility-menu" aria-label="Options d'accessibilité" id="accessibility-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm161.5-86.1c-12.2-5.2-26.3 .4-31.5 12.6s.4 26.3 12.6 31.5l11.9 5.1c17.3 7.4 35.2 12.9 53.6 16.3l0 50.1c0 4.3-.7 8.6-2.1 12.6l-28.7 86.1c-4.2 12.6 2.6 26.2 15.2 30.4s26.2-2.6 30.4-15.2l24.4-73.2c1.3-3.8 4.8-6.4 8.8-6.4s7.6 2.6 8.8 6.4l24.4 73.2c4.2 12.6 17.8 19.4 30.4 15.2s19.4-17.8 15.2-30.4l-28.7-86.1c-1.4-4.1-2.1-8.3-2.1-12.6l0-50.1c18.4-3.5 36.3-8.9 53.6-16.3l11.9-5.1c12.2-5.2 17.8-19.3 12.6-31.5s-19.3-17.8-31.5-12.6L338.7 175c-26.1 11.2-54.2 17-82.7 17s-56.5-5.8-82.7-17l-11.9-5.1zM256 160a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+            </button>
+            
+            <!-- Menu d'accessibilité -->
+            <div id="accessibility-menu" class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-4 hidden z-50 max-h-[80vh] overflow-y-auto" aria-hidden="true">
+                <h3 class="text-lg font-semibold mb-3">Options d'accessibilité</h3>
+                
+                <div class="space-y-4">
+                    <!-- Contraste -->
+                    <div>
+                        <h4 class="font-medium mb-2">Contraste</h4>
+                        <div class="flex space-x-2">
+                            <button id="contrast-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
+                                Contraste élevé
+                            </button>
+                            <button id="contrast-reset" class="py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-label="Réinitialiser le contraste">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Taille du texte -->
+                    <div>
+                        <h4 class="font-medium mb-2">Taille du texte</h4>
+                        <div class="flex space-x-2">
+                            <button id="font-size-decrease" class="py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary" aria-label="Diminuer la taille du texte">
+                                <span aria-hidden="true">A-</span>
+                            </button>
+                            <button id="font-size-reset" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary" aria-label="Réinitialiser la taille du texte">
+                                Réinitialiser
+                            </button>
+                            <button id="font-size-increase" class="py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary" aria-label="Augmenter la taille du texte">
+                                <span aria-hidden="true">A+</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Interlignage -->
+                    <div>
+                        <h4 class="font-medium mb-2">Interlignage</h4>
+                        <div class="flex space-x-2">
+                            <button id="line-height-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
+                                Interlignage augmenté
+                            </button>
+                            <button id="line-height-reset" class="py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-label="Réinitialiser l'interlignage">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Espacement des caractères -->
+                    <div>
+                        <h4 class="font-medium mb-2">Espacement des caractères</h4>
+                        <div class="flex space-x-2">
+                            <button id="letter-spacing-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
+                                Espacement augmenté
+                            </button>
+                            <button id="letter-spacing-reset" class="py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-label="Réinitialiser l'espacement">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtre bleu -->
+                    <div>
+                        <h4 class="font-medium mb-2">Filtre bleu</h4>
+                        <div class="flex space-x-2">
+                            <button id="blue-filter-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
+                                Activer le filtre bleu
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Réduit la lumière bleue pour diminuer la fatigue oculaire</p>
+                    </div>
+                    
+                    <!-- Mode nuit -->
+                    <div>
+                        <h4 class="font-medium mb-2">Mode nuit</h4>
+                        <div class="flex space-x-2">
+                            <button id="dark-mode-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
+                                Activer le mode nuit
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Réduit la luminosité globale du site pour une utilisation nocturne</p>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <button id="accessibility-reset-all" class="w-full py-2 px-3 bg-primary text-white rounded hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
+                        Réinitialiser tous les paramètres
+                    </button>
+                </div>
+            </div>
+            
+            <div class="relative">
+                <button class="p-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-expanded="false" aria-controls="search-form" aria-label="Rechercher" id="search-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+                
+                <form id="search-form" class="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-4 hidden" role="search" aria-hidden="true">
+                    <div class="flex">
+                        <label for="search-input" class="sr-only">Rechercher sur le site</label>
+                        <input type="search" id="search-input" class="flex-grow px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Rechercher..." aria-label="Rechercher sur le site">
+                        <button type="submit" class="bg-primary text-white px-4 py-2 rounded-r hover:bg-primary/90 transition-colors duration-300" aria-label="Lancer la recherche">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <button class="md:hidden ml-4 p-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-expanded="false" aria-controls="mobile-menu" aria-label="Ouvrir le menu" id="menu-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="menu-icon-open">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="menu-icon-close">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Menu mobile -->
+    <div id="mobile-menu" class="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 hidden">
+        <nav aria-label="Menu mobile" class="container mx-auto px-4">
+            <ul class="py-2">
+                <li class="border-b border-gray-100 dark:border-gray-700">
+                    <button class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-expanded="false" aria-controls="submenu-1">
+                        Communauté de Communes
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <ul id="submenu-1" class="pl-4 hidden">
+                        <li><a href="{% url 'presentation' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Présentation</a></li>
+                        <li>
+                            <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-communes-mobile">
+                                Les Communes Membres
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            {% if cities %}
+                            <ul id="submenu-communes-mobile" class="pl-4 hidden">
+                                {% for commune in cities %}
+                                <li>
+                                    <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300"">{{commune.city_name}}</a></li>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <ul id="submenu-communes-mobile" class="pl-4 hidden">
+                                <li>
+                                    <li><p class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300"">Indisponible.</p></li>
+                                </li>
+                            </ul>
+                            {% endif %}
+                        </li>
+                        <li>
+                            <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-organisation-mobile">
+                                Organisation et Fonctionnement
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-organisation-mobile" class="pl-4 hidden">
+                                <li><a href="{% url 'conseil_communautaire:conseil' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Conseil Communautaire</a></li>
+                                <li><a href="{% url 'bureau-communautaire:elus' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Bureau Communautaire</a></li>
+                                <li><a href="{% url 'commissions:commissions' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Commissions</a></li>
+                                <li><a href="{% url 'competences:competences' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Compétences</a></li>
+                                <li><a href="{% url 'equipe' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">L'Équipe Administrative & Technique</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'marches_publics' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Marchés Publics</a></li>
+                        <li>
+                            <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-publications-mobile">
+                                Publications
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-publications-mobile" class="pl-4 hidden">
+                                <li><a href="{% url 'journal:journal' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Journal « Mon Sud Avesnois »</a></li>
+                                <li><a href="{% url 'semestriels:semestriel' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Semestriels</a></li>
+                                <li><a href="{% url 'comptes_rendus:comptes_rendus' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Comptes-rendus & délibérations</a></li>
+                                <li><a href="{% url 'rapports_activite:rapports_activite' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Rapports d'activité</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="border-b border-gray-100 dark:border-gray-700">
+                    <button class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-expanded="false" aria-controls="submenu-2">
+                        Services
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <ul id="submenu-2" class="pl-4 hidden">
+                        <li><a href="{% url 'mobilite' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mobilité</a></li>
+                        <li><a href="{% url 'habitat' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Habitat</a></li>
+                        <li>
+                            <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-dechets-mobile">
+                                Collecte et Valorisation des déchets
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-dechets-mobile" class="pl-4 hidden">
+                                <li><a href="{% url 'collecte_dechets' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Collecte des déchets</a></li>
+                                <li><a href="{% url 'encombrants' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Encombrants</a></li>
+                                <li><a href="{% url 'dechetteries' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Déchetteries</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-sante-mobile">
+                                Santé
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-sante-mobile" class="pl-4 hidden">
+                                <li><a href="{% url 'maisons_sante' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Maisons de Santé Pluridisciplinaires</a></li>
+                                <li><a href="{% url 'mutuelle' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mutuelle intercommunautaire</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'plui' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Urbanisme (PLUi)</a></li>
+                    </ul>
+                </li>
+                <li class="border-b border-gray-100 dark:border-gray-700">
+                    <a href="https://ccsa.reseaubibli.fr/" target="_blank" rel="noopener" class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300">
+                        Médi@'pass
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </li>
+                <li class="border-b border-gray-100 dark:border-gray-700">
+                    <a href="https://sud-avesnois-invest.com/" target="_blank" rel="noopener" class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300">
+                        Développement Économique
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </li>                    
+                <li>
+                    <a href="#contact" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300">Contact</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>

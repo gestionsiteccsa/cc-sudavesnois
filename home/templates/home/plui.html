@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/plui.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Plan Local d'Urbanisme Intercommunal</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Un document stratégique pour l'aménagement du territoire Sud-Avesnois</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Section principale -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <!-- Titre PLUi -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">PLUi</h2>
+                </div>
+
+                <!-- Cartes cliquables avec Tailwind CSS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <!-- Projet du PLUi -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="overflow-hidden">
+                            <img src="{% static 'img/image_2025-02-10_102132659.png' %}" alt="Projet du PLUi" class="w-full h-64 object-cover" loading="lazy">
+                        </div>
+                        <a href="{% url 'projet_plui' %}" class="block bg-primary hover:bg-primary-dark transition-colors duration-300 p-6 text-white">
+                            <h3 class="text-2xl font-bold mb-2 text-center">Projet du PLUi</h3>
+                            <p class="text-center">Retrouvez les documents mis à disposition lors de la phase de création</p>
+                        </a>
+                    </div>
+
+                    <!-- Pièces signées -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <div class="overflow-hidden">
+                            <img src="{% static 'img/Présentation-territoire-CCSA-V3.png' %}" alt="Pièces signées" class="w-full h-64 object-cover" loading="lazy">
+                        </div>
+                        <a href="https://cc-sudavesnois.fr/documents-plui/" class="block bg-primary hover:bg-primary-dark transition-colors duration-300 p-6 text-white">
+                            <h3 class="text-2xl font-bold mb-2 text-center">Pièces signées</h3>
+                            <p class="text-center">Retrouvez les documents signés ainsi que le lien Géoportail</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Informations complémentaires -->
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900 mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Qu'est-ce que le PLUi ?</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Le Plan Local d'Urbanisme intercommunal (PLUi) est un document d'urbanisme qui définit les règles d'occupation et d'utilisation du sol sur l'ensemble du territoire de la Communauté de Communes Sud-Avesnois.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Il remplace les documents d'urbanisme communaux existants (PLU, POS, cartes communales) et harmonise les règles d'urbanisme à l'échelle intercommunale.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Le PLUi est un outil stratégique qui traduit le projet de territoire et fixe les règles d'aménagement et de construction pour les années à venir.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'admin_base.html' %}
+{% block title %}Gestion des villes - Conseil Communautaire{% endblock %}
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12 min-h-screen">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6 md:p-10">
+              <div class="flex items-center justify-between mb-8">
+                  <h1 class="text-3xl font-extrabold text-primary dark:text-primary-light">Gestion des villes & membres</h1>
+                  <div class="flex gap-2 items-center">
+                      <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow hover:bg-gray-300 hover:dark:bg-gray-600 transition text-xs font-semibold">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                          Retour admin
+                      </a>
+                      <a href="{% url 'conseil_communautaire:admin_add_city' %}" class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary text-white font-semibold rounded-md shadow hover:bg-primary-dark transition text-xs">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                          Ajouter une ville
+                      </a>
+                      <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary text-white font-semibold rounded-md shadow hover:bg-primary-dark transition text-xs">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                          Ajouter un membre
+                      </a>
+                  </div>
+              </div>
+              {% if cities_list %}
+              <div class="space-y-8">
+                {% for city in cities_list %}
+                  <div class="border-b pb-6 group hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition">
+                      <div class="flex flex-col md:flex-row md:items-center md:justify-between w-full py-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-4 h-4 rounded-full bg-primary"></div>
+                          <span class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ city.city_name }}</span>
+                        </div>
+                        <div class="flex gap-2 mt-3 md:mt-0">
+                          <a href="{% url 'conseil_communautaire:admin_edit_city' city_id=city.id %}" class="text-blue-600 hover:underline hover:text-blue-800 transition">Modifier</a>
+                          <a href="{% url 'conseil_communautaire:admin_delete_city' city_id=city.id %}" class="text-red-600 hover:underline hover:text-red-800 transition">Supprimer</a>
+                        </div>
+                      </div>
+                      <div class="ml-7 mt-2">
+                        <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Membres :</p>
+                        <ul class="space-y-1 mt-1">
+                          {% if members_list %}
+                            {% for member in members_list %}
+                              {% if member.city_id == city.id %}
+                                <li class="flex items-center py-1 pl-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition">
+                                  <div class="flex items-center min-w-0 flex-shrink gap-2">
+                                    <span class="font-medium text-gray-800 dark:text-gray-200 truncate">{{member.sexe}} {{member.first_name}} {{member.last_name}}</span>
+                                    {% if member.is_suppleant %}
+                                      <span class="text-xs text-gray-500 bg-gray-200 dark:bg-gray-700 rounded px-2 py-0.5 ml-1">suppléant</span>
+                                    {% endif %}
+                                  </div>
+                                  <div class="flex gap-3 ml-auto justify-end text-xs font-semibold">
+                                    <a href="{% url 'conseil_communautaire:admin_member_edit' id=member.id %}" class="text-blue-600 hover:underline hover:text-blue-800 transition">Modifier</a>
+                                    <a href="{% url 'conseil_communautaire:admin_member_delete' id=member.id %}" class="text-red-600 hover:underline hover:text-red-800 transition">Supprimer</a>
+                                  </div>
+                                </li>
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          </ul>
+                          <div class="flex justify-end mt-3">
+                            <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="inline-flex items-center gap-1 px-1.5 py-0.5 min-h-[44px] bg-primary text-white rounded-md hover:bg-primary-dark text-xs font-medium shadow transition">
+                              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                              Ajouter un membre
+                            </a>
+                          </div>
+                        </div>
+                    </div>
+                  {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 text-gray-600 dark:text-gray-300">
+                    <p>Aucune ville enregistrée pour le moment.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

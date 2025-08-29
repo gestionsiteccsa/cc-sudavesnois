@@ -1,0 +1,30 @@
+{% extends 'admin_base.html' %}
+{% block title %}Gestion - Semestriel{% endblock %}
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Gestion du contenu de Semestriel</h1>
+                {% if content %}
+                <a href="{% url 'semestriels:edit_content' pk=content.id%}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Modifier le contenu</a>
+                {% else %}
+                <a href="{% url 'semestriels:add_content' %}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Ajouter du contenu</a>
+                {% endif %}
+            </div>
+            <div class="p-6 md:p-8">
+                {% if content %}
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Contenu Actuel</h2>
+                    <img src="{{ content.picture.url }}" alt="Calendrier Semestriel" class="w-full h-auto rounded-lg shadow-md mb-4" loading="lazy">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        <a href="{{ content.file.url }}" target="_blank">Télécharger le PDF</a>
+                    </button>
+                </div>
+                {% else %}
+                <p class="text-gray-700 dark:text-gray-300">Aucun contenu disponible pour le moment.</p>
+                {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

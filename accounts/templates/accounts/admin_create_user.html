@@ -1,0 +1,185 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Créer un utilisateur - Communauté de Communes Sud-Avesnois{% endblock %}
+
+{% block content %}
+<!-- Fil d'Ariane et bouton retour -->
+<div class="flex items-center justify-between mb-8">
+  <nav class="flex text-sm text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:underline">Accueil</a>
+    <span class="mx-1">/</span>
+    <a href="{% url 'accounts:admin_user_list' %}" class="hover:underline">Utilisateurs</a>
+    <span class="mx-1">/</span>
+    <span class="text-primary font-semibold">Créer</span>
+  </nav>
+  <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Admin 
+  </a>
+</div>
+<div class="bg-gray-100 dark:bg-gray-900 py-12">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Créer un utilisateur</h1>
+                <div class="mb-6 p-3 rounded bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-100 text-sm flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M13 16h-1v-4h-1m1-4h.01"/></svg>
+                  Seuls les administrateurs peuvent créer un utilisateur. Un email de bienvenue sera envoyé automatiquement si cette option est activée dans les paramètres.
+                </div>
+                
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-2">
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ form.email.label }}
+                        </label>
+                        <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                               {% if form.email.value %}value="{{ form.email.value }}"{% endif %} required>
+                        {% if form.email.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ form.username.label }}
+                        </label>
+                        <input type="text" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                               {% if form.username.value %}value="{{ form.username.value }}"{% endif %} required>
+                        {% if form.username.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ form.password1.label }}
+                            </label>
+                            <button type="button" id="generate-password" 
+                                    class="text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
+                                Générer un mot de passe
+                            </button>
+                        </div>
+                        <div class="relative">
+  <input type="password" name="{{ form.password1.html_name }}" id="{{ form.password1.id_for_label }}" 
+         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10" required autocomplete="new-password">
+  <button type="button" tabindex="-1" class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" onclick="togglePasswordVisibility('{{ form.password1.id_for_label }}', this)">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.35 1.118-.857 2.16-1.498 3.07M15.54 15.54A5.978 5.978 0 0112 17c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.294-3.95M9.88 9.88A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .512-.116.998-.32 1.42"/></svg>
+  </button>
+</div>
+                        {% if form.password1.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.password1.errors.0 }}</p>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            Votre mot de passe doit contenir au moins 8 caractères et ne peut pas être entièrement numérique.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ form.password2.label }}
+                        </label>
+                        <div class="relative">
+  <input type="password" name="{{ form.password2.html_name }}" id="{{ form.password2.id_for_label }}" 
+         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10" required autocomplete="new-password">
+  <button type="button" tabindex="-1" class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" onclick="togglePasswordVisibility('{{ form.password2.id_for_label }}', this)">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.35 1.118-.857 2.16-1.498 3.07M15.54 15.54A5.978 5.978 0 0112 17c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.294-3.95M9.88 9.88A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .512-.116.998-.32 1.42"/></svg>
+  </button>
+</div>
+                        {% if form.password2.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="{{ form.is_staff.html_name }}" id="{{ form.is_staff.id_for_label }}" 
+                                   class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+                                   {% if form.is_staff.value %}checked{% endif %}>
+                            <label for="{{ form.is_staff.id_for_label }}" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                {{ form.is_staff.label }}
+                            </label>
+                        </div>
+                        {% if form.is_staff.errors %}
+                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.is_staff.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
+                            Créer l'utilisateur
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <a href="{% url 'accounts:admin_user_list' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
+                            Retour à la liste des utilisateurs
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.querySelector('svg').innerHTML = '<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.35 1.118-.857 2.16-1.498 3.07M3 3l18 18"/>';
+      } else {
+        input.type = 'password';
+        btn.querySelector('svg').innerHTML = '<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.35 1.118-.857 2.16-1.498 3.07M15.54 15.54A5.978 5.978 0 0112 17c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.294-3.95M9.88 9.88A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .512-.116.998-.32 1.42"/>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const generatePasswordBtn = document.getElementById('generate-password');
+        const password1Field = document.getElementById('{{ form.password1.id_for_label }}');
+        const password2Field = document.getElementById('{{ form.password2.id_for_label }}');
+        
+        generatePasswordBtn.addEventListener('click', function() {
+            // Fonction pour générer un mot de passe aléatoire
+            function generateStrongPassword(length = 12) {
+                const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+                const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const numbers = '0123456789';
+                const symbols = '!@#$%^&*()_+{}[]|:;<>,.?/~';
+                
+                const allChars = lowercase + uppercase + numbers + symbols;
+                let password = '';
+                
+                // Assurer au moins un caractère de chaque type
+                password += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+                password += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+                password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+                password += symbols.charAt(Math.floor(Math.random() * symbols.length));
+                
+                // Compléter le reste du mot de passe
+                for (let i = 4; i < length; i++) {
+                    password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+                }
+                
+                // Mélanger les caractères
+                return password.split('').sort(() => 0.5 - Math.random()).join('');
+            }
+            
+            const newPassword = generateStrongPassword();
+            password1Field.value = newPassword;
+            password2Field.value = newPassword;
+            
+            // Afficher temporairement le mot de passe
+            password1Field.type = 'text';
+            setTimeout(() => {
+                password1Field.type = 'password';
+            }, 3000); // Revenir au type password après 3 secondes
+        });
+    });
+</script>
+{% endblock %}

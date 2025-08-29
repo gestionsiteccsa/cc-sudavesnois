@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto my-16 p-8 rounded-lg bg-yellow-50 dark:bg-yellow-900 border border-yellow-300 dark:border-yellow-700 shadow text-center">
+    <span class="icofont-warning text-4xl text-yellow-500 dark:text-yellow-200 mb-4"></span>
+    <h1 class="text-2xl font-semibold text-yellow-800 dark:text-yellow-100 mb-2">Aucune commune trouvée</h1>
+    <p class="text-gray-700 dark:text-gray-200 mb-4">
+        Désolé, la commune demandée n'existe pas ou n'est pas encore enregistrée dans la base de données.<br>
+        Si vous êtes administrateur, vous pouvez ajouter une nouvelle commune depuis l'interface d'administration.
+    </p>
+</div>
+{% endblock %}

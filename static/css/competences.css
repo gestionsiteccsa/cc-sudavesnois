@@ -1,0 +1,98 @@
+/* Styles spécifiques pour la page des compétences */
+
+/* Animation des cartes */
+.competence-card {
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Délai d'animation pour chaque carte */
+.competence-card:nth-child(1) { animation-delay: 0.1s; }
+.competence-card:nth-child(2) { animation-delay: 0.2s; }
+.competence-card:nth-child(3) { animation-delay: 0.3s; }
+.competence-card:nth-child(4) { animation-delay: 0.4s; }
+.competence-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Effet de survol */
+.competence-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
+}
+
+/* Mode nuit */
+.dark .competence-card:hover {
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.dark .competence-card svg {
+    stroke: #60a5fa;
+}
+
+/* Styles pour les listes */
+.competence-card ul {
+    margin-top: 0.5rem;
+}
+
+.competence-card li {
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+/* Mode contraste élevé */
+.high-contrast .competence-card {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    box-shadow: none !important;
+}
+
+.high-contrast .competence-card h3 {
+    color: #ffff00 !important;
+}
+
+.high-contrast .competence-card p, .high-contrast .competence-card li {
+    color: #fff !important;
+}
+
+.high-contrast .competence-card ul {
+    border-top: 1px solid #fff !important;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .competence-card {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
+    .competence-card:hover {
+        transform: none !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .competence-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .competence-card .flex {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .competence-card .flex > div:first-child {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+}

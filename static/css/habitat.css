@@ -1,0 +1,105 @@
+/* Styles spécifiques pour la page habitat */
+
+/* Animation pour les cartes */
+.bg-gray-50 {
+    transition: all 0.3s ease;
+}
+
+/* Style pour les icônes */
+.bg-primary\/10 {
+    transition: all 0.3s ease;
+}
+
+.bg-gray-50:hover .bg-primary\/10 {
+    background-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.1);
+}
+
+/* Style pour les titres des cartes */
+.bg-gray-50 h3 {
+    transition: color 0.3s ease;
+}
+
+.bg-gray-50:hover h3 {
+    color: #3b82f6;
+}
+
+/* Style pour l'image principale */
+.rounded-lg.overflow-hidden {
+    transition: all 0.5s ease;
+}
+
+.rounded-lg.overflow-hidden:hover {
+    transform: scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Style pour les boutons d'action */
+.inline-flex.items-center {
+    transition: all 0.3s ease;
+}
+
+.inline-flex.items-center:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Style pour les listes à puces */
+.flex.items-start svg {
+    transition: all 0.3s ease;
+}
+
+.flex.items-start:hover svg {
+    transform: scale(1.2);
+    color: #3b82f6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ml-14 {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .grid-cols-1 {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Effet de survol pour les cartes d'avantages */
+.hover\:translate-y-\[-5px\]:hover {
+    transform: translateY(-5px);
+}
+
+/* Style pour les boutons de contact */
+.bg-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+
+.bg-green-600:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(72, 187, 120, 0.3);
+}
+
+/* Style pour les sections d'information */
+.bg-white {
+    transition: all 0.3s ease;
+}
+
+.bg-white:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Style pour le calendrier des permanences */
+.bg-gray-50 h4 {
+    transition: color 0.3s ease;
+}
+
+.bg-gray-50:hover h4 {
+    color: #3b82f6;
+}

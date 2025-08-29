@@ -1,0 +1,100 @@
+/* Styles spécifiques pour la page encombrants */
+
+/* Animation pour les cartes */
+.bg-gray-50 {
+    transition: all 0.3s ease;
+}
+
+/* Style pour les icônes */
+.bg-primary\/10 {
+    transition: all 0.3s ease;
+}
+
+.bg-gray-50:hover .bg-primary\/10 {
+    background-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.1);
+}
+
+/* Style pour les titres des cartes */
+.bg-gray-50 h3 {
+    transition: color 0.3s ease;
+}
+
+.bg-gray-50:hover h3 {
+    color: #3b82f6;
+}
+
+/* Style pour les boutons d'action */
+.inline-flex.items-center {
+    transition: all 0.3s ease;
+}
+
+.inline-flex.items-center:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Style pour les listes à puces */
+.flex.items-start svg {
+    transition: all 0.3s ease;
+}
+
+.flex.items-start:hover svg {
+    transform: scale(1.2);
+}
+
+/* Effet de survol pour les cartes d'information */
+.hover\:translate-y-\[-5px\]:hover {
+    transform: translateY(-5px);
+}
+
+/* Animation pour la carte principale */
+.bg-white.dark\:bg-gray-800.p-8.md\:p-10 {
+    transition: all 0.5s ease;
+}
+
+.bg-white.dark\:bg-gray-800.p-8.md\:p-10:hover {
+    transform: translateY(-5px);
+}
+
+/* Style pour les sections de déchets acceptés/refusés */
+.bg-green-50, .bg-red-50 {
+    transition: all 0.3s ease;
+}
+
+.bg-green-50:hover {
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+}
+
+.bg-red-50:hover {
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
+}
+
+/* Style pour la notification importante */
+.bg-yellow-50 {
+    transition: all 0.3s ease;
+}
+
+.bg-yellow-50:hover {
+    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ml-14 {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .flex-col.md\:flex-row {
+        flex-direction: column;
+    }
+    
+    .grid-cols-1 {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+}
