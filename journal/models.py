@@ -8,7 +8,7 @@ def validate_taille_fichier(value):
     max_upload_size = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
     if value.size > max_upload_size:
         raise ValidationError(
-            "Le fichier dépasse la taille maximale " "autorisée (30 Mo)."
+            "Le fichier dépasse la taille maximale " "autorisée (60 Mo)."
         )
 
 
