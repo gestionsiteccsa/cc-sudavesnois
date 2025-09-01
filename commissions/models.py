@@ -3,7 +3,7 @@ from django.db import models
 
 class Commission(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
-    icon = models.CharField(max_length=255, verbose_name="Icon")
+    icon = models.TextField(verbose_name="Icon SVG", help_text="Code SVG complet de l'icône")
 
     class Meta:
         verbose_name = "Commission"
