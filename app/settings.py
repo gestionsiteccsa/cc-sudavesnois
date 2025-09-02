@@ -141,8 +141,9 @@ LOGIN_REDIRECT_URL = "accounts:profile"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
 
-# Active la page d'erreur 404 personnalisée
+# Active les pages d'erreur personnalisées
 HANDLER404 = "home.views.custom_handler404"
+HANDLER500 = "home.views.custom_handler500"
 
 
 # Configuration email (console en dev, SMTP en prod via le .env)

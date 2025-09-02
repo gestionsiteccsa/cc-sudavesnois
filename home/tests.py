@@ -597,6 +597,21 @@ class ErrorHandlerTestCase(TestCase):
         # Juste vérifier que le handler fonctionne
         self.assertIsNotNone(response.content)
 
+    def test_custom_handler500(self):
+        """Test du gestionnaire d'erreur 500 personnalisé"""
+        from django.http import HttpRequest
+        from django.test import RequestFactory
+
+        from .views import custom_handler500
+
+        factory = RequestFactory()
+        request = factory.get("/some-url/")
+        response = custom_handler500(request)
+
+        self.assertEqual(response.status_code, 500)
+        # Juste vérifier que le handler fonctionne
+        self.assertIsNotNone(response.content)
+
 
 @override_settings(MEDIA_ROOT="test_media_home")
 class EdgeCasesTestCase(TestCase):

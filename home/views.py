@@ -226,3 +226,14 @@ def custom_handler404(request, exception=None):
     """Vue personnalisée pour la page 404."""
     response = render(request, "404.html", status=404)
     return response
+
+
+def custom_handler500(request):
+    """Vue personnalisée pour la page 500."""
+    # Log de l'erreur pour le débogage (en production, utilisez un système de logging)
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.error(f"Erreur 500 sur {request.path}", exc_info=True)
+
+    response = render(request, "500.html", status=500)
+    return response
