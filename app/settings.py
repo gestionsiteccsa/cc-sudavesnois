@@ -14,7 +14,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # ATTENTION : DEBUG doit être à False en production !
 # Utilisez env.bool('DEBUG', default=False) pour gérer le .env
-DEBUG = True  # ← À remplacer par env.bool('DEBUG', default=False) pour la prod
+DEBUG = False  # ← À remplacer par env.bool('DEBUG', default=False) pour la prod
 
 # Liste blanche des hôtes autorisés (sécurité obligatoire en prod)
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
