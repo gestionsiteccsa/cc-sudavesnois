@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Développement économique</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Accompagner les entreprises et porteurs de projets sur le territoire Sud-Avesnois</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
+    </section>
+
+    <!-- Contenu principal -->
+    <section class="py-16 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <div class="prose prose-lg max-w-none text-gray-600 dark:text-gray-300">
+                        <p class="text-lg leading-relaxed mb-6">
+                            Par cette compétence obligatoire, la CCSA crée, aménage et entretient des Zones d'Activités industrielles, commerciales ou artisanales.
+                        </p>
+                        
+                        <p class="text-lg leading-relaxed mb-6">
+                            L'EPCI soutient les activités commerciales d'intérêt communautaire, accompagne porteurs de projets et entreprises du territoire de différentes manières : intégration aux hôtels d'entreprises, dispositif d'aide à destination des TPE, conseils, suivi et coaching.
+                        </p>
+                        
+                        <p class="text-lg leading-relaxed mb-6">
+                            Nos chargées de mission sont là pour <strong>vous aider à réussir</strong>.
+                        </p>
+                        
+                        <p class="text-lg leading-relaxed mb-6">
+                            <strong>Porteurs de projets ?</strong> Un site dédié, Sud-Avesnois Invest, est là pour vous accompagner. Vous y découvrirez les aides au développement d'entreprises, nos hôtels d'entreprises et nos ZAC, mais aussi les différents clubs d'entreprises du territoire.
+                        </p>
+                        
+                        <p class="text-lg leading-relaxed mb-8">
+                            Vous y trouverez aussi des portraits d'hommes et de femmes de talent et d'ambition, qui font la vie économique du territoire.
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="https://sud-avesnois-invest.com" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-8 py-4 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                            Découvrir Sud-Avesnois Invest
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

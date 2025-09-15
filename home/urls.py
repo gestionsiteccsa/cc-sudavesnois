@@ -43,7 +43,8 @@ urlpatterns = [
     path("tourisme/", views.tourisme, name="tourisme"),
     # Documents PLUi
     path("documents-plui/", views.documents_plui, name="documents_plui"),
-    path("test-email/", views.test_email, name="test_email"),
+    # Développement économique
+    path("developpement-economique/", views.dev_eco, name="dev_eco"),
 ]
 
 if settings.DEBUG:
