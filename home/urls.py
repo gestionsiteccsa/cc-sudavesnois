@@ -35,6 +35,15 @@ urlpatterns = [
     path("plan-du-site/", views.plan_du_site, name="plan_du_site"),
     # Accessibilité
     path("accessibilite/", views.accessibilite, name="accessibilite"),
+    # Médi@'pass
+    path("mediapass/", views.mediapass, name="mediapass"),
+    # Parc Naturel Régional de l'Avesnois
+    path("pnra/", views.pnra, name="pnra"),
+    # Tourisme en Avesnois
+    path("tourisme/", views.tourisme, name="tourisme"),
+    # Documents PLUi
+    path("documents-plui/", views.documents_plui, name="documents_plui"),
+    path("test-email/", views.test_email, name="test_email"),
 ]
 
 if settings.DEBUG:

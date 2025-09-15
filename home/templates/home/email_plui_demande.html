@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demande de modification PLUi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h2 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .header p {
+            color: #6c757d;
+            margin: 0;
+            font-size: 14px;
+        }
+        .section {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 5px;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        .field-label {
+            font-weight: bold;
+            color: #6c757d;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .field-value {
+            margin-top: 5px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+            font-size: 14px;
+        }
+        .demande {
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #6c757d;
+            text-align: center;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .header, .section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Nouvelle demande de modification PLUi</h2>
+            <p>Reçue le {{ date_demande }}</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Informations du demandeur</div>
+            <div class="field">
+                <div class="field-label">Nom et Prénom</div>
+                <div class="field-value">{{ nom_prenom }}</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Adresse</div>
+                <div class="field-value">{{ adresse }}</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Email</div>
+                <div class="field-value">{{ email }}</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Téléphone</div>
+                <div class="field-value">{{ telephone }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Parcelles concernées</div>
+            <div class="field">
+                <div class="field-label">Numéros de parcelles</div>
+                <div class="field-value">{{ parcelles }}</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Commune</div>
+                <div class="field-value">{{ commune }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Description de la demande</div>
+            <div class="field">
+                <div class="field-value demande">{{ demande }}</div>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <strong>Action requise :</strong> Cette demande nécessite un traitement dans les plus brefs délais conformément aux procédures PLUi en vigueur.
+        </div>
+
+        <div class="footer">
+            <p><strong>Communauté de Communes Sud-Avesnois</strong></p>
+            <p>Cette demande a été envoyée via le formulaire en ligne du site officiel.</p>
+            <p>Merci de traiter cette demande dans les plus brefs délais.</p>
+        </div>
+    </div>
+</body>
+</html>

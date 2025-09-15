@@ -65,40 +65,6 @@
         </section>
 
 
-        <!-- Services -->
-        {% if services %}
-        <section class="py-16 bg-gray-50 dark:bg-gray-800 reveal" id="services">
-            <div class="container mx-auto px-4 md:px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">Nos compétences</h2>
-                    <p class="text-xl text-gray-600 dark:text-gray-300">Découvrez les compétences de la Communauté de Communes Sud-Avesnois.</p>
-                </div>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {% for service in services %}
-                        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
-                            <div class="h-48 {% cycle 'bg-primary' 'bg-secondary' %}  flex items-center justify-center">
-                                <div style="width: 100px;">
-                                    {{ service.icon|safe }}
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-3">{{ service.title }}</h3>
-                                <p class="text-gray-600 dark:text-gray-300 mb-4">{{ service.content|safe }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-        {% else %}
-            <section class="py-16 bg-gray-50 dark:bg-gray-800 reveal">
-                <div class="container mx-auto px-4 md:px-6">
-                    <div class="text-center mb-12">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">Nos services</h2>
-                        <p class="text-xl text-gray-600 dark:text-gray-300">Aucun service n'est disponible pour le moment.</p>
-                    </div>
-                </div>
-        {% endif %}
 
 
         <!-- Formulaire de contact -->

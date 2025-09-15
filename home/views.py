@@ -222,6 +222,96 @@ def accessibilite(request):
     return render(request, "home/accessibilite.html")
 
 
+def mediapass(request):
+    return render(request, "home/mediapass.html")
+
+
+def pnra(request):
+    return render(request, "home/pnra.html")
+
+
+def tourisme(request):
+    return render(request, "home/tourisme.html")
+
+
+def documents_plui(request):
+    """Vue pour la page des documents PLUi et le formulaire de modification."""
+    from django.contrib import messages
+    from .forms import PLUiModificationForm
+    from .services import EmailService
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    if request.method == "POST":
+        form = PLUiModificationForm(request.POST)
+
+        if form.is_valid():
+            # Récupération des données validées
+            form_data = form.cleaned_data
+
+            # Envoi de l'email via le service
+            if EmailService.send_plui_modification_request(form_data):
+                messages.success(
+                    request,
+                    'Votre demande de modification PLUi a été envoyée avec succès. '
+                    'Nous vous contacterons dans les plus brefs délais.'
+                )
+                logger.info(f"Demande PLUi envoyée pour {form_data['nom_prenom']}")
+            else:
+                messages.error(
+                    request,
+                    'Une erreur est survenue lors de l\'envoi de votre demande. '
+                    'Veuillez réessayer ou nous contacter directement.'
+                )
+                logger.error(f"Échec envoi email PLUi pour {form_data['nom_prenom']}")
+
+            return redirect('documents_plui')
+        else:
+            # Affichage des erreurs de validation
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label}: {error}")
+
+            logger.warning(f"Formulaire PLUi invalide: {form.errors}")
+    else:
+        form = PLUiModificationForm()
+
+    context = {'form': form}
+    return render(request, "home/documents-plui.html", context)
+
+
+def test_email(request):
+    """Vue de test pour l'envoi d'emails."""
+    from django.contrib import messages
+    from .services import EmailService
+    
+    # Données de test
+    test_data = {
+        'nom_prenom': 'Test Utilisateur',
+        'adresse': '123 Rue de Test, 59000 Lille',
+        'email': 'test@example.com',
+        'telephone': '03 27 12 34 56',
+        'parcelles': '123, 124',
+        'commune': 'Féron',
+        'demande': 'Ceci est un test d\'envoi d\'email pour vérifier la configuration.'
+    }
+    
+    try:
+        # Test d'envoi
+        success = EmailService.send_plui_modification_request(test_data)
+        
+        if success:
+            messages.success(request, 'Email de test envoyé avec succès !')
+        else:
+            messages.error(request, 'Erreur lors de l\'envoi de l\'email de test.')
+            
+    except Exception as e:
+        messages.error(request, f'Erreur: {str(e)}')
+    
+    return redirect('documents_plui')
+
+
 def custom_handler404(request, exception=None):
     """Vue personnalisée pour la page 404."""
     response = render(request, "404.html", status=404)

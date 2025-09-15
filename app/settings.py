@@ -157,8 +157,7 @@ HANDLER404 = "home.views.custom_handler404"
 HANDLER500 = "home.views.custom_handler500"
 
 
-# Configuration email (console en dev, SMTP en prod via le .env)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = env("EMAIL_BACKEND")
 EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Documents PLUi</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Plan Local d'Urbanisme intercommunal - Documents et formulaires</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
+    </section>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mx-auto px-4 md:px-6 py-4">
+            <div class="max-w-5xl mx-auto">
+                {% for message in messages %}
+                    <div class="bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded-md mb-4">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Introduction -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900 mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Plan Local d'Urbanisme intercommunal</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Le PLUi (Plan Local d'Urbanisme intercommunal) définit les règles d'urbanisme applicables 
+                        sur l'ensemble du territoire de la Communauté de Communes Sud-Avesnois. Il remplace les 
+                        anciens documents d'urbanisme communaux et fixe les orientations d'aménagement du territoire.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        <strong>Accédez aux documents officiels :</strong> conventions, accords, formulaires de demande 
+                        et outils de consultation en ligne.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documents principaux -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-12">Documents officiels</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Dossier Pièces signées -->
+                    <div class="bg-white dark:bg-gray-700 p-8 rounded-lg shadow-md">
+                        <div class="flex items-start mb-6">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Dossier « Pièces signées »</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Accédez aux conventions, accords et documents administratifs validés.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-600 p-4 rounded-md mb-4">
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                <strong>Lien d'accès :</strong>
+                            </p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Télécharger ou consulter les documents
+                            </p>
+                        </div>
+                        <a href="#" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Accéder aux documents
+                        </a>
+                    </div>
+
+                    <!-- Géoportail de l'Urbanisme -->
+                    <div class="bg-white dark:bg-gray-700 p-8 rounded-lg shadow-md">
+                        <div class="flex items-start mb-6">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Géoportail de l'Urbanisme</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Consultez les règles d'urbanisme, les PLU et les servitudes en quelques clics.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">Vérifier les zonages de votre terrain</p>
+                            </div>
+                            <div class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">Télécharger des documents d'urbanisme réglementaires</p>
+                            </div>
+                            <div class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">Identifier les contraintes légales (monuments historiques, risques naturels…)</p>
+                            </div>
+                        </div>
+                        <a href="https://www.geoportail-urbanisme.gouv.fr/" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                            Consulter le Géoportail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulaire de demande de modification -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-12">Formulaire de demande de modification</h2>
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <!-- Section d'introduction -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Demander une modification du PLUi</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Si vous souhaitez demander une modification du Plan Local d'Urbanisme intercommunal, 
+                            vous devez remplir le formulaire officiel de demande de modification.
+                        </p>
+                    </div>
+                    
+                    <!-- Formulaire complet -->
+                    <div class="bg-primary/5 p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Formulaire de demande de modification</h4>
+                        <form class="space-y-4" method="post" action="{% url 'documents_plui' %}">
+                            {% csrf_token %}
+                            
+                            <!-- Section DEMANDEUR -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
+                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDEUR</h5>
+                                <div class="space-y-3">
+                                    <div>
+                                        {{ form.nom_prenom.label_tag }}
+                                        {{ form.nom_prenom }}
+                                        {% if form.nom_prenom.errors %}
+                                            <div class="text-red-500 text-sm mt-1">
+                                                {% for error in form.nom_prenom.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        {{ form.adresse.label_tag }}
+                                        {{ form.adresse }}
+                                        {% if form.adresse.errors %}
+                                            <div class="text-red-500 text-sm mt-1">
+                                                {% for error in form.adresse.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div>
+                                            {{ form.email.label_tag }}
+                                            {{ form.email }}
+                                            {% if form.email.errors %}
+                                                <div class="text-red-500 text-sm mt-1">
+                                                    {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {{ form.telephone.label_tag }}
+                                            {{ form.telephone }}
+                                            {% if form.telephone.errors %}
+                                                <div class="text-red-500 text-sm mt-1">
+                                                    {% for error in form.telephone.errors %}{{ error }}{% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section PARCELLES CADASTRALES -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
+                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">N° DE(S) PARCELLE(S) CADASTRALE(S) CONCERNEE(S)</h5>
+                                <div class="space-y-3">
+                                    <div>
+                                        {{ form.parcelles.label_tag }}
+                                        {{ form.parcelles }}
+                                        {% if form.parcelles.errors %}
+                                            <div class="text-red-500 text-sm mt-1">
+                                                {% for error in form.parcelles.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        {{ form.commune.label_tag }}
+                                        {{ form.commune }}
+                                        {% if form.commune.errors %}
+                                            <div class="text-red-500 text-sm mt-1">
+                                                {% for error in form.commune.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section DEMANDE -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
+                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDE</h5>
+                                <div>
+                                    {{ form.demande.label_tag }}
+                                    {{ form.demande }}
+                                    {% if form.demande.errors %}
+                                        <div class="text-red-500 text-sm mt-1">
+                                            {% for error in form.demande.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Bouton de soumission -->
+                            <div class="pt-4">
+                                <button type="submit" 
+                                        class="w-full bg-primary text-white font-medium py-3 px-6 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                    </svg>
+                                    Envoyer la demande
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}
