@@ -63,12 +63,12 @@ input[type="checkbox"] {
 }
 
 .high-contrast a {
-    color: #00ffff !important;
+    color: #EAEAEA !important;
     text-decoration: underline !important;
 }
 
 .high-contrast a:not(.btn) {
-    color: #00ffff !important;
+    color: #EAEAEA !important;
     text-decoration: underline !important;
 }
 
@@ -91,21 +91,21 @@ input[type="checkbox"] {
 }
 
 .high-contrast .bg-primary {
-    background-color: #ffff00 !important;
+    background-color: #1B5E20 !important;
     color: #000 !important;
 }
 
 .high-contrast .bg-secondary {
-    background-color: #00ffff !important;
+    background-color: #EAEAEA !important;
     color: #000 !important;
 }
 
 .high-contrast .text-primary {
-    color: #ffff00 !important;
+    color: #1B5E20 !important;
 }
 
 .high-contrast .text-secondary {
-    color: #00ffff !important;
+    color: #EAEAEA !important;
 }
 
 .high-contrast .border-gray-200,
@@ -158,7 +158,7 @@ input[type="checkbox"] {
 /* Améliorations supplémentaires pour le mode contraste élevé */
 .high-contrast .bg-blue-50 {
     background-color: #000 !important;
-    border: 1px solid #00ffff !important;
+    border: 1px solid #EAEAEA !important;
 }
 
 .high-contrast svg {
@@ -166,7 +166,16 @@ input[type="checkbox"] {
 }
 
 .high-contrast a svg {
-    stroke: #00ffff !important;
+    stroke: #EAEAEA !important;
+}
+
+/* Classe utilitaire pour forcer le texte en noir en mode contraste élevé */
+.high-contrast-font {
+    color: #000000 !important;
+}
+
+.high-contrast-font * {
+    color: #000000 !important;
 }
 
 .high-contrast .shadow-md,
@@ -183,12 +192,12 @@ input[type="checkbox"] {
 
 .high-contrast a.bg-white {
     background-color: #000 !important;
-    color: #00ffff !important;
+    color: #EAEAEA !important;
 }
 
 .high-contrast a.bg-secondary {
     background-color: #000 !important;
-    color: #00ffff !important;
+    color: #EAEAEA !important;
 }
 
 .high-contrast a:hover {
