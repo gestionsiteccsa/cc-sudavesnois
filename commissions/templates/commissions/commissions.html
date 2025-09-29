@@ -77,18 +77,38 @@
                     </div>
                     {% endfor %}
                     {% endif %}
-
-                <!-- Téléchargement du tableau -->
-                {% if document %}
-                <div class="mt-12 text-center">
-                    <a href="{{document.file.url}}" class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Tableau des Commissions
-                    </a>
                 </div>
-                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Actions et téléchargements -->
+    <section class="py-12 bg-white dark:bg-gray-900">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8">Documents et ressources</h2>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <!-- Téléchargement du tableau -->
+                        {% if document %}
+                        <a href="{{document.file.url}}" class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Tableau des Commissions
+                        </a>
+                        {% endif %}
+                        
+                        <!-- Lien vers les délibérations -->
+                        <a href="{% url 'comptes_rendus:comptes_rendus' %}" class="inline-flex items-center px-6 py-3 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Liste des délibérations
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
