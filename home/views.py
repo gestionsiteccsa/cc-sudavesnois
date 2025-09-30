@@ -191,7 +191,50 @@ def mutuelle(request):
 
 
 def plui(request):
-    return render(request, "home/plui.html")
+    """Vue pour la page PLUi et le formulaire de modification."""
+    from django.contrib import messages
+    from .forms import PLUiModificationForm
+    from .services import EmailService
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    if request.method == "POST":
+        form = PLUiModificationForm(request.POST)
+
+        if form.is_valid():
+            # Récupération des données validées
+            form_data = form.cleaned_data
+
+            # Envoi de l'email via le service
+            if EmailService.send_plui_modification_request(form_data):
+                messages.success(
+                    request,
+                    'Votre demande de modification PLUi a été envoyée avec succès. '
+                    'Nous vous contacterons dans les plus brefs délais.'
+                )
+                logger.info(f"Demande PLUi envoyée pour {form_data['nom_prenom']}")
+            else:
+                messages.error(
+                    request,
+                    'Une erreur est survenue lors de l\'envoi de votre demande. '
+                    'Veuillez réessayer ou nous contacter directement.'
+                )
+                logger.error(f"Échec envoi email PLUi pour {form_data['nom_prenom']}")
+
+            return redirect('plui')
+        else:
+            # Affichage des erreurs de validation
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label}: {error}")
+
+            logger.warning(f"Formulaire PLUi invalide: {form.errors}")
+    else:
+        form = PLUiModificationForm()
+
+    context = {'form': form}
+    return render(request, "home/plui.html", context)
 
 
 def projet_plui(request):
