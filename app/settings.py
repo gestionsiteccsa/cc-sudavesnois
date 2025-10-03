@@ -58,6 +58,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "app.urls"
+APPEND_SLASH = True
 
 TEMPLATES = [
     {
