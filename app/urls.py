@@ -32,13 +32,13 @@ urlpatterns = [
     path("", include("conseil_communautaire.urls")),
     path("", include("journal.urls", namespace="journal")),
     path("", include("bureau_communautaire.urls", namespace="bureau-communautaire")),
-    path("", include("communes_membres.urls", namespace="communes-membres")),
+    path("", include("semestriels.urls", namespace="semestriels")),
     path("", include("commissions.urls", namespace="commissions")),
     path("", include("competences.urls", namespace="competences")),
-    path("", include("semestriels.urls", namespace="semestriels")),
     path("", include("comptes_rendus.urls", namespace="comptes_rendus")),
-    path("services/", include("services.urls", namespace="services")),
     path("", include("rapports_activite.urls", namespace="rapports_activite")),
+    path("", include("communes_membres.urls", namespace="communes-membres")),
+    path("services/", include("services.urls", namespace="services")),
     path("", include("contact.urls", namespace="contact")),
     # Redirections pour les URLs courtes
     path(
