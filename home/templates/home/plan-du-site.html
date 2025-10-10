@@ -1,75 +1,283 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Plan du site | CCSA{% endblock %}
+{% block title %}Plan du site - Communauté de Communes Sud-Avesnois{% endblock %}
+{% block meta_description %}Plan du site de la Communauté de Communes Sud-Avesnois. Accédez rapidement à toutes les pages : services, territoire, institutions, événements et informations pratiques.{% endblock %}
 
 {% block content %}
+<!-- Bannière avec breadcrumb pour SEO -->
+<section class="relative bg-gradient-to-r from-primary to-primary/80 py-12 md:py-16">
+    <div class="container mx-auto px-4 md:px-6">
+        <nav aria-label="Fil d'Ariane" class="mb-4">
+            <ol class="flex flex-wrap items-center text-sm text-white/80" itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{% url 'home' %}" class="hover:text-white transition-colors" itemprop="item">
+                        <span itemprop="name">Accueil</span>
+                    </a>
+                    <meta itemprop="position" content="1" />
+                </li>
+                <li class="mx-2">/</li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <span class="text-white" itemprop="name">Plan du site</span>
+                    <meta itemprop="position" content="2" />
+                </li>
+            </ol>
+        </nav>
+        <h1 class="text-3xl md:text-4xl font-bold text-white">Plan du site</h1>
+    </div>
+</section>
+
 <section class="py-12 bg-white dark:bg-gray-900">
   <div class="container mx-auto px-4 md:px-6">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold text-primary dark:text-secondary mb-8" tabindex="0">Plan du site</h1>
-      <nav aria-label="Plan du site" class="space-y-8">
-        <ul class="list-none p-0 space-y-4">
-          <li>
-            <a href="{% url 'home' %}" class="font-semibold text-blue-700 dark:text-blue-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors" tabindex="0">Accueil</a>
-          </li>
-          <li>
-            <a href="{% url 'presentation' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Présentation</a>
-          </li>
-          <li>
-            <a href="{% url 'equipe' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Équipe</a>
-          </li>
-          <li>
-            <a href="{% url 'collecte_dechets' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Collecte des déchets</a>
-          </li>
-          <li>
-            <a href="{% url 'dechetteries' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Déchetteries</a>
-          </li>
-          <li>
-            <a href="{% url 'encombrants' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Encombrants</a>
-          </li>
-          <li>
-            <a href="{% url 'habitat' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Habitat</a>
-          </li>
-          <li>
-            <a href="{% url 'maisons_sante' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Maisons de santé</a>
-          </li>
-          <li>
-            <a href="{% url 'mutuelle' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Mutuelle</a>
-          </li>
-          <li>
-            <a href="{% url 'mobilite' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Mobilité</a>
-          </li>
-          <li>
-            <a href="{% url 'plui' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">PLUi</a>
-          </li>
-          <li>
-            <a href="{% url 'projet_plui' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Projet PLUi</a>
-          </li>
-          <li>
-            <a href="{% url 'conseil_communautaire:conseil' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Conseil communautaire</a>
-          </li>
-          <li>
-            <a href="{% url 'rapports_activite:rapports_activite' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Rapports d'activité</a>
-          </li>
-          <li>
-            <a href="{% url 'marches_publics' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Marchés publics</a>
-          </li>
-          <li>
-            <a href="{% url 'mentions_legales' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Mentions légales</a>
-          </li>
-          <li>
-            <a href="{% url 'politique_confidentialite' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Politique de confidentialité</a>
-          </li>
-          <li>
-            <a href="{% url 'cookies' %}" class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Gestion des cookies</a>
-          </li>
-        </ul>
-      </nav>
-      <div class="mt-10 text-sm text-gray-500 dark:text-gray-400" aria-hidden="true">
-        <span>Dernière mise à jour : 30 mai 2025</span>
+    <div class="max-w-5xl mx-auto">
+      
+      <!-- Introduction SEO -->
+      <div class="mb-12 text-center">
+        <p class="text-lg text-gray-700 dark:text-gray-300">
+          Retrouvez l'ensemble des pages et services de la Communauté de Communes Sud-Avesnois
+        </p>
       </div>
+
+      <nav aria-label="Plan du site" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Section 1: Accueil et Présentation -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            🏛️ Accueil et Présentation
+          </h2>
+          <ul class="space-y-3" role="list">
+            <li>
+              <a href="{% url 'home' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Accueil
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'presentation' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Présentation
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'equipe' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Équipe
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 2: Institution et Gouvernance -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            👥 Institution et Gouvernance
+          </h2>
+          <ul class="space-y-3" role="list">
+            <li>
+              <a href="{% url 'bureau-communautaire:elus' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Bureau Communautaire
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'conseil_communautaire:conseil' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Conseil Communautaire
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'commissions:commissions' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Commissions
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'competences:competences' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Compétences
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'comptes_rendus:comptes_rendus' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Comptes-rendus
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'rapports_activite:rapports_activite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Rapports d'Activité
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 3: Territoire -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            🗺️ Territoire et Urbanisme
+          </h2>
+          <ul class="space-y-3" role="list">
+            <li>
+              <a href="{% url 'plui' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> PLUi
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'projet_plui' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Projet PLUi
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'documents_plui' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Documents PLUi
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'dev_eco' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Développement Économique
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 4: Services -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            🛠️ Services aux Habitants
+          </h2>
+          <ul class="space-y-3" role="list">
+            <li>
+              <a href="{% url 'collecte_dechets' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Collecte des Déchets
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'dechetteries' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Déchetteries
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'encombrants' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Encombrants
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'habitat' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Habitat
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'maisons_sante' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Maisons de Santé
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'mutuelle' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Mutuelle
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'mobilite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Mobilité
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 5: Culture et Événements -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            🎭 Culture et Événements
+          </h2>
+          <ul class="space-y-3" role="list">
+            <li>
+              <a href="{% url 'semestriels:semestriel' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Calendrier Semestriel
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'journal:journal' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Journal Communautaire
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'mediapass' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Médi@'pass
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'pnra' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Parc Naturel Régional
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'tourisme' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Tourisme en Avesnois
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 6: Administration -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            📋 Administration et Contact
+          </h2>
+          <ul class="space-y-3" role="list">
+            <li>
+              <a href="{% url 'marches_publics' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Marchés Publics
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'accessibilite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Accessibilité
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 7: Informations Légales -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow md:col-span-2">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            ⚖️ Informations Légales
+          </h2>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3" role="list">
+            <li>
+              <a href="{% url 'mentions_legales' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Mentions Légales
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'politique_confidentialite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Confidentialité
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'cookies' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Cookies
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'plan_du_site' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Plan du Site
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </nav>
+
+      <!-- Footer avec date -->
+      <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          <time datetime="{{ "now"|date:"Y-m-d" }}">Dernière mise à jour : {{ "now"|date:"d F Y" }}</time>
+        </p>
+      </div>
+
     </div>
   </div>
 </section>
+
+<!-- Schema.org pour SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SiteNavigationElement",
+  "name": "Plan du site - CCSA",
+  "url": "{{ request.build_absolute_uri }}"
+}
+</script>
 {% endblock %}
