@@ -1,0 +1,32 @@
+[1mdiff --git a/static/js/accessibility.js b/static/js/accessibility.js[m
+[1mindex 40259e0..2be1183 100644[m
+[1m--- a/static/js/accessibility.js[m
+[1m+++ b/static/js/accessibility.js[m
+[36m@@ -57,8 +57,7 @@[m [mfunction applyMinimumTargetSize() {[m
+         }[m
+     });[m
+     [m
+[31m-    // Journaliser le nombre d'éléments modifiés[m
+[31m-    console.log(`Accessibilité : ${interactiveElements.length} éléments interactifs ont été ajustés pour respecter la taille minimale de 44x44 pixels.`);[m
+[32m+[m[32m    // Note: Les éléments ont été ajustés pour respecter la taille minimale de 44x44 pixels[m
+ }[m
+ [m
+ /**[m
+[36m@@ -120,7 +119,7 @@[m [mfunction initBlueFilter() {[m
+         });[m
+     }[m
+     [m
+[31m-    console.log('Accessibilité : Filtre bleu initialisé');[m
+[32m+[m[32m    // Filtre bleu initialisé[m
+ }[m
+ [m
+ /**[m
+[36m@@ -169,7 +168,7 @@[m [mfunction initDarkMode() {[m
+         });[m
+     }[m
+     [m
+[31m-    console.log('Accessibilité : Mode nuit initialisé');[m
+[32m+[m[32m    // Mode nuit initialisé[m
+ }[m
+ [m
+ /**[m

@@ -57,8 +57,7 @@ function applyMinimumTargetSize() {
         }
     });
     
-    // Journaliser le nombre d'éléments modifiés
-    console.log(`Accessibilité : ${interactiveElements.length} éléments interactifs ont été ajustés pour respecter la taille minimale de 44x44 pixels.`);
+    // Note: Les éléments ont été ajustés pour respecter la taille minimale de 44x44 pixels
 }
 
 /**
@@ -120,7 +119,7 @@ function initBlueFilter() {
         });
     }
     
-    console.log('Accessibilité : Filtre bleu initialisé');
+    // Filtre bleu initialisé
 }
 
 /**
@@ -169,7 +168,7 @@ function initDarkMode() {
         });
     }
     
-    console.log('Accessibilité : Mode nuit initialisé');
+    // Mode nuit initialisé
 }
 
 /**
