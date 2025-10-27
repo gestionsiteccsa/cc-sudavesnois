@@ -4,6 +4,7 @@ import os
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
+from app.utils import secure_file_removal
 from .forms import DocumentForm, ElusForm
 from .models import Document, Elus
 
@@ -155,10 +156,9 @@ def update_document(request, id):
         document_form = DocumentForm(request.POST, request.FILES, instance=document)
         if document_form.is_valid():
             document = document_form.save(commit=False)
-            # Si un nouveau document est téléchargé, supprimer l'ancien
+            # Si un nouveau document est téléchargé, supprimer l'ancien de manière sécurisée
             if old_document != document.document:
-                if os.path.exists(old_document.path):
-                    os.remove(old_document.path)
+                secure_file_removal(old_document)
             document_form.save()
             logger.info("Document mis à jour avec succès")
             return redirect("bureau-communautaire:admin_documents_list")

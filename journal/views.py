@@ -1,5 +1,6 @@
 import os
 
+from app.utils import secure_file_removal_by_path
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -57,16 +58,11 @@ def delete_journal(request, id):
     journal = get_object_or_404(Journal, id=id)
     if request.method == "POST":
         if request.POST.get("confirm") == "yes":
-            # Récupérer les chemins des fichiers
-            document = journal.document.path
-            cover = journal.cover.path
-
-            # Vérifier si les fichiers existent
-            # Puis les supprimer
-            if os.path.exists(document):
-                os.remove(document)
-            if os.path.exists(cover):
-                os.remove(cover)
+            # Supprimer les fichiers de manière sécurisée
+            if journal.document:
+                secure_file_removal_by_path(journal.document.path)
+            if journal.cover:
+                secure_file_removal_by_path(journal.cover.path)
             journal.delete()
             messages.success(request, "Le journal a été supprimé avec succès.")
             return redirect("journal:admin_journaux_list")
@@ -97,19 +93,17 @@ def edit_journal(request, id):
 
             indisponible = False
             indisponible_files = []
-            # Vérification existence fichiers avant suppression
+            # Vérification existence fichiers avant suppression sécurisée
             if journal.document != last_document:
                 if last_document and hasattr(last_document, "path"):
-                    if os.path.exists(last_document.path):
-                        os.remove(last_document.path)
-                    else:
+                    removed = secure_file_removal_by_path(last_document.path)
+                    if not removed:
                         indisponible = True
                         indisponible_files.append("document")
             if journal.cover != last_cover:
                 if last_cover and hasattr(last_cover, "path"):
-                    if os.path.exists(last_cover.path):
-                        os.remove(last_cover.path)
-                    else:
+                    removed = secure_file_removal_by_path(last_cover.path)
+                    if not removed:
                         indisponible = True
                         indisponible_files.append("couverture")
             journal.save()
