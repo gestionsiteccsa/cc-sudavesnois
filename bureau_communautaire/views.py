@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.contrib.auth.decorators import permission_required
@@ -5,6 +6,8 @@ from django.shortcuts import get_list_or_404, get_object_or_404, redirect, rende
 
 from .forms import DocumentForm, ElusForm
 from .models import Document, Elus
+
+logger = logging.getLogger(__name__)
 
 
 def elus(request):
@@ -54,12 +57,9 @@ def add_elu(request):
     if request.method == "POST":
         elu_form = ElusForm(request.POST, request.FILES)
         if elu_form.is_valid():
-            # print("Formulaire valide")
             elu_form.save()
+            logger.info("Élu ajouté avec succès")
             return redirect("bureau-communautaire:admin_elus_list")
-        # else:
-        # print("Formulaire invalide")
-        # print(elu_form.errors)
     else:
         elu_form = ElusForm()
     return render(
@@ -111,12 +111,11 @@ def add_document(request):
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
         if document_form.is_valid():
-            print("Formulaire valide")
             document_form.save()
+            logger.info("Document ajouté avec succès")
             return redirect("bureau-communautaire:admin_documents_list")
         else:
-            # print("Formulaire invalide")
-            # print(document_form.errors)
+            logger.warning(f"Formulaire de document invalide: {document_form.errors}")
             return render(
                 request,
                 "bureau_communautaire/admin_document_add.html",
@@ -155,16 +154,16 @@ def update_document(request, id):
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES, instance=document)
         if document_form.is_valid():
-            # print("Formulaire valide")
             document = document_form.save(commit=False)
             # Si un nouveau document est téléchargé, supprimer l'ancien
             if old_document != document.document:
                 if os.path.exists(old_document.path):
                     os.remove(old_document.path)
             document_form.save()
+            logger.info("Document mis à jour avec succès")
             return redirect("bureau-communautaire:admin_documents_list")
         else:
-            # print("Formulaire invalide")
+            logger.warning(f"Formulaire de document invalide: {document_form.errors}")
             return render(
                 request,
                 "bureau_communautaire/admin_document_update.html",

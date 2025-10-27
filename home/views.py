@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
@@ -8,6 +10,8 @@ from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
 from services.models import Service
+
+logger = logging.getLogger(__name__)
 
 
 def is_staff_or_superuser(user):
@@ -114,10 +118,10 @@ def home(request):
 
                 return redirect("home")
             else:
-                print("Aucun contact CCSA défini")
+                logger.warning("Aucun contact CCSA défini pour recevoir les emails")
                 return redirect("home")
         else:
-            print(contact_form.errors)
+            logger.warning(f"Formulaire de contact invalide: {contact_form.errors}")
             return redirect("home")
     else:
         contact_form = ContactForm()
