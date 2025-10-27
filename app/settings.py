@@ -101,6 +101,13 @@ SECURE_HSTS_PRELOAD = env("SECURE_HSTS_PRELOAD", default=True)  # Préchargement
 SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", default=True)  # Cookies sécurisés
 CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", default=True)  # Cookies CSRF sécurisés
 
+# Headers de sécurité supplémentaires
+SESSION_COOKIE_HTTPONLY = True  # Empêche l'accès aux cookies via JavaScript (protection XSS)
+SESSION_COOKIE_SAMESITE = 'Lax'  # Protection contre CSRF
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Empêche le MIME type sniffing
+SECURE_BROWSER_XSS_FILTER = True  # Active le filtre XSS du navigateur
+X_FRAME_OPTIONS = 'DENY'  # Empêche le clickjacking
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
