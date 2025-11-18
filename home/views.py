@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import get_list_or_404, redirect, render
@@ -67,29 +68,41 @@ def home(request):
                 pass
         contact_form = ContactForm(request.POST)
         if contact_form.is_valid():
-            # Ne pas envoyer le mail si aucun destinataire n'est défini
+            # Toujours envoyer à contact@cc-sudavesnois.fr
+            ccsa_contact_list = ["contact@cc-sudavesnois.fr"]
+
+            # Ajouter les contacts actifs supplémentaires s'ils existent
             if ContactEmail.objects.exists():
-                ccsa_contact = ContactEmail.objects.filter(is_active=True).values_list(
-                    "email", flat=True
+                additional_contacts = list(
+                    ContactEmail.objects.filter(is_active=True).values_list(
+                        "email", flat=True
+                    )
                 )
+                # Ajouter les contacts supplémentaires sans doublons
+                for email in additional_contacts:
+                    if email not in ccsa_contact_list:
+                        ccsa_contact_list.append(email)
 
-                context = {
-                    "first_name": contact_form.cleaned_data["first_name"],
-                    "last_name": contact_form.cleaned_data["last_name"],
-                    "email": contact_form.cleaned_data["email"],
-                    "phone": contact_form.cleaned_data["phone"],
-                    "message": contact_form.cleaned_data["message"],
-                }
+            context = {
+                "first_name": contact_form.cleaned_data["first_name"],
+                "last_name": contact_form.cleaned_data["last_name"],
+                "email": contact_form.cleaned_data["email"],
+                "phone": contact_form.cleaned_data["phone"],
+                "message": contact_form.cleaned_data["message"],
+            }
 
-                # Mail au CCSA
+            try:
+                # Mail au CCSA (contact@cc-sudavesnois.fr ou ContactEmail actif)
                 text_content = render_to_string("email_text.txt", context)
                 html_content = render_to_string("email_html.html", context)
                 from_email = contact_form.cleaned_data["email"]
-                to_email = ccsa_contact  # Replace with your email address
+                to_email = ccsa_contact_list
+                first_name = contact_form.cleaned_data["first_name"]
+                last_name = contact_form.cleaned_data["last_name"]
                 msg = EmailMultiAlternatives(
-                    subject=f"CONTACT - CCSA : \
-                        {contact_form.cleaned_data['first_name']} \
-                            {contact_form.cleaned_data['last_name']}",
+                    subject=(
+                        f"CONTACT - CCSA : {first_name} {last_name}"
+                    ),
                     body=text_content,
                     from_email=from_email,
                     to=to_email,
@@ -97,32 +110,64 @@ def home(request):
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
 
-                # mail de confirmation au client
-                text_content_client = render_to_string("email_text_client.txt", context)
+                # Mail de confirmation au client depuis
+                # nepasrepondre@cc-sudavesnois.fr
+                text_content_client = render_to_string(
+                    "email_text_client.txt", context
+                )
                 html_content_client = render_to_string(
                     "email_html_client.html", context
                 )
-                from_email = ccsa_contact[0]
+                from_email_confirmation = "CCSA - Ne pas répondre <nepasrepondre@cc-sudavesnois.fr>"
                 to_email_client = [contact_form.cleaned_data["email"]]
                 msg_client = EmailMultiAlternatives(
-                    subject=f"CONFIRMATION DE CONTACT - CCSA : \
-                        {contact_form.cleaned_data['first_name']} \
-                            {contact_form.cleaned_data['last_name']}",
+                    subject=(
+                        f"CONFIRMATION DE CONTACT - CCSA : "
+                        f"{first_name} {last_name}"
+                    ),
                     body=text_content_client,
-                    from_email=from_email,
+                    from_email=from_email_confirmation,
                     to=to_email_client,
                 )
 
                 msg_client.attach_alternative(html_content_client, "text/html")
                 msg_client.send()
 
+                messages.success(
+                    request,
+                    (
+                        "Votre message a été envoyé avec succès. "
+                        "Vous recevrez un email de confirmation sous peu."
+                    ),
+                )
+                user_email = contact_form.cleaned_data["email"]
+                logger.info(
+                    f"Email de contact envoyé avec succès pour {user_email}"
+                )
                 return redirect("home")
-            else:
-                logger.warning("Aucun contact CCSA défini pour recevoir les emails")
+            except Exception as e:
+                logger.error(f"Erreur lors de l'envoi de l'email de contact: {e}")
+                messages.error(
+                    request,
+                    (
+                        "Une erreur est survenue lors de l'envoi de votre "
+                        "message. Veuillez réessayer plus tard ou nous "
+                        "contacter directement."
+                    ),
+                )
                 return redirect("home")
         else:
+            # Formulaire invalide : re-rendre la page avec les erreurs
             logger.warning(f"Formulaire de contact invalide: {contact_form.errors}")
-            return redirect("home")
+            context = {
+                "services": services,
+                "communes": communes,
+                "contact_form": contact_form,
+                "nb_communes": nb_communes,
+                "nb_habitants": nb_habitants,
+                "form_has_errors": True,
+            }
+            return render(request, "home/index.html", context)
     else:
         contact_form = ContactForm()
 
@@ -132,6 +177,7 @@ def home(request):
         "contact_form": contact_form,
         "nb_communes": nb_communes,
         "nb_habitants": nb_habitants,
+        "form_has_errors": False,
     }
 
     return render(request, "home/index.html", context)

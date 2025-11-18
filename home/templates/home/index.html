@@ -74,57 +74,103 @@
                     <!-- Légende pour les champs obligatoires -->
                     <p class="text-sm mb-6 text-center">Les champs marqués d'un astérisque (*) sont obligatoires.</p>
                     
-                    <!-- Div pour les messages d'erreur/succès avec aria-live -->
-                    <div id="form-feedback" aria-live="polite" class="mb-6 hidden"></div>
+                    <!-- Div pour les messages d'erreur non-field avec aria-live -->
+                    <div id="form-feedback" aria-live="polite" class="mb-6">
+                        {% if contact_form.non_field_errors %}
+                            <div class="bg-white border-2 border-red-500 text-gray-900 px-4 py-3 rounded mb-4">
+                                <ul class="list-disc list-inside">
+                                    {% for error in contact_form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
                     
                     <form method="POST" class="space-y-6" >
                         {% csrf_token %}
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label for="last_name" class="block text-white font-medium mb-2">Nom <span class="text-red-300" aria-hidden="true">*</span><span class="sr-only">obligatoire</span></label>
-                                <input type="text" id="last_name" name="last_name" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary" 
-                                    placeholder="Votre nom" required autocomplete="family-name" aria-describedby="nom-error">
-                                <div id="nom-error" class="text-red-300 text-sm mt-1 hidden"></div>
+                                <input type="text" id="last_name" name="last_name" value="{% if contact_form.last_name.value %}{{ contact_form.last_name.value }}{% endif %}" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary {% if contact_form.last_name.errors %}border-2 border-red-500{% endif %}" 
+                                    placeholder="Votre nom" required autocomplete="family-name" aria-describedby="nom-error" {% if contact_form.last_name.errors %}aria-invalid="true"{% endif %}>
+                                <div id="nom-error" class="text-red-500 text-sm mt-1 font-medium {% if not contact_form.last_name.errors %}hidden{% endif %}">
+                                    {% if contact_form.last_name.errors %}
+                                        {% for error in contact_form.last_name.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
                             <div>
                                 <label for="first_name" class="block text-white font-medium mb-2">Prénom <span class="text-red-300" aria-hidden="true">*</span><span class="sr-only">obligatoire</span></label>
-                                <input type="text" id="first_name" name="first_name" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary" 
-                                    placeholder="Votre prénom" required autocomplete="given-name" aria-describedby="prenom-error">
-                                <div id="prenom-error" class="text-red-300 text-sm mt-1 hidden"></div>
+                                <input type="text" id="first_name" name="first_name" value="{% if contact_form.first_name.value %}{{ contact_form.first_name.value }}{% endif %}" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary {% if contact_form.first_name.errors %}border-2 border-red-500{% endif %}" 
+                                    placeholder="Votre prénom" required autocomplete="given-name" aria-describedby="prenom-error" {% if contact_form.first_name.errors %}aria-invalid="true"{% endif %}>
+                                <div id="prenom-error" class="text-red-500 text-sm mt-1 font-medium {% if not contact_form.first_name.errors %}hidden{% endif %}">
+                                    {% if contact_form.first_name.errors %}
+                                        {% for error in contact_form.first_name.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label for="email" class="block text-white font-medium mb-2">Email <span class="text-red-300" aria-hidden="true">*</span><span class="sr-only">obligatoire</span></label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary" 
-                                    placeholder="exemple@domaine.fr" required autocomplete="email" aria-describedby="email-format email-error">
+                                <input type="email" id="email" name="email" value="{% if contact_form.email.value %}{{ contact_form.email.value }}{% endif %}" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary {% if contact_form.email.errors %}border-2 border-red-500{% endif %}" 
+                                    placeholder="exemple@domaine.fr" required autocomplete="email" aria-describedby="email-format email-error" {% if contact_form.email.errors %}aria-invalid="true"{% endif %}>
                                 <p id="email-format" class="text-sm mt-1">Format attendu : nom@domaine.fr</p>
-                                <div id="email-error" class="text-red-300 text-sm mt-1 hidden"></div>
+                                <div id="email-error" class="text-red-500 text-sm mt-1 font-medium {% if not contact_form.email.errors %}hidden{% endif %}">
+                                    {% if contact_form.email.errors %}
+                                        {% for error in contact_form.email.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
                             <div>
                                 <label for="phone" class="block text-white font-medium mb-2">Téléphone</label>
-                                <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary" 
-                                    placeholder="01 23 45 67 89" autocomplete="tel" aria-describedby="tel-format tel-error">
+                                <input type="tel" id="phone" name="phone" value="{% if contact_form.phone.value %}{{ contact_form.phone.value }}{% endif %}" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary {% if contact_form.phone.errors %}border-2 border-red-500{% endif %}" 
+                                    placeholder="01 23 45 67 89" autocomplete="tel" aria-describedby="tel-format tel-error" {% if contact_form.phone.errors %}aria-invalid="true"{% endif %}>
                                 <p id="tel-format" class="text-sm mt-1">Format : 01 23 45 67 89</p>
-                                <div id="tel-error" class="text-red-300 text-sm mt-1 hidden"></div>
+                                <div id="tel-error" class="text-red-500 text-sm mt-1 font-medium {% if not contact_form.phone.errors %}hidden{% endif %}">
+                                    {% if contact_form.phone.errors %}
+                                        {% for error in contact_form.phone.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         
                         <div>
                             <label for="message" class="block text-white font-medium mb-2">Message <span class="text-red-300" aria-hidden="true">*</span><span class="sr-only">obligatoire</span></label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary" 
-                                placeholder="Votre message" required aria-describedby="message-error"></textarea>
-                            <div id="message-error" class="text-red-300 text-sm mt-1 hidden"></div>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary {% if contact_form.message.errors %}border-2 border-red-500{% endif %}" 
+                                placeholder="Votre message" required aria-describedby="message-error" {% if contact_form.message.errors %}aria-invalid="true"{% endif %}>{% if contact_form.message.value %}{{ contact_form.message.value }}{% endif %}</textarea>
+                            <div id="message-error" class="text-red-500 text-sm mt-1 font-medium {% if not contact_form.message.errors %}hidden{% endif %}">
+                                {% if contact_form.message.errors %}
+                                    {% for error in contact_form.message.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                         </div>
                         
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
-                                <input id="rgpd" name="rgpd" type="checkbox" class="h-4 w-4 text-secondary focus:ring-secondary border-gray-300 rounded" required aria-describedby="rgpd-error">
+                                <input id="rgpd" name="rgpd" type="checkbox" class="h-4 w-4 text-secondary focus:ring-secondary border-gray-300 rounded {% if contact_form.rgpd.errors %}border-red-500{% endif %}" {% if contact_form.rgpd.value %}checked{% endif %} required aria-describedby="rgpd-error" {% if contact_form.rgpd.errors %}aria-invalid="true"{% endif %}>
                             </div>
                             <div class="ml-3 text-sm">
                                 <label for="rgpd" class="font-medium text-white">J'accepte que mes données soient traitées conformément à la politique de confidentialité <span class="text-red-300" aria-hidden="true">*</span><span class="sr-only">obligatoire</span></label>
-                                <div id="rgpd-error" class="text-red-300 text-sm mt-1 hidden"></div>
+                                <div id="rgpd-error" class="text-red-500 text-sm mt-1 font-medium {% if not contact_form.rgpd.errors %}hidden{% endif %}">
+                                    {% if contact_form.rgpd.errors %}
+                                        {% for error in contact_form.rgpd.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         
@@ -142,6 +188,35 @@
             </div>
         </section>
  
+{% endblock %}
 
-    
+{% block script %}
+<script>
+    // Scroller vers la section contact si le formulaire a des erreurs
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if form_has_errors %}
+        // Attendre un court délai pour s'assurer que la page est complètement chargée
+        setTimeout(function() {
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                // Scroller vers la section avec un offset pour le header fixe
+                const headerHeight = 80; // Hauteur approximative du header
+                const elementPosition = contactSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Mettre le focus sur le premier champ en erreur pour l'accessibilité
+                const firstErrorField = contactSection.querySelector('[aria-invalid="true"]');
+                if (firstErrorField) {
+                    firstErrorField.focus();
+                }
+            }
+        }, 100);
+        {% endif %}
+    });
+</script>
 {% endblock %}
