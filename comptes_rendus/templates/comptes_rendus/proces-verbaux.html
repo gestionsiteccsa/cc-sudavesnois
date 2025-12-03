@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/comptes-rendus.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Procès-verbaux des Conseils Communautaires</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto mb-8">Retrouvez l’intégralité des échanges, votes et décisions actées lors des séances du conseil communautaire du Sud-Avesnois.</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-12 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Accès aux procès-verbaux</h2>
+                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+                        Véritables archives des séances, les procès-verbaux retranscrivent fidèlement les débats, les positions des élus et les modalités de vote. Ils complètent les comptes-rendus en apportant un niveau de détail juridique indispensable pour assurer la transparence de l’action communautaire.
+                    </p>
+
+                    <div class="flex items-center p-4 bg-blue-50 dark:bg-blue-900 rounded-md mb-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary dark:text-blue-400 mr-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-gray-700 dark:text-gray-300">
+                            Conformément aux articles L.5211-3 et suivants du Code général des collectivités territoriales, ainsi qu’à l’ordonnance n° 2021-1310 du 7 octobre 2021, les procès-verbaux des réunions de l’organe délibérant sont conservés et rendus accessibles au public. Depuis le 1er juillet 2022, cette publicité garantit la transparence des actes de l’EPCI.
+                        </p>
+                    </div>
+
+                    <!-- Lien vers Google Drive -->
+                    <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6 text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Consulter l’ensemble des procès-verbaux</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">
+                            Les procès-verbaux des conseils communautaires sont disponibles dans notre espace de stockage sécurisé. Cliquez sur le bouton ci-dessous pour ouvrir l’archive correspondante.
+                        </p>
+                        {% if proces_verbaux %}
+                        <a href="{{ proces_verbaux.link }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-primary dark:bg-blue-600 text-white rounded-md font-medium hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Accéder aux procès-verbaux
+                        </a>
+                        {% else %}
+                        <div class="inline-flex items-center px-6 py-3 bg-primary dark:bg-blue-600 text-white rounded-md font-medium hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Non disponible.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}
+

@@ -11,6 +11,11 @@ urlpatterns = [
         views.comptes_rendus,
         name="comptes_rendus",
     ),
+    path(
+        "proces-verbaux-conseils-communautaires/",
+        views.proces_verbaux,
+        name="proces_verbaux",
+    ),
     # Page admin
     path("adminccsa/cr-admin/", views.admin_page, name="admin_cr_list"),
     path("adminccsa/ajouter-conseil/", views.add_conseil, name="add_conseil"),

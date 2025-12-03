@@ -27,6 +27,19 @@ def comptes_rendus(request):
     return render(request, "comptes_rendus/comptes-rendus.html", context)
 
 
+def proces_verbaux(request):
+    if CompteRendu.objects.exists():
+        proces_verbaux = get_object_or_404(CompteRendu)
+    else:
+        proces_verbaux = None
+
+    context = {
+        "proces_verbaux": proces_verbaux,
+    }
+
+    return render(request, "comptes_rendus/proces-verbaux.html", context)
+
+
 # Partie gestion des conseils
 @permission_required("comptes_rendus.view_conseil")
 def admin_page(request):
