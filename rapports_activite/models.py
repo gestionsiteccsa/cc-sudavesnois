@@ -42,8 +42,7 @@ class RapportActivite(models.Model):
         if not self.title:
             self.title = f"Rapport d'activité {self.year}"
         if not self.description:
-            self.description = f"Bilant des actions menées en {self.year} et \
-            perspectives pour l'année {self.year + 1}"
+            self.description = f"Bilan des actions menées en {self.year}."
         super(RapportActivite, self).save(*args, **kwargs)
 
     def __str__(self):
