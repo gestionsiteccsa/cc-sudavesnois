@@ -51,7 +51,11 @@
                     {% for com in communes %}
                     <div class="commune-card bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
                         <div class="p-4 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{{com.city_name}}</h3>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                <a href="{% url 'communes-membres:commune' com.slug %}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
+                                    {{com.city_name}}
+                                </a>
+                            </h3>
                             {% if com.nb_habitants %}
                             <p class="text-sm text-gray-600 dark:text-gray-300">{{com.nb_habitants}} habitants</p>
                             {% endif %}
