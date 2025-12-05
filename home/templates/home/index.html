@@ -21,6 +21,14 @@
                     </svg>
                     LinkedIn
                 </a>
+                {% if dernier_journal %}
+                <a href="{{ dernier_journal.document.url }}" target="_blank" rel="noopener" class="inline-flex items-center bg-secondary text-white font-medium px-6 py-3 rounded-md hover:bg-secondary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary shadow-lg" aria-label="Télécharger le dernier numéro de Mon Sud Avesnois n°{{ dernier_journal.number }} (PDF)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2zm0 6h5v2H8v-2z"/>
+                    </svg>
+                    Mon Sud Avesnois n°{{ dernier_journal.number }}
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>

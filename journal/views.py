@@ -13,7 +13,7 @@ from .models import Journal
 def journal(request):
     """Vue d'accueil de la liste des journaux"""
     journals = Journal.objects.all().order_by("-number")
-    paginator = Paginator(journals, 3)  # 3 journaux par page
+    paginator = Paginator(journals, 9)  # 9 journaux par page
     page = request.GET.get("page")
 
     try:

@@ -10,6 +10,7 @@ from django.template.loader import render_to_string
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
+from journal.models import Journal
 from services.models import Service
 
 logger = logging.getLogger(__name__)
@@ -45,6 +46,9 @@ def home(request):
         communes = None
         nb_communes = None
         nb_habitants = None
+
+    # Récupérer le dernier journal (trié par numéro décroissant)
+    dernier_journal = Journal.objects.order_by("-number").first()
 
     if request.method == "POST":
         # Rate limiting simple: 5 requêtes par minute par adresse IP
@@ -166,6 +170,7 @@ def home(request):
                 "nb_communes": nb_communes,
                 "nb_habitants": nb_habitants,
                 "form_has_errors": True,
+                "dernier_journal": dernier_journal,
             }
             return render(request, "home/index.html", context)
     else:
@@ -178,6 +183,7 @@ def home(request):
         "nb_communes": nb_communes,
         "nb_habitants": nb_habitants,
         "form_has_errors": False,
+        "dernier_journal": dernier_journal,
     }
 
     return render(request, "home/index.html", context)
