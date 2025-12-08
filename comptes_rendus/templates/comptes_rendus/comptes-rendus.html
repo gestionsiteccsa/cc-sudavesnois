@@ -11,8 +11,8 @@
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-4xl mx-auto text-center text-white">
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Comptes-rendus des Conseils Communautaires</h1>
-                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto mb-8">Consultez les délibérations et décisions prises lors des conseils communautaires du Sud-Avesnois</p>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Actes administratifs</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto mb-8">Consultez les délibérations, décisions et arrêtés de la communauté de communes Sud-Avesnois</p>
             </div>
         </div>
         <!-- Motif décoratif -->
@@ -26,9 +26,7 @@
             <div class="max-w-4xl mx-auto">
                 <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Accès aux actes administratifs</h2>
-                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                        Les comptes-rendus des conseils communautaires sont des documents publics qui retracent les décisions prises par les élus lors des séances du conseil. Ils sont publiés après approbation lors du conseil suivant.
-                    </p>
+                    
                     
                     <div class="flex items-center p-4 bg-blue-50 dark:bg-blue-900 rounded-md mb-8">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary dark:text-blue-400 mr-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,10 +39,7 @@
 
                     <!-- Liens vers les documents -->
                     <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6 text-center">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Accéder à l'ensemble des comptes-rendus</h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-6">
-                            Tous les comptes-rendus des conseils communautaires sont disponibles sur notre espace de stockage en ligne. Cliquez sur les boutons ci-dessous pour y accéder.
-                        </p>
+                        
                         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                             <a href="https://ccsa59-my.sharepoint.com/:f:/g/personal/j_brechoire_cc-sudavesnois_fr/IgCxVIWn-ZiMT5pb4t2BoJhwAXR_4Y-WmhVUPcbvljTbNpk?e=UEJAEK" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-blue-600 dark:bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 dark:hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -84,7 +79,6 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Heure</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Lieu</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ordre du jour</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -94,15 +88,6 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{conseil.date}}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{ conseil.hour.hour }}h{{ conseil.hour.minute|stringformat:"02d" }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{conseil.place}}</td>
-                                {% if conseil.day_order %}
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                                    <a href="{{conseil.day_order.url}}" class="text-primary dark:text-blue-400 hover:underline">Consulter</a>
-                                </td>
-                                {% else %}
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                                    <p class="text-gray-400 dark:text-gray-400">À venir</p>
-                                </td>
-                                {% endif %}
                             </tr>
                             {% endfor %}
                             {% else %}
