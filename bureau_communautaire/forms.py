@@ -28,6 +28,7 @@ class ElusForm(forms.ModelForm):
             "function": "Fonction",
             "city": "Ville",
             "profession": "Profession",
+            "linked_commission": "Commission(s)",
         }
         help_texts = {
             "rank": "Pour les Vices-Président (1, 2, 3, ...).",
@@ -35,6 +36,10 @@ class ElusForm(forms.ModelForm):
             "picture": "Téléchargez une photo de l'élu.",
             "function": "RH | TRI | ...",
             "profession": "Maire de ... | 1er/2ème/... Adjoint au Maire de ...",
+            "linked_commission": "Sélectionnez une ou plusieurs commissions.",
+        }
+        widgets = {
+            "linked_commission": forms.CheckboxSelectMultiple(),
         }
 
 

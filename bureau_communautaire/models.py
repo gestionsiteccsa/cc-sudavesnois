@@ -34,8 +34,8 @@ class Elus(models.Model):
     )
     city = models.ForeignKey(ConseilVille, on_delete=models.CASCADE)
     profession = models.CharField(max_length=100, blank=True, null=True)
-    linked_commission = models.ForeignKey(
-        Commission, on_delete=models.CASCADE, null=True, blank=True, default=None
+    linked_commission = models.ManyToManyField(
+        Commission, blank=True, related_name="elus"
     )
 
     def __str__(self):
