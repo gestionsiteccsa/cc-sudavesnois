@@ -66,10 +66,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-700 dark:text-gray-300">{{ elu.city }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 max-w-xs">
                                     <div class="text-sm text-gray-700 dark:text-gray-300">
                                         {% for commission in elu.linked_commission.all %}
-                                            {{ commission.title|truncatechars:30 }}{% if not forloop.last %}, {% endif %}
+                                            <span class="inline-block bg-primary/10 text-primary px-2 py-0.5 rounded text-xs mb-1">{{ commission.title|truncatechars:25 }}</span>
                                         {% empty %}
                                             <span class="text-gray-400">Aucune</span>
                                         {% endfor %}
