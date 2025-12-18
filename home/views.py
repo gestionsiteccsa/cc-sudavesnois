@@ -246,6 +246,10 @@ def mutuelle(request):
     return render(request, "home/mutuelle.html")
 
 
+def contrat_local_sante(request):
+    return render(request, "home/contrat-local-sante.html")
+
+
 def plui(request):
     """Vue pour la page PLUi et le formulaire de modification."""
     from django.contrib import messages

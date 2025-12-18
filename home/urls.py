@@ -17,6 +17,7 @@ urlpatterns = [
         "maisons-sante-pluridisciplinaires/", views.maisons_sante, name="maisons_sante"
     ),
     path("mutuelle-intercommunautaire/", views.mutuelle, name="mutuelle"),
+    path("contrat-local-sante/", views.contrat_local_sante, name="contrat_local_sante"),
     path("plui/", views.plui, name="plui"),
     path("projet-plui/", views.projet_plui, name="projet_plui"),
     # Équipe administrative & technique
