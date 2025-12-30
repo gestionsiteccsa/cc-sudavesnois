@@ -33,7 +33,7 @@
                         <div class="font-bold text-lg text-primary">{{ conseil.date }}</div>
 
                         <div class="text-gray-600 mt-2 md:mt-0">{{conseil.hour.hour}}h{{conseil.hour.minute|stringformat:"02d" }}</div>
-                        <div class="text-gray-600 mt-2 md:mt-0">{{conseil.place}}</div>
+                        <div class="text-gray-600 mt-2 md:mt-0">{{conseil.place|default:"Lieu à communiquer"}}</div>
                         {% if conseil.day_order %}
                         <a href="{{conseil.day_order.url}}"><div class="text-blue-600 mt-2 md:mt-0">Voir</div></a>
                         {% else %}

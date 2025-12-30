@@ -21,7 +21,7 @@ class CompteRendu(models.Model):
 class Conseil(models.Model):
     date = models.DateField()
     hour = models.TimeField()
-    place = models.CharField(max_length=100)
+    place = models.CharField(max_length=100, blank=True)
     day_order = models.FileField(
         upload_to="comptes-rendus/ordre-du-jour/",
         validators=[
@@ -32,5 +32,6 @@ class Conseil(models.Model):
     )
 
     def __str__(self):
-        return f"Conseil du {self.date} - {self.hour} - {self.place} - \
+        place_display = self.place if self.place else "Lieu à communiquer"
+        return f"Conseil du {self.date} - {self.hour} - {place_display} - \
             Ordre du jour: {self.day_order}"

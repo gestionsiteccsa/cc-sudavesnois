@@ -1,7 +1,9 @@
 import os
+from datetime import timedelta
 
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.utils import timezone
 
 from .forms import ConseilForm, CRForm
 from .models import CompteRendu, Conseil
@@ -14,9 +16,10 @@ def comptes_rendus(request):
     else:
         comptes_rendus = None
 
-    if Conseil.objects.exists():
-        conseils = get_list_or_404(Conseil.objects.order_by("-date"))
-    else:
+    # Filtrer les conseils avec date >= j+1 et trier par date croissante
+    tomorrow = timezone.now().date() + timedelta(days=1)
+    conseils = Conseil.objects.filter(date__gte=tomorrow).order_by("date")
+    if not conseils.exists():
         conseils = None
 
     context = {
