@@ -60,61 +60,125 @@
 
                     <!-- Colonne droite : informations -->
                     <div>
-                        <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900 mb-8">
-                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Besoin d'aide pour rénover votre logement ?</h2>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                Vous avez froid chez vous ? Vous avez de grosses factures d'énergie ? Vous souhaitez faire des travaux et connaître les aides mobilisables ou être accompagné ?
-                            </p>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                Le Parc Naturel Régional de l'Avesnois propose depuis 2022 un espace conseil France Rénov' pour répondre à vos questions sur le sujet, et vous aiguiller dans votre projet.
-                            </p>
-                            <p class="text-gray-600 dark:text-gray-300">
-                                Cet espace est financé par les Communauté de Communes Sud-Avesnois, Cœur de l'Avesnois, Pays de Mormal et la région Hauts-de-France. C'est un service gratuit, neutre et indépendant mis à disposition de tous les propriétaires du territoire et aux entreprises du petit tertiaire privé (TPE, commerces, artisans, bureaux, restaurants).
-                            </p>
-                        </div>
-
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg p-6 mb-8">
-                            <div class="flex items-center mb-4">
-                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Un accompagnement pour tous</h3>
+                        <!-- Bloc principal -->
+                        <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 pb-4 border-b-2 border-primary/30">Besoin d'aide pour rénover votre logement ?</h2>
+                            
+                            <!-- Introduction avec icône -->
+                            <div class="flex items-start gap-4 mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    Vous avez froid chez vous ? Vous avez de grosses factures d'énergie ? Vous souhaitez faire des travaux et connaître les aides mobilisables ou être accompagné ?
+                                </p>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300 ml-14">
-                                Tous les habitants du territoire peuvent être accompagnés quel que soit leur niveau de revenu. Ce Guichet Unique de l'Habitat vous orientera en fonction de votre projet et votre situation vers le dispositif adéquat.
-                            </p>
-                        </div>
 
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Permanences physiques</h3>
+                            <div class="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
+                                <p>
+                                    Le <strong class="text-gray-800 dark:text-gray-200">Parc naturel régional de l'Avesnois</strong> propose depuis 2022 un <strong class="text-primary dark:text-blue-400">Espace Conseil France Rénov'</strong> pour répondre à vos questions sur le sujet, et vous aiguiller dans votre projet.
+                                </p>
+                                <p>
+                                    Cet espace est financé par les Communautés de Communes <em>Sud-Avesnois</em>, <em>Cœur de l'Avesnois</em>, <em>Pays de Mormal</em> et l'<strong>Agence Nationale de l'Habitat (Anah)</strong>. C'est un service <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">gratuit</span>, <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">neutre</span> et <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">indépendant</span> mis à disposition de tous les propriétaires du territoire.
+                                </p>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300 ml-14 mb-4">
-                                Permanences physiques tous les jeudis après-midi en Sud-Avesnois :
+
+                            <!-- Encadré conseils -->
+                            <div class="mt-6 p-5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-700/50 rounded-lg">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                    </svg>
+                                    Il apporte des conseils notamment sur :
+                                </h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="text-gray-600 dark:text-gray-300">La <strong>rénovation énergétique</strong> de l'habitat dans le but de réaliser des économies d'énergies</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="text-gray-600 dark:text-gray-300">L'<strong>adaptation du logement</strong> pour le maintien à domicile</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Informations complémentaires -->
+                            <p class="mt-6 text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Il vous informe sur les <strong class="text-gray-700 dark:text-gray-200">aides financières</strong>, les <strong class="text-gray-700 dark:text-gray-200">démarches administratives</strong>, les <strong class="text-gray-700 dark:text-gray-200">aspects techniques</strong>, les <strong class="text-gray-700 dark:text-gray-200">interlocuteurs utiles</strong>...
                             </p>
-                            <ul class="space-y-2 ml-14">
-                                <li class="flex items-start">
-                                    <svg class="h-5 w-5 text-primary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+                            <!-- Message d'alerte -->
+                            <div class="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700/50 flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <div>
+                                    <p class="text-amber-800 dark:text-amber-300 font-medium">Pensez à les solliciter au plus tôt dans votre démarche.</p>
+                                    <p class="text-amber-700 dark:text-amber-400 text-sm mt-1">Et rappelez-vous : l'État, ses agences et nos services <strong>ne démarchent jamais !</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blocs accompagnement et permanences côte à côte -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+                    <!-- Bloc accompagnement -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg p-6 h-full flex flex-col">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Un accompagnement pour tous</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed flex-grow">
+                            Tous les habitants du territoire peuvent être accompagnés <strong>quel que soit leur niveau de revenu</strong>. Ce Guichet Unique de l'Habitat vous orientera en fonction de votre projet et votre situation vers le dispositif adéquat.
+                        </p>
+                    </div>
+
+                    <!-- Bloc permanences -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg p-6 h-full flex flex-col">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Permanences physiques</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                            Permanences physiques <strong class="text-primary dark:text-blue-400">tous les jeudis après-midi</strong> en Sud-Avesnois sur rendez-vous :
+                        </p>
+                        <ul class="space-y-3 flex-grow">
+                            <li class="flex items-center gap-3 p-3 bg-white dark:bg-gray-600/50 rounded-lg">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
                                     </svg>
-                                    <span class="text-gray-600 dark:text-gray-400">En mairie de Trélon le premier jeudi du mois</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="h-5 w-5 text-primary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                </span>
+                                <span class="text-gray-600 dark:text-gray-300">En <strong>mairie de Trélon</strong> le premier jeudi du mois</span>
+                            </li>
+                            <li class="flex items-center gap-3 p-3 bg-white dark:bg-gray-600/50 rounded-lg">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
                                     </svg>
-                                    <span class="text-gray-600 dark:text-gray-400">Au Point d'Accès au Droit, place Georges Coppeaux à Fourmies les autres jeudis</span>
-                                </li>
-                            </ul>
-                        </div>
+                                </span>
+                                <span class="text-gray-600 dark:text-gray-300">Au <strong>PIDE</strong> (Pôle Intercommunal de Développement Économique) de <strong>Fourmies</strong> les autres jeudis</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 

@@ -75,3 +75,4 @@ def mois_fr_abrege(date):
 
     return MOIS_ABREGE[date.month]
 
+
