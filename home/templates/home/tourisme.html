@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Tourisme en Avesnois{% endblock %}
+{% block meta_description %}Découvrez l'Avesnois : nature, culture, patrimoine et gastronomie locale. Explorez les richesses touristiques du territoire Sud-Avesnois.{% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -34,10 +36,10 @@
                     </p>
                     <div class="text-center">
                         <a href="https://www.tourisme-avesnois.com" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-8 py-4 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
-                            Découvrir le site touristique
+                            Découvrir le site touristique<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -53,7 +55,7 @@
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md text-center">
                         <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                             </svg>
                         </div>
@@ -241,6 +243,6 @@
         </div>
     </section>
 
-</main>
+</div>
 
 {% endblock %}

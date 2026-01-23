@@ -77,3 +77,9 @@ tests/
 # Cursor
 .cursor/
 .cursor/*
+
+.claude/
+CLAUDE.md
+RGAA_AUDIT_REPORT.md
+RGAA_CORRECTIONS_TRACKING.md
+skills/

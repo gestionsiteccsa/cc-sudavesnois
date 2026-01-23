@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Marchés Publics{% endblock %}
+{% block meta_description %}Consultez les appels d'offres et marchés publics de la Communauté de Communes Sud-Avesnois sur la plateforme Marchés Sécurisés.{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/marches-publics.css' %}">
 {% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -33,10 +35,10 @@
                     <div class="flex justify-center mb-8">
                         <a href="https://www.marches-securises.fr/entreprise/" target="_blank" rel="noopener noreferrer" 
                            class="inline-flex items-center px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg text-lg font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
-                            Accéder à la plateforme Marchés Sécurisés
+                            Accéder à la plateforme Marchés Sécurisés<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -44,5 +46,5 @@
         </div>
     </section>
 
-</main>
+</div>
 {% endblock %}

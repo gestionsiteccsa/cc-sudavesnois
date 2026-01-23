@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Développement économique{% endblock %}
+{% block meta_description %}Découvrez les actions de la CCSA pour accompagner les entreprises et porteurs de projets sur le territoire Sud-Avesnois.{% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -49,13 +51,13 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
-                            Découvrir Sud-Avesnois Invest
+                            Découvrir Sud-Avesnois Invest<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-</main>
+</div>
 
 {% endblock %}

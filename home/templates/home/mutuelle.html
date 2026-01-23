@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Mutuelle intercommunautaire{% endblock %}
+{% block meta_description %}La Communauté de Communes Sud-Avesnois propose une mutuelle intercommunautaire accessible à tous les habitants du territoire.{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/mutuelle.css' %}">
 {% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -40,11 +42,11 @@
                             </p>
                             <!-- Bouton d'action -->
                             <div class="mt-6">
-                                <a href="https://www.just.fr/recueil-besoins" target="_blank" class="inline-flex items-center px-5 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <a href="https://www.just.fr/recueil-besoins" target="_blank" rel="noopener" class="inline-flex items-center px-5 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    Demander un devis
+                                    Demander un devis<span class="sr-only"> (nouvelle fenêtre)</span>
                                 </a>
                             </div>
                         </div>
@@ -72,7 +74,7 @@
                         <div class="p-6">
                             <div class="flex items-center mb-4">
                                 <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                     </svg>
                                 </div>
@@ -132,12 +134,12 @@
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <a href="https://www.just.fr/nos-agences/trelon" target="_blank" class="inline-flex items-center px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <a href="https://www.just.fr/nos-agences/trelon" target="_blank" rel="noopener" class="inline-flex items-center px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
-                                        Voir l'agence de Trélon
+                                        Voir l'agence de Trélon<span class="sr-only"> (nouvelle fenêtre)</span>
                                     </a>
                                 </div>
                             </div>
@@ -148,6 +150,6 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 
 {% endblock %}

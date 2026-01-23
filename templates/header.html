@@ -28,15 +28,13 @@
                             <ul id="submenu-communes" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
                                 {% for commune in cities %}
                                 <li>
-                                    <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">{{commune.city_name}}</a></li>
+                                    <a href="{% url 'communes-membres:commune' commune.slug %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">{{commune.city_name}}</a>
                                 </li>
                                 {% endfor %}
                             </ul>
                             {% else %}
                             <ul id="submenu-communes" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
-                                <li>
-                                    <li><p class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Indisponible.</p></li>
-                                </li>
+                                <li><p class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Indisponible.</p></li>
                             </ul>
                             {% endif %}
                         </li>
@@ -67,7 +65,13 @@
                         <li><a href="{% url 'conseil_communautaire:conseil' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Conseil</a></li>
                         <li><a href="{% url 'commissions:commissions' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Commissions</a></li>
                         <li><a href="{% url 'competences:competences' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Compétences</a></li>
-                        <li><span class="block px-4 py-2 text-gray-400 dark:text-gray-500 cursor-not-allowed pointer-events-none">Organigramme</span></li>
+                        <li>
+                            <a role="link" 
+                            aria-disabled="true" 
+                            class="block px-4 py-2 text-gray-400 dark:text-gray-500 cursor-not-allowed pointer-events-none">
+                            Organigramme
+                            </a>
+                        </li>
                         <li class="relative nav-dropdown">
                             <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-actes">
                                 Actes & documents
@@ -134,11 +138,11 @@
         <div class="flex items-center">
             {% if user.is_authenticated %}
             <a href="{% url 'accounts:profile' %}" class="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="Mon profil">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#1878b9" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l362.8 0c-5.4-9.4-8.6-20.3-8.6-32l0-128c0-2.1 .1-4.2 .3-6.3c-31-26-71-41.7-114.6-41.7l-91.4 0zM528 240c17.7 0 32 14.3 32 32l0 48-64 0 0-48c0-17.7 14.3-32 32-32zm-80 32l0 48c-17.7 0-32 14.3-32 32l0 128c0 17.7 14.3 32 32 32l160 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32l0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" viewBox="0 0 640 512" aria-hidden="true"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#1878b9" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l362.8 0c-5.4-9.4-8.6-20.3-8.6-32l0-128c0-2.1 .1-4.2 .3-6.3c-31-26-71-41.7-114.6-41.7l-91.4 0zM528 240c17.7 0 32 14.3 32 32l0 48-64 0 0-48c0-17.7 14.3-32 32-32zm-80 32l0 48c-17.7 0-32 14.3-32 32l0 128c0 17.7 14.3 32 32 32l160 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32l0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"/></svg>
             </a>
                 {% if user|is_in_group:'moderator' %}
                     <a href="{% url 'accounts:admin_dashboard' %}" class="ml-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="Panneau d'administration">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512" aria-hidden="true"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></svg>
                     </a>
                 {% endif %}
             {% endif %}
@@ -357,7 +361,7 @@
                         </li>
                         <li><a href="{% url 'mobilite' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Transport à la demande</a></li>
                         <li><a href="{% url 'habitat' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Habitat</a></li>
-                        <li><a href="{% url 'habitat' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Développement économique</a></li>
+                        <li><a href="{% url 'dev_eco' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Développement économique</a></li>
                         <li><a href="{% url 'mediapass' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Réseau Médi@'pass</a></li>
                         <li>
                             <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-sante-mobile">

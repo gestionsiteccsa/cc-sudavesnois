@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Parc Naturel Régional de l'Avesnois{% endblock %}
+{% block meta_description %}Découvrez le Parc Naturel Régional de l'Avesnois : 129 communes, 43 000 hectares de bocages, forêts et patrimoine naturel exceptionnel.{% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -33,10 +35,10 @@
                     </p>
                     <div class="text-center">
                         <a href="https://www.parc-naturel-avesnois.fr" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-8 py-4 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
-                            Découvrir le site du Parc
+                            Découvrir le site du Parc<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -93,7 +95,7 @@
                         </p>
                         <div class="space-y-4">
                             <div class="flex items-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
                                 <p class="text-gray-600 dark:text-gray-300">Protection et valorisation du patrimoine naturel et culturel</p>
@@ -205,6 +207,6 @@
         </div>
     </section>
 
-</main>
+</div>
 
 {% endblock %}

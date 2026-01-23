@@ -7,19 +7,19 @@
 
 {% block content %}
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-4xl mx-auto text-center text-white">
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 flex items-center justify-center gap-3" tabindex="0">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
                     Mentions légales
                 </h1>
             </div>
         </div>
         <!-- Motif décoratif -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
     </section>
 
 
@@ -28,7 +28,7 @@
             <div class="max-w-5xl mx-auto space-y-10">
                 <!-- Éditeur du site -->
                 <div id="editeur" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Éditeur du site">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Éditeur du site</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Éditeur du site</h2>
                     <ul class="text-gray-700 dark:text-gray-300 space-y-1">
                         <li><span class="font-semibold">Communauté de Communes Sud-Avesnois (CCSA)</span></li>
                         <li>2 rue du Général Raymond Chomel, 59610 FOURMIES</li>
@@ -40,33 +40,33 @@
                 </div>
                 <!-- Hébergement -->
                 <div id="hebergement" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Hébergement du site">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Hébergement</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Hébergement</h2>
                     <ul class="text-gray-700 dark:text-gray-300 space-y-1">
                         <li><span class="font-semibold">OVH SAS</span></li>
                         <li>2 rue Kellermann, 59100 ROUBAIX</li>
-                        <li>Site web : <a href="https://www.ovh.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">www.ovh.com</a></li>
+                        <li>Site web : <a href="https://www.ovh.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">www.ovh.com<span class="sr-only"> (nouvelle fenêtre)</span></a></li>
                     </ul>
                 </div>
                 <!-- Propriété intellectuelle -->
                 <div id="propriete" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Propriété intellectuelle">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Propriété intellectuelle</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Propriété intellectuelle</h2>
                     <p class="text-gray-700 dark:text-gray-300 mb-2">L’ensemble du site relève de la législation française et internationale sur le droit d’auteur et la propriété intellectuelle.<br>Toute reproduction ou représentation, totale ou partielle, du site ou de ses éléments (textes, images, logos, graphismes) est interdite sans autorisation écrite préalable de la CCSA, sauf exceptions légales.</p>
                     <p class="text-gray-700 dark:text-gray-300">Les logos, pictogrammes, marques, images et photographies présents sur le site sont la propriété de leurs détenteurs respectifs.</p>
                 </div>
                 <!-- Liens hypertextes -->
                 <div id="liens" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Liens hypertextes">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Liens hypertextes</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Liens hypertextes</h2>
                     <p class="text-gray-700 dark:text-gray-300 mb-2">La CCSA autorise la mise en place de liens hypertextes vers la page d’accueil de son site, sous réserve qu’ils ne portent pas préjudice à son image.</p>
                     <p class="text-gray-700 dark:text-gray-300">Les liens vers d’autres sites proposés ne sauraient engager la responsabilité de la CCSA quant à leur contenu.</p>
                 </div>
                 <!-- Protection des données personnelles -->
                 <div id="donnees" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Protection des données personnelles">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Protection des données personnelles</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Protection des données personnelles</h2>
                     <ul class="mb-2 text-gray-700 dark:text-gray-300 list-disc list-inside">
-                        <li>🔸 Finalités du traitement : gestion des demandes, communication institutionnelle, statistiques de fréquentation.</li>
+                        <li><span aria-hidden="true">🔸</span> Finalités du traitement : gestion des demandes, communication institutionnelle, statistiques de fréquentation.</li>
                         <li>🔸 Base légale : exécution d’une mission d’intérêt public et consentement le cas échéant (pour les cookies).</li>
-                        <li>🔸 Destinataires : les services internes de la CCSA et ses prestataires dans la limite de leurs attributions.</li>
-                        <li>🔸 Durée de conservation : les données sont conservées pour la durée strictement nécessaire à la finalité poursuivie et conformément aux obligations légales.</li>
+                        <li><span aria-hidden="true">🔸</span> Destinataires : les services internes de la CCSA et ses prestataires dans la limite de leurs attributions.</li>
+                        <li><span aria-hidden="true">🔸</span> Durée de conservation : les données sont conservées pour la durée strictement nécessaire à la finalité poursuivie et conformément aux obligations légales.</li>
                         <li>🔸 Droits des personnes : vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation, d’opposition et de portabilité de vos données. Vous pouvez exercer ces droits en écrivant à :</li>
                     </ul>
                     <div class="bg-white dark:bg-gray-700 rounded-lg p-4 mb-2">
@@ -78,7 +78,7 @@
                 </div>
                 <!-- Cookies -->
                 <div id="cookies" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Gestion des cookies">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Cookies</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Cookies</h2>
                     <ul class="mb-2 text-gray-700 dark:text-gray-300 list-disc list-inside">
                         <li>assurer le bon fonctionnement technique,</li>
                         <li>mesurer l’audience et analyser la fréquentation (cookies analytiques),</li>
@@ -88,12 +88,12 @@
                 </div>
                 <!-- Accessibilité -->
                 <div id="accessibilite" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Accessibilité du site">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Accessibilité</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Accessibilité</h2>
                     <p class="text-gray-700 dark:text-gray-300 mb-2">Le site a été conçu pour être accessible à tous, notamment aux personnes en situation de handicap. Si vous rencontrez des difficultés, merci de nous contacter à : <a href="mailto:j.brechoire@cc-sudavesnois.fr" class="text-blue-600 hover:underline dark:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">j.brechoire@cc-sudavesnois.fr</a></p>
                 </div>
                 <!-- Responsabilité -->
                 <div id="responsabilite" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Responsabilité">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2" tabindex="0">Responsabilité</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4 flex items-center gap-2">Responsabilité</h2>
                     <p class="text-gray-700 dark:text-gray-300">La CCSA met tout en œuvre pour offrir aux visiteurs des informations fiables et à jour. Néanmoins, des erreurs ou omissions peuvent survenir. La CCSA ne saurait être tenue responsable des éventuelles inexactitudes ou des dommages liés à l’utilisation des informations contenues sur ce site.</p>
                 </div>
             </div>
@@ -102,5 +102,5 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 {% endblock %}

@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Transport à la Demande{% endblock %}
+{% block meta_description %}Service de mobilité Transport à la Demande pour tous les habitants du Sud-Avesnois. Réservez votre trajet par téléphone ou via l'application MyMobi.{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/mobilite.css' %}">
 {% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -16,8 +18,8 @@
             </div>
         </div>
         <!-- Motif décoratif -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
     </section>
 
     <!-- Section principale -->
@@ -41,7 +43,7 @@
                         <div class="bg-gray-50 p-6 rounded-lg shadow flex flex-col items-center mt-8">
                             <div class="flex items-center mb-2">
                                 <span class="inline-block bg-primary/10 p-2 rounded-full mr-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </span>
@@ -50,11 +52,11 @@
                             <p class="mb-4 text-gray-700 dark:text-gray-300 text-center">Les réservations peuvent aussi se faire via l'application mobile :</p>
                             <img src="{% static 'img/MyMobi.webp' %}" alt="Logo MyMobi" class="h-20 w-auto rounded shadow-md bg-white p-1 block mx-auto mb-4">
                             <div class="flex gap-2">
-                                <a href="https://apps.apple.com/fr/app/mymobi/id1502077127" target="_blank" class="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                                <a href="https://apps.apple.com/fr/app/mymobi/id1502077127" target="_blank" rel="noopener" class="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300">
                                     <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                       <path d="M17.564 13.782c-.024-2.568 2.099-3.797 2.19-3.857-1.197-1.747-3.056-1.988-3.713-2.017-1.577-.159-3.08.926-3.882.926-.803 0-2.033-.902-3.345-.878-1.72.025-3.325 1.002-4.216 2.548-1.8 3.123-.46 7.747 1.289 10.282.858 1.24 1.875 2.632 3.212 2.579 1.297-.051 1.788-.834 3.36-.834 1.573 0 2.007.834 3.374.81 1.4-.022 2.278-1.259 3.13-2.501.626-.91.885-1.386 1.384-2.43-3.638-1.387-3.5-4.038-3.478-4.124zm-3.347-7.32c.708-.872 1.19-2.088 1.057-3.293-1.022.041-2.258.68-2.995 1.552-.658.778-1.236 2.021-1.018 3.21 1.192.093 2.348-.606 2.956-1.469z"/>
                                     </svg>
-                                    App Store
+                                    App Store<span class="sr-only"> (nouvelle fenêtre)</span>
                                 </a>
                                 <a href="https://play.google.com/store/apps/details?id=fr.cityway.optycall.passenger.fr&hl=fr" target="_blank" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300">
                                     <svg class="w-5 h-5 mr-2" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -78,7 +80,7 @@
                                         <path style="fill:#FFAA00;" d="M470.108,287.294c12.191-6.822,18.342-19.124,18.342-31.314H294.303l83.204,83.205
                                             C446.624,300.379,470.108,287.294,470.108,287.294z"/>
                                         </svg>
-                                    Google Play
+                                    Google Play<span class="sr-only"> (nouvelle fenêtre)</span>
                                 </a>
                             </div>
                         </div>
@@ -158,7 +160,7 @@
                         </ul>
                     </div>
                     <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                        Pour plus d'infos : <a href="https://www.passpass.fr" target="_blank" class="text-primary dark:text-blue-400 hover:underline">www.passpass.fr</a> Rubrique : Nos Services &gt; Pass Pass TAD
+                        Pour plus d'infos : <a href="https://www.passpass.fr" target="_blank" rel="noopener" class="text-primary dark:text-blue-400 hover:underline">www.passpass.fr<span class="sr-only"> (nouvelle fenêtre)</span></a> Rubrique : Nos Services &gt; Pass Pass TAD
                     </div>
                    
                 </div>
@@ -168,11 +170,12 @@
                     <img src="{% static 'img/mobilite/carte-arrets-CCSA.webp' %}" alt="Carte des arrêts TAD du Sud-Avesnois" class="mx-auto max-w-2xl h-auto rounded-lg shadow-md object-contain cursor-zoom-in" loading="lazy" id="carte-arrets-img">
                 </div>
                 <!-- Modale pour agrandir l'image -->
-                <div id="modal-carte-arrets" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 hidden">
+                <div id="modal-carte-arrets" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-titre-carte">
                     <div class="relative max-w-4xl w-full p-4">
-                        <button id="close-modal-carte-arrets" class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-80 focus:outline-none" aria-label="Fermer">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <button id="close-modal-carte-arrets" class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-white" aria-label="Fermer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
+                        <h3 id="modal-titre-carte" class="sr-only">Carte des arrêts TAD agrandie</h3>
                         <img src="{% static 'img/mobilite/carte-arrets-CCSA.webp' %}" alt="Carte des arrêts TAD du Sud-Avesnois agrandie" class="w-full h-auto rounded-lg shadow-lg bg-white">
                     </div>
                 </div>
@@ -201,5 +204,5 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 {% endblock %}

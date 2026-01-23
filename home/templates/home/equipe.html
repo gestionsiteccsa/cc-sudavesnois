@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Équipe administrative et technique{% endblock %}
+
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/equipe.css' %}">
 <link rel="stylesheet" href="{% static 'css/organigramme.css' %}">
@@ -9,7 +11,7 @@
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -19,8 +21,8 @@
             </div>
         </div>
         <!-- Motif décoratif -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
     </section>
 
     <!-- Section principale -->
@@ -32,20 +34,20 @@
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Organigramme des services</h2>
                     <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
                         <!-- Onglets pour basculer entre les versions -->
-                        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
-                            <button id="interactive-tab" class="py-2 px-4 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 rounded-t-lg">Version interactive</button>
-                            <button id="static-tab" class="py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Version statique</button>
+                        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6" role="tablist" aria-label="Options d'affichage de l'organigramme">
+                            <button id="interactive-tab" role="tab" aria-selected="true" aria-controls="interactive-chart" class="py-2 px-4 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 rounded-t-lg">Version interactive</button>
+                            <button id="static-tab" role="tab" aria-selected="false" aria-controls="static-chart" class="py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Version statique</button>
                         </div>
                         
                         <!-- Version interactive de l'organigramme -->
-                        <div id="interactive-chart" class="org-chart">
+                        <div id="interactive-chart" role="tabpanel" aria-labelledby="interactive-tab" class="org-chart">
                             <div id="org-chart-container" class="org-chart-container"></div>
                         </div>
                         
                         <!-- Version statique de l'organigramme (image) -->
-                        <div id="static-chart" class="hidden">
+                        <div id="static-chart" role="tabpanel" aria-labelledby="static-tab" class="hidden">
                             <div class="w-full overflow-hidden rounded-lg shadow-lg">
-                                <a href="{% static 'img/orga.png' %}" target="_blank" class="block cursor-zoom-in" title="Cliquez pour agrandir l'organigramme">
+                                <a href="{% static 'img/orga.png' %}" target="_blank" rel="noopener" class="block cursor-zoom-in" aria-label="Agrandir l'organigramme (nouvelle fenêtre)">
                                     <img src="{% static 'img/orga.png' %}" alt="Organigramme des services de la Communauté de Communes Sud-Avesnois" class="w-full h-auto transition-transform duration-300 hover:scale-105" loading="lazy">
                                 </a>
                             </div>
@@ -55,7 +57,7 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 
 {% endblock %}
 

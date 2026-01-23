@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Médi@'pass{% endblock %}
+{% block meta_description %}Découvrez le réseau Médi@'pass : bibliothèques et médiathèques du Sud-Avesnois et de Momignies. Adhésion gratuite, programmes culturels et ressources numériques.{% endblock %}
 {% block content %}
 
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -40,10 +42,10 @@
                     </p>
                     <div class="text-center">
                         <a href="https://ccsa.reseaubibli.fr" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-8 py-4 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
-                            Accéder au portail Médi@'pass
+                            Accéder au portail Médi@'pass<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -102,10 +104,10 @@
                     </p>
                     <div class="text-center">
                         <a href="https://ccsa.reseaubibli.fr" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            Restez connectés sur ccsa.reseaubibli.fr pour en savoir plus !
+                            Restez connectés sur ccsa.reseaubibli.fr<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -146,10 +148,10 @@
                     </p>
                     <div class="text-center">
                         <a href="https://ccsa.reseaubibli.fr/index.php?lvl=cmspage&pageid=6&id_rubrique=137" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                             </svg>
-                            Rendez-vous ici pour en savoir plus
+                            Rendez-vous ici<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -168,10 +170,10 @@
                     </p>
                     <div class="text-center">
                         <a href="https://ccsa.reseaubibli.fr/index.php?lvl=cmspage&pageid=6&id_rubrique=140" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                             </svg>
-                            Plus d'informations en cliquant ici
+                            Plus d'informations<span class="sr-only"> (nouvelle fenêtre)</span>
                         </a>
                     </div>
                 </div>
@@ -192,21 +194,21 @@
                 </p>
                 <div class="flex flex-wrap gap-4 justify-center">
                     <a href="https://ccsa.reseaubibli.fr" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-white text-primary font-medium px-8 py-4 rounded-md hover:bg-gray-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                         </svg>
-                        Accéder au portail
+                        Accéder au portail<span class="sr-only"> (nouvelle fenêtre)</span>
                     </a>
                     <a href="https://ccsa.reseaubibli.fr/index.php?lvl=cmspage&pageid=6&id_rubrique=23" target="_blank" rel="noopener" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-transparent text-white font-medium px-8 py-4 rounded-md border-2 border-white hover:bg-white hover:text-primary transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary" aria-label="Découvrir les établissements du réseau Médi@'pass">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Découvrir les établissements
+                        Découvrir les établissements<span class="sr-only"> (nouvelle fenêtre)</span>
                     </a>
                 </div>
             </div>
         </div>
     </section>
-</main>
+</div>
 
 {% endblock %}

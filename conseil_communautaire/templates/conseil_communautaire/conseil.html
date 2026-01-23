@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Conseil Communautaire{% endblock %}
 {% block styles %}
 {% endblock %}
 {% block content %}
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -14,8 +15,8 @@
             </div>
         </div>
         <!-- Motif décoratif -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
     </section>
 
     <!-- Liste des membres par commune -->
@@ -28,7 +29,7 @@
                 <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {% for city in cities_list %}
                     <!-- Ville -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg" id="anor">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg" id="commune-{{ city.city_name|slugify }}">
                         <div class="bg-primary/10 p-4">
                             <h3 class="text-xl font-bold text-primary">{{ city.city_name }}</h3>
                         </div>
@@ -68,5 +69,5 @@
             </div>
         </div>
     </section>
- </main>
+ </div>
 {% endblock %}

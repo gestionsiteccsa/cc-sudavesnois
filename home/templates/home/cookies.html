@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Politique de gestion des cookies - Communauté de Communes Sud-Avesnois{% endblock %}
 {% block content %}
-<main id="main-content">
+<div>
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-4xl mx-auto text-center text-white">
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 flex items-center justify-center gap-3" tabindex="0">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
                     <span aria-hidden="true" class="text-4xl">🍪</span> Politique de gestion des cookies
                 </h1>
             </div>
         </div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
     </section>
 
     <section class="py-12 bg-white dark:bg-gray-900">
@@ -20,7 +20,7 @@
             <div class="max-w-5xl mx-auto space-y-8">
                 <!-- 1. Qu’est-ce qu’un cookie ? -->
                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Qu’est-ce qu’un cookie ?">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">1. Qu’est-ce qu’un cookie ?</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4">1. Qu’est-ce qu’un cookie ?</h2>
                     <p class="text-gray-700 dark:text-gray-300 mb-4">Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, mobile, tablette) lors de votre visite sur un site web.</p>
                     <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
                         <li>Assurer son bon fonctionnement,</li>
@@ -30,27 +30,27 @@
                 </div>
                 <!-- 2. Cookies utilisés sur ce site -->
                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Cookies utilisés sur ce site">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">2. Cookies utilisés sur ce site</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4">2. Cookies utilisés sur ce site</h2>
                     <div class="mb-4">
                         <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-2"><span aria-hidden="true">🍪</span> Cookies strictement nécessaires</h3>
                         <p class="text-gray-700 dark:text-gray-300 mb-1">Ces cookies sont indispensables au fonctionnement du site et ne peuvent pas être désactivés. Ils sont déposés par le site pour :</p>
                         <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-1">
-                            <li>🔸 Gérer la navigation, l’authentification et la sécurité,</li>
-                            <li>🔸 Mémoriser vos préférences (ex. : choix de langue).</li>
+                            <li><span aria-hidden="true">🔸</span> Gérer la navigation, l’authentification et la sécurité,</li>
+                            <li><span aria-hidden="true">🔸</span> Mémoriser vos préférences (ex. : choix de langue).</li>
                         </ul>
-                        <p class="text-gray-700 dark:text-gray-400 mt-1"><span class="font-semibold">📌 Durée de conservation :</span> jusqu’à 13 mois</p>
+                        <p class="text-gray-700 dark:text-gray-400 mt-1"><span class="font-semibold"><span aria-hidden="true">📌</span> Durée de conservation :</span> jusqu'à 13 mois</p>
                     </div>
                     <div class="mb-4">
                         <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-2"><span aria-hidden="true">📊</span> Cookies de mesure d’audience (Google Analytics)</h3>
                         <p class="text-gray-700 dark:text-gray-300 mb-1">Ces cookies sont utilisés pour analyser et améliorer la performance du site.</p>
                         <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-1">
-                            <li>🔸 Google Analytics est configuré conformément aux recommandations de la CNIL :</li>
-                            <li class="ml-6">✅ Adresse IP anonymisée,</li>
-                            <li class="ml-6">✅ Aucune combinaison avec d’autres données (publicitaires, CRM),</li>
-                            <li class="ml-6">✅ Conservation limitée des données.</li>
+                            <li><span aria-hidden="true">🔸</span> Analytics est configuré conformément aux recommandations de la CNIL :</li>
+                            <li class="ml-6"><span aria-hidden="true">✅</span> Adresse IP anonymisée,</li>
+                            <li class="ml-6"><span aria-hidden="true">✅</span> Aucune combinaison avec d’autres données (publicitaires, CRM),</li>
+                            <li class="ml-6"><span aria-hidden="true">✅</span> Conservation limitée des données.</li>
                         </ul>
                         <p class="text-gray-700 dark:text-gray-300 mb-1">Ces cookies nous permettent de comprendre comment les visiteurs interagissent avec le site, de comptabiliser les visites et les sources de trafic.</p>
-                        <p class="text-gray-700 dark:text-gray-400 mt-1"><span class="font-semibold">📌 Durée de conservation :</span> 13 mois</p>
+                        <p class="text-gray-700 dark:text-gray-400 mt-1"><span class="font-semibold"><span aria-hidden="true">📌</span> Durée de conservation :</span> 13 mois</p>
                     </div>
                     <div>
                         <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-2"><span aria-hidden="true">🚫</span> Pas de cookies publicitaires ou de traçage</h3>
@@ -59,17 +59,17 @@
                 </div>
                 <!-- 3. Consentement et gestion des cookies -->
                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Consentement et gestion des cookies">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">3. Consentement et gestion des cookies</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4">3. Consentement et gestion des cookies</h2>
                     <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2 mb-4">
-                        <li>🔸 Lors de votre première visite sur le site, un bandeau d’information apparaît pour :</li>
-                        <li class="ml-6">Vous informer de l’utilisation des cookies,</li>
-                        <li class="ml-6">Vous permettre d’accepter, de refuser, ou de paramétrer les cookies non essentiels (Google Analytics).</li>
+                        <li><span aria-hidden="true">🔸</span> Lors de votre première visite sur le site, un bandeau d’information apparaît pour :</li>
+                        <li class="ml-6"><span aria-hidden="true">🔸</span>Vous informer de l’utilisation des cookies,</li>
+                        <li class="ml-6"><span aria-hidden="true">🔸</span>Vous permettre d’accepter, de refuser, ou de paramétrer les cookies non essentiels (Google Analytics).</li>
                     </ul>
                     <p class="text-gray-700 dark:text-gray-300 mb-2">Votre consentement est libre et peut être retiré à tout moment. Vous pouvez gérer vos préférences via le bandeau ou en paramétrant votre navigateur pour bloquer ou supprimer les cookies.</p>
                 </div>
                 <!-- 4. Configuration des cookies dans votre navigateur -->
                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Configuration des cookies dans votre navigateur">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">4. Configuration des cookies dans votre navigateur</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4">4. Configuration des cookies dans votre navigateur</h2>
                     <p class="text-gray-700 dark:text-gray-300 mb-2">Vous pouvez configurer votre navigateur pour accepter ou refuser les cookies.</p>
                     <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-1">
                         <li>Chrome</li>
@@ -80,7 +80,7 @@
                 </div>
                 <!-- 5. Modifications de cette politique -->
                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8" role="region" aria-label="Modifications de cette politique">
-                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4" tabindex="0">5. Modifications de cette politique</h2>
+                    <h2 class="text-2xl font-bold text-primary dark:text-secondary mb-4">5. Modifications de cette politique</h2>
                     <p class="text-gray-700 dark:text-gray-300">La CCSA se réserve le droit de modifier cette politique à tout moment pour se conformer à la législation en vigueur. Nous vous invitons à la consulter régulièrement.</p>
                 </div>
                 <div class="text-center text-gray-600 dark:text-gray-400 text-sm mt-10" aria-live="polite">
@@ -89,5 +89,5 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 {% endblock %}

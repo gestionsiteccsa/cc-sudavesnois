@@ -1,11 +1,16 @@
 <!-- Bannière de consentement aux cookies RGPD -->
 <div id="cookie-banner"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="cookie-banner-title"
+     aria-describedby="cookie-banner-desc"
+     aria-hidden="true"
      class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg px-4 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
      style="display: none;">
   <div>
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Gestion des cookies</h2>
-    <p class="text-gray-700 dark:text-gray-200 text-sm">
-      Ce site utilise des cookies pour améliorer votre expérience et mesurer l'audience. 
+    <h2 id="cookie-banner-title" class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Gestion des cookies</h2>
+    <p id="cookie-banner-desc" class="text-gray-700 dark:text-gray-200 text-sm">
+      Ce site utilise des cookies pour améliorer votre expérience et mesurer l'audience.
       <span class="font-semibold">Aucun cookie non essentiel n'est déposé sans votre consentement.</span>
     </p>
   </div>
@@ -30,11 +35,59 @@ document.addEventListener('DOMContentLoaded', function () {
   const banner = document.getElementById('cookie-banner');
   const acceptBtn = document.getElementById('accept-cookies');
   const refuseBtn = document.getElementById('refuse-cookies');
+  const focusableElements = [acceptBtn, refuseBtn];
+  let previouslyFocusedElement = null;
+
+  // Affiche la bannière avec gestion de l'accessibilité
+  function showBanner() {
+    previouslyFocusedElement = document.activeElement;
+    banner.style.display = 'flex';
+    banner.setAttribute('aria-hidden', 'false');
+    // Déplace le focus sur le premier bouton
+    acceptBtn.focus();
+  }
+
+  // Masque la bannière avec gestion de l'accessibilité
+  function hideBanner() {
+    banner.style.display = 'none';
+    banner.setAttribute('aria-hidden', 'true');
+    // Restaure le focus sur l'élément précédemment focalisé
+    if (previouslyFocusedElement) {
+      previouslyFocusedElement.focus();
+    }
+  }
+
+  // Gestion du focus trap dans la bannière
+  function handleFocusTrap(e) {
+    if (banner.getAttribute('aria-hidden') === 'true') return;
+
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        // Shift + Tab
+        if (document.activeElement === firstFocusable) {
+          e.preventDefault();
+          lastFocusable.focus();
+        }
+      } else {
+        // Tab
+        if (document.activeElement === lastFocusable) {
+          e.preventDefault();
+          firstFocusable.focus();
+        }
+      }
+    }
+  }
+
+  // Écoute les touches pour le focus trap
+  banner.addEventListener('keydown', handleFocusTrap);
 
   // Vérifie si un choix a déjà été fait
   const consent = localStorage.getItem('cookieConsent');
   if (!consent) {
-    banner.style.display = 'flex';
+    showBanner();
   }
 
   // Fonction à appeler pour activer les cookies non essentiels (ex: Matomo, Google Analytics)
@@ -57,14 +110,14 @@ document.addEventListener('DOMContentLoaded', function () {
   acceptBtn.addEventListener('click', function () {
     localStorage.setItem('cookieConsent', 'accepted');
     enableNonEssentialCookies();
-    banner.style.display = 'none';
+    hideBanner();
   });
 
   // Refuser les cookies non essentiels
   refuseBtn.addEventListener('click', function () {
     localStorage.setItem('cookieConsent', 'refused');
     disableNonEssentialCookies();
-    banner.style.display = 'none';
+    hideBanner();
   });
 });
 </script> 

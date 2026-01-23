@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <!-- Contenu principal -->
-<main id="main-content">
+<div>
     <!-- Bannière de la commune avec image en fond -->
     <section class="relative">
         <!-- Image de fond qui prend toute la largeur -->
@@ -81,7 +81,7 @@
                                         <span class="font-medium block dark:text-gray-200">Site internet :</span>
                                         
                                         <a href="{{commune.website}}" target="_blank" rel="noopener" class="text-primary dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 inline-flex items-center">
-                                            {{commune.website}}
+                                            {{commune.website}}<span class="sr-only"> (nouvelle fenêtre)</span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                             </svg>
@@ -119,5 +119,5 @@
         </div>
     </section>
 
- </main>
+ </div>
 {% endblock %}
