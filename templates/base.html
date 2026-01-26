@@ -31,8 +31,10 @@
     <!-- Préchargement des polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="{% static 'icones/icofont.min.css' %}">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
+    <link rel="preload" as="style" href="{% static 'icones/icofont.min.css' %}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'icones/icofont.min.css' %}"></noscript>
     
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
@@ -109,8 +111,8 @@
     </button>
     
     <!-- Scripts -->
-    <script src="{% static 'js/scripts.min.js' %}"></script>
-    <script src="{% static 'js/accessibility.min.js' %}"></script>
+    <script defer src="{% static 'js/scripts.min.js' %}"></script>
+    <script defer src="{% static 'js/accessibility.min.js' %}"></script>
     {% block script %}
     {% endblock %}
     {% include "cookie_banner.html" %}
