@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit RGAA 4.1.2 - CCSA Sud-Avesnois</title>
+    <style>
+        :root {
+            --primary: #000091;
+            --success: #18753c;
+            --danger: #ce0500;
+            --warning: #b34000;
+            --gray: #666;
+            --light-bg: #f6f6f6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Marianne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: #1e1e1e;
+            background: #fff;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+        }
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #1e1e1e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-card.success .value { color: var(--success); }
+        .stat-card.danger .value { color: var(--danger); }
+        .stat-card.warning .value { color: var(--warning); }
+        
+        .page-selector {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .page-selector select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+        }
+        
+        .synthesis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .synthesis-table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .synthesis-table th.rotated {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 120px;
+            white-space: nowrap;
+        }
+        
+        .synthesis-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .synthesis-table tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .status-C { background: var(--success); color: white; }
+        .status-NC { background: var(--danger); color: white; }
+        .status-NA { background: #666; color: white; }
+        .status-D { background: var(--warning); color: white; }
+        .status-NT { background: #0a76f6; color: white; }
+        
+        .criteria-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .criteria-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        
+        .criteria-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+        
+        .criteria-table tr:hover {
+            background: #e8f4fd;
+        }
+        
+        .thematic-header {
+            background: #3a3a3a !important;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .thematic-header td {
+            padding: 15px !important;
+            font-size: 1.1rem;
+        }
+        
+        .criteria-num {
+            font-weight: bold;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .level-A { background: #fef3cd; color: #856404; }
+        .level-AA { background: #d1e7dd; color: #0f5132; }
+        .level-AAA { background: #cfe2ff; color: #084298; }
+        
+        .status-select {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .status-select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .status-select.C { border-color: var(--success); background: #d1e7dd; }
+        .status-select.NC { border-color: var(--danger); background: #f8d7da; }
+        .status-select.NA { border-color: #666; background: #e9ecef; }
+        .status-select.D { border-color: var(--warning); background: #fff3cd; }
+        .status-select.NT { border-color: #0a76f6; background: #cfe2ff; }
+        
+        .observation-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        
+        .actions {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 20px;
+            border-top: 2px solid var(--primary);
+            text-align: center;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media print {
+            .no-print { display: none; }
+            .criteria-table th { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🇫🇷 Audit RGAA 4.1.2 - Communauté de Communes Sud-Avesnois</h1>
+            <p>Référentiel Général d'Amélioration de l'Accessibilité - 106 critères</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Statistiques globales -->
+        <div class="stats-cards" id="stats">
+            <div class="stat-card">
+                <div class="value" id="total-pages">34</div>
+                <div>Pages auditées</div>
+            </div>
+            <div class="stat-card success">
+                <div class="value" id="total-c">0</div>
+                <div>Critères Conformes</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="value" id="total-nc">0</div>
+                <div>Critères Non Conformes</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="conformity-rate">0%</div>
+                <div>Taux de conformité</div>
+            </div>
+        </div>
+        
+        <!-- Sélecteur de page -->
+        <div class="page-selector no-print">
+            <label for="page-select"><strong>Sélectionner une page à auditer :</strong></label>
+            <select id="page-select" onchange="loadPage(this.value)">
+                <option value="">-- Choisir une page --</option>
+                <optgroup label="Pages Home">
+                    <option value="index">Accueil (index.html)</option>
+                    <option value="accessibilite">Accessibilité</option>
+                    <option value="collecte-dechets">Collecte des déchets</option>
+                    <option value="conseil">Conseil communautaire</option>
+                    <option value="contrat-local-sante">Contrat local de santé</option>
+                    <option value="cookies">Cookies</option>
+                    <option value="dechetteries">Déchetteries</option>
+                    <option value="dev-eco">Développement économique</option>
+                    <option value="documents-plui">Documents PLUi</option>
+                    <option value="encombrants">Encombrants</option>
+                    <option value="equipe">Équipe</option>
+                    <option value="habitat">Habitat</option>
+                    <option value="maisons-sante">Maisons de santé</option>
+                    <option value="marches-publics">Marchés publics</option>
+                    <option value="mediapass">Médi@'pass</option>
+                    <option value="mentions-legales">Mentions légales</option>
+                    <option value="mobilite">Mobilité / TAD</option>
+                    <option value="mutuelle">Mutuelle</option>
+                    <option value="plan-du-site">Plan du site</option>
+                    <option value="plui">PLUi</option>
+                    <option value="pnra">PNR Avesnois</option>
+                    <option value="politique-confidentialite">Politique de confidentialité</option>
+                    <option value="presentation">Présentation</option>
+                    <option value="projet-plui">Projet PLUi</option>
+                    <option value="rapports-activite-home">Rapports d'activité (home)</option>
+                    <option value="tourisme">Tourisme</option>
+                </optgroup>
+                <optgroup label="Autres pages">
+                    <option value="commissions">Commissions</option>
+                    <option value="elus">Bureau communautaire / Élus</option>
+                    <option value="semestriel">Semestriels</option>
+                    <option value="rapports-activite">Rapports d'activité</option>
+                    <option value="list-journals">Liste des journaux</option>
+                    <option value="journal">Journal</option>
+                </optgroup>
+            </select>
+        </div>
+        
+        <!-- Légende -->
+        <div class="legend">
+            <div class="legend-item"><span class="status-badge status-C">C</span> Conforme</div>
+            <div class="legend-item"><span class="status-badge status-NC">NC</span> Non Conforme</div>
+            <div class="legend-item"><span class="status-badge status-NA">NA</span> Non Applicable</div>
+            <div class="legend-item"><span class="status-badge status-D">D</span> Dérogé</div>
+            <div class="legend-item"><span class="status-badge status-NT">NT</span> Non Testé</div>
+        </div>
+        
+        <!-- Synthèse par thématique -->
+        <h2>Synthèse par thématiques et par statuts</h2>
+        <table class="synthesis-table" id="synthesis-table">
+            <thead>
+                <tr>
+                    <th>Statut</th>
+                    <th class="rotated">IMAGES</th>
+                    <th class="rotated">CADRES</th>
+                    <th class="rotated">COULEURS</th>
+                    <th class="rotated">MULTIMÉDIA</th>
+                    <th class="rotated">TABLEAUX</th>
+                    <th class="rotated">LIENS</th>
+                    <th class="rotated">SCRIPTS</th>
+                    <th class="rotated">ÉLÉMENTS OBLIGATOIRES</th>
+                    <th class="rotated">STRUCTURATION</th>
+                    <th class="rotated">PRÉSENTATION</th>
+                    <th class="rotated">FORMULAIRES</th>
+                    <th class="rotated">NAVIGATION</th>
+                    <th class="rotated">CONSULTATION</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="status-badge status-C">C</span></td>
+                    <td id="syn-1-c">0</td>
+                    <td id="syn-2-c">0</td>
+                    <td id="syn-3-c">0</td>
+                    <td id="syn-4-c">0</td>
+                    <td id="syn-5-c">0</td>
+                    <td id="syn-6-c">0</td>
+                    <td id="syn-7-c">0</td>
+                    <td id="syn-8-c">0</td>
+                    <td id="syn-9-c">0</td>
+                    <td id="syn-10-c">0</td>
+                    <td id="syn-11-c">0</td>
+                    <td id="syn-12-c">0</td>
+                    <td id="syn-13-c">0</td>
+                    <td id="syn-total-c">0</td>
+                </tr>
+                <tr>
+                    <td><span class="status-badge status-NC">NC</span></td>
+                    <td id="syn-1-nc">0</td>
+                    <td id="syn-2-nc">0</td>
+                    <td id="syn-3-nc">0</td>
+                    <td id="syn-4-nc">0</td>
+                    <td id="syn-5-nc">0</td>
+                    <td id="syn-6-nc">0</td>
+                    <td id="syn-7-nc">0</td>
+                    <td id="syn-8-nc">0</td>
+                    <td id="syn-9-nc">0</td>
+                    <td id="syn-10-nc">0</td>
+                    <td id="syn-11-nc">0</td>
+                    <td id="syn-12-nc">0</td>
+                    <td id="syn-13-nc">0</td>
+                    <td id="syn-total-nc">0</td>
+                </tr>
+                <tr>
+                    <td><span class="status-badge status-NA">NA</span></td>
+                    <td id="syn-1-na">0</td>
+                    <td id="syn-2-na">0</td>
+                    <td id="syn-3-na">0</td>
+                    <td id="syn-4-na">0</td>
+                    <td id="syn-5-na">0</td>
+                    <td id="syn-6-na">0</td>
+                    <td id="syn-7-na">0</td>
+                    <td id="syn-8-na">0</td>
+                    <td id="syn-9-na">0</td>
+                    <td id="syn-10-na">0</td>
+                    <td id="syn-11-na">0</td>
+                    <td id="syn-12-na">0</td>
+                    <td id="syn-13-na">0</td>
+                    <td id="syn-total-na">0</td>
+                </tr>
+                <tr>
+                    <td><span class="status-badge status-D">D</span></td>
+                    <td id="syn-1-d">0</td>
+                    <td id="syn-2-d">0</td>
+                    <td id="syn-3-d">0</td>
+                    <td id="syn-4-d">0</td>
+                    <td id="syn-5-d">0</td>
+                    <td id="syn-6-d">0</td>
+                    <td id="syn-7-d">0</td>
+                    <td id="syn-8-d">0</td>
+                    <td id="syn-9-d">0</td>
+                    <td id="syn-10-d">0</td>
+                    <td id="syn-11-d">0</td>
+                    <td id="syn-12-d">0</td>
+                    <td id="syn-13-d">0</td>
+                    <td id="syn-total-d">0</td>
+                </tr>
+                <tr>
+                    <td><span class="status-badge status-NT">NT</span></td>
+                    <td id="syn-1-nt">0</td>
+                    <td id="syn-2-nt">0</td>
+                    <td id="syn-3-nt">0</td>
+                    <td id="syn-4-nt">0</td>
+                    <td id="syn-5-nt">0</td>
+                    <td id="syn-6-nt">0</td>
+                    <td id="syn-7-nt">0</td>
+                    <td id="syn-8-nt">0</td>
+                    <td id="syn-9-nt">0</td>
+                    <td id="syn-10-nt">0</td>
+                    <td id="syn-11-nt">0</td>
+                    <td id="syn-12-nt">0</td>
+                    <td id="syn-13-nt">0</td>
+                    <td id="syn-total-nt">106</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p style="margin-bottom: 30px;">
+            <strong>Pourcentage de critères respectés :</strong> <span id="percent-respected">0</span>%<br>
+            <strong>Taux moyen de conformité du service en ligne :</strong> <span id="avg-conformity">0</span>%
+        </p>
+        
+        <!-- Tableau des critères -->
+        <h2>Grille d'audit - 106 critères RGAA 4.1.2</h2>
+        <table class="criteria-table" id="criteria-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Critère</th>
+                    <th style="width: 60px;">Niveau</th>
+                    <th>Recommandation</th>
+                    <th style="width: 100px;">Statut</th>
+                    <th style="width: 250px;">Observations</th>
+                </tr>
+            </thead>
+            <tbody id="criteria-body">
+                <!-- Les critères seront générés par JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Actions -->
+    <div class="actions no-print">
+        <button class="btn" onclick="saveToLocalStorage()">💾 Sauvegarder</button>
+        <button class="btn btn-success" onclick="exportToCSV()">📊 Exporter CSV</button>
+        <button class="btn btn-warning" onclick="window.print()">🖨️ Imprimer</button>
+        <button class="btn" onclick="resetPage()">🔄 Réinitialiser</button>
+    </div>
+    
+    <script>
+        // Données des 106 critères RGAA 4.1.2
+        const criteria = [
+            // Thématique 1 : Images (9 critères)
+            { thematic: 1, name: "IMAGES", num: "1.1", level: "A", text: "Chaque image porteuse d'information a-t-elle une alternative textuelle ?" },
+            { thematic: 1, num: "1.2", level: "A", text: "Chaque image de décoration est-elle correctement ignorée par les technologies d'assistance ?" },
+            { thematic: 1, num: "1.3", level: "A", text: "Pour chaque image porteuse d'information ayant une alternative textuelle, cette alternative est-elle pertinente ?" },
+            { thematic: 1, num: "1.4", level: "A", text: "Pour chaque image utilisée comme CAPTCHA ou comme image-test, ayant une alternative textuelle, cette alternative permet-elle d'identifier la nature et la fonction de l'image ?" },
+            { thematic: 1, num: "1.5", level: "A", text: "Pour chaque image utilisée comme CAPTCHA, une solution d'accès alternatif au contenu ou à la fonction du CAPTCHA est-elle présente ?" },
+            { thematic: 1, num: "1.6", level: "A", text: "Chaque image porteuse d'information a-t-elle, si nécessaire, une description détaillée ?" },
+            { thematic: 1, num: "1.7", level: "A", text: "Pour chaque image porteuse d'information ayant une description détaillée, cette description est-elle pertinente ?" },
+            { thematic: 1, num: "1.8", level: "AA", text: "Chaque image texte porteuse d'information, en l'absence d'un mécanisme de remplacement, doit si possible être remplacée par du texte stylé. Cette règle est-elle respectée ?" },
+            { thematic: 1, num: "1.9", level: "A", text: "Chaque légende d'image est-elle, si nécessaire, correctement reliée à l'image correspondante ?" },
+            
+            // Thématique 2 : Cadres (2 critères)
+            { thematic: 2, name: "CADRES", num: "2.1", level: "A", text: "Chaque cadre a-t-il un titre de cadre ?" },
+            { thematic: 2, num: "2.2", level: "A", text: "Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ?" },
+            
+            // Thématique 3 : Couleurs (3 critères)
+            { thematic: 3, name: "COULEURS", num: "3.1", level: "A", text: "Dans chaque page web, l'information ne doit pas être donnée uniquement par la couleur. Cette règle est-elle respectée ?" },
+            { thematic: 3, num: "3.2", level: "AA", text: "Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé ?" },
+            { thematic: 3, num: "3.3", level: "AA", text: "Dans chaque page web, les couleurs utilisées dans les composants d'interface ou les éléments graphiques porteurs d'informations sont-elles suffisamment contrastées ?" },
+            
+            // Thématique 4 : Multimédia (13 critères)
+            { thematic: 4, name: "MULTIMÉDIA", num: "4.1", level: "A", text: "Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription ?" },
+            { thematic: 4, num: "4.2", level: "A", text: "Pour chaque média temporel pré-enregistré ayant une transcription textuelle ou une audiodescription synchronisée, celles-ci sont-elles pertinentes ?" },
+            { thematic: 4, num: "4.3", level: "A", text: "Chaque média temporel synchronisé pré-enregistré a-t-il, si nécessaire, des sous-titres synchronisés ?" },
+            { thematic: 4, num: "4.4", level: "A", text: "Pour chaque média temporel synchronisé pré-enregistré ayant des sous-titres synchronisés, ces sous-titres sont-ils pertinents ?" },
+            { thematic: 4, num: "4.5", level: "AA", text: "Chaque média temporel pré-enregistré a-t-il, si nécessaire, une audiodescription synchronisée ?" },
+            { thematic: 4, num: "4.6", level: "AA", text: "Pour chaque média temporel pré-enregistré ayant une audiodescription synchronisée, celle-ci est-elle pertinente ?" },
+            { thematic: 4, num: "4.7", level: "A", text: "Chaque média temporel est-il clairement identifiable ?" },
+            { thematic: 4, num: "4.8", level: "A", text: "Chaque média non temporel a-t-il, si nécessaire, une alternative ?" },
+            { thematic: 4, num: "4.9", level: "A", text: "Pour chaque média non temporel ayant une alternative, cette alternative est-elle pertinente ?" },
+            { thematic: 4, num: "4.10", level: "A", text: "Chaque son déclenché automatiquement est-il contrôlable par l'utilisateur ?" },
+            { thematic: 4, num: "4.11", level: "A", text: "La consultation de chaque média temporel est-elle, si nécessaire, contrôlable par le clavier et tout dispositif de pointage ?" },
+            { thematic: 4, num: "4.12", level: "A", text: "La consultation de chaque média non temporel est-elle contrôlable par le clavier et tout dispositif de pointage ?" },
+            { thematic: 4, num: "4.13", level: "AAA", text: "Chaque média temporel et non temporel est-il compatible avec les technologies d'assistance ?" },
+            
+            // Thématique 5 : Tableaux (8 critères)
+            { thematic: 5, name: "TABLEAUX", num: "5.1", level: "A", text: "Chaque tableau de données complexe a-t-il un résumé ?" },
+            { thematic: 5, num: "5.2", level: "A", text: "Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ?" },
+            { thematic: 5, num: "5.3", level: "A", text: "Pour chaque tableau de mise en forme, le contenu linéarisé reste-t-il compréhensible ?" },
+            { thematic: 5, num: "5.4", level: "A", text: "Chaque tableau de données a-t-il un titre ?" },
+            { thematic: 5, num: "5.5", level: "A", text: "Pour chaque tableau de données ayant un titre, celui-ci est-il pertinent ?" },
+            { thematic: 5, num: "5.6", level: "A", text: "Pour chaque tableau de données, chaque en-tête de colonnes et chaque en-tête de lignes sont-ils correctement déclarés ?" },
+            { thematic: 5, num: "5.7", level: "A", text: "Pour chaque tableau de données, la technique appropriée permettant d'associer chaque cellule avec ses en-têtes est-elle utilisée ?" },
+            { thematic: 5, num: "5.8", level: "A", text: "Chaque tableau de mise en forme ne doit pas utiliser d'éléments propres aux tableaux de données. Cette règle est-elle respectée ?" },
+            
+            // Thématique 6 : Liens (2 critères)
+            { thematic: 6, name: "LIENS", num: "6.1", level: "A", text: "Chaque lien est-il explicite ?" },
+            { thematic: 6, num: "6.2", level: "A", text: "Dans chaque page web, chaque lien, à l'exception des ancres, a-t-il un intitulé ?" },
+            
+            // Thématique 7 : Scripts (5 critères)
+            { thematic: 7, name: "SCRIPTS", num: "7.1", level: "A", text: "Chaque script est-il, si nécessaire, compatible avec les technologies d'assistance ?" },
+            { thematic: 7, num: "7.2", level: "A", text: "Pour chaque script ayant une alternative, cette alternative est-elle pertinente ?" },
+            { thematic: 7, num: "7.3", level: "A", text: "Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage ?" },
+            { thematic: 7, num: "7.4", level: "A", text: "Pour chaque script qui initie un changement de contexte, l'utilisateur est-il averti ou en a-t-il le contrôle ?" },
+            { thematic: 7, num: "7.5", level: "AA", text: "Dans chaque page web, les messages de statut sont-ils correctement restitués par les technologies d'assistance ?" },
+            
+            // Thématique 8 : Éléments obligatoires (10 critères)
+            { thematic: 8, name: "ÉLÉMENTS OBLIGATOIRES", num: "8.1", level: "A", text: "Chaque page web est-elle définie par un type de document ?" },
+            { thematic: 8, num: "8.2", level: "A", text: "Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ?" },
+            { thematic: 8, num: "8.3", level: "A", text: "Dans chaque page web, la langue par défaut est-elle présente ?" },
+            { thematic: 8, num: "8.4", level: "A", text: "Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ?" },
+            { thematic: 8, num: "8.5", level: "A", text: "Chaque page web a-t-elle un titre de page ?" },
+            { thematic: 8, num: "8.6", level: "A", text: "Pour chaque page web ayant un titre de page, ce titre est-il pertinent ?" },
+            { thematic: 8, num: "8.7", level: "AA", text: "Dans chaque page web, chaque changement de langue est-il indiqué dans le code source ?" },
+            { thematic: 8, num: "8.8", level: "A", text: "Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ?" },
+            { thematic: 8, num: "8.9", level: "A", text: "Dans chaque page web, les balises ne doivent pas être utilisées uniquement à des fins de présentation. Cette règle est-elle respectée ?" },
+            { thematic: 8, num: "8.10", level: "A", text: "Dans chaque page web, les changements de sens de lecture sont-ils signalés ?" },
+            
+            // Thématique 9 : Structuration (4 critères)
+            { thematic: 9, name: "STRUCTURATION", num: "9.1", level: "A", text: "Dans chaque page web, l'information est-elle structurée par l'utilisation appropriée de titres ?" },
+            { thematic: 9, num: "9.2", level: "A", text: "Dans chaque page web, la structure du document est-elle cohérente ?" },
+            { thematic: 9, num: "9.3", level: "A", text: "Dans chaque page web, chaque liste est-elle correctement structurée ?" },
+            { thematic: 9, num: "9.4", level: "A", text: "Dans chaque page web, chaque citation est-elle correctement indiquée ?" },
+            
+            // Thématique 10 : Présentation (14 critères)
+            { thematic: 10, name: "PRÉSENTATION", num: "10.1", level: "A", text: "Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l'information ?" },
+            { thematic: 10, num: "10.2", level: "A", text: "Dans chaque page web, le contenu visible reste-t-il présent lorsque les feuilles de styles sont désactivées ?" },
+            { thematic: 10, num: "10.3", level: "A", text: "Dans chaque page web, l'information reste-t-elle compréhensible lorsque les feuilles de styles sont désactivées ?" },
+            { thematic: 10, num: "10.4", level: "AA", text: "Dans chaque page web, le texte reste-t-il lisible lorsque la taille des caractères est augmentée jusqu'à 200%, au moins ?" },
+            { thematic: 10, num: "10.5", level: "A", text: "Dans chaque page web, les déclarations CSS de couleurs de fond d'élément et de police sont-elles correctement utilisées ?" },
+            { thematic: 10, num: "10.6", level: "A", text: "Dans chaque page web, chaque lien dont la nature n'est pas évidente est-il visible par rapport au texte environnant ?" },
+            { thematic: 10, num: "10.7", level: "A", text: "Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ?" },
+            { thematic: 10, num: "10.8", level: "A", text: "Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d'assistance ?" },
+            { thematic: 10, num: "10.9", level: "A", text: "Dans chaque page web, l'information ne doit pas être donnée uniquement par la forme, taille ou position. Cette règle est-elle respectée ?" },
+            { thematic: 10, num: "10.10", level: "A", text: "Dans chaque page web, l'information ne doit pas être donnée par la forme, taille ou position uniquement. Cette règle est-elle implémentée de façon pertinente ?" },
+            { thematic: 10, num: "10.11", level: "AA", text: "Pour chaque page web, les contenus peuvent-ils être présentés sans avoir recours à un défilement vertical pour une fenêtre ayant une hauteur de 256 px ou horizontal pour une fenêtre ayant une largeur de 320 px ?" },
+            { thematic: 10, num: "10.12", level: "AA", text: "Dans chaque page web, les propriétés d'espacement du texte peuvent-elles être redéfinies par l'utilisateur sans perte de contenu ou de fonctionnalité ?" },
+            { thematic: 10, num: "10.13", level: "AA", text: "Dans chaque page web, les contenus additionnels apparaissant à la prise de focus ou au survol d'un composant d'interface sont-ils contrôlables par l'utilisateur ?" },
+            { thematic: 10, num: "10.14", level: "AA", text: "Dans chaque page web, les contenus additionnels apparaissant via les styles CSS uniquement peuvent-ils être rendus visibles au clavier et par tout dispositif de pointage ?" },
+            
+            // Thématique 11 : Formulaires (13 critères)
+            { thematic: 11, name: "FORMULAIRES", num: "11.1", level: "A", text: "Chaque champ de formulaire a-t-il une étiquette ?" },
+            { thematic: 11, num: "11.2", level: "A", text: "Chaque étiquette associée à un champ de formulaire est-elle pertinente ?" },
+            { thematic: 11, num: "11.3", level: "AA", text: "Dans chaque formulaire, chaque étiquette associée à un champ de formulaire ayant la même fonction et répété plusieurs fois dans une même page ou dans un ensemble de pages est-elle cohérente ?" },
+            { thematic: 11, num: "11.4", level: "A", text: "Dans chaque formulaire, chaque étiquette de champ et son champ associé sont-ils accolés ?" },
+            { thematic: 11, num: "11.5", level: "A", text: "Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ?" },
+            { thematic: 11, num: "11.6", level: "A", text: "Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ?" },
+            { thematic: 11, num: "11.7", level: "A", text: "Dans chaque formulaire, chaque légende associée à un regroupement de champs de même nature est-elle pertinente ?" },
+            { thematic: 11, num: "11.8", level: "A", text: "Dans chaque formulaire, les items de même nature d'une liste de choix sont-ils regroupés de manière pertinente ?" },
+            { thematic: 11, num: "11.9", level: "A", text: "Dans chaque formulaire, l'intitulé de chaque bouton est-il pertinent ?" },
+            { thematic: 11, num: "11.10", level: "A", text: "Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente ?" },
+            { thematic: 11, num: "11.11", level: "AA", text: "Dans chaque formulaire, le contrôle de saisie est-il accompagné, si nécessaire, de suggestions facilitant la correction des erreurs de saisie ?" },
+            { thematic: 11, num: "11.12", level: "AA", text: "Pour chaque formulaire qui modifie ou supprime des données, ou qui transmet des réponses à un test ou à un examen, ou dont la validation a des conséquences financières ou juridiques, les données saisies peuvent-elles être modifiées, mises à jour ou récupérées par l'utilisateur ?" },
+            { thematic: 11, num: "11.13", level: "AA", text: "La finalité d'un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l'utilisateur ?" },
+            
+            // Thématique 12 : Navigation (11 critères)
+            { thematic: 12, name: "NAVIGATION", num: "12.1", level: "AA", text: "Chaque ensemble de pages dispose-t-il de deux systèmes de navigation différents, au moins ?" },
+            { thematic: 12, num: "12.2", level: "AA", text: "Dans chaque ensemble de pages, le menu et les barres de navigation sont-ils toujours à la même place ?" },
+            { thematic: 12, num: "12.3", level: "AA", text: "La page « plan du site » est-elle pertinente ?" },
+            { thematic: 12, num: "12.4", level: "AA", text: "Dans chaque ensemble de pages, la page « plan du site » est-elle atteignable de manière identique ?" },
+            { thematic: 12, num: "12.5", level: "AA", text: "Dans chaque ensemble de pages, le moteur de recherche est-il atteignable de manière identique ?" },
+            { thematic: 12, num: "12.6", level: "A", text: "Les zones de regroupement de contenus présentes dans plusieurs pages web sont-elles atteignables ou évitables ?" },
+            { thematic: 12, num: "12.7", level: "A", text: "Dans chaque page web, un lien d'évitement ou d'accès rapide à la zone de contenu principal est-il présent ?" },
+            { thematic: 12, num: "12.8", level: "A", text: "Dans chaque page web, l'ordre de tabulation est-il cohérent ?" },
+            { thematic: 12, num: "12.9", level: "A", text: "Dans chaque page web, la navigation ne doit pas contenir de piège au clavier. Cette règle est-elle respectée ?" },
+            { thematic: 12, num: "12.10", level: "A", text: "Dans chaque page web, les raccourcis clavier n'utilisant qu'une seule touche (lettre minuscule ou majuscule, ponctuation, chiffre ou symbole) sont-ils contrôlables par l'utilisateur ?" },
+            { thematic: 12, num: "12.11", level: "AA", text: "Dans chaque page web, les contenus additionnels apparaissant au survol, à la prise de focus ou à l'activation d'un composant d'interface sont-ils si nécessaire atteignables au clavier ?" },
+            
+            // Thématique 13 : Consultation (12 critères)
+            { thematic: 13, name: "CONSULTATION", num: "13.1", level: "A", text: "Pour chaque page web, l'utilisateur a-t-il le contrôle de chaque limite de temps modifiant le contenu ?" },
+            { thematic: 13, num: "13.2", level: "A", text: "Dans chaque page web, l'ouverture d'une nouvelle fenêtre ne doit pas être déclenchée sans action de l'utilisateur. Cette règle est-elle respectée ?" },
+            { thematic: 13, num: "13.3", level: "A", text: "Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible ?" },
+            { thematic: 13, num: "13.4", level: "A", text: "Pour chaque document bureautique ayant une version accessible, cette version offre-t-elle la même information ?" },
+            { thematic: 13, num: "13.5", level: "A", text: "Dans chaque page web, chaque contenu cryptique (art ASCII, émoticône, syntaxe cryptique) a-t-il une alternative ?" },
+            { thematic: 13, num: "13.6", level: "A", text: "Dans chaque page web, pour chaque contenu cryptique (art ASCII, émoticône, syntaxe cryptique) ayant une alternative, cette alternative est-elle pertinente ?" },
+            { thematic: 13, num: "13.7", level: "A", text: "Dans chaque page web, les changements brusques de luminosité ou les effets de flash sont-ils correctement utilisés ?" },
+            { thematic: 13, num: "13.8", level: "A", text: "Dans chaque page web, chaque contenu en mouvement ou clignotant est-il contrôlable par l'utilisateur ?" },
+            { thematic: 13, num: "13.9", level: "A", text: "Dans chaque page web, le contenu proposé est-il consultable quelle que soit l'orientation de l'écran (portrait ou paysage) ?" },
+            { thematic: 13, num: "13.10", level: "AAA", text: "Dans chaque page web, les fonctionnalités utilisables ou disponibles au moyen d'un geste complexe peuvent-elles être également disponibles au moyen d'un geste simple ?" },
+            { thematic: 13, num: "13.11", level: "A", text: "Dans chaque page web, les actions déclenchées au moyen d'un dispositif de pointage sur un point unique de l'écran peuvent-elles faire l'objet d'une annulation ?" },
+            { thematic: 13, num: "13.12", level: "A", text: "Dans chaque page web, les fonctionnalités qui impliquent un mouvement de l'appareil ou vers l'appareil peuvent-elles être satisfaites de manière alternative ?" }
+        ];
+        
+        let currentPage = "";
+        let auditData = {};
+        
+        // Initialiser le tableau des critères
+        function initCriteriaTable() {
+            const tbody = document.getElementById('criteria-body');
+            tbody.innerHTML = '';
+            
+            let currentThematic = 0;
+            
+            criteria.forEach((c, index) => {
+                // Ajouter l'en-tête de thématique
+                if (c.thematic !== currentThematic) {
+                    currentThematic = c.thematic;
+                    const headerRow = document.createElement('tr');
+                    headerRow.className = 'thematic-header';
+                    headerRow.innerHTML = `<td colspan="5">Thématique ${c.thematic} : ${c.name}</td>`;
+                    tbody.appendChild(headerRow);
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="criteria-num">${c.num}</td>
+                    <td><span class="level-badge level-${c.level}">${c.level}</span></td>
+                    <td>${c.text}</td>
+                    <td>
+                        <select class="status-select" id="status-${c.num}" onchange="updateStatus('${c.num}', this.value)">
+                            <option value="NT">NT</option>
+                            <option value="C">C</option>
+                            <option value="NC">NC</option>
+                            <option value="NA">NA</option>
+                            <option value="D">D</option>
+                        </select>
+                    </td>
+                    <td>
+                        <textarea class="observation-input" id="obs-${c.num}" 
+                            placeholder="Observations..." 
+                            onchange="updateObservation('${c.num}', this.value)"></textarea>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Mettre à jour le statut d'un critère
+        function updateStatus(criterionNum, status) {
+            if (!currentPage) return;
+            
+            if (!auditData[currentPage]) {
+                auditData[currentPage] = {};
+            }
+            if (!auditData[currentPage][criterionNum]) {
+                auditData[currentPage][criterionNum] = {};
+            }
+            auditData[currentPage][criterionNum].status = status;
+            
+            // Mettre à jour le style du select
+            const select = document.getElementById(`status-${criterionNum}`);
+            select.className = `status-select ${status}`;
+            
+            updateSynthesis();
+        }
+        
+        // Mettre à jour l'observation d'un critère
+        function updateObservation(criterionNum, observation) {
+            if (!currentPage) return;
+            
+            if (!auditData[currentPage]) {
+                auditData[currentPage] = {};
+            }
+            if (!auditData[currentPage][criterionNum]) {
+                auditData[currentPage][criterionNum] = {};
+            }
+            auditData[currentPage][criterionNum].observation = observation;
+        }
+        
+        // Charger une page
+        function loadPage(pageName) {
+            currentPage = pageName;
+            
+            if (!pageName) return;
+            
+            // Charger les données existantes ou initialiser
+            if (!auditData[pageName]) {
+                auditData[pageName] = {};
+                criteria.forEach(c => {
+                    auditData[pageName][c.num] = { status: 'NT', observation: '' };
+                });
+            }
+            
+            // Mettre à jour l'interface
+            criteria.forEach(c => {
+                const data = auditData[pageName][c.num] || { status: 'NT', observation: '' };
+                
+                const select = document.getElementById(`status-${c.num}`);
+                if (select) {
+                    select.value = data.status;
+                    select.className = `status-select ${data.status}`;
+                }
+                
+                const obs = document.getElementById(`obs-${c.num}`);
+                if (obs) {
+                    obs.value = data.observation || '';
+                }
+            });
+            
+            updateSynthesis();
+        }
+        
+        // Mettre à jour la synthèse
+        function updateSynthesis() {
+            if (!currentPage || !auditData[currentPage]) return;
+            
+            const counts = {
+                total: { C: 0, NC: 0, NA: 0, D: 0, NT: 0 }
+            };
+            
+            // Initialiser les compteurs par thématique
+            for (let i = 1; i <= 13; i++) {
+                counts[i] = { C: 0, NC: 0, NA: 0, D: 0, NT: 0 };
+            }
+            
+            // Compter les statuts
+            criteria.forEach(c => {
+                const status = auditData[currentPage][c.num]?.status || 'NT';
+                counts[c.thematic][status]++;
+                counts.total[status]++;
+            });
+            
+            // Mettre à jour le tableau de synthèse
+            ['c', 'nc', 'na', 'd', 'nt'].forEach(status => {
+                for (let i = 1; i <= 13; i++) {
+                    const cell = document.getElementById(`syn-${i}-${status}`);
+                    if (cell) {
+                        cell.textContent = counts[i][status.toUpperCase()];
+                    }
+                }
+                const totalCell = document.getElementById(`syn-total-${status}`);
+                if (totalCell) {
+                    totalCell.textContent = counts.total[status.toUpperCase()];
+                }
+            });
+            
+            // Mettre à jour les statistiques globales
+            document.getElementById('total-c').textContent = counts.total.C;
+            document.getElementById('total-nc').textContent = counts.total.NC;
+            
+            const applicable = counts.total.C + counts.total.NC;
+            const rate = applicable > 0 ? Math.round((counts.total.C / applicable) * 100) : 0;
+            document.getElementById('conformity-rate').textContent = rate + '%';
+            document.getElementById('percent-respected').textContent = rate;
+            document.getElementById('avg-conformity').textContent = rate;
+        }
+        
+        // Sauvegarder dans localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('rgaa-audit-ccsa', JSON.stringify(auditData));
+            alert('Audit sauvegardé !');
+        }
+        
+        // Charger depuis localStorage
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('rgaa-audit-ccsa');
+            if (saved) {
+                auditData = JSON.parse(saved);
+            }
+        }
+        
+        // Exporter en CSV
+        function exportToCSV() {
+            if (!currentPage) {
+                alert('Veuillez sélectionner une page');
+                return;
+            }
+            
+            let csv = 'Critère;Niveau;Statut;Observation;Recommandation\n';
+            
+            criteria.forEach(c => {
+                const data = auditData[currentPage]?.[c.num] || { status: 'NT', observation: '' };
+                const text = c.text.replace(/"/g, '""');
+                const obs = (data.observation || '').replace(/"/g, '""');
+                csv += `"${c.num}";"${c.level}";"${data.status}";"${obs}";"${text}"\n`;
+            });
+            
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `audit-rgaa-${currentPage}-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+        
+        // Réinitialiser la page courante
+        function resetPage() {
+            if (!currentPage) return;
+            
+            if (confirm('Réinitialiser tous les critères pour cette page ?')) {
+                delete auditData[currentPage];
+                loadPage(currentPage);
+            }
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            // Charger les données pré-remplies si disponibles
+            if (typeof prefilledAuditData !== 'undefined') {
+                Object.keys(prefilledAuditData).forEach(page => {
+                    if (!auditData[page]) {
+                        auditData[page] = prefilledAuditData[page];
+                    }
+                });
+            }
+            initCriteriaTable();
+        });
+    </script>
+    <script src="audit_rgaa_data.js"></script>
+</body>
+</html>
+
