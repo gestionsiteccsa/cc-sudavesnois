@@ -300,6 +300,9 @@
             <label for="page-select"><strong>Sélectionner une page à auditer :</strong></label>
             <select id="page-select" onchange="loadPage(this.value)">
                 <option value="">-- Choisir une page --</option>
+                <optgroup label="Audit global">
+                    <option value="elements-transverses">Éléments transverses (header, footer, nav...)</option>
+                </optgroup>
                 <optgroup label="Pages Home">
                     <option value="index">Accueil (index.html)</option>
                     <option value="accessibilite">Accessibilité</option>

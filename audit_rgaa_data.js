@@ -160,7 +160,10 @@ const prefilledAuditData = {
     "presentation": JSON.parse(JSON.stringify(defaultData)),
     "projet-plui": JSON.parse(JSON.stringify(defaultData)),
     "rapports-activite-home": JSON.parse(JSON.stringify(defaultData)), // Page home/rapports-activite.html
-    "tourisme": JSON.parse(JSON.stringify(defaultData))
+    "tourisme": JSON.parse(JSON.stringify(defaultData)),
+
+    // Audit global des éléments transverses (header, footer, navigation, etc.)
+    "elements-transverses": JSON.parse(JSON.stringify(defaultData))
 };
 
 // --- AJUSTEMENTS SPÉCIFIQUES ---
@@ -215,3 +218,104 @@ prefilledAuditData["list-journals"]["11.9"].observation = "Boutons Modifier/Supp
 // MENTIONS LÉGALES & POLITIQUE CONFIDENTIALITÉ
 prefilledAuditData["mentions-legales"]["9.1"].observation = "Structure textuelle dense, vérifier les niveaux de titres";
 prefilledAuditData["politique-confidentialite"]["9.1"].observation = "Structure textuelle dense, vérifier les niveaux de titres";
+
+// ÉLÉMENTS TRANSVERSES (Header, Footer, Navigation, Bannière cookies, etc.)
+// Thématique 1 - Images
+prefilledAuditData["elements-transverses"]["1.1"].observation = "Logo avec alt='Communauté de Communes Sud-Avesnois'";
+prefilledAuditData["elements-transverses"]["1.2"].observation = "Icônes SVG avec aria-hidden='true'";
+prefilledAuditData["elements-transverses"]["1.3"].observation = "Alternative du logo pertinente";
+
+// Thématique 2 - Cadres
+prefilledAuditData["elements-transverses"]["2.1"].observation = "Pas d'iframe dans les éléments transverses";
+prefilledAuditData["elements-transverses"]["2.2"].observation = "Pas d'iframe dans les éléments transverses";
+
+// Thématique 3 - Couleurs
+prefilledAuditData["elements-transverses"]["3.1"].observation = "Information non donnée par la couleur seule";
+prefilledAuditData["elements-transverses"]["3.2"].observation = "Contraste header/footer conforme (fond sombre, texte clair)";
+prefilledAuditData["elements-transverses"]["3.3"].observation = "Composants interactifs avec contraste suffisant";
+
+// Thématique 6 - Liens
+prefilledAuditData["elements-transverses"]["6.1"].observation = "Liens explicites avec aria-label (réseaux sociaux, profil)";
+prefilledAuditData["elements-transverses"]["6.2"].observation = "Tous les liens ont un intitulé";
+
+// Thématique 7 - Scripts
+prefilledAuditData["elements-transverses"]["7.1"].observation = "Scripts navigation compatible TA (aria-expanded, aria-controls)";
+prefilledAuditData["elements-transverses"]["7.3"].observation = "Navigation clavier complète (Enter, Space, Escape, Arrows)";
+prefilledAuditData["elements-transverses"]["7.5"].observation = "Messages flash avec aria-live='polite' aria-atomic='true'";
+
+// Thématique 8 - Éléments obligatoires
+prefilledAuditData["elements-transverses"]["8.1"].observation = "DOCTYPE HTML5 présent";
+prefilledAuditData["elements-transverses"]["8.2"].observation = "Code valide W3C";
+prefilledAuditData["elements-transverses"]["8.3"].observation = "lang='fr' sur html";
+prefilledAuditData["elements-transverses"]["8.4"].observation = "Code langue pertinent";
+prefilledAuditData["elements-transverses"]["8.5"].observation = "Titre présent (géré par chaque page)";
+prefilledAuditData["elements-transverses"]["8.6"].observation = "Titre pertinent (géré par chaque page)";
+prefilledAuditData["elements-transverses"]["8.9"].observation = "Balises sémantiques (nav, main, footer, address)";
+
+// Thématique 9 - Structuration
+prefilledAuditData["elements-transverses"]["9.1"].observation = "Structure cohérente header/main/footer";
+prefilledAuditData["elements-transverses"]["9.2"].observation = "Landmarks présents (nav, main, footer)";
+prefilledAuditData["elements-transverses"]["9.3"].observation = "Listes de navigation bien structurées (ul/li)";
+
+// Thématique 10 - Présentation
+prefilledAuditData["elements-transverses"]["10.1"].observation = "CSS Tailwind pour la présentation";
+prefilledAuditData["elements-transverses"]["10.2"].observation = "Contenu visible sans CSS";
+prefilledAuditData["elements-transverses"]["10.3"].observation = "Compréhensible sans CSS";
+prefilledAuditData["elements-transverses"]["10.4"].observation = "Zoom 200% supporté (responsive)";
+prefilledAuditData["elements-transverses"]["10.7"].observation = "Focus visible (focus:ring-2, outline)";
+prefilledAuditData["elements-transverses"]["10.8"].observation = "Contenus cachés avec aria-hidden ou display:none";
+prefilledAuditData["elements-transverses"]["10.11"].observation = "Pas de scroll horizontal à 320px";
+prefilledAuditData["elements-transverses"]["10.12"].observation = "Espacement texte personnalisable (menu accessibilité)";
+prefilledAuditData["elements-transverses"]["10.13"].observation = "Menus dropdown contrôlables (Escape pour fermer)";
+prefilledAuditData["elements-transverses"]["10.14"].observation = "Menus accessibles au clavier";
+
+// Thématique 11 - Formulaires (NA pour éléments transverses)
+prefilledAuditData["elements-transverses"]["11.1"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.1"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.2"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.2"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.3"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.3"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.4"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.4"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.5"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.5"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.6"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.6"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.7"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.7"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.8"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.8"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.9"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.9"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.10"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.10"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.11"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.11"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.12"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.12"].observation = "Pas de formulaire dans éléments transverses";
+prefilledAuditData["elements-transverses"]["11.13"].status = "NA";
+prefilledAuditData["elements-transverses"]["11.13"].observation = "Pas de formulaire dans éléments transverses";
+
+// Thématique 12 - Navigation
+prefilledAuditData["elements-transverses"]["12.1"].observation = "Menu principal + Plan du site + fil d'Ariane";
+prefilledAuditData["elements-transverses"]["12.2"].observation = "Menu et navigation à la même place sur toutes les pages";
+prefilledAuditData["elements-transverses"]["12.3"].observation = "Plan du site pertinent (lien dans footer)";
+prefilledAuditData["elements-transverses"]["12.4"].observation = "Plan du site accessible depuis footer";
+prefilledAuditData["elements-transverses"]["12.6"].observation = "Landmarks présents (header, nav, main, footer)";
+prefilledAuditData["elements-transverses"]["12.7"].observation = "Skip link 'Aller au contenu principal' présent";
+prefilledAuditData["elements-transverses"]["12.8"].observation = "Ordre de tabulation cohérent";
+prefilledAuditData["elements-transverses"]["12.9"].observation = "Pas de piège clavier";
+prefilledAuditData["elements-transverses"]["12.11"].observation = "Menus accessibles au clavier";
+
+// Thématique 13 - Consultation
+prefilledAuditData["elements-transverses"]["13.2"].observation = "target='_blank' avec mention '(nouvelle fenêtre)' sur réseaux sociaux";
+prefilledAuditData["elements-transverses"]["13.3"].status = "NA";
+prefilledAuditData["elements-transverses"]["13.3"].observation = "Géré par chaque page";
+prefilledAuditData["elements-transverses"]["13.4"].status = "NA";
+prefilledAuditData["elements-transverses"]["13.4"].observation = "Géré par chaque page";
+prefilledAuditData["elements-transverses"]["13.5"].status = "NA";
+prefilledAuditData["elements-transverses"]["13.5"].observation = "Géré par chaque page";
+prefilledAuditData["elements-transverses"]["13.6"].status = "NA";
+prefilledAuditData["elements-transverses"]["13.6"].observation = "Géré par chaque page";
+prefilledAuditData["elements-transverses"]["13.9"].observation = "Orientation libre (responsive)";

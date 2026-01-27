@@ -7,7 +7,7 @@ app_name = "comptes_rendus"
 urlpatterns = [
     # Page publique
     path(
-        "comptes-rendus-conseils-communautaires/",
+        "actes-administratifs/",
         views.comptes_rendus,
         name="comptes_rendus",
     ),

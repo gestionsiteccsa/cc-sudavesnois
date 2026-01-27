@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.utils import timezone
 
+from comptes_rendus.models import Conseil
 from .forms import ConseilMembreForm, ConseilVilleForm
 from .models import ConseilMembre, ConseilVille
 
@@ -9,10 +13,18 @@ def conseil(request):
     cities_list = ConseilVille.objects.all().order_by("city_name")
     members_list = ConseilMembre.objects.all()
     city_number = cities_list.count()
+
+    # Récupérer les conseils à venir (date >= demain)
+    tomorrow = timezone.now().date() + timedelta(days=1)
+    conseils = Conseil.objects.filter(date__gte=tomorrow).order_by("date")
+    if not conseils.exists():
+        conseils = None
+
     context = {
         "cities_list": cities_list,
         "members_list": members_list,
         "city_number": city_number,
+        "conseils": conseils,
     }
 
     return render(request, "conseil_communautaire/conseil.html", context)
