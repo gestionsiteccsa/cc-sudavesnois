@@ -1,188 +1,426 @@
 {% load group_tags %}
 {% if user|is_in_group:'moderator' %}
-<div>
-  <div class="flex items-center gap-3 mb-8">
-    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center">
-      <span class="icofont-user text-2xl text-white"></span>
-    </div>
-    <div>
-      <div class="font-bold text-gray-900 dark:text-white">{{ user.username }}</div>
-      <div class="text-xs text-gray-500 dark:text-gray-300">{{ user.email }}</div>
-    </div>
-  </div>
-  <nav class="flex flex-col gap-4">
-    <ul class="space-y-3 bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-      {% if user.is_superuser %}
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-5 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" fill="currentColor"/>
-            </svg>
-          </span> Utilisateurs
+<!-- Logo et branding -->
+<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <a href="{% url 'home' %}" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
+            <span class="text-white font-bold text-lg">CC</span>
         </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'accounts:admin_user_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'accounts:admin_create_user' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      {% endif %}
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg"><svg class="w-5 h-5 text-gray-600 dark:text-gray-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 10h12v12H10z" stroke="currentColor" stroke-width="2" fill="none"/></svg></span> Services
+        <div>
+            <span class="font-bold text-gray-900 dark:text-white text-lg">CCSA</span>
+            <span class="block text-xs text-gray-500 dark:text-gray-400">Administration</span>
         </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'services:admin_services_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'services:add_service' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 712 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M272.2 64.6l-51.1 51.1c-15.3 4.2-29.5 11.9-41.5 22.5L153 161.9C142.8 171 129.5 176 115.8 176L96 176l0 128c20.4 .6 39.8 8.9 54.3 23.4l35.6 35.6 7 7c0 0 0 0 0 0L219.9 397c6.2 6.2 16.4 6.2 22.6 0c1.7-1.7 3-3.7 3.7-5.8c2.8-7.7 9.3-13.5 17.3-15.3s16.4 .6 22.2 6.5L296.5 393c11.6 11.6 30.4 11.6 41.9 0c5.4-5.4 8.3-12.3 8.6-19.4c.4-8.8 5.6-16.6 13.6-20.4s17.3-3 24.4 2.1c9.4 6.7 22.5 5.8 30.9-2.6c9.4-9.4 9.4-24.6 0-33.9L340.1 243l-35.8 33c-27.3 25.2-69.2 25.6-97 .9c-31.7-28.2-32.4-77.4-1.6-106.5l70.1-66.2C303.2 78.4 339.4 64 377.1 64c36.1 0 71 13.3 97.9 37.2L505.1 128l38.9 0 40 0 40 0c8.8 0 16 7.2 16 16l0 208c0 17.7-14.3 32-32 32l-32 0c-11.8 0-22.2-6.4-27.7-16l-84.9 0c-3.4 6.7-7.9 13.1-13.5 18.7c-17.1 17.1-40.8 23.8-63 20.1c-3.6 7.3-8.5 14.1-14.6 20.2c-27.3 27.3-70 30-100.4 8.1c-25.1 20.8-62.5 19.5-86-4.1L159 404l-7-7-35.6-35.6c-5.5-5.5-12.7-8.7-20.4-9.3C96 369.7 81.6 384 64 384l-32 0c-17.7 0-32-14.3-32-32L0 144c0-8.8 7.2-16 16-16l40 0 40 0 19.8 0c2 0 3.9-.7 5.3-2l26.5-23.6C175.5 77.7 211.4 64 248.7 64L259 64c4.4 0 8.9 .2 13.2 .6zM544 320l0-144-48 0c-5.9 0-11.6-2.2-15.9-6.1l-36.9-32.8c-18.2-16.2-41.7-25.1-66.1-25.1c-25.4 0-49.8 9.7-68.3 27.1l-70.1 66.2c-10.3 9.8-10.1 26.3 .5 35.7c9.3 8.3 23.4 8.1 32.5-.3l71.9-66.4c9.7-9 24.9-8.4 33.9 1.4s8.4 24.9-1.4 33.9l-.8 .8 74.4 74.4c10 10 16.5 22.3 19.4 35.1l74.8 0zM64 336a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm528 16a16 16 0 1 0 0-32 16 16 0 1 0 0 32z" fill="currentColor"/>
-            </svg>
-          </span> Élus
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'bureau-communautaire:admin_elu_add' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-5 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16l80 0 0-64c0-26.5 21.5-48 48-48s48 21.5 48 48l0 64 80 0c8.8 0 16-7.2 16-16l0-384c0-8.8-7.2-16-16-16L64 48zM0 64C0 28.7 28.7 0 64 0L320 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm88 40c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48zM232 88l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48c0-8.8 7.2-16 16-16zM88 232c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48zm144-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48c0-8.8 7.2-16 16-16z" fill="currentColor"/>
-            </svg>
-          </span> Villes
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'conseil_communautaire:admin_list_cities' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'conseil_communautaire:admin_add_city' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-5 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z" fill="currentColor"/>
-            </svg>
-          </span> Membres
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'conseil_communautaire:admin_membres_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'conseil_communautaire:admin_member_add' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M320 464c8.8 0 16-7.2 16-16l0-288-80 0c-17.7 0-32-14.3-32-32l0-80L64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16l256 0zM0 64C0 28.7 28.7 0 64 0L229.5 0c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64z" fill="currentColor"/>
-            </svg>
-          </span> Actes locaux
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'communes-membres:admin_acte_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'communes-membres:admin_acte_add' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l448 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm96 64a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm104 0c0-13.3 10.7-24 24-24l224 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-224 0c-13.3 0-24-10.7-24-24zm0 96c0-13.3 10.7-24 24-24l224 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-224 0c-13.3 0-24-10.7-24-24zm0 96c0-13.3 10.7-24 24-24l224 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-224 0c-13.3 0-24-10.7-24-24zm-72-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM96 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" fill="currentColor"/>
-            </svg>
-          </span> Commissions
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'commissions:admin_list_commissions' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'commissions:admin_add_commission' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM337 209L209 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L303 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" fill="currentColor"/>
-            </svg>
-          </span> Compétences
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'competences:admin_competences_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'competences:add_competence' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg"><svg class="w-5 h-4 text-gray-600 dark:text-gray-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M168 80c-13.3 0-24 10.7-24 24l0 304c0 8.4-1.4 16.5-4.1 24L440 432c13.3 0 24-10.7 24-24l0-304c0-13.3-10.7-24-24-24L168 80zM72 480c-39.8 0-72-32.2-72-72L0 112C0 98.7 10.7 88 24 88s24 10.7 24 24l0 296c0 13.3 10.7 24 24 24s24-10.7 24-24l0-304c0-39.8 32.2-72 72-72l272 0c39.8 0 72 32.2 72 72l0 304c0 39.8-32.2 72-72 72L72 480zM176 136c0-13.3 10.7-24 24-24l96 0c13.3 0 24 10.7 24 24l0 80c0 13.3-10.7 24-24 24l-96 0c-13.3 0-24-10.7-24-24l0-80zm200-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm0 80l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zM200 272l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm0 80l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" fill="currentColor"/></svg></span> Journaux
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'journal:admin_journaux_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'journal:add_journal' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M104.6 48L64 48C28.7 48 0 76.7 0 112L0 384c0 35.3 28.7 64 64 64l96 0 0-48-96 0c-8.8 0-16-7.2-16-16l0-272c0-8.8 7.2-16 16-16l16 0c0 17.7 14.3 32 32 32l72.4 0C202 108.4 227.6 96 256 96l62 0c-7.1-27.6-32.2-48-62-48l-40.6 0C211.6 20.9 188.2 0 160 0s-51.6 20.9-55.4 48zM144 56a16 16 0 1 1 32 0 16 16 0 1 1 -32 0zM448 464l-192 0c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l140.1 0L464 243.9 464 448c0 8.8-7.2 16-16 16zM256 512l192 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9l-67.9-67.9c-9-9-21.2-14.1-33.9-14.1L256 128c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64z" fill="currentColor"/>
-            </svg>
-          </span> Comptes rendus
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'comptes_rendus:admin_cr_list' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'comptes_rendus:add_conseil' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg"><svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 448 512"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l352 0 0 256c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256z" fill="currentColor"/></svg></span> Semestriels
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'semestriels:list_content' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg">
-            <svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M48 24C48 10.7 37.3 0 24 0S0 10.7 0 24L0 64 0 350.5 0 400l0 88c0 13.3 10.7 24 24 24s24-10.7 24-24l0-100 80.3-20.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30l0-279.7c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L48 52l0-28zm0 77.5l96.6-24.2c27-6.7 55.5-3.6 80.4 8.8c54.9 27.4 118.7 29.7 175 6.8l0 241.8-24.4 9.1c-33.7 12.6-71.2 10.7-103.4-5.4c-48.2-24.1-103.3-30.1-155.6-17.1L48 338.5l0-237z" fill="currentColor"/>
-            </svg>
-          </span> Rapports d'activité
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'rapports_activite:gestion_rapports_activite' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'rapports_activite:add_rapport_activite' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-      <li>
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-base mb-1">
-          <span class="text-lg"><svg class="w-5 h-4 text-gray-600 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16l0 22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1l0-22.1c0-8.8-7.2-16-16-16L64 112zM48 212.2L48 384c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-171.8L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64l384 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 128z" fill="currentColor"/></svg></span> Contact
-        </div>
-        <ul class="ml-7 space-y-1">
-          <li><a href="{% url 'contact:list_contacts' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></span> Liste</a></li>
-          <li><a href="{% url 'contact:add_contact' %}" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"><span class="text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></span> Ajouter</a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
-</div>
-  <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
-    <a href="{% url 'accounts:logout' %}" class="flex items-center gap-2 px-3 py-2 rounded-md text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 font-semibold transition">
-      <span class="icofont-logout text-xl"></span>
-      Déconnexion
     </a>
-  </div>
+</div>
+
+<!-- User info -->
+<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-primary-500 to-secondary-500 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-md">
+            <span class="text-white font-semibold text-lg">{{ user.username|slice:":1"|upper }}</span>
+        </div>
+        <div class="min-w-0 flex-1">
+            <div class="font-semibold text-gray-900 dark:text-white truncate">{{ user.username }}</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user.email }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<nav class="flex-1 overflow-y-auto sidebar-scroll p-3" aria-label="Navigation principale">
+    <div class="space-y-1">
+
+        {% if user.is_superuser %}
+        <!-- Utilisateurs -->
+        <div id="nav-users" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-users')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Utilisateurs</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'accounts:admin_user_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des utilisateurs
+                    </a>
+                    <a href="{% url 'accounts:admin_create_user' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un utilisateur
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Services -->
+        <div id="nav-services" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-services')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Services</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'services:admin_services_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des services
+                    </a>
+                    <a href="{% url 'services:add_service' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un service
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Elus -->
+        <div id="nav-elus" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-elus')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Elus</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des elus
+                    </a>
+                    <a href="{% url 'bureau-communautaire:admin_elu_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un elu
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Villes -->
+        <div id="nav-villes" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-villes')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Villes</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'conseil_communautaire:admin_list_cities' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des villes
+                    </a>
+                    <a href="{% url 'conseil_communautaire:admin_add_city' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter une ville
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Membres -->
+        <div id="nav-membres" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-membres')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Membres</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'conseil_communautaire:admin_membres_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des membres
+                    </a>
+                    <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un membre
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actes locaux -->
+        <div id="nav-actes" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-actes')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Actes locaux</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'communes-membres:admin_acte_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des actes
+                    </a>
+                    <a href="{% url 'communes-membres:admin_acte_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un acte
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Commissions -->
+        <div id="nav-commissions" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-commissions')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Commissions</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'commissions:admin_list_commissions' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des commissions
+                    </a>
+                    <a href="{% url 'commissions:admin_add_commission' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter une commission
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competences -->
+        <div id="nav-competences" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-competences')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Competences</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'competences:admin_competences_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des competences
+                    </a>
+                    <a href="{% url 'competences:add_competence' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter une competence
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journaux -->
+        <div id="nav-journaux" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-journaux')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Journaux</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'journal:admin_journaux_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des journaux
+                    </a>
+                    <a href="{% url 'journal:add_journal' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un journal
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comptes rendus -->
+        <div id="nav-cr" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-cr')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Comptes rendus</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'comptes_rendus:admin_cr_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des comptes rendus
+                    </a>
+                    <a href="{% url 'comptes_rendus:add_conseil' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un compte rendu
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semestriels -->
+        <div id="nav-semestriels" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-semestriels')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Semestriels</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'semestriels:list_content' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des semestriels
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rapports d'activite -->
+        <div id="nav-rapports" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-rapports')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-lime-100 dark:bg-lime-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-lime-600 dark:text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Rapports d'activite</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'rapports_activite:gestion_rapports_activite' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des rapports
+                    </a>
+                    <a href="{% url 'rapports_activite:add_rapport_activite' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un rapport
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div id="nav-contact" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-contact')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-sm">Contact</span>
+                </div>
+                <svg class="chevron-icon w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div class="nav-section-content">
+                <div class="ml-11 mt-1 space-y-0.5">
+                    <a href="{% url 'contact:list_contacts' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Liste des contacts
+                    </a>
+                    <a href="{% url 'contact:add_contact' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Ajouter un contact
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Footer actions -->
+<div class="p-4 border-t border-gray-200 dark:border-gray-700">
+    <a href="{% url 'home' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors mb-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        <span class="text-sm font-medium">Voir le site</span>
+    </a>
+    <a href="{% url 'accounts:logout' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+        <span class="text-sm font-medium">Deconnexion</span>
+    </a>
+</div>
 {% endif %}
-  <style>
-    .sidebar-admin ul { list-style: none; padding: 0; margin: 0; }
-    .sidebar-admin li { margin-bottom: 0.5rem; }
-    .sidebar-admin a.sidebar-link { display: block; padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-weight: 500; transition: background 0.2s; }
-    .sidebar-admin a.sidebar-link:hover, .sidebar-admin a.sidebar-link:focus { background: rgba(255,255,255,0.08); }
-    .sidebar-admin .sidebar-add { font-size: 0.93em; color: #b2f5ea; margin-left: 2rem; display: block; padding: 0.2rem 0.75rem; }
-    .sidebar-admin .sidebar-add:hover { color: #fff; text-decoration: underline; }
-    .sidebar-admin .sidebar-section + .sidebar-section { margin-top: 1.5rem; }
-    .sidebar-admin { border-radius: 1rem; }
-  </style>

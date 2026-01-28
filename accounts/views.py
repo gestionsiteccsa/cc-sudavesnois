@@ -312,7 +312,36 @@ def password_reset_complete_view(request):
 @user_passes_test(lambda u: est_moderateur(u))
 def admin_dashboard(request):
     """Vue dashboard admin qui regroupe tous les liens CRUD, réservé au superadmin."""
-    return render(request, "accounts/admin.html")
+    from bureau_communautaire.models import Document, Elus
+    from commissions.models import Commission
+    from conseil_communautaire.models import ConseilMembre, ConseilVille
+    from journal.models import Journal
+    from services.models import Service
+
+    # Statistiques
+    stats = {
+        "journals": Journal.objects.count(),
+        "elus": Elus.objects.count(),
+        "services": Service.objects.count(),
+        "membres": ConseilMembre.objects.count(),
+        "commissions": Commission.objects.count(),
+        "villes": ConseilVille.objects.count(),
+        "documents": Document.objects.count(),
+    }
+
+    # Statistiques admin (superuser uniquement)
+    if request.user.is_superuser:
+        stats["users"] = CustomUser.objects.count()
+
+    # Derniers journaux publiés
+    recent_journals = Journal.objects.order_by("-release_date")[:5]
+
+    context = {
+        "stats": stats,
+        "recent_journals": recent_journals,
+    }
+
+    return render(request, "accounts/admin.html", context)
 
 
 @login_required

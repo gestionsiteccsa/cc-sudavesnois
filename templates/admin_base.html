@@ -1,11 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="fr" class="h-full bg-gray-100 dark:bg-gray-900">
+<html lang="fr" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>{% block title %}Dashboard Admin{% endblock %}</title>
+    <title>{% block title %}Dashboard Admin{% endblock %} - CCSA</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -13,39 +13,239 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#006ab3',
-                        secondary: '#96bf0d',
+                        primary: {
+                            50: '#e6f3fa',
+                            100: '#cce7f5',
+                            200: '#99cfeb',
+                            300: '#66b7e1',
+                            400: '#339fd7',
+                            500: '#006ab3',
+                            600: '#005590',
+                            700: '#00406c',
+                            800: '#002a48',
+                            900: '#001524',
+                        },
+                        secondary: {
+                            50: '#f8fce6',
+                            100: '#f1f9cc',
+                            200: '#e3f399',
+                            300: '#d5ed66',
+                            400: '#c7e733',
+                            500: '#96bf0d',
+                            600: '#78990a',
+                            700: '#5a7308',
+                            800: '#3c4c05',
+                            900: '#1e2603',
+                        },
                     },
                     fontFamily: {
-                        sans: ['Roboto', 'sans-serif'],
+                        sans: ['Inter', 'Roboto', 'sans-serif'],
                     },
                 }
             },
             darkMode: 'class'
         }
     </script>
-    
+
     <!-- Préchargement des polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'icones/icofont.min.css' %}">
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Animations et transitions */
+        .sidebar-transition {
+            transition: width 0.3s ease, transform 0.3s ease;
+        }
+        .content-transition {
+            transition: margin-left 0.3s ease;
+        }
+        .nav-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .nav-section-content.open {
+            max-height: 500px;
+        }
+        .nav-section-header:hover {
+            background-color: rgba(0, 106, 179, 0.08);
+        }
+        .dark .nav-section-header:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .nav-link {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(0, 106, 179, 0.08);
+            transform: translateX(4px);
+        }
+        .dark .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .nav-link.active {
+            background-color: rgba(0, 106, 179, 0.12);
+            color: #006ab3;
+            font-weight: 500;
+        }
+        .dark .nav-link.active {
+            background-color: rgba(150, 191, 13, 0.15);
+            color: #96bf0d;
+        }
+        .chevron-icon {
+            transition: transform 0.2s ease;
+        }
+        .nav-section.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+        /* Scrollbar personnalisée */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        /* Mobile overlay */
+        .sidebar-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
     {% block styles %}{% endblock %}
 </head>
-<body class="h-full min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
-    <div class="flex flex-1">
+<body class="h-full min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Mobile sidebar overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/50 z-40 lg:hidden" onclick="toggleSidebar()"></div>
+
+    <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col justify-between py-6 px-4 min-h-screen">
+        <aside id="sidebar" class="sidebar-transition fixed lg:static inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transform -translate-x-full lg:translate-x-0">
             {% include 'admin_sidebar.html' %}
         </aside>
-        <!-- Main content -->
-        <main class="flex-1 p-8 overflow-y-auto">
-            {% block content %}{% endblock %}
-        </main>
+
+        <!-- Main wrapper -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <!-- Top header -->
+            <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 lg:px-6 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <!-- Mobile menu button -->
+                        <button type="button" onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Ouvrir le menu">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+
+                        <!-- Breadcrumb -->
+                        <nav class="hidden sm:flex items-center text-sm" aria-label="Fil d'Ariane">
+                            <a href="{% url 'home' %}" class="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                </svg>
+                            </a>
+                            <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-200 font-medium">{% block breadcrumb %}Administration{% endblock %}</span>
+                        </nav>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <!-- Lien vers le site public -->
+                        <a href="{% url 'home' %}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Voir le site public">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                            <span class="hidden sm:inline text-sm font-medium">Voir le site</span>
+                        </a>
+
+                        <!-- Dark mode toggle -->
+                        <button type="button" onclick="toggleDarkMode()" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Basculer le mode sombre">
+                            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                            </svg>
+                        </button>
+
+                        <!-- User quick info (desktop) -->
+                        <div class="hidden md:flex items-center gap-2 pl-3 border-l border-gray-200 dark:border-gray-600">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-500 to-secondary-500 flex items-center justify-center text-white text-sm font-medium">
+                                {{ user.username|slice:":1"|upper }}
+                            </div>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ user.username }}</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main content -->
+            <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+                <div class="max-w-7xl mx-auto">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
     </div>
+
+    <script>
+        // Sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('active');
+        }
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+        }
+
+        // Initialize dark mode from localStorage
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Nav sections toggle
+        function toggleNavSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const content = section.querySelector('.nav-section-content');
+            section.classList.toggle('open');
+            content.classList.toggle('open');
+        }
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.remove('active');
+                }
+            }
+        });
+    </script>
     {% block javascript %}{% endblock %}
 </body>
 </html>
