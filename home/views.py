@@ -419,6 +419,10 @@ def dev_eco(request):
     return render(request, "home/dev-eco.html")
 
 
+def kit_logos(request):
+    return render(request, "home/kit-logos.html")
+
+
 def custom_handler404(request, exception=None):
     """Vue personnalisée pour la page 404."""
     response = render(request, "404.html", status=404)

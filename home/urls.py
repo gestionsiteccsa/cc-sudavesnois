@@ -46,6 +46,8 @@ urlpatterns = [
     path("documents-plui/", views.documents_plui, name="documents_plui"),
     # Développement économique
     path("developpement-economique/", views.dev_eco, name="dev_eco"),
+    # Kit de logos CCSA
+    path("kit-logos/", views.kit_logos, name="kit_logos"),
 ]
 
 if settings.DEBUG:
