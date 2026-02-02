@@ -65,15 +65,18 @@ class EmailService:
             msg.send()
 
             logger.info(
-                f"Email PLUi envoyé avec succès pour {context['nom_prenom']} "
-                f"({context['commune']}) vers {recipient_email}"
+                "Email PLUi envoyé avec succès pour %s (%s) vers %s",
+                context['nom_prenom'],
+                context['commune'],
+                recipient_email
             )
             return True
 
-        except Exception as e:
+        except (OSError, ValueError, RuntimeError) as e:
             logger.error(
-                f"Erreur lors de l'envoi de l'email PLUi pour "
-                f"{form_data.get('nom_prenom', 'N/A')}: {str(e)}"
+                "Erreur lors de l'envoi de l'email PLUi pour %s: %s",
+                form_data.get('nom_prenom', 'N/A'),
+                str(e)
             )
             return False
 
