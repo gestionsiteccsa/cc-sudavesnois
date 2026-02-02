@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Guide Pratique Éco-Citoyen - CCSA{% endblock %}
+
+{% block meta_description %}Téléchargez le Guide Pratique Éco-Citoyen de la Communauté de Communes Sud-Avesnois : conseils et bonnes pratiques pour préserver notre environnement.{% endblock %}
+
+{% block content %}
+<!-- Bannière -->
+<section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Guide Pratique Éco-Citoyen</h1>
+            <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">Adoptez les bons gestes pour préserver notre environnement et notre cadre de vie sur le territoire de la Communauté de Communes Sud-Avesnois.</p>
+        </div>
+    </div>
+    <!-- Motif décoratif -->
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
+</section>
+
+<!-- Section principale avec image et informations -->
+<section class="py-12 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Contenu en deux colonnes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                <!-- Colonne gauche : image et bouton téléchargement -->
+                <div>
+                    <!-- Image du guide -->
+                    <div class="mb-6 rounded-lg overflow-hidden shadow-lg">
+                        <img
+                            src="{% static 'img/guide-eco-citoyens.webp' %}"
+                            alt="Couverture du Guide Pratique Éco-Citoyen de la Communauté de Communes Sud-Avesnois"
+                            class="w-full h-auto"
+                            loading="lazy"
+                            width="600"
+                            height="400"
+                        >
+                    </div>
+
+                    <!-- Bouton téléchargement -->
+                    <div class="space-y-4">
+                        <a
+                            href="{% static 'pdf/guide-eco-citoyens.pdf' %}"
+                            download
+                            type="application/pdf"
+                            class="w-full inline-flex items-center justify-center px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-300 shadow-md hover:shadow-lg text-lg font-medium"
+                            aria-describedby="file-info"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Télécharger le guide (PDF)
+                        </a>
+                        <span id="file-info" class="sr-only">Format PDF, taille du fichier</span>
+                    </div>
+                </div>
+
+                <!-- Colonne droite : informations -->
+                <div>
+                    <!-- Bloc principal -->
+                    <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 pb-4 border-b-2 border-primary/30">Votre guide pratique pour agir au quotidien</h2>
+                        
+                        <!-- Introduction avec icône -->
+                        <div class="flex items-start gap-4 mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border-l-4 border-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                Ce guide pratique vous accompagne dans vos gestes quotidiens pour réduire votre impact environnemental et préserver notre cadre de vie.
+                            </p>
+                        </div>
+
+                        <!-- Encadré conseils -->
+                        <div class="p-5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-700/50 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                </svg>
+                                Il regroupe des conseils pour :
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                        <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="text-gray-600 dark:text-gray-300">Bien <strong>trier vos déchets</strong> et optimiser leur collecte</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                        <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="text-gray-600 dark:text-gray-300">Réduire votre <strong>consommation d'énergie</strong></span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                        <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="text-gray-600 dark:text-gray-300">Préserver les <strong>ressources naturelles</strong> de notre territoire</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                        <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="text-gray-600 dark:text-gray-300">Adopter une <strong>consommation responsable</strong></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Message info -->
+                        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700/50 flex items-start gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-blue-800 dark:text-blue-300 text-sm">
+                                Ensemble, préservons notre environnement ! Chaque geste compte pour protéger la biodiversité et garantir un cadre de vie agréable pour les générations futures.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

@@ -44,31 +44,126 @@
         </div>
     </section>
 
-    <!-- Téléchargement du kit -->
+    <!-- Galerie des logos -->
     <section class="mb-10">
-        <h2 class="sr-only">Téléchargement du kit</h2>
-        <div class="grid md:grid-cols-1 gap-4">
-            <a href="{% static 'download/Kit-logo-CC-Sud-Avesnois.zip' %}" download
-               class="group block p-5 bg-gradient-to-br from-secondary/5 to-secondary/10 dark:from-secondary/20 dark:to-secondary/30 border border-secondary/20 rounded-xl hover:shadow-lg hover:border-secondary/40 transition-all duration-300"
-               aria-label="Télécharger le kit de logos CCSA (ZIP)">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 bg-secondary/10 dark:bg-secondary/30 rounded-lg flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
-                        <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Kit de logos disponibles au téléchargement</h2>
+
+        <!-- PNG avec fond transparent -->
+        <div class="mb-8">
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                PNG avec fond transparent
+            </h3>
+            <div class="grid md:grid-cols-3 gap-4">
+                <!-- Logo couleur PNG -->
+                <div class="group flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg hover:border-secondary/40 transition-all duration-300">
+                    <div class="h-48 bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+                        <img src="{% static 'img/Kits-Logos/PNG_Transparent/Logo_couleur.png' %}" alt="Logo de la Communauté de Communes Sud-Avesnois - version couleur" class="h-full w-full object-contain">
                     </div>
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors">Kit de logos CCSA</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Téléchargez les logos officiels en différents formats (PNG, SVG, PDF) — Format ZIP</p>
-                        <span class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium mt-2 group-hover:underline">
-                            Télécharger le kit
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Logo couleur</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 flex-1">Usage général, documents officiels et supports de communication.</p>
+                        <a href="{% static 'img/Kits-Logos/PNG_Transparent/Logo_couleur.png' %}" download
+                           class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium hover:underline"
+                           aria-describedby="logo-couleur-png-info">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                             </svg>
-                        </span>
+                            Télécharger PNG
+                        </a>
+                        <span id="logo-couleur-png-info" class="sr-only">Logo couleur au format PNG avec fond transparent</span>
                     </div>
                 </div>
-            </a>
+
+                <!-- Logo noir PNG -->
+                <div class="group flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg hover:border-secondary/40 transition-all duration-300">
+                    <div class="h-48 bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+                        <img src="{% static 'img/Kits-Logos/PNG_Transparent/Logo_noir.png' %}" alt="Logo de la Communauté de Communes Sud-Avesnois - version noire" class="h-full w-full object-contain">
+                    </div>
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Logo noir</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 flex-1">Impression noir et blanc, documents techniques et économiques.</p>
+                        <a href="{% static 'img/Kits-Logos/PNG_Transparent/Logo_noir.png' %}" download
+                           class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium hover:underline"
+                           aria-describedby="logo-noir-png-info">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Télécharger PNG
+                        </a>
+                        <span id="logo-noir-png-info" class="sr-only">Logo noir au format PNG avec fond transparent</span>
+                    </div>
+                </div>
+
+                <!-- Logo blanc PNG -->
+                <div class="group flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg hover:border-secondary/40 transition-all duration-300">
+                    <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                        <img src="{% static 'img/Kits-Logos/PNG_Transparent/Logo_blanc.png' %}" alt="Logo de la Communauté de Communes Sud-Avesnois - version blanche" class="h-full w-full object-contain">
+                    </div>
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Logo blanc</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 flex-1">Fonds sombres, présentations et supports visuels contrastés.</p>
+                        <a href="{% static 'img/Kits-Logos/PNG_Transparent/Logo_blanc.png' %}" download
+                           class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium hover:underline"
+                           aria-describedby="logo-blanc-png-info">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Télécharger PNG
+                        </a>
+                        <span id="logo-blanc-png-info" class="sr-only">Logo blanc au format PNG avec fond transparent</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JPG avec fond blanc -->
+        <div>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-secondary rounded-full"></span>
+                JPG avec fond blanc
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Logo couleur JPG -->
+                <div class="group flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg hover:border-secondary/40 transition-all duration-300">
+                    <div class="h-48 bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+                        <img src="{% static 'img/Kits-Logos/JPG_Fond_blanc/Logo_couleur.jpg' %}" alt="Logo de la Communauté de Communes Sud-Avesnois - version couleur sur fond blanc" class="h-full w-full object-contain">
+                    </div>
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Logo couleur (fond blanc)</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 flex-1">Usage web, documents bureautiques et supports numériques.</p>
+                        <a href="{% static 'img/Kits-Logos/JPG_Fond_blanc/Logo_couleur.jpg' %}" download
+                           class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium hover:underline"
+                           aria-describedby="logo-couleur-jpg-info">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Télécharger JPG
+                        </a>
+                        <span id="logo-couleur-jpg-info" class="sr-only">Logo couleur au format JPG avec fond blanc</span>
+                    </div>
+                </div>
+
+                <!-- Logo noir JPG -->
+                <div class="group flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg hover:border-secondary/40 transition-all duration-300">
+                    <div class="h-48 bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+                        <img src="{% static 'img/Kits-Logos/JPG_Fond_blanc/Logo_noir.jpg' %}" alt="Logo de la Communauté de Communes Sud-Avesnois - version noire sur fond blanc" class="h-full w-full object-contain">
+                    </div>
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Logo noir (fond blanc)</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 flex-1">Impression économique, documents internes et photocopies.</p>
+                        <a href="{% static 'img/Kits-Logos/JPG_Fond_blanc/Logo_noir.jpg' %}" download
+                           class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium hover:underline"
+                           aria-describedby="logo-noir-jpg-info">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Télécharger JPG
+                        </a>
+                        <span id="logo-noir-jpg-info" class="sr-only">Logo noir au format JPG avec fond blanc</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
