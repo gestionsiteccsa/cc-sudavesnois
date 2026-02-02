@@ -333,6 +333,11 @@ def pnra(request):
     return render(request, "home/pnra.html")
 
 
+def guide_eco_citoyen(request):
+    """Vue pour la page Guide Pratique Éco-Citoyen."""
+    return render(request, "home/guide-eco-citoyen.html")
+
+
 def tourisme(request):
     return render(request, "home/tourisme.html")
 
