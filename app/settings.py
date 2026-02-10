@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "comptes_rendus",
     "services",
     "rapports_activite",
+    "linktree",
 ]
 
 MIDDLEWARE = [

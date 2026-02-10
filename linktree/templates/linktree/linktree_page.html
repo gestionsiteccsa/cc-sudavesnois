@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ meta_description }}">
+    <meta name="robots" content="index, follow">
+    
+    <title>Rejoignez-nous | Communauté de Communes Sud-Avesnois</title>
+    
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    
+    <!-- Préchargement des polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
+    
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    
+    <style>
+        /* CSS personnalisé pour les couleurs du site */
+        :root {
+            --color-primary: #006ab3;
+            --color-secondary: #96bf0d;
+        }
+        
+        .bg-primary {
+            background-color: var(--color-primary);
+        }
+        
+        .text-primary {
+            color: var(--color-primary);
+        }
+        
+        .bg-secondary {
+            background-color: var(--color-secondary);
+        }
+        
+        .from-primary {
+            --tw-gradient-from: var(--color-primary) var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(0 106 179 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+        }
+        
+        .to-secondary {
+            --tw-gradient-to: var(--color-secondary) var(--tw-gradient-to-position);
+        }
+        
+        /* Animation d'entrée des liens */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .link-item {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .link-item:nth-child(1) { animation-delay: 0.1s; }
+        .link-item:nth-child(2) { animation-delay: 0.15s; }
+        .link-item:nth-child(3) { animation-delay: 0.2s; }
+        .link-item:nth-child(4) { animation-delay: 0.25s; }
+        .link-item:nth-child(5) { animation-delay: 0.3s; }
+        .link-item:nth-child(6) { animation-delay: 0.35s; }
+        .link-item:nth-child(7) { animation-delay: 0.4s; }
+        .link-item:nth-child(8) { animation-delay: 0.45s; }
+        .link-item:nth-child(9) { animation-delay: 0.5s; }
+        .link-item:nth-child(10) { animation-delay: 0.55s; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans">
+    
+    <!-- Lien d'évitement -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white rounded-lg">
+        Aller au contenu
+    </a>
+    
+    <!-- Contenu principal -->
+    <main id="main-content" class="min-h-screen flex flex-col">
+        
+        <!-- Section principale -->
+        <div class="flex-1 container mx-auto px-4 py-12 md:py-16 lg:py-20">
+            <div class="max-w-lg mx-auto">
+                
+                <!-- Header / Logo -->
+                <header class="text-center mb-10">
+                    <!-- Logo du site -->
+                    <div class="mb-6">
+                        <img src="{% static 'img/logo/Logo_S-A.png' %}" 
+                             alt="Communauté de Communes Sud-Avesnois" 
+                             width="200" 
+                             height="80" 
+                             class="h-20 md:h-24 w-auto mx-auto">
+                    </div>
+                    
+                    <!-- Titre avec texte foncé pour contraste -->
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                        Communauté de Communes
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-700 font-medium">
+                        Sud-Avesnois
+                    </p>
+                    <p class="mt-3 text-sm text-gray-600 max-w-xs mx-auto">
+                        Retrouvez tous nos liens importants sur une seule page
+                    </p>
+                </header>
+
+                <!-- Liste des liens -->
+                <nav aria-label="Liens externes" class="space-y-4">
+                    {% for lien in liens %}
+                    <a href="{{ lien.url }}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="link-item group flex items-center gap-4 p-4 md:p-5 bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-md hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        
+                        <!-- Icône -->
+                        <div class="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+                            <div class="w-6 h-6 md:w-7 md:h-7">
+                                {{ lien.get_icone_svg|safe }}
+                            </div>
+                        </div>
+                        
+                        <!-- Texte -->
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-base md:text-lg font-semibold text-gray-900 truncate">
+                                {{ lien.titre }}
+                            </h2>
+                            <p class="text-sm text-gray-600 truncate">
+                                {{ lien.get_icone_display }}
+                            </p>
+                        </div>
+                        
+                        <!-- Flèche -->
+                        <div class="flex-shrink-0 text-gray-400 group-hover:text-primary transition-colors">
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                            <span class="sr-only">(nouvelle fenêtre)</span>
+                        </div>
+                    </a>
+                    {% empty %}
+                    
+                    <!-- État vide -->
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
+                        <h2 class="mt-4 text-lg font-medium text-gray-900">Aucun lien disponible</h2>
+                        <p class="mt-2 text-sm text-gray-600">Revenez bientôt pour découvrir nos liens.</p>
+                    </div>
+                    {% endfor %}
+                </nav>
+
+                <!-- Footer simple -->
+                <footer class="mt-12 md:mt-16 text-center">
+                    <!-- Lien retour au site -->
+                    <div class="flex items-center justify-center gap-2 text-sm text-gray-600 mb-4">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4m-4 0h4"/>
+                        </svg>
+                        <a href="{% url 'home' %}" class="hover:text-primary transition-colors underline font-medium">
+                            Retour au site principal
+                        </a>
+                    </div>
+                    
+                    <!-- Copyright -->
+                    <p class="text-xs text-gray-500">
+                        © {% now "Y" %} Communauté de Communes Sud-Avesnois
+                    </p>
+                </footer>
+
+            </div>
+        </div>
+    </main>
+    
+</body>
+</html>

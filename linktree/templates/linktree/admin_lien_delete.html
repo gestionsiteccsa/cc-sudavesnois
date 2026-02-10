@@ -1,0 +1,52 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Supprimer un lien{% endblock %}
+{% block breadcrumb %}Supprimer un lien{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <!-- Header -->
+    <div class="mb-6 text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+            <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Supprimer un lien</h1>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Êtes-vous sûr de vouloir supprimer le lien <strong class="text-gray-900 dark:text-white">"{{ lien.titre }}"</strong> ?
+        </p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Cette action est irréversible.</p>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="confirm" value="yes">
+            
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 flex-shrink-0">
+                        {{ lien.get_icone_svg|safe }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ lien.titre }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ lien.url }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{% url 'linktree:admin_liens_list' %}" class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 text-center dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                    Annuler
+                </a>
+                <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">
+                    Confirmer la suppression
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

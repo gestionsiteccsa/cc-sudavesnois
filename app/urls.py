@@ -37,6 +37,7 @@ urlpatterns = [
     path("", include("competences.urls", namespace="competences")),
     path("", include("comptes_rendus.urls", namespace="comptes_rendus")),
     path("", include("rapports_activite.urls", namespace="rapports_activite")),
+    path("", include("linktree.urls", namespace="linktree")),
     path("", include("communes_membres.urls", namespace="communes-membres")),
     path("services/", include("services.urls", namespace="services")),
     path("", include("contact.urls", namespace="contact")),
