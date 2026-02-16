@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "services",
     "rapports_activite",
     "linktree",
+    "backup",
 ]
 
 MIDDLEWARE = [
@@ -153,6 +154,10 @@ STATICFILES_FINDERS = [
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 60 * 1024 * 1024  # 60 Mo
+
+# Configuration des backups
+BACKUP_ROOT = "/home/noro8560/backupCCSA"
+BACKUP_RETENTION_COUNT = 4  # Garder 4 backups
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUser"

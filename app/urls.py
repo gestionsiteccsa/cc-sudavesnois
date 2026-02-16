@@ -41,6 +41,7 @@ urlpatterns = [
     path("", include("communes_membres.urls", namespace="communes-membres")),
     path("services/", include("services.urls", namespace="services")),
     path("", include("contact.urls", namespace="contact")),
+    path("", include("backup.urls", namespace="backup")),
     # Redirections pour les URLs courtes
     path(
         "login/",
