@@ -1,0 +1,60 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Supprimer une catégorie{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12 min-h-screen">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Supprimer une catégorie</h1>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">Êtes-vous sûr de vouloir supprimer cette catégorie ?</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Confirmation -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-2xl">
+            <div class="bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-400 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                            <strong>Attention :</strong> Vous êtes sur le point de supprimer la catégorie "<strong>{{ categorie.nom }}</strong>".
+                            {% if categorie.partenaire_set.count > 0 %}
+                            Cette catégorie est utilisée par {{ categorie.partenaire_set.count }} partenaire(s).
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div class="flex items-center justify-between pt-4">
+                    <a href="{% url 'partenaires:admin_categories_list' %}" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+                        ← Annuler et retourner
+                    </a>
+                    <button type="submit" name="confirm" value="yes" class="inline-flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        Confirmer la suppression
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

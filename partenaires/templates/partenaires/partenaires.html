@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nos partenaires{% endblock %}
+{% block meta_description %}Découvrez les partenaires de la Communauté de Communes Sud-Avesnois.{% endblock %}
+
+{% block styles %}
+<style>
+    /* Style pour les liens dans le contenu markdown */
+    .markdown-content a {
+        color: #006ab3;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+    .markdown-content a:hover {
+        color: #004d8c;
+    }
+    /* Mode sombre */
+    .dark .markdown-content a {
+        color: #60a5fa;
+    }
+    .dark .markdown-content a:hover {
+        color: #93c5fd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-12 md:py-16" aria-labelledby="page-title">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 id="page-title" class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Nos partenaires</h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">La Communauté de Communes Sud-Avesnois collabore avec de nombreux partenaires pour construire un territoire dynamique et solidaire.</p>
+            </div>
+        </div>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-6 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-6 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
+    </section>
+
+    <!-- Contenu principal -->
+    <section class="py-8 md:py-12 bg-white dark:bg-gray-900" aria-label="Liste des partenaires">
+        <div class="container mx-auto px-4 md:px-6 max-w-5xl">
+            
+            {% if not partenaires_par_categorie and not partenaires_sans_categorie %}
+            <!-- Message si aucun partenaire -->
+            <div class="text-center py-16" role="alert">
+                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <p class="text-lg text-gray-600 dark:text-gray-400">Aucun partenaire n'est disponible pour le moment.</p>
+            </div>
+            {% endif %}
+
+            <!-- Boucle sur les catégories -->
+            {% for categorie, partenaires_list in partenaires_par_categorie.items %}
+            <section class="mb-12 md:mb-16" aria-labelledby="categorie-{{ categorie.id }}-heading">
+                <!-- Titre de la catégorie uniquement -->
+                <h2 id="categorie-{{ categorie.id }}-heading" class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8 pb-3 border-b-2 border-primary/20">
+                    {{ categorie.nom }}
+                </h2>
+
+                <div class="space-y-4">
+                    {% for partenaire in partenaires_list %}
+                    <article class="group relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                        <!-- Contenu principal de la carte -->
+                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 p-5 md:p-6">
+                            <!-- Logo petit et discret -->
+                            <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm" style="background-color: {{ partenaire.couleur_fond }};">
+                                {% if partenaire.logo %}
+                                <img src="{{ partenaire.logo.url }}" alt="" class="w-full h-full object-contain p-1" loading="lazy">
+                                {% else %}
+                                <div class="w-full h-full flex items-center justify-center" style="background-color: {{ partenaire.couleur_fond }};">
+                                    <svg class="w-6 h-6 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Contenu avec focus description -->
+                            <div class="flex-grow min-w-0">
+                                <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ partenaire.nom }}</h3>
+                                
+                                <div class="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed markdown-content mb-4">{{ partenaire.get_description_html }}</div>
+                                
+                                <!-- Lien vers le site en bas de la carte -->
+                                {% if partenaire.get_url %}
+                                <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                                    <a href="{{ partenaire.get_url }}" 
+                                       {% if partenaire.is_external_link %}target="_blank" rel="noopener noreferrer"{% endif %}
+                                       class="inline-flex items-center text-sm font-medium text-primary hover:text-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                                       aria-label="{% if partenaire.is_external_link %}Visiter le site de {{ partenaire.nom }} (nouvelle fenêtre){% else %}Voir la page {{ partenaire.nom }}{% endif %}">
+                                        Aller vers le site
+                                        {% if partenaire.is_external_link %}
+                                        <!-- Icône lien externe -->
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                        {% else %}
+                                        <!-- Icône lien interne (flèche droite) -->
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+
+            <!-- Partenaires sans catégorie -->
+            {% if partenaires_sans_categorie %}
+            <section class="mb-12 md:mb-16" aria-labelledby="sans-categorie-heading">
+                <h2 id="sans-categorie-heading" class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8 pb-3 border-b-2 border-primary/20">
+                    Autres partenaires
+                </h2>
+
+                <div class="space-y-4">
+                    {% for partenaire in partenaires_sans_categorie %}
+                    <article class="group relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                        <!-- Contenu principal de la carte -->
+                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 p-5 md:p-6">
+                            <!-- Logo petit et discret -->
+                            <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm" style="background-color: {{ partenaire.couleur_fond }};">
+                                {% if partenaire.logo %}
+                                <img src="{{ partenaire.logo.url }}" alt="" class="w-full h-full object-contain p-1" loading="lazy">
+                                {% else %}
+                                <div class="w-full h-full flex items-center justify-center" style="background-color: {{ partenaire.couleur_fond }};">
+                                    <svg class="w-6 h-6 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Contenu avec focus description -->
+                            <div class="flex-grow min-w-0">
+                                <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ partenaire.nom }}</h3>
+                                
+                                <div class="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed markdown-content mb-4">{{ partenaire.get_description_html }}</div>
+                                
+                                <!-- Lien vers le site en bas de la carte -->
+                                {% if partenaire.get_url %}
+                                <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                                    <a href="{{ partenaire.get_url }}" 
+                                       {% if partenaire.is_external_link %}target="_blank" rel="noopener noreferrer"{% endif %}
+                                       class="inline-flex items-center text-sm font-medium text-primary hover:text-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                                       aria-label="{% if partenaire.is_external_link %}Visiter le site de {{ partenaire.nom }} (nouvelle fenêtre){% else %}Voir la page {{ partenaire.nom }}{% endif %}">
+                                        Aller vers le site
+                                        {% if partenaire.is_external_link %}
+                                        <!-- Icône lien externe -->
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                        {% else %}
+                                        <!-- Icône lien interne (flèche droite) -->
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+        </div>
+    </section>
+</main>
+{% endblock %}

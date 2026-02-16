@@ -29,6 +29,7 @@ urlpatterns = [
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
         name="robots_txt",
     ),
+    path("partenaires/", include("partenaires.urls", namespace="partenaires")),
     path("", include("conseil_communautaire.urls")),
     path("", include("journal.urls", namespace="journal")),
     path("", include("bureau_communautaire.urls", namespace="bureau-communautaire")),

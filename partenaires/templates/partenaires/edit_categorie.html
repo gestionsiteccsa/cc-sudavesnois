@@ -1,0 +1,64 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Modifier une catégorie{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 py-12 min-h-screen">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Modifier une catégorie</h1>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">Modifiez la catégorie "{{ categorie.nom }}"</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Formulaire -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-2xl">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="id_nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nom</label>
+                    {{ form.nom }}
+                    {% if form.nom.errors %}
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.nom.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_ordre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ordre d'affichage</label>
+                    {{ form.ordre }}
+                    {% if form.ordre.errors %}
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.ordre.errors.0 }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Les catégories sont triées par ordre croissant</p>
+                </div>
+
+                <div class="flex items-center">
+                    {{ form.active }}
+                    <label for="id_active" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Actif</label>
+                </div>
+
+                <div class="flex items-center justify-between pt-4">
+                    <a href="{% url 'partenaires:admin_categories_list' %}" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+                        ← Retour à la liste
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
