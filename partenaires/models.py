@@ -16,7 +16,18 @@ def validate_taille_fichier(value):
 
 
 class CategoriePartenaire(models.Model):
+    TYPE_SECTION_CHOICES = [
+        ('normal', 'Normal'),
+        ('subvention', 'Subvention'),
+    ]
+
     nom = models.CharField(max_length=100, unique=True, verbose_name="Nom")
+    type_section = models.CharField(
+        max_length=20,
+        choices=TYPE_SECTION_CHOICES,
+        default='normal',
+        verbose_name="Type de section"
+    )
     ordre = models.IntegerField(default=0, verbose_name="Ordre d'affichage")
     active = models.BooleanField(default=True, verbose_name="Actif")
     date_creation = models.DateTimeField(auto_now_add=True)

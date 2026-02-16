@@ -13,24 +13,40 @@ def partenaires(request):
     # Récupérer uniquement les partenaires actifs
     all_partenaires = Partenaire.objects.filter(active=True).select_related('categorie')
     
-    # Récupérer les catégories actives qui ont des partenaires
-    categories_avec_partenaires = CategoriePartenaire.objects.filter(
+    # Récupérer les catégories actives de type NORMAL qui ont des partenaires
+    categories_normales = CategoriePartenaire.objects.filter(
         active=True,
+        type_section='normal',
         partenaire__active=True
     ).distinct().order_by('ordre', 'nom')
     
-    # Créer un dictionnaire des partenaires par catégorie
+    # Créer un dictionnaire des partenaires par catégorie normale (tri alphabétique)
     partenaires_par_categorie = {}
-    for categorie in categories_avec_partenaires:
+    for categorie in categories_normales:
         partenaires_par_categorie[categorie] = all_partenaires.filter(
             categorie=categorie
-        ).order_by('ordre', 'nom')
+        ).order_by('nom')  # Tri alphabétique
     
-    # Partenaires sans catégorie
-    partenaires_sans_categorie = all_partenaires.filter(categorie__isnull=True).order_by('ordre', 'nom')
+    # Récupérer les catégories de type SUBVENTION qui ont des partenaires
+    categories_subventions = CategoriePartenaire.objects.filter(
+        active=True,
+        type_section='subvention',
+        partenaire__active=True
+    ).distinct().order_by('ordre', 'nom')
+    
+    # Créer un dictionnaire des partenaires par catégorie subvention (tri alphabétique)
+    partenaires_subventions = {}
+    for categorie in categories_subventions:
+        partenaires_subventions[categorie] = all_partenaires.filter(
+            categorie=categorie
+        ).order_by('nom')  # Tri alphabétique
+    
+    # Partenaires sans catégorie (tri alphabétique)
+    partenaires_sans_categorie = all_partenaires.filter(categorie__isnull=True).order_by('nom')
 
     context = {
         "partenaires_par_categorie": partenaires_par_categorie,
+        "partenaires_subventions": partenaires_subventions,
         "partenaires_sans_categorie": partenaires_sans_categorie,
     }
 

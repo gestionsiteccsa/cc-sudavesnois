@@ -36,6 +36,15 @@
                 </div>
 
                 <div>
+                    <label for="id_type_section" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Type de section</label>
+                    {{ form.type_section }}
+                    {% if form.type_section.errors %}
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.type_section.errors.0 }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Les catégories "Normal" apparaissent dans la section principale, les "Subventions" dans une section séparée en bas de page</p>
+                </div>
+
+                <div>
                     <label for="id_ordre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ordre d'affichage</label>
                     {{ form.ordre }}
                     {% if form.ordre.errors %}

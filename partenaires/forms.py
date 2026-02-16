@@ -7,11 +7,14 @@ class CategoriePartenaireForm(forms.ModelForm):
 
     class Meta:
         model = CategoriePartenaire
-        fields = ["nom", "ordre", "active"]
+        fields = ["nom", "type_section", "ordre", "active"]
         widgets = {
             "nom": forms.TextInput(attrs={
                 "class": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
                 "placeholder": "Nom de la catégorie"
+            }),
+            "type_section": forms.Select(attrs={
+                "class": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             }),
             "ordre": forms.NumberInput(attrs={
                 "class": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
