@@ -139,7 +139,7 @@
                                 <!-- Logo petit et discret -->
                                 <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm" style="background-color: {{ partenaire.couleur_fond }};">
                                     {% if partenaire.logo %}
-                                    <img src="{{ partenaire.logo.url }}" alt="" class="w-full h-full object-contain p-1" loading="lazy">
+<img src="{{ partenaire.logo.url }}" alt="{{ partenaire.nom }}" class="w-full h-full object-contain p-1" loading="lazy">
                                     {% else %}
                                     <div class="w-full h-full flex items-center justify-center" style="background-color: {{ partenaire.couleur_fond }};">
                                         <svg class="w-6 h-6 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -202,7 +202,7 @@
                             <!-- Logo petit et discret -->
                             <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm" style="background-color: {{ partenaire.couleur_fond }};">
                                 {% if partenaire.logo %}
-                                <img src="{{ partenaire.logo.url }}" alt="" class="w-full h-full object-contain p-1" loading="lazy">
+                                <img src="{{ partenaire.logo.url }}" alt="{{ partenaire.nom }}" class="w-full h-full object-contain p-1" loading="lazy">
                                 {% else %}
                                 <div class="w-full h-full flex items-center justify-center" style="background-color: {{ partenaire.couleur_fond }};">
                                     <svg class="w-6 h-6 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
