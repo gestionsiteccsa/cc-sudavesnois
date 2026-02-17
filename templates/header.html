@@ -41,18 +41,7 @@
                         <li><a href="{% url 'journal:journal' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mon mag</a></li>
                         <li><a href="{% url 'guide_eco_citoyen' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mon Guide éco-citoyen</a></li>
                         <li><a href="{% url 'semestriels:semestriel' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mon agenda</a></li>
-                        <li class="relative nav-dropdown">
-                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-decouvrir">
-                               Nos partenaires
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                            <ul id="submenu-decouvrir" class="submenu-level-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
-                                <li><a href="{% url 'pnra' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Parc Naturel Régional de l'Avesnois</a></li>
-                                <li><a href="{% url 'tourisme' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Avesnois Tourisme</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="{% url 'partenaires:partenaires' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Nos partenaires</a></li>
                     </ul>
                 </li>
 
@@ -294,18 +283,7 @@
                         <li><a href="{% url 'journal:journal' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon mag</a></li>
                         <li><a href="{% url 'guide_eco_citoyen' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon Guide éco-citoyen</a></li>
                         <li><a href="{% url 'semestriels:semestriel' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon agenda</a></li>
-                        <li>
-                            <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-decouvrir-mobile">
-                                Nos partenaires
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <ul id="submenu-decouvrir-mobile" class="pl-4 hidden">
-                                <li><a href="{% url 'pnra' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Parc Naturel Régional de l'Avesnois</a></li>
-                                <li><a href="{% url 'tourisme' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Avesnois Tourisme</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="{% url 'partenaires:partenaires' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Nos partenaires</a></li>
                     </ul>
                 </li>
 
