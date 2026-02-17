@@ -38,12 +38,8 @@ urlpatterns = [
     path("accessibilite/", views.accessibilite, name="accessibilite"),
     # Médi@'pass
     path("mediapass/", views.mediapass, name="mediapass"),
-    # Parc Naturel Régional de l'Avesnois
-    path("pnra/", views.pnra, name="pnra"),
     # Guide Éco-Citoyen
     path("guide-eco-citoyen/", views.guide_eco_citoyen, name="guide_eco_citoyen"),
-    # Tourisme en Avesnois
-    path("tourisme/", views.tourisme, name="tourisme"),
     # Documents PLUi
     path("documents-plui/", views.documents_plui, name="documents_plui"),
     # Développement économique
