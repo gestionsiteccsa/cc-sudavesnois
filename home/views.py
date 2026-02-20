@@ -1,17 +1,27 @@
 import logging
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
+from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, redirect, render
 from django.template.loader import render_to_string
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm, mm
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.lib.utils import ImageReader
 
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
 from journal.models import Journal
 from services.models import Service
+from home.data.collecte_data import get_dates_verre, get_jour_ordures, city_data
+from io import BytesIO
 
 logger = logging.getLogger(__name__)
 
@@ -435,4 +445,193 @@ def custom_handler500(request):
     logger.error(f"Erreur 500 sur {request.path}", exc_info=True)
 
     response = render(request, "500.html", status=500)
+    return response
+
+
+def telecharger_calendrier_verre(request):
+    """
+    Vue pour générer et télécharger le calendrier de collecte du verre en PDF.
+    """
+    from io import BytesIO
+
+    commune = request.GET.get('commune', '')
+    rue = request.GET.get('rue', '')
+
+    if not commune:
+        return HttpResponse(
+            b"Parametre 'commune' requis",
+            status=400,
+            content_type='text/plain'
+        )
+
+    if commune not in city_data:
+        return HttpResponse(
+            f"Commune '{commune}' non trouvee".encode('utf-8'),
+            status=404,
+            content_type='text/plain'
+        )
+
+    # Déterminer le jour de collecte
+    jour_ordures, rue_trouvee = get_jour_ordures(commune, rue)
+
+    # Récupérer les dates de verre
+    dates_verre = get_dates_verre(commune, jour_ordures)
+
+    if not dates_verre:
+        return HttpResponse(
+            f"Aucune date de collecte du verre trouvee pour {commune}".encode('utf-8'),
+            status=404,
+            content_type='text/plain'
+        )
+
+    # Créer le PDF en mémoire
+    buffer = BytesIO()
+
+    # Nom du fichier
+    if rue:
+        filename = f"calendrier-verre-{commune.lower()}-{rue.lower().replace(' ', '-')}.pdf"
+    else:
+        filename = f"calendrier-verre-{commune.lower()}.pdf"
+
+    # Créer le document PDF
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2*cm,
+        leftMargin=2*cm,
+        topMargin=2*cm,
+        bottomMargin=2*cm
+    )
+    
+    # Styles
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        textColor=colors.HexColor('#006ab3'),
+        spaceAfter=20,
+        alignment=1  # Centre
+    )
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Heading2'],
+        fontSize=14,
+        textColor=colors.HexColor('#333333'),
+        spaceAfter=12
+    )
+    normal_style = styles["Normal"]
+    normal_style.fontSize = 10
+    
+    # Liste des éléments du PDF
+    elements = []
+    
+    # Logo
+    try:
+        logo_path = settings.BASE_DIR / "static" / "img" / "Kits-Logos" / "PNG_Transparent" / "Logo_couleur.png"
+        if logo_path.exists():
+            img = ImageReader(str(logo_path))
+            # Ajouter le logo (taille réduite)
+            from reportlab.platypus import Image
+            logo = Image(str(logo_path), width=6*cm, height=3*cm)
+            elements.append(logo)
+            elements.append(Spacer(1, 0.5*cm))
+    except Exception as e:
+        logger.warning(f"Impossible de charger le logo: {e}")
+    
+    # Titre
+    elements.append(Paragraph(
+        "Calendrier de collecte du verre",
+        title_style
+    ))
+    elements.append(Spacer(1, 0.5*cm))
+    
+    # Informations de la commune/rue
+    elements.append(Paragraph(f"<b>Commune :</b> {commune}", subtitle_style))
+    if rue_trouvee:
+        elements.append(Paragraph(f"<b>Rue :</b> {rue_trouvee}", subtitle_style))
+    
+    # Jour de collecte des ordures
+    if jour_ordures:
+        elements.append(Paragraph(
+            f"<b>Collecte des ordures :</b> le {jour_ordures}",
+            normal_style
+        ))
+        elements.append(Spacer(1, 0.3*cm))
+    
+    # Jour de collecte du verre
+    if isinstance(city_data[commune]["verre"], dict):
+        if "jour" in city_data[commune]["verre"]:
+            jour_verre = city_data[commune]["verre"]["jour"]
+        elif jour_ordures and jour_ordures.lower() in city_data[commune]["verre"]:
+            jour_verre = jour_ordures
+        else:
+            jour_verre = list(city_data[commune]["verre"].keys())[0]
+        
+        elements.append(Paragraph(
+            f"<b>Collecte du verre :</b> le {jour_verre}",
+            normal_style
+        ))
+        elements.append(Spacer(1, 0.5*cm))
+    
+    # Tableau des dates
+    elements.append(Paragraph("<b>Dates de collecte 2026-2027</b>", subtitle_style))
+    elements.append(Spacer(1, 0.2*cm))
+    
+    # Préparer les données du tableau
+    table_data = [['Date', 'Jour']]
+    
+    for date_str in dates_verre:
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            date_formatee = date_obj.strftime('%d/%m/%Y')
+            jour_semaine = date_obj.strftime('%A').capitalize()
+            table_data.append([date_formatee, jour_semaine])
+        except ValueError:
+            continue
+    
+    # Créer le tableau
+    table = Table(table_data, colWidths=[8*cm, 8*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#006ab3')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 1*cm))
+    
+    # Footer avec contact
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=9,
+        textColor=colors.grey,
+        alignment=1
+    )
+    elements.append(Paragraph(
+        "Communauté de Communes Sud-Avesnois<br/>"
+        "24 avenue de la Marlière - 59610 FOURMIES<br/>"
+        "Tél : 03 27 60 65 24 | contact@cc-sudavesnois.fr",
+        footer_style
+    ))
+    
+    # Générer le PDF
+    doc.build(elements)
+
+    # Créer la réponse HTTP avec le PDF
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
     return response

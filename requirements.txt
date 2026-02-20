@@ -190,3 +190,4 @@ whitenoise==6.9.0
 wrapt==1.15.0
 yarl==1.9.2
 zeep==4.2.1
+reportlab==4.4.10

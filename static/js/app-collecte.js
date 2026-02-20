@@ -768,6 +768,38 @@ function capitalizeEachWord(str) {
         .join(' ');
 }
 
+function generatePdfLink(city, street = null) {
+    """
+    Génère le lien de téléchargement du PDF du calendrier de collecte.
+    """
+    let url = `/collecte/telecharger-pdf/?commune=${encodeURIComponent(city)}`;
+    if (street) {
+        url += `&rue=${encodeURIComponent(street)}`;
+    }
+    return url;
+}
+
+function getPdfDownloadButton(city, street = null) {
+    """
+    Retourne le HTML du bouton de téléchargement PDF.
+    """
+    const url = generatePdfLink(city, street);
+    const label = street 
+        ? `Télécharger les dates de ramassage pour ${street}`
+        : `Télécharger les dates de ramassage pour ${city}`;
+    
+    return `
+    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+        <a href="${url}" target="_blank" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-200 text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            ${label}
+        </a>
+    </div>
+    `;
+}
+
 window.handleCityChange = function handleCityChange() {
     const city = document.getElementById("citySelect").value;
     const resultDiv = document.getElementById("result");
@@ -810,11 +842,14 @@ window.handleCityChange = function handleCityChange() {
         <ul class="list-disc pl-5 space-y-1 text-gray-700">${prochaineDates.split('<br>').map(date => `<li>${date}</li>`).join('')}</ul>
       </div>
     </div>
-  </div>
 `;
             }
         }
-        
+
+        // Ajouter le bouton de téléchargement PDF
+        message += getPdfDownloadButton(city);
+        message += '</div>';
+
         resultDiv.innerHTML = message;
         resultDiv.className = '';
         resultDiv.style.display = 'block';
@@ -919,11 +954,14 @@ window.searchStreet = function searchStreet() {
         <ul class="list-disc pl-5 space-y-1 text-gray-700">${prochaineDates.split('<br>').map(date => `<li>${date}</li>`).join('')}</ul>
       </div>
     </div>
-  </div>
 `;
                 }
             }
-            
+
+            // Ajouter le bouton de téléchargement PDF avec la rue
+            message += getPdfDownloadButton(selectedCity, street.street);
+            message += '</div>';
+
             resultDiv.innerHTML = message;
             resultDiv.className = '';
             resultDiv.style.display = 'block';

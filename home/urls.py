@@ -46,6 +46,12 @@ urlpatterns = [
     path("developpement-economique/", views.dev_eco, name="dev_eco"),
     # Kit de logos CCSA
     path("kit-logos/", views.kit_logos, name="kit_logos"),
+    # Téléchargement calendrier verre PDF
+    path(
+        "collecte/telecharger-pdf/",
+        views.telecharger_calendrier_verre,
+        name="telecharger_calendrier_verre"
+    ),
 ]
 
 if settings.DEBUG:
