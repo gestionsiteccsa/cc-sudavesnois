@@ -769,9 +769,7 @@ function capitalizeEachWord(str) {
 }
 
 function generatePdfLink(city, street = null) {
-    """
-    Génère le lien de téléchargement du PDF du calendrier de collecte.
-    """
+    // Génère le lien de téléchargement du PDF du calendrier de collecte
     let url = `/collecte/telecharger-pdf/?commune=${encodeURIComponent(city)}`;
     if (street) {
         url += `&rue=${encodeURIComponent(street)}`;
@@ -780,9 +778,7 @@ function generatePdfLink(city, street = null) {
 }
 
 function getPdfDownloadButton(city, street = null) {
-    """
-    Retourne le HTML du bouton de téléchargement PDF.
-    """
+    // Retourne le HTML du bouton de téléchargement PDF
     const url = generatePdfLink(city, street);
     const label = street 
         ? `Télécharger les dates de ramassage pour ${street}`
