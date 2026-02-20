@@ -52,14 +52,16 @@ def admin_page(request):
     else:
         comptes_rendus = None
 
+    # Récupérer tous les conseils triés par date décroissante (plus récent en premier)
     if Conseil.objects.exists():
-        conseils = get_list_or_404(Conseil.objects.order_by("date"))
+        conseils = get_list_or_404(Conseil.objects.order_by("-date"))
     else:
         conseils = None
 
     context = {
         "comptes_rendus": comptes_rendus,
         "conseils": conseils,
+        "now": timezone.now(),
     }
 
     return render(request, "comptes_rendus/admin_page.html", context)
