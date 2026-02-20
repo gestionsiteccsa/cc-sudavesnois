@@ -846,7 +846,7 @@ window.handleCityChange = function handleCityChange() {
     <div class="bg-green-50 border-l-4 border-green-400 rounded-lg p-4 flex items-start gap-3">
       <div>
         <div class="font-bold mb-1">La collecte du verre a lieu les :</div>
-        <ul class="list-disc pl-5 space-y-1 text-gray-700">${prochaineDates.split('<br>').map(date => `<li>${date}</li>`).join('')}</ul>
+        <div class="space-y-1 text-gray-700">${prochaineDates.split('<br>').map(date => `<div>${date}</div>`).join('')}</div>
       </div>
     </div>
 `;
@@ -960,7 +960,7 @@ window.searchStreet = function searchStreet() {
     <div class="bg-green-50 border-l-4 border-green-400 rounded-lg p-4 flex items-start gap-3">
       <div>
         <div class="font-bold mb-1">La collecte du verre a lieu les :</div>
-        <ul class="list-disc pl-5 space-y-1 text-gray-700">${prochaineDates.split('<br>').map(date => `<li>${date}</li>`).join('')}</ul>
+        <div class="space-y-1 text-gray-700">${prochaineDates.split('<br>').map(date => `<div>${date}</div>`).join('')}</div>
       </div>
     </div>
 `;
