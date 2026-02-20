@@ -768,6 +768,14 @@ function capitalizeEachWord(str) {
         .join(' ');
 }
 
+function sanitizeHtml(text) {
+    // Protection XSS : échappe les caractères HTML dangereux
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function generatePdfLink(city, street = null) {
     // Génère le lien de téléchargement du PDF du calendrier de collecte
     let url = `/collecte/telecharger-pdf/?commune=${encodeURIComponent(city)}`;
@@ -780,9 +788,11 @@ function generatePdfLink(city, street = null) {
 function getPdfDownloadButton(city, street = null) {
     // Retourne le HTML du bouton de téléchargement PDF
     const url = generatePdfLink(city, street);
-    const label = street 
-        ? `Télécharger les dates de ramassage pour ${street}`
-        : `Télécharger les dates de ramassage pour ${city}`;
+    const safeCity = sanitizeHtml(city);
+    const safeStreet = street ? sanitizeHtml(street) : null;
+    const label = safeStreet
+        ? `Télécharger les dates de ramassage pour ${safeStreet}`
+        : `Télécharger les dates de ramassage pour ${safeCity}`;
     
     return `
     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
@@ -814,10 +824,11 @@ window.handleCityChange = function handleCityChange() {
     // Si la ville a un jour fixe
     if (typeof cityData[city].ordures === "string") {
         const jourCollecte = cityData[city].ordures;
+        const safeCity = sanitizeHtml(city);
         let message = `
   <div class="bg-white rounded-xl shadow-md p-6 mt-6 transition-all animate-fadeIn">
     <div class="flex items-center gap-2 text-lg font-semibold text-primary mb-4">
-      <span>${city}</span>
+      <span>${safeCity}</span>
     </div>
     <div class="mb-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-4 flex items-start gap-3">
       <div>
@@ -925,12 +936,14 @@ window.searchStreet = function searchStreet() {
         const div = document.createElement('div');
         div.textContent = street.street;
         div.onclick = () => {
+            const safeCity = sanitizeHtml(selectedCity);
+            const safeStreet = sanitizeHtml(street.street);
             let message = `
   <div class="bg-white rounded-xl shadow-md p-6 mt-6 transition-all animate-fadeIn">
     <div class="flex items-center gap-2 text-lg font-semibold text-primary mb-4">
-      <span>${selectedCity}</span>
+      <span>${safeCity}</span>
       <span class="text-gray-500">-</span>
-      <span>${street.street}</span>
+      <span>${safeStreet}</span>
     </div>
     <div class="mb-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-4 flex items-start gap-3">
       <div>

@@ -453,6 +453,27 @@ def telecharger_calendrier_verre(request):
     Vue pour générer et télécharger le calendrier de collecte du verre en PDF.
     """
     from io import BytesIO
+    import re
+
+    # Rate limiting: max 10 requêtes par minute par IP
+    client_ip = (
+        request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
+        or request.META.get("REMOTE_ADDR")
+        or "unknown"
+    )
+    rate_key = f"pdf_download:{client_ip}"
+    try:
+        created = cache.add(rate_key, 1, timeout=60)
+        if not created:
+            current = cache.incr(rate_key)
+            if current > 10:
+                return HttpResponse(
+                    "Trop de requetes. Veuillez reessayer dans une minute.".encode('utf-8'),
+                    status=429,
+                    content_type='text/plain'
+                )
+    except Exception:
+        pass
 
     commune = request.GET.get('commune', '')
     rue = request.GET.get('rue', '')
@@ -487,11 +508,18 @@ def telecharger_calendrier_verre(request):
     # Créer le PDF en mémoire
     buffer = BytesIO()
 
+    # Nettoyer le nom du fichier pour éviter les injections
+    def sanitize_filename(text):
+        # Supprime les caractères non alphanumériques sauf tirets et underscores
+        return re.sub(r'[^a-zA-Z0-9\-_]', '-', text.lower())
+
     # Nom du fichier
+    safe_commune = sanitize_filename(commune)
     if rue:
-        filename = f"calendrier-verre-{commune.lower()}-{rue.lower().replace(' ', '-')}.pdf"
+        safe_rue = sanitize_filename(rue)
+        filename = f"calendrier-verre-{safe_commune}-{safe_rue}.pdf"
     else:
-        filename = f"calendrier-verre-{commune.lower()}.pdf"
+        filename = f"calendrier-verre-{safe_commune}.pdf"
 
     # Créer le document PDF
     doc = SimpleDocTemplate(
