@@ -16,10 +16,11 @@ def comptes_rendus(request):
     else:
         comptes_rendus = None
 
-    # Filtrer les conseils avec date >= j+1 et trier par date croissante
-    tomorrow = timezone.now().date() + timedelta(days=1)
-    conseils = Conseil.objects.filter(date__gte=tomorrow).order_by("date")
-    if not conseils.exists():
+    # Afficher les conseils depuis 2 jours avant aujourd'hui (conservés 2 jours après)
+    # et limiter aux 5 prochains
+    two_days_ago = timezone.now().date() - timedelta(days=2)
+    conseils = Conseil.objects.filter(date__gte=two_days_ago).order_by("date")[:5]
+    if not conseils:
         conseils = None
 
     context = {
