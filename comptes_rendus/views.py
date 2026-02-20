@@ -53,15 +53,26 @@ def admin_page(request):
         comptes_rendus = None
 
     # Récupérer tous les conseils triés par date décroissante (plus récent en premier)
-    if Conseil.objects.exists():
-        conseils = get_list_or_404(Conseil.objects.order_by("-date"))
-    else:
-        conseils = None
+    today = timezone.now().date()
+    all_conseils = Conseil.objects.all().order_by("-date")
+    
+    # Statistiques
+    total_conseils = all_conseils.count()
+    conseils_a_venir = all_conseils.filter(date__gte=today).count()
+    
+    # Pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(all_conseils, 15)  # 15 conseils par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         "comptes_rendus": comptes_rendus,
-        "conseils": conseils,
-        "now": timezone.now(),
+        "conseils": page_obj,
+        "page_obj": page_obj,
+        "today": today,
+        "total_conseils": total_conseils,
+        "conseils_a_venir": conseils_a_venir,
     }
 
     return render(request, "comptes_rendus/admin_page.html", context)
