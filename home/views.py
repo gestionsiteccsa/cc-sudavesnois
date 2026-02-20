@@ -659,7 +659,7 @@ def telecharger_calendrier_verre(request):
     )
     elements.append(Paragraph(
         "Communauté de Communes Sud-Avesnois<br/>"
-        "24 avenue de la Marlière - 59610 FOURMIES<br/>"
+        "2 Rue du Général Raymond Chomel - 59610 FOURMIES<br/>"
         "Tél : 03 27 60 65 24 | contact@cc-sudavesnois.fr",
         footer_style
     ))
