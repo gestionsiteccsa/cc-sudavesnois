@@ -581,11 +581,23 @@ def telecharger_calendrier_verre(request):
     # Préparer les données du tableau
     table_data = [['Date', 'Jour']]
     
+    # Mapping des jours anglais vers français
+    jours_fr = {
+        'Monday': 'Lundi',
+        'Tuesday': 'Mardi',
+        'Wednesday': 'Mercredi',
+        'Thursday': 'Jeudi',
+        'Friday': 'Vendredi',
+        'Saturday': 'Samedi',
+        'Sunday': 'Dimanche'
+    }
+    
     for date_str in dates_verre:
         try:
             date_obj = datetime.strptime(date_str, '%Y-%m-%d')
             date_formatee = date_obj.strftime('%d/%m/%Y')
-            jour_semaine = date_obj.strftime('%A').capitalize()
+            jour_en = date_obj.strftime('%A')
+            jour_semaine = jours_fr.get(jour_en, jour_en)
             table_data.append([date_formatee, jour_semaine])
         except ValueError:
             continue
