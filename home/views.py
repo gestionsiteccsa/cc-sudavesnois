@@ -569,23 +569,14 @@ def telecharger_calendrier_verre(request):
     
     # Titre
     elements.append(Paragraph(
-        "Calendrier de collecte du verre",
+        f"Calendrier de collecte du verre de {commune}",
         title_style
     ))
-    elements.append(Spacer(1, 0.5*cm))
+    elements.append(Spacer(1, 0.10*cm))
     
-    # Informations de la commune/rue
-    elements.append(Paragraph(f"<b>Commune :</b> {commune}", subtitle_style))
+    # Informations de la rue
     if rue_trouvee:
         elements.append(Paragraph(f"<b>Rue :</b> {rue_trouvee}", subtitle_style))
-    
-    # Jour de collecte des ordures
-    if jour_ordures:
-        elements.append(Paragraph(
-            f"<b>Collecte des ordures :</b> le {jour_ordures}",
-            normal_style
-        ))
-        elements.append(Spacer(1, 0.3*cm))
     
     # Jour de collecte du verre
     if isinstance(city_data[commune]["verre"], dict):
@@ -600,14 +591,11 @@ def telecharger_calendrier_verre(request):
             f"<b>Collecte du verre :</b> le {jour_verre}",
             normal_style
         ))
-        elements.append(Spacer(1, 0.5*cm))
+        elements.append(Spacer(1, 0.2*cm))
     
     # Tableau des dates
     elements.append(Paragraph("<b>Dates de collecte 2026-2027</b>", subtitle_style))
     elements.append(Spacer(1, 0.2*cm))
-    
-    # Préparer les données du tableau
-    table_data = [['Date', 'Jour']]
     
     # Mapping des jours anglais vers français
     jours_fr = {
@@ -620,15 +608,44 @@ def telecharger_calendrier_verre(request):
         'Sunday': 'Dimanche'
     }
     
+    # Séparer les dates par année
+    dates_2026 = []
+    dates_2027 = []
+    
     for date_str in dates_verre:
         try:
             date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-            date_formatee = date_obj.strftime('%d/%m/%Y')
             jour_en = date_obj.strftime('%A')
             jour_semaine = jours_fr.get(jour_en, jour_en)
-            table_data.append([date_formatee, jour_semaine])
+            date_formatee = date_obj.strftime('%d/%m/%Y')
+            ligne = f"Le {jour_semaine.lower()} {date_formatee}"
+            
+            if date_obj.year == 2026:
+                dates_2026.append(ligne)
+            elif date_obj.year == 2027:
+                dates_2027.append(ligne)
         except ValueError:
             continue
+    
+    # Préparer les données du tableau (2 colonnes : 2026 et 2027)
+    table_data = [['2026', '2027']]
+    
+    # Nombre maximum de lignes
+    max_rows = max(len(dates_2026), len(dates_2027))
+    
+    for i in range(max_rows):
+        row = []
+        # Colonne 2026
+        if i < len(dates_2026):
+            row.append(dates_2026[i])
+        else:
+            row.append('')
+        # Colonne 2027
+        if i < len(dates_2027):
+            row.append(dates_2027[i])
+        else:
+            row.append('')
+        table_data.append(row)
     
     # Créer le tableau
     table = Table(table_data, colWidths=[8*cm, 8*cm])
@@ -644,10 +661,24 @@ def telecharger_calendrier_verre(request):
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     
     elements.append(table)
-    elements.append(Spacer(1, 1*cm))
+    elements.append(Spacer(1, 0.5*cm))
+    
+    # Ajouter l'image Collect.png
+    try:
+        collect_image_path = settings.BASE_DIR / "static" / "img" / "Collect.png"
+        if collect_image_path.exists():
+            from reportlab.platypus import Image
+            img = Image(str(collect_image_path), width=16*cm, height=6*cm)
+            elements.append(img)
+            elements.append(Spacer(1, 0.5*cm))
+    except Exception as e:
+        logger.warning(f"Impossible de charger l'image Collect.png: {e}")
+    
+    elements.append(Spacer(1, 0.5*cm))
     
     # Footer avec contact
     footer_style = ParagraphStyle(
@@ -672,6 +703,14 @@ def telecharger_calendrier_verre(request):
     buffer.close()
 
     response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # Déterminer si c'est une visualisation ou un téléchargement
+    view_mode = request.GET.get('view', '')
+    if view_mode == '1':
+        # Mode visualisation : affiche le PDF dans le navigateur
+        response['Content-Disposition'] = f'inline; filename="{filename}"'
+    else:
+        # Mode téléchargement (par défaut)
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     return response

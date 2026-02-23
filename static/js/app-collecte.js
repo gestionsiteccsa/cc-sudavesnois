@@ -785,23 +785,45 @@ function generatePdfLink(city, street = null) {
     return url;
 }
 
+function generatePdfViewLink(city, street = null) {
+    // Génère le lien pour visualiser le PDF du calendrier de collecte
+    let url = `/collecte/telecharger-pdf/?commune=${encodeURIComponent(city)}&view=1`;
+    if (street) {
+        url += `&rue=${encodeURIComponent(street)}`;
+    }
+    return url;
+}
+
 function getPdfDownloadButton(city, street = null) {
-    // Retourne le HTML du bouton de téléchargement PDF
-    const url = generatePdfLink(city, street);
+    // Retourne le HTML des boutons PDF (télécharger + visualiser)
+    const downloadUrl = generatePdfLink(city, street);
+    const viewUrl = generatePdfViewLink(city, street);
     const safeCity = sanitizeHtml(city);
     const safeStreet = street ? sanitizeHtml(street) : null;
-    const label = safeStreet
-        ? `Télécharger les dates de ramassage pour ${safeStreet}`
-        : `Télécharger les dates de ramassage pour ${safeCity}`;
-    
+    const downloadLabel = safeStreet
+        ? `Télécharger les dates pour ${safeStreet}`
+        : `Télécharger les dates pour ${safeCity}`;
+    const viewLabel = safeStreet
+        ? `Visualiser le calendrier (${safeStreet})`
+        : `Visualiser le calendrier (${safeCity})`;
+
     return `
     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-        <a href="${url}" target="_blank" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-200 text-sm font-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            ${label}
-        </a>
+        <div class="flex flex-wrap gap-2">
+            <a href="${downloadUrl}" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-200 text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                ${downloadLabel}
+            </a>
+            <a href="${viewUrl}" target="_blank" class="inline-flex items-center px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors duration-200 text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                ${viewLabel}
+            </a>
+        </div>
     </div>
     `;
 }
