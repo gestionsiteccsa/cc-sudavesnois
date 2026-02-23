@@ -536,17 +536,17 @@ def telecharger_calendrier_verre(request):
     title_style = ParagraphStyle(
         'CustomTitle',
         parent=styles['Heading1'],
-        fontSize=18,
+        fontSize=16,
         textColor=colors.HexColor('#006ab3'),
-        spaceAfter=20,
+        spaceAfter=5,
         alignment=1  # Centre
     )
     subtitle_style = ParagraphStyle(
         'CustomSubtitle',
         parent=styles['Heading2'],
-        fontSize=14,
+        fontSize=10,
         textColor=colors.HexColor('#333333'),
-        spaceAfter=12
+        spaceAfter=10
     )
     normal_style = styles["Normal"]
     normal_style.fontSize = 10
@@ -563,7 +563,7 @@ def telecharger_calendrier_verre(request):
             from reportlab.platypus import Image
             logo = Image(str(logo_path), width=6*cm, height=3*cm)
             elements.append(logo)
-            elements.append(Spacer(1, 0.5*cm))
+            elements.append(Spacer(1, 0.1*cm))
     except Exception as e:
         logger.warning(f"Impossible de charger le logo: {e}")
     
@@ -572,7 +572,7 @@ def telecharger_calendrier_verre(request):
         f"Calendrier de collecte du verre de {commune}",
         title_style
     ))
-    elements.append(Spacer(1, 0.10*cm))
+    elements.append(Spacer(1, 0.1*cm))
     
     # Informations de la rue
     if rue_trouvee:
@@ -591,11 +591,11 @@ def telecharger_calendrier_verre(request):
             f"<b>Collecte du verre :</b> le {jour_verre}",
             normal_style
         ))
-        elements.append(Spacer(1, 0.2*cm))
+        elements.append(Spacer(1, 0.1*cm))
     
     # Tableau des dates
     elements.append(Paragraph("<b>Dates de collecte 2026-2027</b>", subtitle_style))
-    elements.append(Spacer(1, 0.2*cm))
+    elements.append(Spacer(1, 0.1*cm))
     
     # Mapping des jours anglais vers français
     jours_fr = {
