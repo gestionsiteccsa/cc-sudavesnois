@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "linktree",
     "backup",
     "partenaires",
+    "search",
 ]
 
 MIDDLEWARE = [
