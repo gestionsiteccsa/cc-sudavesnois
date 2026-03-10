@@ -8,4 +8,10 @@ class BureauCommunautaireConfig(AppConfig):
 
     def ready(self):
         from .models import Elus
-        watson.register(Elus, fields=("first_name", "last_name", "function"))
+        from django.urls import reverse
+        
+        class ElusAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('bureau-communautaire:elus')
+        
+        watson.register(Elus, ElusAdapter, fields=("first_name", "last_name", "function"))

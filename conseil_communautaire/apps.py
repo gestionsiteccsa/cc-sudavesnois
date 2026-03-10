@@ -8,4 +8,10 @@ class ConseilCommunautaireConfig(AppConfig):
     
     def ready(self):
         from .models import ConseilVille
-        watson.register(ConseilVille, fields=("city_name", "slogan"), store=("postal_code",))
+        from django.urls import reverse
+        
+        class ConseilVilleAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('conseil_communautaire:conseil')
+        
+        watson.register(ConseilVille, ConseilVilleAdapter, fields=("city_name", "slogan"))

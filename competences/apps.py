@@ -8,4 +8,10 @@ class CompetencesConfig(AppConfig):
 
     def ready(self):
         from .models import Competence
-        watson.register(Competence, fields=("title", "description"))
+        from django.urls import reverse
+        
+        class CompetenceAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('competences:competences')
+        
+        watson.register(Competence, CompetenceAdapter, fields=("title", "description"))

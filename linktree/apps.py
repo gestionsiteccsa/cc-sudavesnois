@@ -9,4 +9,10 @@ class LinktreeConfig(AppConfig):
 
     def ready(self):
         from .models import Lien
-        watson.register(Lien, fields=("titre",))
+        from django.urls import reverse
+        
+        class LienAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('linktree:linktree_page')
+        
+        watson.register(Lien, LienAdapter, fields=("titre",))

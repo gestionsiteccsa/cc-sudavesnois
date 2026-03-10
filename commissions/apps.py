@@ -8,4 +8,10 @@ class CommissionsConfig(AppConfig):
 
     def ready(self):
         from .models import Commission
-        watson.register(Commission, fields=("title",))
+        from django.urls import reverse
+        
+        class CommissionAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('commissions:commissions')
+        
+        watson.register(Commission, CommissionAdapter, fields=("title",))

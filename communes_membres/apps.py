@@ -8,4 +8,11 @@ class CommunesMembresConfig(AppConfig):
     
     def ready(self):
         from .models import ActeLocal
-        watson.register(ActeLocal, fields=("title", "description"))
+        from django.urls import reverse
+        
+        class ActeLocalAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                # Redirige vers la page de la commune concernée
+                return reverse('communes-membres:commune', kwargs={'slug': obj.commune.slug})
+        
+        watson.register(ActeLocal, ActeLocalAdapter, fields=("title", "description"))

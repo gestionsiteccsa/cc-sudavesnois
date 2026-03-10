@@ -8,4 +8,9 @@ class HomeConfig(AppConfig):
     
     def ready(self):
         from .models import StaticPage
-        watson.register(StaticPage, fields=("title", "content", "description"), store=("url",))
+        
+        class StaticPageAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return obj.url
+        
+        watson.register(StaticPage, StaticPageAdapter, fields=("title", "content", "description"))

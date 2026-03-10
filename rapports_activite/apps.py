@@ -8,4 +8,10 @@ class RapportsActiviteConfig(AppConfig):
 
     def ready(self):
         from .models import RapportActivite
-        watson.register(RapportActivite, fields=("title", "description"))
+        from django.urls import reverse
+        
+        class RapportAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('rapports_activite:rapports_activite')
+        
+        watson.register(RapportActivite, RapportAdapter, fields=("title", "description"))

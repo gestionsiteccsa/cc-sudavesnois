@@ -8,4 +8,10 @@ class PartenairesConfig(AppConfig):
 
     def ready(self):
         from .models import Partenaire
-        watson.register(Partenaire, fields=("nom", "description"))
+        from django.urls import reverse
+        
+        class PartenaireAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('partenaires:partenaires')
+        
+        watson.register(Partenaire, PartenaireAdapter, fields=("nom", "description"))

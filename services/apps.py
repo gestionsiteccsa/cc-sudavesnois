@@ -8,4 +8,11 @@ class ServicesConfig(AppConfig):
     
     def ready(self):
         from .models import Service
-        watson.register(Service, fields=("title", "content"), store=("icon",))
+        from django.urls import reverse
+        
+        class ServiceAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                # Les services sont sur la page d'accueil
+                return reverse('home')
+        
+        watson.register(Service, ServiceAdapter, fields=("title", "content"))

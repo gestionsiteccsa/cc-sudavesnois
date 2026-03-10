@@ -8,4 +8,10 @@ class JournalConfig(AppConfig):
     
     def ready(self):
         from .models import Journal
-        watson.register(Journal, fields=("title",), store=("number",))
+        from django.urls import reverse
+        
+        class JournalAdapter(watson.SearchAdapter):
+            def get_url(self, obj):
+                return reverse('journal:journal')
+        
+        watson.register(Journal, JournalAdapter, fields=("title",))
