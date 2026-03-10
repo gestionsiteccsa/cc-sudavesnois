@@ -5,80 +5,300 @@
 {% block meta_description %}Recherchez sur le site de la Communauté de Communes Sud-Avesnois{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Recherche</h1>
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    
+    <!-- En-tête de recherche -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+            <i class="icofont-search-1 text-blue-600 mr-2"></i>Recherche
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Recherchez parmi les pages, services, communes, compétences, rapports et documents de la CCSA
+        </p>
+    </div>
 
-    <form method="get" action="{% url 'search' %}" class="mb-8">
-        <div class="flex flex-col sm:flex-row gap-2">
+    <!-- Formulaire de recherche amélioré -->
+    <form method="get" action="{% url 'search' %}" class="mb-10">
+        <div class="relative max-w-3xl mx-auto">
             <input type="text" name="q" value="{{ query }}"
-                   class="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
-                   placeholder="Rechercher une page, un service, une commune..."
+                   class="w-full pl-14 pr-32 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-gray-800 dark:text-gray-100 transition-all"
+                   placeholder="Rechercher une page, un service, une commune, un élu..."
                    aria-label="Terme de recherche">
+            <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <i class="icofont-search-1 text-2xl"></i>
+            </div>
             <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-200">
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-2.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg">
                 Rechercher
             </button>
         </div>
     </form>
 
     {% if query %}
-        <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">
-                {{ count }} résultat{% if count > 1 %}s{% endif %} pour "<span class="text-blue-600">{{ query }}</span>"
+        <!-- Résultats -->
+        <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                <span class="text-blue-600">{{ count }}</span> 
+                résultat{% if count > 1 %}s{% endif %} trouvé{% if count > 1 %}s{% endif %}
+                <span class="text-lg font-normal text-gray-500 dark:text-gray-400 ml-2">
+                    pour "{{ query }}"
+                </span>
             </h2>
+            
+            <!-- Filtres rapides -->
+            <div class="flex flex-wrap gap-2">
+                <span class="text-sm text-gray-500 dark:text-gray-400 self-center mr-2">Filtrer :</span>
+                <button onclick="filterResults('all')" class="filter-btn active px-4 py-1.5 rounded-full text-sm font-medium bg-blue-600 text-white transition-all hover:shadow-md" data-filter="all">
+                    Tous
+                </button>
+                <button onclick="filterResults('page')" class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all" data-filter="page">
+                    Pages
+                </button>
+                <button onclick="filterResults('service')" class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all" data-filter="service">
+                    Services
+                </button>
+                <button onclick="filterResults('commune')" class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all" data-filter="commune">
+                    Communes
+                </button>
+            </div>
         </div>
 
         {% if results %}
-            <div class="space-y-4">
+            <div class="grid gap-4" id="search-results">
                 {% for result in results %}
-                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
-                    <h3 class="text-lg font-semibold mb-2">
-                        {% if result.url %}
-                            <a href="{{ result.url }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:underline">
-                                {{ result.title }}
-                            </a>
-                        {% else %}
-                            {{ result.title }}
-                        {% endif %}
-                    </h3>
+                {% with model_name=result.model_name|lower %}
+                <article class="search-result-item bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 overflow-hidden group" data-type="{{ model_name }}" data-category="{{ result.model_name }}">
+                    <div class="flex items-start gap-5 p-5">
+                        <!-- Icône selon le type -->
+                        <div class="flex-shrink-0">
+                            {% if model_name == 'staticpage' %}
+                                <div class="w-14 h-14 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                    <i class="icofont-page text-2xl text-blue-600"></i>
+                                </div>
+                            {% elif model_name == 'service' %}
+                                <div class="w-14 h-14 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                    <i class="icofont-tools text-2xl text-green-600"></i>
+                                </div>
+                            {% elif model_name == 'conseilville' %}
+                                <div class="w-14 h-14 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                    <i class="icofont-building text-2xl text-purple-600"></i>
+                                </div>
+                            {% elif model_name == 'journal' %}
+                                <div class="w-14 h-14 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                    <i class="icofont-newspaper text-2xl text-orange-600"></i>
+                                </div>
+                            {% elif model_name == 'competence' %}
+                                <div class="w-14 h-14 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                                    <i class="icofont-check-circled text-2xl text-indigo-600"></i>
+                                </div>
+                            {% elif model_name == 'commission' %}
+                                <div class="w-14 h-14 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
+                                    <i class="icofont-users-alt-3 text-2xl text-pink-600"></i>
+                                </div>
+                            {% elif model_name == 'elus' %}
+                                <div class="w-14 h-14 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                                    <i class="icofont-user-suited text-2xl text-teal-600"></i>
+                                </div>
+                            {% elif model_name == 'partenaire' %}
+                                <div class="w-14 h-14 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                                    <i class="icofont-handshake-deal text-2xl text-amber-600"></i>
+                                </div>
+                            {% elif model_name == 'rapportactivite' %}
+                                <div class="w-14 h-14 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                    <i class="icofont-chart-bar-graph text-2xl text-red-600"></i>
+                                </div>
+                            {% elif model_name == 'actelocal' %}
+                                <div class="w-14 h-14 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
+                                    <i class="icofont-file-document text-2xl text-cyan-600"></i>
+                                </div>
+                            {% elif model_name == 'conseil' %}
+                                <div class="w-14 h-14 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                    <i class="icofont-meeting-add text-2xl text-gray-600 dark:text-gray-400"></i>
+                                </div>
+                            {% elif model_name == 'lien' %}
+                                <div class="w-14 h-14 rounded-xl bg-lime-100 dark:bg-lime-900/30 flex items-center justify-center">
+                                    <i class="icofont-link text-2xl text-lime-600"></i>
+                                </div>
+                            {% else %}
+                                <div class="w-14 h-14 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                    <i class="icofont-folder text-2xl text-gray-600 dark:text-gray-400"></i>
+                                </div>
+                            {% endif %}
+                        </div>
 
-                    {% if result.description %}
-                        <p class="text-gray-600 dark:text-gray-400 mb-3">
-                            {{ result.description }}
-                        </p>
-                    {% endif %}
+                        <!-- Contenu -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-4 mb-2">
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    {% if result.url %}
+                                        <a href="{{ result.url }}" class="hover:underline">
+                                            {{ result.title }}
+                                        </a>
+                                    {% else %}
+                                        {{ result.title }}
+                                    {% endif %}
+                                </h3>
+                                
+                                <!-- Badge de catégorie -->
+                                <span class="flex-shrink-0 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                                    {% if model_name == 'staticpage' %}bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300
+                                    {% elif model_name == 'service' %}bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300
+                                    {% elif model_name == 'conseilville' %}bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300
+                                    {% elif model_name == 'journal' %}bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300
+                                    {% elif model_name == 'competence' %}bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300
+                                    {% elif model_name == 'commission' %}bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300
+                                    {% elif model_name == 'elus' %}bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300
+                                    {% elif model_name == 'partenaire' %}bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300
+                                    {% elif model_name == 'rapportactivite' %}bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300
+                                    {% elif model_name == 'actelocal' %}bg-cyan-100 text-cyan-800 dark:bg-cyan-900/50 dark:text-cyan-300
+                                    {% elif model_name == 'lien' %}bg-lime-100 text-lime-800 dark:bg-lime-900/50 dark:text-lime-300
+                                    {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                                    {% if model_name == 'staticpage' %}Page
+                                    {% elif model_name == 'conseilville' %}Commune
+                                    {% elif model_name == 'rapportactivite' %}Rapport
+                                    {% elif model_name == 'actelocal' %}Document
+                                    {% elif model_name == 'lien' %}Lien utile
+                                    {% else %}{{ result.model_name }}{% endif %}
+                                </span>
+                            </div>
 
-                    <div class="flex items-center gap-2 text-sm">
-                        <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded">
-                            {{ result.model_name }}
-                        </span>
-                        {% if result.url %}
-                            <span class="text-gray-400 dark:text-gray-500 truncate">
-                                {{ result.url }}
-                            </span>
-                        {% endif %}
+                            <!-- Description avec mise en évidence -->
+                            {% if result.description %}
+                                <p class="text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                                    {{ result.description }}
+                                </p>
+                            {% endif %}
+
+                            <!-- Métadonnées et lien -->
+                            <div class="flex items-center gap-4 flex-wrap">
+                                {% if result.url %}
+                                    <a href="{{ result.url }}" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium text-sm group/link">
+                                        Voir la page
+                                        <i class="icofont-rounded-right ml-1 transform group-hover/link:translate-x-1 transition-transform"></i>
+                                    </a>
+                                    
+                                    <span class="text-gray-300 dark:text-gray-600">|</span>
+                                    
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                                        {{ result.url }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </article>
+                {% endwith %}
                 {% endfor %}
             </div>
+
+            <!-- Pagination ou message de fin -->
+            <div class="mt-8 text-center text-gray-500 dark:text-gray-400">
+                <p>Fin des résultats</p>
+            </div>
+
         {% else %}
-            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 text-center">
-                <p class="text-yellow-700 dark:text-yellow-400">
-                    <i class="icofont-search-2 text-2xl mb-2 block"></i>
-                    Aucun résultat trouvé pour "{{ query }}".
+            <!-- Aucun résultat -->
+            <div class="text-center py-16">
+                <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center">
+                    <i class="icofont-search-2 text-4xl text-yellow-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
+                    Aucun résultat trouvé
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                    Nous n'avons trouvé aucun résultat pour "<strong>{{ query }}</strong>".
                 </p>
-                <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">
-                    Essayez avec des termes différents ou plus généraux.
-                </p>
+                <div class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p>Suggestions :</p>
+                    <ul class="inline-block text-left space-y-1">
+                        <li><i class="icofont-check text-green-500 mr-2"></i>Vérifiez l'orthographe</li>
+                        <li><i class="icofont-check text-green-500 mr-2"></i>Utilisez des termes plus généraux</li>
+                        <li><i class="icofont-check text-green-500 mr-2"></i>Essayez des synonymes</li>
+                    </ul>
+                </div>
             </div>
         {% endif %}
+
     {% else %}
-        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">
-            <p class="text-blue-700 dark:text-blue-400">
-                <i class="icofont-search-1 text-2xl mb-2 block"></i>
-                Saisissez un terme de recherche ci-dessus pour trouver des pages, services, communes ou documents.
+        <!-- État initial - avant recherche -->
+        <div class="text-center py-12">
+            <div class="w-32 h-32 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 flex items-center justify-center shadow-inner">
+                <i class="icofont-search-1 text-5xl text-blue-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+                Que recherchez-vous ?
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-8">
+                Saisissez un terme de recherche ci-dessus pour explorer les contenus de la Communauté de Communes Sud-Avesnois.
             </p>
+            
+            <!-- Exemples de recherche -->
+            <div class="flex flex-wrap justify-center gap-3">
+                <span class="text-sm text-gray-500 dark:text-gray-400 self-center">Exemples :</span>
+                <a href="{% url 'search' %}?q=présentation" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300 rounded-lg text-sm transition-colors">
+                    Présentation
+                </a>
+                <a href="{% url 'search' %}?q=mobilité" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300 rounded-lg text-sm transition-colors">
+                    Mobilité
+                </a>
+                <a href="{% url 'search' %}?q=Féron" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300 rounded-lg text-sm transition-colors">
+                    Féron
+                </a>
+                <a href="{% url 'search' %}?q=déchets" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300 rounded-lg text-sm transition-colors">
+                    Déchets
+                </a>
+            </div>
         </div>
     {% endif %}
 </div>
+
+{% block extra_js %}
+<script>
+// Fonction de filtrage des résultats
+function filterResults(type) {
+    const results = document.querySelectorAll('.search-result-item');
+    const buttons = document.querySelectorAll('.filter-btn');
+    
+    // Mise à jour des boutons
+    buttons.forEach(btn => {
+        if (btn.dataset.filter === type) {
+            btn.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            btn.classList.add('bg-blue-600', 'text-white');
+        } else {
+            btn.classList.remove('bg-blue-600', 'text-white');
+            btn.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+        }
+    });
+    
+    // Filtrage des résultats
+    results.forEach(result => {
+        if (type === 'all' || result.dataset.type === type || 
+            (type === 'page' && result.dataset.type === 'staticpage') ||
+            (type === 'commune' && result.dataset.type === 'conseilville')) {
+            result.style.display = 'block';
+            result.style.animation = 'fadeIn 0.3s ease-in';
+        } else {
+            result.style.display = 'none';
+        }
+    });
+}
+
+// Animation CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}
+
 {% endblock %}
