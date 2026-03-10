@@ -8,20 +8,29 @@
             </a>
         </div>
 
-        <!-- Barre de recherche -->
-        <div class="hidden lg:flex items-center mx-4 flex-1 max-w-md">
+        <!-- Barre de recherche Desktop -->
+        <div class="hidden lg:flex items-center mx-4 flex-1 max-w-lg">
             <form method="get" action="{% url 'search' %}" class="w-full">
                 <div class="relative">
                     <input type="text" name="q" placeholder="Rechercher..."
-                           class="w-full pl-4 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-800 dark:text-gray-100 transition-all"
                            aria-label="Rechercher sur le site">
-                    <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" aria-label="Lancer la recherche">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                    </button>
+                    </div>
                 </div>
             </form>
+        </div>
+
+        <!-- Icône recherche Mobile (visible uniquement sur md et lg caché) -->
+        <div class="lg:hidden flex items-center">
+            <a href="{% url 'search' %}" class="p-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors" aria-label="Rechercher">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </a>
         </div>
 
         <nav class="hidden md:block ml-auto" aria-label="Menu principal">
@@ -267,6 +276,27 @@
        <div id="mobile-menu" class="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 hidden">
         <nav aria-label="Menu mobile" class="container mx-auto px-4">
             <ul class="py-2">
+                <!-- Barre de recherche Mobile -->
+                <li class="border-b border-gray-100 dark:border-gray-700 pb-3 mb-2">
+                    <form method="get" action="{% url 'search' %}" class="w-full">
+                        <div class="relative">
+                            <input type="text" name="q" placeholder="Rechercher sur le site..."
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                                   aria-label="Rechercher sur le site">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-primary hover:text-primary/80" aria-label="Lancer la recherche">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </li>
+
                 <!-- Territoire -->
                 <li class="border-b border-gray-100 dark:border-gray-700">
                     <button class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-expanded="false" aria-controls="submenu-territoire-mobile">
