@@ -7,7 +7,7 @@
                 <img fetchpriority="high" src="{% static 'img/logo/Logo_S-A.png' %}" alt="Communauté de Communes Sud-Avesnois" width="200" height="80" class="h-16 w-auto">
             </a>
         </div>
-        
+
         <nav class="hidden md:block ml-auto" aria-label="Menu principal">
             <ul class="flex space-x-1">
                 <li class="relative nav-dropdown">
@@ -235,7 +235,14 @@
                     </button>
                 </div>
             </div>
-            
+
+            <!-- Bouton recherche (desktop) -->
+            <a href="{% url 'search' %}" class="hidden md:flex ml-4 p-2 rounded-full text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors" aria-label="Rechercher">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </a>
+
             <button class="md:hidden ml-4 p-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-expanded="false" aria-controls="mobile-menu" aria-label="Ouvrir le menu" id="menu-toggle">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="menu-icon-open">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -251,6 +258,27 @@
        <div id="mobile-menu" class="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 hidden">
         <nav aria-label="Menu mobile" class="container mx-auto px-4">
             <ul class="py-2">
+                <!-- Barre de recherche Mobile -->
+                <li class="border-b border-gray-100 dark:border-gray-700 pb-3 mb-2">
+                    <form method="get" action="{% url 'search' %}" class="w-full">
+                        <div class="relative">
+                            <input type="text" name="q" placeholder="Rechercher sur le site..."
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-gray-100"
+                                   aria-label="Rechercher sur le site">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-primary hover:text-primary/80" aria-label="Lancer la recherche">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </li>
+
                 <!-- Territoire -->
                 <li class="border-b border-gray-100 dark:border-gray-700">
                     <button class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-expanded="false" aria-controls="submenu-territoire-mobile">

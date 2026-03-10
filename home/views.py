@@ -22,6 +22,7 @@ from journal.models import Journal
 from services.models import Service
 from home.data.collecte_data import get_dates_verre, get_jour_ordures, city_data
 from io import BytesIO
+from watson import search as watson
 
 logger = logging.getLogger(__name__)
 
@@ -703,7 +704,7 @@ def telecharger_calendrier_verre(request):
     buffer.close()
 
     response = HttpResponse(pdf, content_type='application/pdf')
-    
+
     # Déterminer si c'est une visualisation ou un téléchargement
     view_mode = request.GET.get('view', '')
     if view_mode == '1':
@@ -714,3 +715,63 @@ def telecharger_calendrier_verre(request):
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     return response
+
+
+def search_view(request):
+    """Vue pour la recherche globale avec django-watson."""
+    from django.core.paginator import Paginator
+    from django.core.validators import URLValidator
+    from django.core.exceptions import ValidationError
+    
+    MAX_QUERY_LENGTH = 200
+    
+    # Limiter la longueur de la requête
+    query = request.GET.get('q', '').strip()[:MAX_QUERY_LENGTH]
+    results = []
+    page_obj = None
+    
+    if query:
+        # Recherche avec watson - classement par pertinence
+        results = watson.search(query)
+        
+        # Valider les URLs des résultats
+        url_validator = URLValidator()
+        validated_results = []
+        for result in results:
+            if result.url:
+                # Vérifier les protocoles dangereux
+                dangerous_protocols = ['javascript:', 'data:', 'vbscript:', 'file:']
+                url_lower = result.url.lower().strip()
+                is_dangerous = any(url_lower.startswith(protocol) for protocol in dangerous_protocols)
+                
+                if is_dangerous:
+                    # URL dangereuse - on ne l'ajoute pas
+                    continue
+                
+                # Accepter les URLs relatives (/path/) sans validation
+                if result.url.startswith('/'):
+                    validated_results.append(result)
+                else:
+                    # Valider les URLs absolues
+                    try:
+                        url_validator(result.url)
+                        validated_results.append(result)
+                    except ValidationError:
+                        # URL invalide - on ne l'ajoute pas aux résultats
+                        continue
+            else:
+                validated_results.append(result)
+        
+        results = validated_results
+        
+        # Pagination - 10 résultats par page
+        paginator = Paginator(results, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+    return render(request, 'home/search_results.html', {
+        'query': query,
+        'results': page_obj if query else [],
+        'count': len(results) if query else 0,
+        'page_obj': page_obj
+    })
