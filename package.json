@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "browserslist": "^4.25.0",
-    "caniuse-lite": "^1.0.30001720",
     "electron-to-chromium": "^1.5.161",
     "escalade": "^3.2.0",
     "fraction.js": "^4.3.7",

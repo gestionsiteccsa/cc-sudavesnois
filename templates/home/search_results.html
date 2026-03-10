@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load search_filters %}
 
 {% block title %}Recherche - CCSA{% endblock %}
 {% block meta_description %}Recherchez sur le site de la Communauté de Communes Sud-Avesnois{% endblock %}
@@ -78,7 +79,7 @@
                         <span class="text-primary" aria-label="{{ count }} résultats trouvés">{{ count }}</span> 
                         <span>résultat{% if count > 1 %}s{% endif %} trouvé{% if count > 1 %}s{% endif %}</span>
                         <span class="text-sm md:text-base font-normal text-gray-500 dark:text-gray-400 ml-2">
-                            pour "<mark class="bg-primary/10 px-1 rounded">{{ query }}</mark>"
+                            pour "<mark class="bg-primary/10 px-1 rounded">{{ query|escape }}</mark>"
                         </span>
                     </h2>
                 </div>
@@ -188,28 +189,37 @@
                                             <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors">
                                                 {% if result.url %}
                                                     <a href="{{ result.url }}" 
-                                                       class="hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
-                                                        {{ result.title }}
+                                                       class="hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded block">
+                                                        {{ result.title|striptags|truncatechars:80|highlight:query }}
                                                     </a>
                                                 {% else %}
-                                                    {{ result.title }}
+                                                    {{ result.title|striptags|truncatechars:80|highlight:query }}
                                                 {% endif %}
                                             </h3>
                                             
+                                            {% if model_name %}
                                             <!-- Badge catégorie -->
                                             <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary-700 dark:text-primary-300 border border-primary/20 self-start mx-auto sm:mx-0">
                                                 {% if model_name == 'staticpage' %}Page
+                                                {% elif model_name == 'service' %}Service
                                                 {% elif model_name == 'conseilville' %}Commune
+                                                {% elif model_name == 'journal' %}Journal
+                                                {% elif model_name == 'competence' %}Compétence
+                                                {% elif model_name == 'commission' %}Commission
+                                                {% elif model_name == 'elus' %}Élu
+                                                {% elif model_name == 'partenaire' %}Partenaire
                                                 {% elif model_name == 'rapportactivite' %}Rapport
                                                 {% elif model_name == 'actelocal' %}Document
+                                                {% elif model_name == 'conseil' %}Conseil
                                                 {% elif model_name == 'lien' %}Lien
                                                 {% else %}{{ result.model_name }}{% endif %}
                                             </span>
+                                            {% endif %}
                                         </div>
 
                                         {% if result.description %}
-                                            <p class="text-gray-700 dark:text-gray-300 mb-3 text-sm md:text-base leading-relaxed">
-                                                {{ result.description|striptags|truncatechars:150 }}
+                                            <p class="text-gray-700 dark:text-gray-300 mb-3 text-sm md:text-base leading-relaxed break-words line-clamp-3">
+                                                {{ result.description|striptags|truncatechars:120|highlight:query }}
                                             </p>
                                         {% endif %}
 
@@ -230,10 +240,40 @@
                         {% endfor %}
                     </div>
 
-                    <!-- Message de fin -->
-                    <div class="mt-6 md:mt-8 text-center text-gray-500 dark:text-gray-400">
-                        <p>— Fin des résultats —</p>
-                    </div>
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                    <nav class="mt-8 flex justify-center" aria-label="Pagination">
+                        <div class="flex items-center gap-2">
+                            {% if page_obj.has_previous %}
+                                <a href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}" 
+                                   class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                   aria-label="Page précédente">
+                                    ← Précédent
+                                </a>
+                            {% else %}
+                                <span class="px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-400 cursor-not-allowed">
+                                    ← Précédent
+                                </span>
+                            {% endif %}
+
+                            <span class="px-4 py-2 text-gray-700 dark:text-gray-200">
+                                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+                            </span>
+
+                            {% if page_obj.has_next %}
+                                <a href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}" 
+                                   class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                   aria-label="Page suivante">
+                                    Suivant →
+                                </a>
+                            {% else %}
+                                <span class="px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-400 cursor-not-allowed">
+                                    Suivant →
+                                </span>
+                            {% endif %}
+                        </div>
+                    </nav>
+                    {% endif %}
 
                 {% else %}
                     <!-- Aucun résultat -->
@@ -249,10 +289,10 @@
                         </h3>
                         
                         <p class="text-gray-700 dark:text-gray-300 mb-4 md:mb-6 max-w-md mx-auto">
-                            Nous n'avons trouvé aucun résultat pour "<strong class="text-primary">{{ query }}</strong>".
+                            Nous n'avons trouvé aucun résultat pour "<strong class="text-primary">{{ query|escape }}</strong>".
                         </p>
                         
-                        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
                             <p class="font-semibold">Suggestions :</p>
                             <ul class="inline-block text-left space-y-2">
                                 <li class="flex items-center gap-2">
@@ -274,6 +314,22 @@
                                     Essayez des synonymes
                                 </li>
                             </ul>
+                            
+                            {% with words=query|split_words %}
+                            {% if words|length > 1 %}
+                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <p class="font-semibold mb-2">Essayez avec :</p>
+                                <div class="flex flex-wrap justify-center gap-2">
+                                    {% for word in words %}
+                                    <a href="?q={{ word|urlencode }}" 
+                                       class="px-3 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-full text-sm transition-colors">
+                                        {{ word }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endwith %}
                         </div>
                     </div>
                 {% endif %}

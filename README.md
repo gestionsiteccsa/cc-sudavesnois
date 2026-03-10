@@ -517,6 +517,39 @@ DATABASE_URL=sqlite:///db.sqlite3
 
 Le site web de la CCSA propose une large gamme de fonctionnalités pour informer et servir les habitants du territoire.
 
+### 🔍 Fonctionnalité de recherche
+
+Le site intègre un **moteur de recherche global** permettant de trouver rapidement des pages, services, documents, élus, commissions et autres contenus.
+
+#### Comment ça marche
+
+La recherche utilise **django-watson**, une bibliothèque de recherche full-text pour Django qui indexe automatiquement les contenus.
+
+**✅ Indexation automatique** : Les contenus sont indexés automatiquement quand vous :
+- Créez un objet via l'interface admin
+- Modifiez un objet existant
+- Supprimez un objet
+
+**Modèles indexés** : Pages statiques, Services, Compétences, Communes, Élus, Commissions, Journaux/Magazines, Actes locaux, Rapports, Partenaires, Liens.
+
+#### Commandes de gestion de l'index
+
+```bash
+# 🔄 Reconstruire l'index de recherche (si nécessaire)
+# À utiliser UNIQUEMENT dans ces cas :
+# - Première installation en production avec données existantes
+# - Import de données en masse (SQL, script, CSV)
+# - L'index semble incomplet ou "cassé"
+python manage.py buildwatson
+
+# ℹ️ Information sur l'index
+python manage.py watson
+```
+
+**Note** : Pour un usage quotidien via l'admin Django, vous n'avez **rien à faire**, l'indexation est transparente !
+
+---
+
 ### Vue d'ensemble des fonctionnalités
 
 <div align="center">
