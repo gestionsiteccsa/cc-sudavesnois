@@ -175,7 +175,7 @@
 
                                         {% if result.description %}
                                             <p class="text-gray-600 dark:text-gray-400 mb-3 text-sm md:text-base">
-                                                {{ result.description|truncatechars:150 }}
+                                                {{ result.description|striptags|truncatechars:150 }}
                                             </p>
                                         {% endif %}
 
