@@ -22,6 +22,7 @@ from journal.models import Journal
 from services.models import Service
 from home.data.collecte_data import get_dates_verre, get_jour_ordures, city_data
 from io import BytesIO
+from watson import search as watson
 
 logger = logging.getLogger(__name__)
 
@@ -703,7 +704,7 @@ def telecharger_calendrier_verre(request):
     buffer.close()
 
     response = HttpResponse(pdf, content_type='application/pdf')
-    
+
     # Déterminer si c'est une visualisation ou un téléchargement
     view_mode = request.GET.get('view', '')
     if view_mode == '1':
@@ -714,3 +715,19 @@ def telecharger_calendrier_verre(request):
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     return response
+
+
+def search_view(request):
+    """Vue pour la recherche globale avec django-watson."""
+    query = request.GET.get('q', '').strip()
+    results = []
+
+    if query:
+        # Recherche avec watson - classement par pertinence
+        results = watson.search(query)
+
+    return render(request, 'home/search_results.html', {
+        'query': query,
+        'results': results,
+        'count': len(results) if query else 0
+    })

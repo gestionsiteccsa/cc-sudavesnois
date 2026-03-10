@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Recherche{% endblock %}
+{% block meta_description %}Recherchez sur le site de la Communauté de Communes Sud-Avesnois{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Recherche</h1>
+
+    <form method="get" action="{% url 'search' %}" class="mb-8">
+        <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" name="q" value="{{ query }}"
+                   class="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
+                   placeholder="Rechercher une page, un service, une commune..."
+                   aria-label="Terme de recherche">
+            <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-200">
+                Rechercher
+            </button>
+        </div>
+    </form>
+
+    {% if query %}
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                {{ count }} résultat{% if count > 1 %}s{% endif %} pour "<span class="text-blue-600">{{ query }}</span>"
+            </h2>
+        </div>
+
+        {% if results %}
+            <div class="space-y-4">
+                {% for result in results %}
+                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                    <h3 class="text-lg font-semibold mb-2">
+                        {% if result.url %}
+                            <a href="{{ result.url }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:underline">
+                                {{ result.title }}
+                            </a>
+                        {% else %}
+                            {{ result.title }}
+                        {% endif %}
+                    </h3>
+
+                    {% if result.description %}
+                        <p class="text-gray-600 dark:text-gray-400 mb-3">
+                            {{ result.description }}
+                        </p>
+                    {% endif %}
+
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded">
+                            {{ result.model_name }}
+                        </span>
+                        {% if result.url %}
+                            <span class="text-gray-400 dark:text-gray-500 truncate">
+                                {{ result.url }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 text-center">
+                <p class="text-yellow-700 dark:text-yellow-400">
+                    <i class="icofont-search-2 text-2xl mb-2 block"></i>
+                    Aucun résultat trouvé pour "{{ query }}".
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">
+                    Essayez avec des termes différents ou plus généraux.
+                </p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">
+            <p class="text-blue-700 dark:text-blue-400">
+                <i class="icofont-search-1 text-2xl mb-2 block"></i>
+                Saisissez un terme de recherche ci-dessus pour trouver des pages, services, communes ou documents.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

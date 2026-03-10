@@ -52,6 +52,8 @@ urlpatterns = [
         views.telecharger_calendrier_verre,
         name="telecharger_calendrier_verre"
     ),
+    # Recherche
+    path("recherche/", views.search_view, name="search"),
 ]
 
 if settings.DEBUG:
