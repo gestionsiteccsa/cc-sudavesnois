@@ -55,7 +55,7 @@
                             <!-- Aide Markdown sous le champ -->
                             <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                 💡 <strong>Astuce :</strong> Vous pouvez utiliser la syntaxe Markdown pour les liens. 
-                                <a href="#" onclick="document.getElementById('markdown-help').scrollIntoView({behavior: 'smooth'}); return false;" class="text-primary hover:underline">Voir les exemples →</a>
+                                <a href="#" onclick="document.getElementById('markdown-help').scrollIntoView({behavior: 'smooth'}); return false;" class="text-primary underline hover:no-underline">Voir les exemples →</a>
                             </p>
                             {% if form.description.errors %}
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.description.errors.0 }}</p>

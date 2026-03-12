@@ -288,7 +288,7 @@
                         </svg>
                     </button>
                     <ul id="submenu-territoire-mobile" class="pl-4 hidden">
-                        <li><a href="{% url 'presentation' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Présentation</a></li>
+                        <li><a href="{% url 'presentation' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Présentation</a></li>
                         <li>
                             <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-communes-mobile">
                                 Les Communes Membres
@@ -299,19 +299,19 @@
                             {% if cities %}
                             <ul id="submenu-communes-mobile" class="pl-4 hidden">
                                 {% for commune in cities %}
-                                <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">{{commune.city_name}}</a></li>
+                                <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">{{commune.city_name}}</a></li>
                                 {% endfor %}
                             </ul>
                             {% else %}
                             <ul id="submenu-communes-mobile" class="pl-4 hidden">
-                                <li><p class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Indisponible.</p></li>
+                                <li><p class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Indisponible.</p></li>
                             </ul>
                             {% endif %}
                         </li>
-                        <li><a href="{% url 'journal:journal' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon mag</a></li>
-                        <li><a href="{% url 'guide_eco_citoyen' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon Guide éco-citoyen</a></li>
-                        <li><a href="{% url 'semestriels:semestriel' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon agenda</a></li>
-                        <li><a href="{% url 'partenaires:partenaires' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Nos partenaires</a></li>
+                        <li><a href="{% url 'journal:journal' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon mag</a></li>
+                        <li><a href="{% url 'guide_eco_citoyen' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon Guide éco-citoyen</a></li>
+                        <li><a href="{% url 'semestriels:semestriel' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon agenda</a></li>
+                        <li><a href="{% url 'partenaires:partenaires' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Nos partenaires</a></li>
                     </ul>
                 </li>
 
@@ -324,9 +324,9 @@
                         </svg>
                     </button>
                     <ul id="submenu-institution-mobile" class="pl-4 hidden">
-                        <li><a href="{% url 'bureau-communautaire:elus' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Bureau</a></li>
-                        <li><a href="{% url 'conseil_communautaire:conseil' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Conseil</a></li>
-                        <li><a href="{% url 'commissions:commissions' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Commissions</a></li>
+                        <li><a href="{% url 'bureau-communautaire:elus' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Bureau</a></li>
+                        <li><a href="{% url 'conseil_communautaire:conseil' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Conseil</a></li>
+                        <li><a href="{% url 'commissions:commissions' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Commissions</a></li>
                         <li><span class="block py-2 text-gray-400 dark:text-gray-500 cursor-not-allowed pointer-events-none">Organigramme</span></li>
                         <li>
                             <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-actes-mobile">
@@ -336,10 +336,10 @@
                                 </svg>
                             </button>
                             <ul id="submenu-actes-mobile" class="pl-4 hidden">
-                                <li><a href="{% url 'comptes_rendus:comptes_rendus' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Actes administratifs</a></li>
-                                <li><a href="{% url 'comptes_rendus:proces_verbaux' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Procès-verbaux</a></li>
-                                <li><a href="{% url 'rapports_activite:rapports_activite' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Rapports d'activité</a></li>
-                                <li><a href="{% url 'marches_publics' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Marchés publics</a></li>
+                                <li><a href="{% url 'comptes_rendus:comptes_rendus' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Actes administratifs</a></li>
+                                <li><a href="{% url 'comptes_rendus:proces_verbaux' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Procès-verbaux</a></li>
+                                <li><a href="{% url 'rapports_activite:rapports_activite' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Rapports d'activité</a></li>
+                                <li><a href="{% url 'marches_publics' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Marchés publics</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -362,15 +362,15 @@
                                 </svg>
                             </button>
                             <ul id="submenu-dechets-mobile" class="pl-4 hidden">
-                                <li><a href="{% url 'collecte_dechets' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Ramassage des poubelles</a></li>
-                                <li><a href="{% url 'dechetteries' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Déchetteries</a></li>
-                                <li><a href="{% url 'encombrants' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Encombrants</a></li>
+                                <li><a href="{% url 'collecte_dechets' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Ramassage des poubelles</a></li>
+                                <li><a href="{% url 'dechetteries' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Déchetteries</a></li>
+                                <li><a href="{% url 'encombrants' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Encombrants</a></li>
                             </ul>
                         </li>
-                        <li><a href="{% url 'mobilite' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Transport à la demande</a></li>
-                        <li><a href="{% url 'habitat' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Habitat</a></li>
-                        <li><a href="{% url 'dev_eco' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Développement économique</a></li>
-                        <li><a href="{% url 'mediapass' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Réseau Médi@'pass</a></li>
+                        <li><a href="{% url 'mobilite' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Transport à la demande</a></li>
+                        <li><a href="{% url 'habitat' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Habitat</a></li>
+                        <li><a href="{% url 'dev_eco' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Développement économique</a></li>
+                        <li><a href="{% url 'mediapass' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Réseau Médi@'pass</a></li>
                         <li>
                             <button class="w-full flex justify-between items-center py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-sante-mobile">
                                 Santé
@@ -379,12 +379,12 @@
                                 </svg>
                             </button>
                             <ul id="submenu-sante-mobile" class="pl-4 hidden">
-                                <li><a href="{% url 'maisons_sante' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Maisons de Santé Pluridisciplinaires</a></li>
-                                <li><a href="{% url 'mutuelle' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mutuelle intercommunautaire</a></li>
-                                <li><a href="{% url 'contrat_local_sante' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Contrat Local de Santé</a></li>
+                                <li><a href="{% url 'maisons_sante' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Maisons de Santé Pluridisciplinaires</a></li>
+                                <li><a href="{% url 'mutuelle' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mutuelle intercommunautaire</a></li>
+                                <li><a href="{% url 'contrat_local_sante' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Contrat Local de Santé</a></li>
                             </ul>
                         </li>
-                        <li><a href="{% url 'plui' %}" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Urbanisme (PLUi)</a></li>
+                        <li><a href="{% url 'plui' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Urbanisme (PLUi)</a></li>
                     </ul>
                 </li>
 
