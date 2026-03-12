@@ -9,18 +9,24 @@
      style="display: none;">
   <div>
     <h2 id="cookie-banner-title" class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Gestion des cookies</h2>
-    <p id="cookie-banner-desc" class="text-gray-700 dark:text-gray-200 text-sm">
+    <p id="cookie-banner-desc" class="text-gray-800 dark:text-gray-100 text-sm">
       Ce site utilise des cookies pour améliorer votre expérience et mesurer l'audience.
       <span class="font-semibold">Aucun cookie non essentiel n'est déposé sans votre consentement.</span>
     </p>
   </div>
   <div class="flex gap-2 flex-col md:flex-row">
     <button id="accept-cookies"
-            class="px-5 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+            class="px-5 py-2 rounded font-semibold transition min-h-[44px] min-w-[44px]"
+            style="background-color: #1d4ed8; color: white;"
+            onmouseover="this.style.backgroundColor='#1e40af'"
+            onmouseout="this.style.backgroundColor='#1d4ed8'">
       Accepter tous les cookies
     </button>
     <button id="refuse-cookies"
-            class="px-5 py-2 rounded bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition">
+            class="px-5 py-2 rounded font-semibold transition min-h-[44px] min-w-[44px]"
+            style="background-color: #005a9ecc; color: white;"
+            onmouseover="this.style.backgroundColor='#005a9e'"
+            onmouseout="this.style.backgroundColor='#005a9ecc'">
       Refuser les cookies non essentiels
     </button>
   </div>

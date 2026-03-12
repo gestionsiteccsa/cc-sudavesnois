@@ -36,7 +36,7 @@
                         <!-- Onglets pour basculer entre les versions -->
                         <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6" role="tablist" aria-label="Options d'affichage de l'organigramme">
                             <button id="interactive-tab" role="tab" aria-selected="true" aria-controls="interactive-chart" class="py-2 px-4 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 rounded-t-lg">Version interactive</button>
-                            <button id="static-tab" role="tab" aria-selected="false" aria-controls="static-chart" class="py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Version statique</button>
+                            <button id="static-tab" role="tab" aria-selected="false" aria-controls="static-chart" class="py-2 px-4 text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300">Version statique</button>
                         </div>
                         
                         <!-- Version interactive de l'organigramme -->
@@ -74,11 +74,11 @@
         interactiveTab.addEventListener('click', function() {
             // Activer l'onglet interactif
             interactiveTab.classList.add('text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
-            interactiveTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+            interactiveTab.classList.remove('text-gray-500', 'dark:text-gray-300');
             
             // Désactiver l'onglet statique
             staticTab.classList.remove('text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
-            staticTab.classList.add('text-gray-500', 'dark:text-gray-400');
+            staticTab.classList.add('text-gray-500', 'dark:text-gray-300');
             
             // Afficher la version interactive
             interactiveChart.classList.remove('hidden');
@@ -88,11 +88,11 @@
         staticTab.addEventListener('click', function() {
             // Activer l'onglet statique
             staticTab.classList.add('text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
-            staticTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+            staticTab.classList.remove('text-gray-500', 'dark:text-gray-300');
             
             // Désactiver l'onglet interactif
             interactiveTab.classList.remove('text-blue-600', 'dark:text-blue-400', 'border-b-2', 'border-blue-600', 'dark:border-blue-400');
-            interactiveTab.classList.add('text-gray-500', 'dark:text-gray-400');
+            interactiveTab.classList.add('text-gray-500', 'dark:text-gray-300');
             
             // Afficher la version statique
             staticChart.classList.remove('hidden');

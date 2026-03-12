@@ -36,7 +36,7 @@
                                 <div class="flex flex-col sm:flex-row gap-6 sm:gap-8 ml-auto text-right">
                                     <!-- Heure -->
                                     <div>
-                                        <div class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Heure</div>
+                                        <div class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Heure</div>
                                         <time datetime="{{ conseil.date|date:'Y-m-d' }}T{{ conseil.hour|date:'H:i' }}" class="block text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
                                             {{ conseil.hour.hour }}h{{ conseil.hour.minute|stringformat:"02d" }}
                                         </time>
@@ -44,7 +44,7 @@
 
                                     <!-- Lieu -->
                                     <div class="min-w-0 flex-1">
-                                        <div class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Lieu</div>
+                                        <div class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Lieu</div>
                                         <div class="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
                                             {{ conseil.place|default:"Lieu à communiquer" }}
                                         </div>
@@ -75,7 +75,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <h3 class="text-lg sm:text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Aucun conseil à venir</h3>
-                <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">Les prochaines dates de conseil communautaire seront publiées prochainement.</p>
+                <p class="text-sm sm:text-base text-gray-500 dark:text-gray-300">Les prochaines dates de conseil communautaire seront publiées prochainement.</p>
             </div>
             {% endif %}
 
@@ -91,7 +91,7 @@
             </div>
 
             <!-- Note sur les dates prévisionnelles -->
-            <p class="mt-4 text-xs text-gray-500 dark:text-gray-400 italic text-center">
+            <p class="mt-4 text-xs text-gray-500 dark:text-gray-300 italic text-center">
                 * Dates prévisionnelles susceptibles de modification. L'ordre du jour est disponible au plus tard 5 jours francs avant la séance.
             </p>
         </div>

@@ -41,7 +41,7 @@ function initMainNavigation() {
 
     // Fermer tous les sous-menus
     function closeAllSubmenus() {
-        const allButtons = document.querySelectorAll('button[aria-haspopup="true"]');
+        const allButtons = document.querySelectorAll('button[aria-haspopup]');
         allButtons.forEach(button => {
             const submenuId = button.getAttribute('aria-controls');
             const submenu = document.getElementById(submenuId);
@@ -60,7 +60,7 @@ function initMainNavigation() {
     window.addEventListener('resize', checkSubmenuPosition);
 
     // Initialiser tous les boutons de navigation (y compris les sous-menus)
-    const allNavButtons = document.querySelectorAll('button[aria-haspopup="true"]');
+    const allNavButtons = document.querySelectorAll('button[aria-haspopup]');
     allNavButtons.forEach(button => {
         const submenuId = button.getAttribute('aria-controls');
         const submenu = document.getElementById(submenuId);
@@ -96,7 +96,7 @@ function initMainNavigation() {
             } else {
                 // Pour les sous-menus de niveau 2, fermer les autres sous-menus de niveau 2 dans le même parent
                 const parentSubmenu = button.closest('.submenu-level-1');
-                const siblingButtons = parentSubmenu.querySelectorAll('button[aria-haspopup="true"]');
+                const siblingButtons = parentSubmenu.querySelectorAll('button[aria-haspopup]');
                 siblingButtons.forEach(siblingButton => {
                     if (siblingButton !== button) {
                         const siblingSubmenuId = siblingButton.getAttribute('aria-controls');

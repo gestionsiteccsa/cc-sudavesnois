@@ -11,14 +11,14 @@
         <nav class="hidden md:block ml-auto" aria-label="Menu principal">
             <ul class="flex space-x-1">
                 <li class="relative nav-dropdown">
-                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-communaute">
+                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-communaute">
                         Territoire
                         <span class="inline-block ml-1 w-0 h-0 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-700 dark:border-t-gray-200 transition-colors duration-300"></span>
                     </button>
                     <ul id="submenu-communaute" class="submenu-level-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
                         <li><a href="{% url 'presentation' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Présentation</a></li>
                         <li class="relative nav-dropdown">
-                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-communes">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-communes">
                                 Les Communes Membres
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -46,7 +46,7 @@
                 </li>
 
                 <li class="relative nav-dropdown">
-                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-institution">
+                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-institution">
                         Institution
                         <span class="inline-block ml-1 w-0 h-0 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-700 dark:border-t-gray-200 transition-colors duration-300"></span>
                     </button>
@@ -63,7 +63,7 @@
                             </a>
                         </li>
                         <li class="relative nav-dropdown">
-                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-actes">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-actes">
                                 Actes & documents
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -80,13 +80,13 @@
                 </li>
 
                 <li class="relative nav-dropdown">
-                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-services">
+                    <button class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary font-medium transition-colors duration-300" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-services">
                         Services
                         <span class="inline-block ml-1 w-0 h-0 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-700 dark:border-t-gray-200 transition-colors duration-300"></span>
                     </button>
                     <ul id="submenu-services" class="submenu-level-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10">
                         <li class="relative nav-dropdown">
-                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-dechets">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-dechets">
                                 Gestion des déchets
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -103,7 +103,7 @@
                         <li><a href="{% url 'dev_eco' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Développement économique</a></li>
                         <li><a href="{% url 'mediapass' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Réseau Médi@'pass</a></li>
                         <li class="relative nav-dropdown">
-                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-sante">
+                            <button class="w-full text-left block px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-sante">
                                 Santé
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -142,12 +142,12 @@
             
             <!-- Menu d'accessibilité -->
             <div id="accessibility-menu" class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-4 hidden z-50 max-h-[80vh] overflow-y-auto" aria-hidden="true">
-                <h3 class="text-lg font-semibold mb-3">Options d'accessibilité</h3>
+                <div class="text-lg font-semibold mb-3">Options d'accessibilité</div>
                 
                 <div class="space-y-4">
                     <!-- Contraste -->
                     <div>
-                        <h4 class="font-medium mb-2">Contraste</h4>
+                        <div class="font-medium mb-2">Contraste</div>
                         <div class="flex space-x-2">
                             <button id="contrast-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
                                 Contraste élevé
@@ -162,7 +162,7 @@
                     
                     <!-- Taille du texte -->
                     <div>
-                        <h4 class="font-medium mb-2">Taille du texte</h4>
+                        <div class="font-medium mb-2">Taille du texte</div>
                         <div class="flex space-x-2">
                             <button id="font-size-decrease" class="py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary" aria-label="Diminuer la taille du texte">
                                 <span aria-hidden="true">A-</span>
@@ -178,7 +178,7 @@
                     
                     <!-- Interlignage -->
                     <div>
-                        <h4 class="font-medium mb-2">Interlignage</h4>
+                        <div class="font-medium mb-2">Interlignage</div>
                         <div class="flex space-x-2">
                             <button id="line-height-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
                                 Interlignage augmenté
@@ -193,7 +193,7 @@
                     
                     <!-- Espacement des caractères -->
                     <div>
-                        <h4 class="font-medium mb-2">Espacement des caractères</h4>
+                        <div class="font-medium mb-2">Espacement des caractères</div>
                         <div class="flex space-x-2">
                             <button id="letter-spacing-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
                                 Espacement augmenté
@@ -208,24 +208,24 @@
                     
                     <!-- Filtre bleu -->
                     <div>
-                        <h4 class="font-medium mb-2">Filtre bleu</h4>
+                        <div class="font-medium mb-2">Filtre bleu</div>
                         <div class="flex space-x-2">
                             <button id="blue-filter-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
                                 Activer le filtre bleu
                             </button>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Réduit la lumière bleue pour diminuer la fatigue oculaire</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">Réduit la lumière bleue pour diminuer la fatigue oculaire</p>
                     </div>
                     
                     <!-- Mode nuit -->
                     <div>
-                        <h4 class="font-medium mb-2">Mode nuit</h4>
+                        <div class="font-medium mb-2">Mode nuit</div>
                         <div class="flex space-x-2">
                             <button id="dark-mode-toggle" class="flex-1 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-300" aria-pressed="false">
                                 Activer le mode nuit
                             </button>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Réduit la luminosité globale du site pour une utilisation nocturne</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">Réduit la luminosité globale du site pour une utilisation nocturne</p>
                     </div>
                 </div>
                 

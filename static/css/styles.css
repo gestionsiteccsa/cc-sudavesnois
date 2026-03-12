@@ -204,6 +204,147 @@ input[type="checkbox"] {
     text-decoration: underline !important;
 }
 
+/* Corrections pour les boutons avec bg-primary en mode contraste élevé */
+.high-contrast .bg-primary,
+.high-contrast button.bg-primary {
+    background-color: #005a9e !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+}
+
+/* Corrections pour les icônes et éléments avec text-primary */
+.high-contrast .text-primary,
+.high-contrast svg.text-primary,
+.high-contrast [class*="text-primary"] {
+    color: #fff !important;
+    stroke: #fff !important;
+    fill: #fff !important;
+}
+
+/* Corrections pour les icônes dark:text-blue-400 */
+.high-contrast .dark\:text-blue-400,
+.high-contrast svg.dark\:text-blue-400 {
+    color: #fff !important;
+    stroke: #fff !important;
+}
+
+/* Corrections pour les checkmarks et croix (listes à puces) */
+.high-contrast .text-green-500,
+.high-contrast .text-red-500,
+.high-contrast svg.text-green-500,
+.high-contrast svg.text-red-500 {
+    color: #fff !important;
+    stroke: #fff !important;
+    fill: #fff !important;
+}
+
+/* Assurer que tous les textes dans les cartes sont blancs */
+.high-contrast .bg-gray-50 *,
+.high-contrast .bg-white *,
+.high-contrast [class*="bg-gray-"] *,
+.high-contrast [class*="bg-primary/"] * {
+    color: #fff !important;
+}
+
+/* Corrections spécifiques pour les alertes jaunes et vertes */
+.high-contrast .bg-yellow-50,
+.high-contrast .bg-green-50,
+.high-contrast .bg-red-50,
+.high-contrast .bg-green-100,
+.high-contrast .bg-amber-50 {
+    background-color: #000 !important;
+    border: 2px solid #fff !important;
+}
+
+.high-contrast .bg-yellow-50 *,
+.high-contrast .bg-green-50 *,
+.high-contrast .bg-red-50 *,
+.high-contrast .bg-green-100 *,
+.high-contrast .bg-amber-50 * {
+    color: #fff !important;
+}
+
+/* Bordures des alertes amber */
+.high-contrast .border-amber-200,
+.high-contrast .border-amber-700\/50 {
+    border-color: #fff !important;
+}
+
+/* Textes amber */
+.high-contrast .text-amber-600,
+.high-contrast .text-amber-700,
+.high-contrast .text-amber-800,
+.high-contrast .dark\:text-amber-300,
+.high-contrast .dark\:text-amber-400 {
+    color: #fff !important;
+}
+
+/* Pour les tableaux avec caption */
+.high-contrast caption,
+.high-contrast caption * {
+    color: #fff !important;
+    background-color: #000 !important;
+}
+
+/* Textes colorés spécifiques (verts, rouges) doivent devenir blancs */
+.high-contrast .text-green-600,
+.high-contrast .text-red-600,
+.high-contrast .dark\:text-green-400,
+.high-contrast .dark\:text-red-400 {
+    color: #fff !important;
+}
+
+/* Pour les tableaux - toutes les cellules */
+.high-contrast table *,
+.high-contrast th,
+.high-contrast td {
+    color: #fff !important;
+    background-color: #000 !important;
+    border-color: #fff !important;
+}
+
+/* Bordures des alertes */
+.high-contrast .border-yellow-400,
+.high-contrast .border-green-400 {
+    border-color: #fff !important;
+}
+
+/* Corrections spécifiques pour les labels de formulaire */
+.high-contrast label,
+.high-contrast .text-gray-600,
+.high-contrast .dark\:text-gray-300 {
+    color: #fff !important;
+}
+
+/* Corrections pour les gradients et fonds colorés */
+.high-contrast [class*="bg-gradient-to-r"],
+.high-contrast [class*="from-gray-50"],
+.high-contrast [class*="to-gray-100"] {
+    background: #000 !important;
+    background-image: none !important;
+}
+
+/* Alertes bleues */
+.high-contrast .bg-blue-50 {
+    background-color: #000 !important;
+    border: 2px solid #fff !important;
+}
+
+.high-contrast .bg-blue-50 * {
+    color: #fff !important;
+}
+
+.high-contrast .border-blue-200,
+.high-contrast .border-blue-700\/50 {
+    border-color: #fff !important;
+}
+
+/* Pour s'assurer que tous les textes dans les éléments de guide sont visibles */
+.high-contrast .text-gray-700,
+.high-contrast .dark\:text-gray-200 {
+    color: #fff !important;
+}
+
 /* Interlignage augmenté */
 .increased-line-height {
     line-height: 1.8 !important;
