@@ -21,7 +21,7 @@
                     {% csrf_token %}
                     
                     <div class="space-y-2">
-                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
                             {{ form.email.label }}
                         </label>
                         <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}" 
@@ -33,7 +33,7 @@
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
                             {{ form.username.label }}
                         </label>
                         <input type="text" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}" 
@@ -45,7 +45,7 @@
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
                             {{ form.password1.label }}
                         </label>
                         <input type="password" name="{{ form.password1.html_name }}" id="{{ form.password1.id_for_label }}" 
@@ -53,13 +53,13 @@
                         {% if form.password1.errors %}
                         <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ form.password1.errors.0 }}</p>
                         {% endif %}
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                        <p class="text-xs text-gray-600 dark:text-gray-600">
                             Votre mot de passe doit contenir au moins 8 caractères et ne peut pas être entièrement numérique.
                         </p>
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
                             {{ form.password2.label }}
                         </label>
                         <input type="password" name="{{ form.password2.html_name }}" id="{{ form.password2.id_for_label }}" 
@@ -77,7 +77,7 @@
                 </form>
                 
                 <div class="mt-6 text-center">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                    <p class="text-sm text-gray-600 dark:text-gray-600">
                         Vous avez déjà un compte ? 
                         <a href="{% url 'accounts:login' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
                             Se connecter

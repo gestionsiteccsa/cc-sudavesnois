@@ -141,8 +141,8 @@
                         </div>
                         
                         <!-- Flèche -->
-                        <div class="flex-shrink-0 text-gray-400 group-hover:text-primary transition-colors">
-                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <div class="flex-shrink-0 text-gray-600 group-hover:text-primary transition-colors">
+                            <svg class="w-5 aria-hidden="true" focusable="false"  h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                             <span class="sr-only">(nouvelle fenêtre)</span>
@@ -152,7 +152,7 @@
                     
                     <!-- État vide -->
                     <div class="text-center py-12">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="mx-auto aria-hidden="true" focusable="false"  h-12 w-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                         </svg>
                         <h2 class="mt-4 text-lg font-medium text-gray-900">Aucun lien disponible</h2>
@@ -165,7 +165,7 @@
                 <footer class="mt-12 md:mt-16 text-center">
                     <!-- Lien retour au site -->
                     <div class="flex items-center justify-center gap-2 text-sm text-gray-600 mb-4">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-4 aria-hidden="true" focusable="false"  h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4m-4 0h4"/>
                         </svg>
                         <a href="{% url 'home' %}" class="hover:text-primary transition-colors underline font-medium">
@@ -174,7 +174,7 @@
                     </div>
                     
                     <!-- Copyright -->
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xs text-gray-600">
                         © {% now "Y" %} Communauté de Communes Sud-Avesnois
                     </p>
                 </footer>

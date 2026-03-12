@@ -26,10 +26,10 @@
                         <span class="icofont-file-alt text-primary"></span>
                         {{ document.title }}
                     </h2>
-                    <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">{{ document.type }}</span>
+                    <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-700">{{ document.type }}</span>
                 </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">Emplacement : <a href="{{ document.document.url }}" class="underline hover:text-primary">{{ document.document.url }}</a></div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">
+                <div class="text-xs text-gray-600 dark:text-gray-600">Emplacement : <a href="{{ document.document.url }}" class="underline hover:text-primary">{{ document.document.url }}</a></div>
+                <div class="text-xs text-gray-600 dark:text-gray-600">
                     Taille :
                     {% if document.get_document_size < 1024 %}
                         {{ document.get_document_size|floatformat:1 }} Ko
@@ -46,7 +46,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <p class="text-center text-gray-600 dark:text-gray-300 mt-16">Aucun document trouvé.</p>
+        <p class="text-center text-gray-600 dark:text-gray-700 mt-16">Aucun document trouvé.</p>
     {% endif %}
 
 {% endblock %}

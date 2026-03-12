@@ -41,7 +41,7 @@
                                 {% for member in members_list %}
                                     {% if member.city_id == city.id and not member.is_suppleant %}
                                         <li class="flex items-start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-secondary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 text-secondary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                             <span>{{member.sexe}} {{member.first_name}} {{member.last_name}}</span>
@@ -52,7 +52,7 @@
                                 {% for member in members_list %}
                                     {% if member.city_id == city.id and member.is_suppleant %}
                                         <li class="flex items-start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 text-gray-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                             <span class="text-gray-600">{{member.sexe}} {{member.first_name}} {{member.last_name}} (suppléant)</span>

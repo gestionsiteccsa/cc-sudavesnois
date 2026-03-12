@@ -3,13 +3,13 @@
 {% block content %}
 <!-- Fil d'Ariane et bouton retour -->
 <div class="flex items-center justify-between mb-8">
-  <nav class="flex text-sm text-gray-400 gap-2" aria-label="Fil d'Ariane">
+  <nav class="flex text-sm text-gray-600 gap-2" aria-label="Fil d'Ariane">
     <a href="{% url 'accounts:admin_dashboard' %}" class="hover:underline">Accueil</a>
     <span class="mx-1">/</span>
     <span class="text-primary font-semibold">Compétences</span>
   </nav>
   <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
-    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    <svg class="w-5 aria-hidden="true" focusable="false"  h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Admin
   </a>
 </div>
@@ -24,10 +24,10 @@
                 <div class="mb-6 border-b pb-6 last:border-b-0 last:pb-0 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm transition hover:shadow-lg">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div class="flex items-center gap-4">
-                            <span class="text-3xl">{% if comp.icon %}{{ comp.icon|safe }}{% else %}<svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>{% endif %}</span>
+                            <span class="text-3xl">{% if comp.icon %}{{ comp.icon|safe }}{% else %}<svg class="w-8 aria-hidden="true" focusable="false"  h-8 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>{% endif %}</span>
                             <div>
                                 <div class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ comp.title }}</div>
-                                <div class="text-xs text-gray-500">{{ comp.category }}</div>
+                                <div class="text-xs text-gray-600">{{ comp.category }}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 mt-2 md:mt-0">
@@ -35,11 +35,11 @@
                             <a href="{% url 'competences:delete_competence' competence_id=comp.id %}" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Supprimer</a>
                         </div>
                     </div>
-                    <div class="mt-3 text-gray-600 dark:text-gray-300 text-sm">{{ comp.description|safe }}</div>
+                    <div class="mt-3 text-gray-600 dark:text-gray-700 text-sm">{{ comp.description|safe }}</div>
                 </div>
                 {% endfor %}
                 {% else %}
-                <p class="text-gray-500">Aucune compétence trouvée.</p>
+                <p class="text-gray-600">Aucune compétence trouvée.</p>
                 {% endif %}
             </div>
         </div>

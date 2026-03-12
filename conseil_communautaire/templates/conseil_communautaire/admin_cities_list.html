@@ -9,15 +9,15 @@
                   <h1 class="text-3xl font-extrabold text-primary dark:text-primary-light">Gestion des villes & membres</h1>
                   <div class="flex gap-2 items-center">
                       <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow hover:bg-gray-300 hover:dark:bg-gray-600 transition text-xs font-semibold">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                          <svg class="w-4 aria-hidden="true" focusable="false"  h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                           Retour admin
                       </a>
                       <a href="{% url 'conseil_communautaire:admin_add_city' %}" class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary text-white font-semibold rounded-md shadow hover:bg-primary-dark transition text-xs">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                          <svg class="w-4 aria-hidden="true" focusable="false"  h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                           Ajouter une ville
                       </a>
                       <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary text-white font-semibold rounded-md shadow hover:bg-primary-dark transition text-xs">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                          <svg class="w-4 aria-hidden="true" focusable="false"  h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                           Ajouter un membre
                       </a>
                   </div>
@@ -37,7 +37,7 @@
                         </div>
                       </div>
                       <div class="ml-7 mt-2">
-                        <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Membres :</p>
+                        <p class="font-semibold text-gray-700 dark:text-gray-700 mb-2">Membres :</p>
                         <ul class="space-y-1 mt-1">
                           {% if members_list %}
                             {% for member in members_list %}
@@ -60,7 +60,7 @@
                           </ul>
                           <div class="flex justify-end mt-3">
                             <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="inline-flex items-center gap-1 px-1.5 py-0.5 min-h-[44px] bg-primary text-white rounded-md hover:bg-primary-dark text-xs font-medium shadow transition">
-                              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                              <svg class="w-3 aria-hidden="true" focusable="false"  h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                               Ajouter un membre
                             </a>
                           </div>
@@ -69,7 +69,7 @@
                   {% endfor %}
                 </div>
                 {% else %}
-                <div class="text-center py-12 text-gray-600 dark:text-gray-300">
+                <div class="text-center py-12 text-gray-600 dark:text-gray-700">
                     <p>Aucune ville enregistrée pour le moment.</p>
                 </div>
                 {% endif %}

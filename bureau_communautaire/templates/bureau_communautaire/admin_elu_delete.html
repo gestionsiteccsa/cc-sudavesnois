@@ -12,7 +12,7 @@
             <span class="icofont-ui-delete text-red-600 text-3xl"></span>
             Supprimer l'élu
         </h1>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">Êtes-vous sûr de vouloir supprimer <span class="font-semibold">{{elu.first_name}} {{elu.last_name}}</span> de la liste des élus&nbsp;?</p>
+        <p class="mb-4 text-gray-700 dark:text-gray-700">Êtes-vous sûr de vouloir supprimer <span class="font-semibold">{{elu.first_name}} {{elu.last_name}}</span> de la liste des élus&nbsp;?</p>
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {{ elu.as_p }}

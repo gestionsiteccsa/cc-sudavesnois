@@ -20,14 +20,14 @@
                 <form method="POST" enctype="multipart/form-data" class="space-y-4">
                     {% csrf_token %}
                     <div class="space-y-2">
-                        <p class="text-gray-700 dark:text-gray-300">Êtes-vous sûr de vouloir supprimer le journal ?<span class="font-semibold">{{ journal.title }}</span> (n°{{ journal.number }}, publié le {{ journal.release_date|date:'d/m/Y' }}) ?</p>
+                        <p class="text-gray-700 dark:text-gray-700">Êtes-vous sûr de vouloir supprimer le journal ?<span class="font-semibold">{{ journal.title }}</span> (n°{{ journal.number }}, publié le {{ journal.release_date|date:'d/m/Y' }}) ?</p>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Document :</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-700">Document :</label>
                         <a href="{{ journal.document.url }}" class="text-primary underline hover:no-underline">Voir le document</a>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Couverture :</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-700">Couverture :</label>
                         <img src="{{ journal.cover.url }}" alt="Couverture de {{ journal.title }}" class="w-32 rounded shadow" loading="lazy">
                     </div>
                     <div class="flex gap-2">
