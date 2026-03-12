@@ -30,7 +30,7 @@
                     </svg>
                 </a>
                 {% if dernier_journal %}
-                <a href="{{ dernier_journal.document.url }}" target="_blank" rel="noopener" class="inline-flex items-center bg-secondary text-gray-900 font-medium px-6 py-3 rounded-md hover:bg-secondary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary shadow-lg" aria-label="Télécharger le dernier numéro de Mon Sud Avesnois n°{{ dernier_journal.number }} (PDF, nouvelle fenêtre)">
+                <a href="{{ dernier_journal.document.url }}" target="_blank" rel="noopener" class="inline-flex items-center bg-secondary text-white font-medium px-6 py-3 rounded-md hover:bg-secondary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary shadow-lg" aria-label="Télécharger le dernier numéro de Mon Sud Avesnois n°{{ dernier_journal.number }} (PDF, nouvelle fenêtre)">
                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2zm0 6h5v2H8v-2z"/>
                     </svg>
@@ -69,7 +69,7 @@
                         <div style="max-width: 450px;" class="relative">
                             <img src="{% static 'img/carteSA.svg' %}" alt="Carte du territoire Sud-Avesnois" class="rounded-lg w-full h-auto" width="450" height="300" loading="lazy">
                             {% if nb_communes != None and nb_habitants != None %}
-                            <div class="absolute -bottom-6 -left-6 bg-secondary text-gray-900 p-4 rounded-lg shadow-lg">
+                            <div class="absolute -bottom-6 -left-6 bg-secondary text-white p-4 rounded-lg shadow-lg">
                                 <p class="font-bold text-xl">{{ nb_communes }} communes</p>
                                 <p>{{ nb_habitants }} habitants</p>
                             </div>
