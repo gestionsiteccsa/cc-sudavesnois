@@ -10,9 +10,10 @@ from .models import ConseilMembre, ConseilVille
 
 
 def conseil(request):
-    cities_list = ConseilVille.objects.all().order_by("city_name")
-    members_list = ConseilMembre.objects.all()
-    city_number = cities_list.count()
+    # Optimisé avec select_related pour éviter les N+1 queries
+    cities_list = list(ConseilVille.objects.all().order_by("city_name"))
+    members_list = list(ConseilMembre.objects.select_related('city'))
+    city_number = len(cities_list)
 
     # Récupérer les conseils à venir (date >= demain)
     tomorrow = timezone.now().date() + timedelta(days=1)
@@ -49,14 +50,16 @@ def add_city(request):
 
 @permission_required("conseil_communautaire.view_conseilville")
 def list_cities(request):
-    if ConseilVille.objects.exists():
-        cities_list = get_list_or_404(ConseilVille)
-    else:
-        cities_list = None
-    if ConseilMembre.objects.exists():
-        members_list = get_list_or_404(ConseilMembre)
-    else:
-        members_list = None
+    """
+    Affiche la liste des villes.
+    Optimisé pour éviter le double pattern .exists() + requête.
+    """
+    cities_list = list(ConseilVille.objects.all())
+    cities_list = cities_list if cities_list else None
+    
+    members_list = list(ConseilMembre.objects.all())
+    members_list = members_list if members_list else None
+    
     context = {"cities_list": cities_list, "members_list": members_list}
     return render(request, "conseil_communautaire/admin_cities_list.html", context)
 
@@ -145,7 +148,7 @@ def delete_member(request, id):
 @permission_required("conseil_communautaire.view_conseilmembre")
 def admin_list_members(request):
     members_list = (
-        ConseilMembre.objects.select_related("city")
+        ConseilMembre.objects.select_related("city", "linked_commission")
         .all()
         .order_by("last_name", "first_name")
     )

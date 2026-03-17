@@ -13,18 +13,13 @@ logger = logging.getLogger(__name__)
 
 def elus(request):
     """Affiche la page publique des élus."""
-
-    # Récupérer les élus avec le rôle
-    if Elus.objects.filter(role="Vice-Président").exists():
-        elus = get_list_or_404(Elus, role="Vice-Président")
-    # Retourne un élu par défaut si aucun élu n'est trouvé
-    # pour éviter une erreur 404
-    else:
-        elus = None
-    if Elus.objects.filter(role="Président").exists():
-        president = get_object_or_404(Elus, role="Président")
-    else:
-        president = None
+    # Récupérer les élus avec select_related pour city et prefetch_related pour linked_commission
+    elus_qs = Elus.objects.select_related('city').prefetch_related('linked_commission')
+    
+    vice_presidents = list(elus_qs.filter(role="Vice-Président"))
+    elus = vice_presidents if vice_presidents else None
+    
+    president = elus_qs.filter(role="Président").first()
 
     # Récupérer les documents
     import os
@@ -70,11 +65,11 @@ def add_elu(request):
 
 @permission_required("bureau_communautaire.view_elus")
 def list_elus(request):
-    """Affiche la liste des élus."""
-    if Elus.objects.exists():
-        elus = Elus.objects.all()
-    else:
-        elus = []
+    """
+    Affiche la liste des élus.
+    Optimisé avec select_related pour city et prefetch_related pour linked_commission.
+    """
+    elus = list(Elus.objects.select_related('city').prefetch_related('linked_commission'))
     return render(request, "bureau_communautaire/admin_elus_list.html", {"elus": elus})
 
 
@@ -133,12 +128,12 @@ def add_document(request):
 
 @permission_required("bureau_communautaire.view_document")
 def list_documents(request):
-    """Affiche la liste des documents."""
-    # Récupérer les documents
-    if Document.objects.exists():
-        documents = get_list_or_404(Document)
-    else:
-        documents = None
+    """
+    Affiche la liste des documents.
+    Optimisé pour éviter le double pattern .exists() + requête.
+    """
+    documents = list(Document.objects.all())
+    documents = documents if documents else None
 
     return render(
         request,

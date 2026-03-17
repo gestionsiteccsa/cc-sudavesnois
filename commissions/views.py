@@ -13,46 +13,39 @@ from .models import Commission, Document, Mandat
 def commissions(request):
     """
     Affiche la page des commissions.
+    Optimisé avec prefetch_related et select_related pour éviter les N+1 queries.
     """
-    if Commission.objects.exists():
-        commissions = get_list_or_404(Commission)
-        nb_commissions = len(commissions)
-    else:
-        commissions = None
-        nb_commissions = 0
-
-    if Elus.objects.exists():
-        # Récupère les élus existants
-        elus = get_list_or_404(Elus)
-    else:
-        elus = None
-
-    if ConseilMembre.objects.exists():
-        # Récupère les membres du conseil existants
-        membres = get_list_or_404(ConseilMembre)
-    else:
-        membres = None
-
-    if Document.objects.exists():
-        document = get_object_or_404(Document)
-    else:
-        document = None
-
-    if Mandat.objects.exists():
-        # Récupère le mandat existant
-        mandat = get_object_or_404(Mandat)
-    else:
+    # Récupération optimisée avec prefetch_related pour la relation ManyToMany Elus
+    # Le related_name est "elus" (défini dans le modèle Elus)
+    commissions_qs = Commission.objects.prefetch_related('elus')
+    commissions_list = list(commissions_qs)
+    nb_commissions = len(commissions_list) if commissions_list else 0
+    
+    # Récupération optimisée des élus avec select_related pour city
+    elus_qs = Elus.objects.select_related('city')
+    elus_list = list(elus_qs)
+    
+    # Récupération optimisée des membres avec select_related pour city et linked_commission
+    # linked_commission est une ForeignKey vers Commission
+    membres_qs = ConseilMembre.objects.select_related('city', 'linked_commission')
+    membres_list = list(membres_qs)
+    
+    # Document et mandat
+    document = Document.objects.first()
+    
+    mandat = Mandat.objects.first()
+    if not mandat:
         # Crée un mandat par défaut si aucun n'existe
-        Mandat(start_year=2020, end_year=2026).save()
-        mandat = get_object_or_404(Mandat)
+        mandat = Mandat(start_year=2020, end_year=2026)
+        mandat.save()
 
     context = {
-        "commissions": commissions,
+        "commissions": commissions_list if commissions_list else None,
         "document": document,
         "nb_commissions": nb_commissions,
         "mandat": mandat,
-        "elus": elus,
-        "membres": membres,
+        "elus": elus_list if elus_list else None,
+        "membres": membres_list if membres_list else None,
     }
 
     return render(request, "commissions/commissions.html", context)
@@ -78,24 +71,18 @@ def add_commission(request):
 def list_commission(request):
     """
     Affiche la liste des commissions.
+    Optimisé pour éviter le double pattern .exists() + requête.
     """
-    if Commission.objects.exists():
-        commissions = get_list_or_404(Commission)
-    else:
-        commissions = None
-
-    if Document.objects.exists():
-        document = get_object_or_404(Document)
-    else:
-        document = None
-
-    if Mandat.objects.exists():
-        # Récupère le mandat existant
-        mandat = get_object_or_404(Mandat)
-    else:
+    commissions = list(Commission.objects.all())
+    commissions = commissions if commissions else None
+    
+    document = Document.objects.first()
+    
+    mandat = Mandat.objects.first()
+    if not mandat:
         # Crée un mandat par défaut si aucun n'existe
-        Mandat(start_year=2020, end_year=2026).save()
-        mandat = get_object_or_404(Mandat)
+        mandat = Mandat(start_year=2020, end_year=2026)
+        mandat.save()
 
     context = {
         "commissions": commissions,

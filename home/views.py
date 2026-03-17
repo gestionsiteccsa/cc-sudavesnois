@@ -41,22 +41,22 @@ def is_staff_or_superuser(user):
 
 def home(request):
     # Donnée requises pour la page d'accueil
-    if Service.objects.exists():
-        services = get_list_or_404(Service.objects.order_by("title"))
-    else:
-        services = None
-
-    if ConseilVille.objects.exists():
-        communes = get_list_or_404(ConseilVille)
-        nb_communes = len(communes)
-        nb_habitants = 0
-        for commune in communes:
-            nb_habitants += commune.nb_habitants
-
-    else:
-        communes = None
-        nb_communes = None
-        nb_habitants = None
+    from django.db.models import Count, Sum
+    
+    # Optimisé : requête unique avec agrégation pour les statistiques
+    services = list(Service.objects.order_by("title"))
+    services = services if services else None
+    
+    # Agrégation en base de données au lieu de Python
+    stats = ConseilVille.objects.aggregate(
+        nb_communes=Count('id'),
+        nb_habitants=Sum('nb_habitants')
+    )
+    
+    communes = list(ConseilVille.objects.all())
+    communes = communes if communes else None
+    nb_communes = stats['nb_communes'] if stats['nb_communes'] else None
+    nb_habitants = stats['nb_habitants'] if stats['nb_habitants'] else None
 
     # Récupérer le dernier journal (trié par numéro décroissant)
     dernier_journal = Journal.objects.order_by("-number").first()
@@ -205,16 +205,18 @@ def conseil(request):
 
 
 def presentation(request):
-    if ConseilVille.objects.exists():
-        communes = get_list_or_404(ConseilVille)
-        nb_communes = len(communes)
-        nb_habitants = 0
-        for commune in communes:
-            nb_habitants += commune.nb_habitants
-    else:
-        communes = None
-        nb_communes = 0
-        nb_habitants = 0
+    # Optimisé : agrégation en base de données
+    from django.db.models import Count, Sum
+    
+    stats = ConseilVille.objects.aggregate(
+        nb_communes=Count('id'),
+        nb_habitants=Sum('nb_habitants')
+    )
+    
+    communes = list(ConseilVille.objects.all())
+    communes = communes if communes else None
+    nb_communes = stats['nb_communes'] or 0
+    nb_habitants = stats['nb_habitants'] or 0
 
     context = {
         "communes": communes,
