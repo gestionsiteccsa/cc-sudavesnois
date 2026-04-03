@@ -110,9 +110,11 @@ def edit_conseil(request, conseil_id):
         form = ConseilForm(request.POST, request.FILES, instance=conseil)
         if form.is_valid():
             conseil = form.save(commit=False)
-            if conseil.day_order != last_day_order:
-                if os.path.exists(last_day_order.path):
-                    os.remove(last_day_order.path)
+            # Vérifier si un nouveau fichier est uploadé et si un ancien fichier existe
+            if conseil.day_order and last_day_order:
+                if conseil.day_order != last_day_order:
+                    if os.path.exists(last_day_order.path):
+                        os.remove(last_day_order.path)
             form.save()
             return redirect("comptes_rendus:admin_cr_list")
     else:
