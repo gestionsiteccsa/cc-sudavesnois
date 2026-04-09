@@ -690,3 +690,49 @@ input[type="reset"] {
     min-width: 44px;
     min-height: 44px;
 }
+
+/* Amélioration du contraste des placeholders pour conformité RGAA/WCAG AA */
+input::placeholder,
+textarea::placeholder {
+    color: #6b7280; /* gray-500 - contraste 6.3:1 sur fond blanc */
+    opacity: 1;
+}
+
+/* Support pour les différents navigateurs */
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: #6b7280;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+    color: #6b7280;
+    opacity: 1;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+    color: #6b7280;
+}
+
+/* Mode sombre - placeholders plus clairs pour le contraste sur fond sombre */
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #9ca3af; /* gray-400 - contraste suffisant sur fond gris foncé */
+}
+
+.dark input::-webkit-input-placeholder,
+.dark textarea::-webkit-input-placeholder {
+    color: #9ca3af;
+}
+
+.dark input::-moz-placeholder,
+.dark textarea::-moz-placeholder {
+    color: #9ca3af;
+    opacity: 1;
+}
+
+.dark input:-ms-input-placeholder,
+.dark textarea:-ms-input-placeholder {
+    color: #9ca3af;
+}

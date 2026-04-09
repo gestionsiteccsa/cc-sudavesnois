@@ -66,16 +66,20 @@
                         </div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{ journal.titre }}</h3>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{% if journal.titre %}{{ journal.titre }}{% else %}Mon Sud Avesnois n°{{ journal.number }}{% endif %}</h3>
                         <p class="text-gray-600 dark:text-gray-700 mb-3">{{ journal.release_date|date:'F Y'|capfirst }}</p>
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-600 dark:text-gray-600">{{ journal.page_number }} page(s)</span>
                             {% if journal.get_document_size %}
-                            <a href="{{ journal.document.url }}" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300">
+                            <a href="{{ journal.document.url }}" 
+                               type="application/pdf"
+                               download
+                               class="inline-flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300"
+                               aria-label="Télécharger le journal n°{{ journal.number }} au format PDF">
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Télécharger
+                                Télécharger (PDF)
                             </a>
                             {% else %}
                             <span class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-600 rounded cursor-not-allowed">
