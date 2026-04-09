@@ -75,3 +75,40 @@ class Document(models.Model):
 
     def __str__(self):
         return f"{self.title} {self.document} {self.type} {self.get_document_size()} Ko"
+
+
+class PageStatus(models.Model):
+    """Modèle pour gérer l'état d'activation des pages."""
+
+    PAGE_CHOICES = [
+        ("bureau-communautaire", "Bureau Communautaire"),
+    ]
+
+    page_name = models.CharField(
+        max_length=50, choices=PAGE_CHOICES, unique=True, verbose_name="Page"
+    )
+    is_active = models.BooleanField(default=True, verbose_name="Page active")
+    maintenance_message = models.TextField(
+        default="La page est en cours de mise à jour.",
+        verbose_name="Message de maintenance",
+        help_text="Message affiché lorsque la page est désactivée.",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Statut de page"
+        verbose_name_plural = "Statuts de pages"
+
+    def __str__(self):
+        status = "Active" if self.is_active else "En maintenance"
+        return f"{self.get_page_name_display()} - {status}"
+
+    @classmethod
+    def is_page_active(cls, page_name):
+        """Vérifie si une page est active."""
+        try:
+            page_status = cls.objects.get(page_name=page_name)
+            return page_status.is_active, page_status.maintenance_message
+        except cls.DoesNotExist:
+            # Si le statut n'existe pas, on considère la page comme active
+            return True, "La page est en cours de mise à jour."

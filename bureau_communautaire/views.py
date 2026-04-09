@@ -6,19 +6,29 @@ from django.shortcuts import get_list_or_404, get_object_or_404, redirect, rende
 
 from app.utils import secure_file_removal
 from .forms import DocumentForm, ElusForm
-from .models import Document, Elus
+from .models import Document, Elus, PageStatus
 
 logger = logging.getLogger(__name__)
 
 
 def elus(request):
     """Affiche la page publique des élus."""
+    # Vérifier si la page est active
+    is_active, maintenance_message = PageStatus.is_page_active("bureau-communautaire")
+
+    if not is_active:
+        return render(
+            request,
+            "bureau_communautaire/maintenance.html",
+            {"maintenance_message": maintenance_message},
+        )
+
     # Récupérer les élus avec select_related pour city et prefetch_related pour linked_commission
-    elus_qs = Elus.objects.select_related('city').prefetch_related('linked_commission')
-    
+    elus_qs = Elus.objects.select_related("city").prefetch_related("linked_commission")
+
     vice_presidents = list(elus_qs.filter(role="Vice-Président"))
     elus = vice_presidents if vice_presidents else None
-    
+
     president = elus_qs.filter(role="Président").first()
 
     # Récupérer les documents
@@ -69,7 +79,9 @@ def list_elus(request):
     Affiche la liste des élus.
     Optimisé avec select_related pour city et prefetch_related pour linked_commission.
     """
-    elus = list(Elus.objects.select_related('city').prefetch_related('linked_commission'))
+    elus = list(
+        Elus.objects.select_related("city").prefetch_related("linked_commission")
+    )
     return render(request, "bureau_communautaire/admin_elus_list.html", {"elus": elus})
 
 
@@ -187,3 +199,46 @@ def delete_document(request, id):
         "bureau_communautaire/admin_document_delete.html",
         {"document": document},
     )
+
+
+@permission_required("bureau_communautaire.view_elus")
+def manage_page_status(request):
+    """
+    Gère le statut de la page bureau-communautaire.
+    Permet d'activer/désactiver la page et de personnaliser le message de maintenance.
+    """
+    # Récupérer ou créer le statut de la page
+    page_status, created = PageStatus.objects.get_or_create(
+        page_name="bureau-communautaire",
+        defaults={
+            "is_active": True,
+            "maintenance_message": "La page est en cours de mise à jour.",
+        },
+    )
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "toggle":
+            # Inverser le statut actif/inactif
+            page_status.is_active = not page_status.is_active
+            page_status.save()
+            status_text = "activée" if page_status.is_active else "désactivée"
+            logger.info(f"Page bureau-communautaire {status_text}")
+            return redirect("bureau-communautaire:admin_page_status")
+
+        elif action == "update_message":
+            # Mettre à jour le message de maintenance
+            new_message = request.POST.get("maintenance_message", "").strip()
+            if new_message:
+                page_status.maintenance_message = new_message
+                page_status.save()
+                logger.info("Message de maintenance mis à jour")
+            return redirect("bureau-communautaire:admin_page_status")
+
+    context = {
+        "page_status": page_status,
+        "is_active": page_status.is_active,
+        "maintenance_message": page_status.maintenance_message,
+    }
+    return render(request, "bureau_communautaire/admin_page_status.html", context)
