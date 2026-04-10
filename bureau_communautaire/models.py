@@ -23,7 +23,7 @@ class Elus(models.Model):
         default=Role.VICE_PRESIDENT,
         verbose_name="Rôle",
     )
-    function = models.CharField(max_length=200)
+    function = models.CharField(max_length=200, blank=True, null=True)
     picture = models.ImageField(
         upload_to="bureau_commu/elus/",
         verbose_name="Photo de l'élu",
