@@ -61,7 +61,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-700 dark:text-gray-700">{{ elu.role }}{% if elu.rank %} {% if elu.rank == 1 %}({{ elu.rank }}<sup>er</sup>){% else %}({{ elu.rank }}<sup>ème</sup>){% endif %}{% endif %}</div>
-                                    <div class="text-xs text-gray-600 dark:text-gray-600">{{ elu.function|truncatechars:23 }}</div>
+                                    <div class="text-xs text-gray-600 dark:text-gray-600">{{ elu.function|default:""|truncatechars:23 }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-700 dark:text-gray-700">{{ elu.city }}</div>

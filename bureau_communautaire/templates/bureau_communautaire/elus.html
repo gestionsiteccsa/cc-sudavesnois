@@ -67,7 +67,7 @@
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{president.first_name}} {{president.last_name}}</h3>
                         <p class="elu-role mb-1">{{ president.role }}</p>
                         <p class="elu-commune text-gray-600 dark:text-gray-600 mb-3">{{ president.profession }}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{ president.function }}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{ president.function|default:"" }}</p>
                     </div>
                 </article>
             </div>
@@ -122,7 +122,7 @@
                             {{ vicep.role }}
                         </p>
                         <p class="elu-commune text-gray-600 dark:text-gray-600 mb-3">{{vicep.profession}}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{vicep.function}}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{vicep.function|default:""}}</p>
                     </div>
                 </article>
                 {% endfor %}
