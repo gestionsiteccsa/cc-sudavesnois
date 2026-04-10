@@ -56,7 +56,7 @@
                 <article class="elu-card bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden mx-auto max-w-md">
                     <div class="elu-image-wrapper">
                         {% if president.picture %}
-                        <img src="{{ president.picture.url }}" alt="Portrait de {{president.first_name}} {{president.last_name}}, Président de la Communauté de Communes Sud-Avesnois" class="transition-transform duration-300" onerror="this.src=''" loading="lazy">
+                        <img src="{{ president.picture.url }}" alt="Portrait de {{president.last_name}} {{president.first_name}}, Président de la Communauté de Communes Sud-Avesnois" class="transition-transform duration-300" onerror="this.src=''" loading="lazy">
                         {% else %}
                         <div class="w-32 h-32 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full mx-auto">
                             <span class="text-sm">Pas de photo</span>
@@ -64,7 +64,7 @@
                         {% endif %}
                     </div>
                     <div class="p-4">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{president.first_name}} {{president.last_name}}</h3>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{president.last_name}} {{president.first_name}}</h3>
                         <p class="elu-role mb-1">{{ president.role }}</p>
                         <p class="elu-commune text-gray-600 dark:text-gray-600 mb-3">{{ president.profession }}</p>
                         <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{ president.function|default:"" }}</p>
@@ -103,7 +103,7 @@
                 <article class="elu-card bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden">
                     <div class="elu-image-wrapper">
                         {% if vicep.picture %}
-                        <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.first_name}} {{vicep.last_name}}, {{vicep.rank}}  {{ vicep.role }}" class="transition-transform duration-300" onerror="this.src=''" loading="lazy">
+                        <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.last_name}} {{vicep.first_name}}, {{vicep.rank}}  {{ vicep.role }}" class="transition-transform duration-300" onerror="this.src=''" loading="lazy">
                         {% else %}
                         <div class="w-32 h-32 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full mx-auto">
                             <span class="text-sm">Pas de photo</span>
@@ -111,7 +111,7 @@
                         {% endif %}
                     </div>
                     <div class="p-4">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{vicep.first_name}} {{vicep.last_name}}</h3>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{vicep.last_name}} {{vicep.first_name}}</h3>
                         <p class="elu-role mb-1">
                             {% if vicep.rank == 1 %}
                                 {{ vicep.rank }}<sup>er</sup>
