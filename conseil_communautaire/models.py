@@ -37,6 +37,22 @@ class ConseilVille(models.Model):
             self.slug = slugify(self.city_name)
         super().save(*args, **kwargs)
 
+    def get_commune_name_with_article(self):
+        """
+        Retourne le nom de la commune avec l'article approprié (de/d').
+        Utilise 'd'' devant une voyelle ou un h muet.
+        """
+        if not self.city_name:
+            return "Commune"
+
+        first_letter = self.city_name[0].lower()
+        voyels = "aeiouh"
+
+        if first_letter in voyels:
+            return f"Commune d'{self.city_name}"
+        else:
+            return f"Commune de {self.city_name}"
+
     def __str__(self):
         return self.city_name
 

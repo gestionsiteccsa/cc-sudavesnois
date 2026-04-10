@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Commune de {{ commune.city_name }} - Informations et contacts | {{ block.super }}{% endblock %}
+{% block title %}{{ commune.get_commune_name_with_article }} - Informations et contacts | {{ block.super }}{% endblock %}
 {% block meta_description %}Fiche détaillée de la commune de {{ commune.city_name }} : coordonnées, mairie, site internet, actes locaux et informations municipales. Sud-Avesnois.{% endblock %}
 {% load static %}
 {% load filters %}
@@ -12,13 +12,13 @@
     <section class="relative">
         <!-- Image de fond qui prend toute la largeur -->
         <div class="w-full h-[50vh] md:h-[60vh] lg:h-[70vh] relative">
-            <img src="{% if commune.image %}{{ commune.image.url }}{% else %}''{% endif %}" alt="Vue panoramique de la commune de {{commune.city_name}}" class="w-full h-full object-cover"  loading="lazy" />
+            <img src="{% if commune.image %}{{ commune.image.url }}{% else %}''{% endif %}" alt="Vue panoramique de {{ commune.get_commune_name_with_article }}" class="w-full h-full object-cover"  loading="lazy" />
             <!-- Overlay pour améliorer la lisibilité du texte -->
             <div class="absolute inset-0 bg-black bg-opacity-40"></div>
             <!-- Contenu texte centré sur l'image -->
             <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center text-white px-4">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">Commune de {{commune.city_name}}</h1>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">{{ commune.get_commune_name_with_article }}</h1>
                     {% if commune.slogan %}
                         <p class="text-xl md:text-2xl max-w-3xl mx-auto drop-shadow-md">{{commune.slogan}}</p>
                     {% endif %}
