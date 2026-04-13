@@ -41,4 +41,10 @@ urlpatterns = [
         views.edit_mandat,
         name="edit_mandat",
     ),
+    # Partie gestion du statut de page
+    path(
+        "adminccsa/commissions/statut-page/",
+        views.manage_page_status,
+        name="admin_page_status",
+    ),
 ]

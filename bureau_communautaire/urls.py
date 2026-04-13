@@ -30,7 +30,7 @@ urlpatterns = [
         name="admin_document_delete",
     ),
     path(
-        "adminccsa/statut-page/",
+        "adminccsa/bureau-communautaire/statut-page/",
         views.manage_page_status,
         name="admin_page_status",
     ),

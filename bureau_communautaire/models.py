@@ -82,6 +82,7 @@ class PageStatus(models.Model):
 
     PAGE_CHOICES = [
         ("bureau-communautaire", "Bureau Communautaire"),
+        ("commissions", "Commissions"),
     ]
 
     page_name = models.CharField(
