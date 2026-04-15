@@ -17,25 +17,33 @@ class EmailService:
 
     @staticmethod
     def send_plui_modification_request(
-        form_data: Dict[str, Any], recipient_emails=None
+        form_data: Dict[str, Any],
+        to_emails=None,
+        bcc_emails=None,
     ) -> bool:
         """
         Envoie un email de demande de modification PLUi.
 
         Args:
             form_data: Données du formulaire
-            recipient_emails: Liste des emails destinataires
+            to_emails: Liste des emails en destinataires principaux
+            bcc_emails: Liste des emails en copie cachée (CCI)
 
         Returns:
             bool: True si l'envoi a réussi, False sinon
         """
-        if recipient_emails is None:
-            recipient_emails = [
-                "j.brechoire@cc-sudavesnois.fr",
+        if to_emails is None:
+            to_emails = [
                 "plui@cc-sudavesnois.fr",
+                "contact@cc-sudavesnois.fr",
             ]
-        elif isinstance(recipient_emails, str):
-            recipient_emails = [recipient_emails]
+        elif isinstance(to_emails, str):
+            to_emails = [to_emails]
+
+        if bcc_emails is None:
+            bcc_emails = ["j.brechoire@cc-sudavesnois.fr"]
+        elif isinstance(bcc_emails, str):
+            bcc_emails = [bcc_emails]
 
         try:
             # Préparation du contexte
@@ -63,16 +71,17 @@ class EmailService:
             )
             from_email = context["email"]
             msg = EmailMultiAlternatives(
-                subject, text_content, from_email, recipient_emails
+                subject, text_content, from_email, to_emails, bcc=bcc_emails
             )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
             logger.info(
-                "Email PLUi envoyé avec succès pour %s (%s) vers %s",
+                "Email PLUi envoyé avec succès pour %s (%s) vers %s (cci: %s)",
                 context["nom_prenom"],
                 context["commune"],
-                ", ".join(recipient_emails),
+                ", ".join(to_emails),
+                ", ".join(bcc_emails),
             )
             return True
 
