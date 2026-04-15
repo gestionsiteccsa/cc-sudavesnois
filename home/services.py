@@ -1,6 +1,7 @@
 """
 Services pour la gestion des emails et autres fonctionnalités métier.
 """
+
 import logging
 from datetime import datetime
 from typing import Dict, Any
@@ -16,36 +17,41 @@ class EmailService:
 
     @staticmethod
     def send_plui_modification_request(
-        form_data: Dict[str, Any],
-        recipient_email: str = 'j.brechoire@cc-sudavesnois.fr'
+        form_data: Dict[str, Any], recipient_emails=None
     ) -> bool:
         """
         Envoie un email de demande de modification PLUi.
 
         Args:
             form_data: Données du formulaire
-            recipient_email: Email du destinataire
+            recipient_emails: Liste des emails destinataires
 
         Returns:
             bool: True si l'envoi a réussi, False sinon
         """
+        if recipient_emails is None:
+            recipient_emails = [
+                "j.brechoire@cc-sudavesnois.fr",
+                "plui@cc-sudavesnois.fr",
+            ]
+        elif isinstance(recipient_emails, str):
+            recipient_emails = [recipient_emails]
+
         try:
             # Préparation du contexte
             context = {
-                'nom_prenom': form_data.get('nom_prenom', ''),
-                'adresse': form_data.get('adresse', ''),
-                'email': form_data.get('email', ''),
-                'telephone': form_data.get('telephone', ''),
-                'parcelles': form_data.get('parcelles', ''),
-                'commune': form_data.get('commune', ''),
-                'demande': form_data.get('demande', ''),
-                'date_demande': datetime.now().strftime("%d/%m/%Y à %H:%M"),
+                "nom_prenom": form_data.get("nom_prenom", ""),
+                "adresse": form_data.get("adresse", ""),
+                "email": form_data.get("email", ""),
+                "telephone": form_data.get("telephone", ""),
+                "parcelles": form_data.get("parcelles", ""),
+                "commune": form_data.get("commune", ""),
+                "demande": form_data.get("demande", ""),
+                "date_demande": datetime.now().strftime("%d/%m/%Y à %H:%M"),
             }
 
             # Rendu du template HTML
-            html_content = render_to_string(
-                'home/email_plui_demande.html', context
-            )
+            html_content = render_to_string("home/email_plui_demande.html", context)
 
             # Contenu texte de l'email
             text_content = EmailService._generate_text_content(context)
@@ -55,28 +61,26 @@ class EmailService:
                 f"Demande de modification PLUi - "
                 f"{context['nom_prenom']} ({context['commune']})"
             )
-            from_email = context['email']
-            to_email = [recipient_email]
-
+            from_email = context["email"]
             msg = EmailMultiAlternatives(
-                subject, text_content, from_email, to_email
+                subject, text_content, from_email, recipient_emails
             )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
             logger.info(
                 "Email PLUi envoyé avec succès pour %s (%s) vers %s",
-                context['nom_prenom'],
-                context['commune'],
-                recipient_email
+                context["nom_prenom"],
+                context["commune"],
+                ", ".join(recipient_emails),
             )
             return True
 
         except (OSError, ValueError, RuntimeError) as e:
             logger.error(
                 "Erreur lors de l'envoi de l'email PLUi pour %s: %s",
-                form_data.get('nom_prenom', 'N/A'),
-                str(e)
+                form_data.get("nom_prenom", "N/A"),
+                str(e),
             )
             return False
 
@@ -85,20 +89,20 @@ class EmailService:
         """Génère le contenu texte de l'email."""
         return f"""
 NOUVELLE DEMANDE DE MODIFICATION PLUi
-Reçue le {context['date_demande']}
+Reçue le {context["date_demande"]}
 
 DEMANDEUR:
-- Nom et Prénom: {context['nom_prenom']}
-- Adresse: {context['adresse']}
-- Email: {context['email']}
-- Téléphone: {context['telephone']}
+- Nom et Prénom: {context["nom_prenom"]}
+- Adresse: {context["adresse"]}
+- Email: {context["email"]}
+- Téléphone: {context["telephone"]}
 
 PARCELLES CONCERNÉES:
-- Numéros de parcelles: {context['parcelles']}
-- Commune: {context['commune']}
+- Numéros de parcelles: {context["parcelles"]}
+- Commune: {context["commune"]}
 
 DEMANDE:
-{context['demande']}
+{context["demande"]}
 
 ---
 Cette demande a été envoyée via le formulaire en ligne du site
@@ -125,22 +129,27 @@ class PLUiService:
 
         # Validation des champs obligatoires
         required_fields = [
-            'nom_prenom', 'adresse', 'email', 'telephone',
-            'parcelles', 'commune', 'demande'
+            "nom_prenom",
+            "adresse",
+            "email",
+            "telephone",
+            "parcelles",
+            "commune",
+            "demande",
         ]
 
         for field in required_fields:
-            if not form_data.get(field, '').strip():
-                errors[field] = f'Le champ {field} est obligatoire.'
+            if not form_data.get(field, "").strip():
+                errors[field] = f"Le champ {field} est obligatoire."
 
         # Validation spécifique de l'email
-        email = form_data.get('email', '')
-        if email and '@' not in email:
-            errors['email'] = 'Veuillez saisir une adresse email valide.'
+        email = form_data.get("email", "")
+        if email and "@" not in email:
+            errors["email"] = "Veuillez saisir une adresse email valide."
 
         # Validation de la longueur de la demande
-        demande = form_data.get('demande', '')
+        demande = form_data.get("demande", "")
         if demande and len(demande.strip()) < 10:
-            errors['demande'] = 'La description doit contenir au moins 10 caractères.'
+            errors["demande"] = "La description doit contenir au moins 10 caractères."
 
         return errors
