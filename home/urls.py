@@ -21,7 +21,7 @@ urlpatterns = [
     path("plui/", views.plui, name="plui"),
     path("projet-plui/", views.projet_plui, name="projet_plui"),
     # Équipe administrative & technique
-    path("equipe/", views.equipe, name="equipe"),
+    path("guide-des-services/", views.equipe, name="equipe"),
     # Mentions légales
     path("mentions-legales/", views.mentions_legales, name="mentions_legales"),
     # Politique de confidentialité
