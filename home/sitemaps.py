@@ -33,7 +33,6 @@ class StaticViewSitemap(Sitemap):
             "maisons_sante",
             "mutuelle",
             "plui",
-            "projet_plui",
             "equipe",
             "semestriel",
             "rapports_activite",
