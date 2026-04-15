@@ -97,7 +97,9 @@ def update_elu(request, id):
     else:
         elu_form = ElusForm(instance=elu)
     return render(
-        request, "bureau_communautaire/admin_elu_update.html", {"elu_form": elu_form}
+        request,
+        "bureau_communautaire/admin_elu_update.html",
+        {"elu": elu, "elu_form": elu_form},
     )
 
 

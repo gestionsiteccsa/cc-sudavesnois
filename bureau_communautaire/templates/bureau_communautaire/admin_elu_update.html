@@ -1,44 +1,454 @@
 {% extends 'admin_base.html' %}
 {% load widget_tweaks %}
+{% load static %}
+
 {% block title %}Modifier un élu - Bureau Communautaire{% endblock %}
+{% block breadcrumb %}Modifier un élu{% endblock %}
+
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="flex justify-between items-center mb-6">
-    <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium"><span class="icofont-ui-settings mr-2"></span> Dashboard</a>
-    <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="inline-flex items-center px-4 py-2 border border-primary rounded-md shadow-sm text-sm font-medium text-primary bg-white hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition items-center"><span class="icofont-arrow-left mr-2"></span> Retour à la liste</a>
-</div>
-        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 md:p-8">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-2">
-                    <span class="icofont-ui-edit text-primary text-3xl"></span>
+<div class="bg-gray-100 dark:bg-gray-900 py-8">
+    <div class="container mx-auto px-4 md:px-6 max-w-5xl">
+        
+        {% if messages %}
+        <!-- Messages Toast -->
+        <div class="space-y-3 mb-6" id="toast-container">
+            {% for message in messages %}
+            <div class="rounded-lg p-4 shadow-md transform transition-all duration-300 animate-fade-in {% if message.tags == 'success' %}bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500{% elif message.tags == 'error' %}bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500{% else %}bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500{% endif %}" role="alert">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        {% if message.tags == 'success' %}
+                        <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        {% elif message.tags == 'error' %}
+                        <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                        {% else %}
+                        <svg class="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm {% if message.tags == 'success' %}text-green-800 dark:text-green-200{% elif message.tags == 'error' %}text-red-800 dark:text-red-200{% else %}text-blue-800 dark:text-blue-200{% endif %}">{{ message }}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-auto flex-shrink-0 -mr-1 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Fermer le message">
+                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                    <span class="icofont-ui-edit text-primary-500 text-3xl"></span>
                     Modifier l'élu
                 </h1>
-                <form method="post" enctype="multipart/form-data" class="space-y-4" aria-label="Formulaire de modification d'un élu">
-                    {% csrf_token %}
-                    {% for field in elu_form %}
-                    <div class="space-y-2">
-                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
-                            {{ field.label }}{% if field.field.required %} <span class="text-red-600">*</span>{% endif %}
-                        </label>
-                        {{ field|add_class:"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
-                        {% if field.help_text %}
-                        <p class="text-xs text-gray-600 dark:text-gray-600">{{ field.help_text }}</p>
-                        {% endif %}
-                        {% if field.errors %}
-                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ field.errors.0 }}</p>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <div class="flex flex-col gap-2 mt-4">
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
-                            <span class="icofont-ui-edit mr-2"></span> Appliquer
-                        </button>
-                        <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="w-full flex justify-center py-2 px-4 border border-primary rounded-md shadow-sm text-sm font-medium text-primary bg-white hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition items-center"><span class="icofont-arrow-left mr-2"></span> Retour à la liste</a>
-                    </div>
-                </form>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Modifiez les informations de l'élu ci-dessous</p>
             </div>
+            <a href="{% url 'bureau-communautaire:admin_elus_list' %}" 
+               class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Retour à la liste
+            </a>
         </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6" id="elu-form" data-has-changes="false">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Colonne Photo -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden sticky top-24">
+                        <div class="p-6">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                                <svg class="h-5 w-5 text-primary-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                </svg>
+                                Photo
+                            </h2>
+                            
+                            <!-- Zone de preview/upload -->
+                            <div class="space-y-4">
+                                {% with photo_field=elu_form.picture %}
+                                <div id="photo-preview-container" class="relative">
+                                    {% if elu.picture %}
+                                    <img id="photo-preview" src="{{ elu.picture.url }}" alt="Photo de {{ elu.first_name }} {{ elu.last_name }}" class="w-full h-64 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-700">
+                                    <button type="button" onclick="removePhoto()" class="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg" title="Supprimer la photo">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    {% else %}
+                                    <div id="photo-placeholder" class="w-full h-64 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50">
+                                        <svg class="h-16 w-16 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span class="text-sm">Aucune photo</span>
+                                    </div>
+                                    <img id="photo-preview" src="" alt="Preview" class="w-full h-64 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-700 hidden">
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Zone de drop -->
+                                <div id="drop-zone" class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 hover:border-primary-500 dark:hover:border-primary-400 transition-colors cursor-pointer bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                                    <input type="file" name="{{ photo_field.name }}" id="{{ photo_field.id_for_label }}" 
+                                           accept="image/*"
+                                           class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                           onchange="handlePhotoSelect(this)">
+                                    <div class="text-center">
+                                        <svg class="mx-auto h-8 w-8 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <span class="font-medium text-primary-500">Cliquez pour uploader</span> ou glissez-déposez
+                                        </p>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-500">PNG, JPG, GIF jusqu'à 5MB</p>
+                                    </div>
+                                </div>
+                                
+                                {% if photo_field.errors %}
+                                <p class="text-red-600 text-sm dark:text-red-400">{{ photo_field.errors.0 }}</p>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne Informations -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Section Identité -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                        <button type="button" onclick="toggleSection('section-identite')" class="w-full px-6 py-4 flex items-center justify-between bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                                <svg class="h-5 w-5 text-primary-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                                Identité
+                            </h2>
+                            <svg id="chevron-identite" class="h-5 w-5 text-gray-400 transform transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="section-identite" class="p-6 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% for field in elu_form %}
+                                    {% if field.name in "first_name,last_name,role" %}
+                                    <div class="space-y-2 {% if field.name == 'first_name' or field.name == 'last_name' %}md:col-span-1{% else %}md:col-span-2{% endif %}">
+                                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                            {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
+                                        </label>
+                                        {{ field|add_class:"w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors" }}
+                                        {% if field.help_text %}
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                                        {% endif %}
+                                        {% if field.errors %}
+                                        <p class="text-red-600 text-sm dark:text-red-400 flex items-center gap-1">
+                                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            {{ field.errors.0 }}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Fonction -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                        <button type="button" onclick="toggleSection('section-fonction')" class="w-full px-6 py-4 flex items-center justify-between bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                                <svg class="h-5 w-5 text-primary-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                    <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+                                </svg>
+                                Fonction
+                            </h2>
+                            <svg id="chevron-fonction" class="h-5 w-5 text-gray-400 transform transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="section-fonction" class="p-6 space-y-4">
+                            {% for field in elu_form %}
+                                {% if field.name in "function,city,rank" %}
+                                <div class="space-y-2">
+                                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
+                                    </label>
+                                    {{ field|add_class:"w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors" }}
+                                    {% if field.help_text %}
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                    <p class="text-red-600 text-sm dark:text-red-400 flex items-center gap-1">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        {{ field.errors.0 }}
+                                    </p>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Section Contact -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                        <button type="button" onclick="toggleSection('section-contact')" class="w-full px-6 py-4 flex items-center justify-between bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                                <svg class="h-5 w-5 text-primary-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                </svg>
+                                Contact
+                            </h2>
+                            <svg id="chevron-contact" class="h-5 w-5 text-gray-400 transform transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="section-contact" class="p-6 space-y-4">
+                            {% for field in elu_form %}
+                                {% if field.name in "profession,linked_commission" %}
+                                <div class="space-y-2">
+                                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
+                                    </label>
+                                    {{ field|add_class:"w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors" }}
+                                    {% if field.help_text %}
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                    <p class="text-red-600 text-sm dark:text-red-400 flex items-center gap-1">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        {{ field.errors.0 }}
+                                    </p>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre d'actions sticky -->
+            <div class="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4 -mx-4 md:-mx-6 shadow-lg z-20">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span class="text-red-500">*</span>
+                        <span>Champs obligatoires</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <a href="{% url 'bureau-communautaire:admin_elus_list' %}" 
+                           id="cancel-btn"
+                           class="w-full sm:w-auto px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 transition-colors text-center">
+                            Annuler
+                        </a>
+                        <button type="submit" 
+                                class="w-full sm:w-auto px-6 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-colors flex items-center justify-center gap-2">
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Enregistrer les modifications
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+    .section-collapsed {
+        max-height: 0 !important;
+        overflow: hidden !important;
+    }
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script>
+    // Gestion des sections accordéon
+    function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        const chevron = document.getElementById('chevron-' + sectionId.replace('section-', ''));
+        
+        if (section.classList.contains('section-collapsed')) {
+            section.classList.remove('section-collapsed');
+            section.style.maxHeight = section.scrollHeight + 'px';
+            chevron.classList.remove('rotate-180');
+        } else {
+            section.classList.add('section-collapsed');
+            section.style.maxHeight = '0';
+            chevron.classList.add('rotate-180');
+        }
+    }
+
+    // Gestion de la photo
+    function handlePhotoSelect(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('photo-preview');
+                const placeholder = document.getElementById('photo-placeholder');
+                
+                if (placeholder) placeholder.classList.add('hidden');
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                
+                // Ajouter le bouton de suppression
+                if (!document.querySelector('#photo-preview-container button')) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.onclick = removePhoto;
+                    removeBtn.className = 'absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg';
+                    removeBtn.title = 'Supprimer la photo';
+                    removeBtn.innerHTML = `<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+                    document.getElementById('photo-preview-container').appendChild(removeBtn);
+                }
+                
+                markAsChanged();
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removePhoto() {
+        const input = document.querySelector('input[type="file"][name="picture"]');
+        const preview = document.getElementById('photo-preview');
+        const placeholder = document.getElementById('photo-placeholder');
+        const removeBtn = document.querySelector('#photo-preview-container button');
+        
+        input.value = '';
+        preview.src = '';
+        preview.classList.add('hidden');
+        
+        if (placeholder) {
+            placeholder.classList.remove('hidden');
+        } else {
+            // Recréer le placeholder
+            const newPlaceholder = document.createElement('div');
+            newPlaceholder.id = 'photo-placeholder';
+            newPlaceholder.className = 'w-full h-64 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50';
+            newPlaceholder.innerHTML = `
+                <svg class="h-16 w-16 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-sm">Aucune photo</span>
+            `;
+            document.getElementById('photo-preview-container').insertBefore(newPlaceholder, preview);
+        }
+        
+        if (removeBtn) removeBtn.remove();
+        markAsChanged();
+    }
+
+    // Drag & drop
+    const dropZone = document.getElementById('drop-zone');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight(e) {
+        dropZone.classList.add('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
+    }
+    
+    function unhighlight(e) {
+        dropZone.classList.remove('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
+    }
+    
+    dropZone.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        const input = document.querySelector('input[type="file"][name="picture"]');
+        
+        if (files.length > 0) {
+            input.files = files;
+            handlePhotoSelect(input);
+        }
+    }
+
+    // Détection des changements
+    let hasChanges = false;
+    const form = document.getElementById('elu-form');
+    
+    function markAsChanged() {
+        hasChanges = true;
+        form.setAttribute('data-has-changes', 'true');
+    }
+    
+    form.addEventListener('input', markAsChanged);
+    form.addEventListener('change', markAsChanged);
+    
+    // Alert si modifications non sauvegardées
+    window.addEventListener('beforeunload', function(e) {
+        if (hasChanges) {
+            e.preventDefault();
+            e.returnValue = 'Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir quitter ?';
+        }
+    });
+    
+    // Désactiver l'alert lors de la soumission du formulaire
+    form.addEventListener('submit', function() {
+        hasChanges = false;
+    });
+    
+    // Gestion du bouton annuler
+    document.getElementById('cancel-btn').addEventListener('click', function(e) {
+        if (hasChanges) {
+            if (!confirm('Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir annuler ?')) {
+                e.preventDefault();
+            }
+        }
+    });
+
+    // Animation d'entrée des sections
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('[id^="section-"]');
+        sections.forEach((section, index) => {
+            section.style.transition = 'max-height 0.3s ease-out';
+            section.style.maxHeight = section.scrollHeight + 'px';
+        });
+    });
+</script>
 {% endblock %}
