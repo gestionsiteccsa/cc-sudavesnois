@@ -6,6 +6,7 @@ class Competence(models.Model):
         OBLIGATOIRE = "OBLIGATOIRE", "Obligatoire"
         OPTIONNELLE = "OPTIONNELLE", "Optionnelle"
         FACULTATIVE = "FACULTATIVE", "Facultative"
+        TRANSFEREE = "TRANSFEREE", "Transférées"
 
     title = models.CharField(max_length=255, verbose_name="Title")
     icon = models.CharField(max_length=1000, verbose_name="Icon")

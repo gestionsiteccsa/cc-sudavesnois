@@ -41,6 +41,7 @@ class CompetenceViewTests(TestCase):
         self.assertContains(response, "Aucune compétence facultative n'est disponible.")
         self.assertContains(response, "Aucune compétence obligatoire n'est disponible.")
         self.assertContains(response, "Aucune compétence optionnelle n'est disponible.")
+        self.assertContains(response, "Aucune compétence transférée n'est disponible.")
 
     # Test de la vue de la liste admin des compétences
     def test_competence_list_view_admin_without_data(self):
@@ -86,6 +87,14 @@ class CompetenceViewTests(TestCase):
             is_big=False,
         )
 
+        competence_tr = Competence.objects.create(
+            title="Test Compétence Transférée",
+            icon='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L2 7h20L12 2zM2 17l10 5 10-5V7H2v10z"/></svg>',
+            description="Ceci est une compétence transférée de test.",
+            category=Competence.Category.TRANSFEREE,
+            is_big=False,
+        )
+
         response = self.client.get(reverse("competences:competences"))
         # Vérifier que la réponse est 200 OK
         self.assertEqual(response.status_code, 200)
@@ -95,12 +104,15 @@ class CompetenceViewTests(TestCase):
         self.assertContains(response, competence_ob.title)
         self.assertContains(response, competence_f.title)
         self.assertContains(response, competence_op.title)
+        self.assertContains(response, competence_tr.title)
         self.assertContains(response, competence_ob.description)
         self.assertContains(response, competence_f.description)
         self.assertContains(response, competence_op.description)
+        self.assertContains(response, competence_tr.description)
         self.assertContains(response, competence_ob.icon)
         self.assertContains(response, competence_f.icon)
         self.assertContains(response, competence_op.icon)
+        self.assertContains(response, competence_tr.icon)
 
     # Test de la vue de la liste admin des compétences avec des données
     def test_competence_list_view_admin_with_data(self):
@@ -132,6 +144,14 @@ class CompetenceViewTests(TestCase):
             is_big=False,
         )
 
+        competence_tr = Competence.objects.create(
+            title="Test Compétence Transférée",
+            icon='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L2 7h20L12 2zM2 17l10 5 10-5V7H2v10z"/></svg>',
+            description="Ceci est une compétence transférée de test.",
+            category=Competence.Category.TRANSFEREE,
+            is_big=False,
+        )
+
         response = self.client.get(reverse("competences:admin_competences_list"))
         # Vérifier que la réponse est 200 OK
         self.assertEqual(response.status_code, 200)
@@ -141,12 +161,15 @@ class CompetenceViewTests(TestCase):
         self.assertContains(response, competence_ob.title)
         self.assertContains(response, competence_f.title)
         self.assertContains(response, competence_op.title)
+        self.assertContains(response, competence_tr.title)
         self.assertContains(response, competence_ob.description)
         self.assertContains(response, competence_f.description)
         self.assertContains(response, competence_op.description)
+        self.assertContains(response, competence_tr.description)
         self.assertContains(response, competence_ob.icon)
         self.assertContains(response, competence_f.icon)
         self.assertContains(response, competence_op.icon)
+        self.assertContains(response, competence_tr.icon)
 
     # Test de la vue d'ajout de compétence
     def test_add_competence_view(self):
@@ -818,6 +841,14 @@ class CompetenceIntegrationTestCase(BaseCompetencesTestCase):
             is_big=True,
         )
 
+        Competence.objects.create(
+            title="1. Compétence transférée",
+            icon="<svg>tr</svg>",
+            description="Description transférée",
+            category=Competence.Category.TRANSFEREE,
+            is_big=False,
+        )
+
         response = self.client.get(reverse("competences:competences"))
         self.assertEqual(response.status_code, 200)
 
@@ -825,11 +856,13 @@ class CompetenceIntegrationTestCase(BaseCompetencesTestCase):
         self.assertIsNotNone(response.context["c_obligatoires"])
         self.assertIsNotNone(response.context["c_optionnelles"])
         self.assertIsNotNone(response.context["c_facultatives"])
+        self.assertIsNotNone(response.context["c_transferees"])
 
         # Vérifier le contenu
         self.assertContains(response, "1. Compétence obligatoire")
         self.assertContains(response, "1. Compétence optionnelle")
         self.assertContains(response, "Actions et subventions communautaires")
+        self.assertContains(response, "1. Compétence transférée")
 
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)

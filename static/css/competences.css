@@ -37,6 +37,37 @@
     stroke: #60a5fa;
 }
 
+/* Styles pour les liens dans les descriptions */
+.competence-card a {
+    color: #006ab3;
+    text-decoration: underline;
+    font-weight: 500;
+    line-height: 1.2;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+
+.competence-card a:hover {
+    color: #005a9e;
+    text-decoration: underline;
+}
+
+.dark .competence-card a {
+    color: #60a5fa;
+}
+
+.dark .competence-card a:hover {
+    color: #93c5fd;
+}
+
+/* Réduire l'interligne dans les descriptions */
+.competence-card p,
+.competence-card li {
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+}
+
 /* Styles pour les listes */
 .competence-card ul {
     margin-top: 0.5rem;

@@ -27,10 +27,18 @@ def competences(request):
     else:
         c_facultatives = None
 
+    if Competence.objects.filter(category=Competence.Category.TRANSFEREE).exists():
+        c_transferees = Competence.objects.filter(
+            category=Competence.Category.TRANSFEREE
+        )
+    else:
+        c_transferees = None
+
     context = {
         "c_obligatoires": c_obligatoires,
         "c_optionnelles": c_optionnelles,
         "c_facultatives": c_facultatives,
+        "c_transferees": c_transferees,
     }
 
     return render(request, "competences/competences.html", context)
