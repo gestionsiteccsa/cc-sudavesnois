@@ -15,9 +15,9 @@ def conseil(request):
     members_list = list(ConseilMembre.objects.select_related('city'))
     city_number = len(cities_list)
 
-    # Récupérer les conseils à venir (date >= demain)
-    tomorrow = timezone.now().date() + timedelta(days=1)
-    conseils = Conseil.objects.filter(date__gte=tomorrow).order_by("date")
+    # Afficher les conseils depuis 2 jours avant aujourd'hui (conservés 2 jours après)
+    two_days_ago = timezone.now().date() - timedelta(days=2)
+    conseils = Conseil.objects.filter(date__gte=two_days_ago).order_by("date")
     if not conseils.exists():
         conseils = None
 
