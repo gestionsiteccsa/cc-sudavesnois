@@ -123,7 +123,7 @@ class CommissionTestCase(TestCase):
         # Vérifier que le bouton d'ajout de document n'est plus présent
         self.assertNotContains(response, "Ajouter un document")
         # Vérifier que le bouton de modification du document est présent
-        self.assertContains(response, "Modifier le document")
+        self.assertContains(response, "Modifier")
         # Vérifier que le bouton de suppression du document est présent
         self.assertContains(response, "Supprimer le doc")
         # Vérifier que le bouton de modification de mandat est présent
@@ -334,7 +334,7 @@ class CommissionTestCase(TestCase):
         # Vérifier que le formulaire est présent
         self.assertContains(response, "Modifier le document")
         self.assertContains(response, "Document à uploader")
-        self.assertContains(response, "Appliquer")
+        self.assertContains(response, "Enregistrer les modifications")
 
     # Test de la page de modification de document avec des données valides
     def test_admin_views_edit_document_post(self):

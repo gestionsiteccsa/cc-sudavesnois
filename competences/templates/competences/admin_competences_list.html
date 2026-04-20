@@ -2,47 +2,134 @@
 {% block title %}Gestion des compétences - Compétences{% endblock %}
 {% block content %}
 <!-- Fil d'Ariane et bouton retour -->
-<div class="flex items-center justify-between mb-8">
+<div class="flex items-center justify-between mb-6">
   <nav class="flex text-sm text-gray-600 gap-2" aria-label="Fil d'Ariane">
     <a href="{% url 'accounts:admin_dashboard' %}" class="hover:underline">Accueil</a>
     <span class="mx-1">/</span>
     <span class="text-primary font-semibold">Compétences</span>
   </nav>
   <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
-    <svg class="w-5 aria-hidden="true" focusable="false"  h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Admin
   </a>
 </div>
-<div class="bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 md:p-8">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Gestion des compétences</h1>
-                <a href="{% url 'competences:add_competence' %}" class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">Ajouter une compétence</a>                
-                {% if competences %}
-                {% for comp in competences %}
-                <div class="mb-6 border-b pb-6 last:border-b-0 last:pb-0 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm transition hover:shadow-lg">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <span class="text-3xl">{% if comp.icon %}{{ comp.icon|safe }}{% else %}<svg class="w-8 aria-hidden="true" focusable="false"  h-8 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>{% endif %}</span>
-                            <div>
-                                <div class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ comp.title }}</div>
-                                <div class="text-xs text-gray-600">{{ comp.category }}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 mt-2 md:mt-0">
-                            <a href="{% url 'competences:edit_competence' competence_id=comp.id %}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Modifier</a>
-                            <a href="{% url 'competences:delete_competence' competence_id=comp.id %}" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Supprimer</a>
-                        </div>
-                    </div>
-                    <div class="mt-3 text-gray-600 dark:text-gray-700 text-sm">{{ comp.description|safe }}</div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <p class="text-gray-600">Aucune compétence trouvée.</p>
-                {% endif %}
-            </div>
-        </div>
+
+<div class="bg-gray-100 dark:bg-gray-900 py-8">
+  <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+    <!-- En-tête avec titre et actions -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Gestion des compétences</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          {% if competences %}{{ competences|length }} compétence{{ competences|length|pluralize }}{% else %}Aucune compétence{% endif %}
+        </p>
+      </div>
+      <a href="{% url 'competences:add_competence' %}" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition shadow-sm">
+        <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Ajouter une compétence
+      </a>
     </div>
+
+    {% if competences %}
+    <!-- Tableau des compétences -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+              <th class="px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Icône</th>
+              <th class="px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Titre</th>
+              <th class="px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Catégorie</th>
+              <th class="px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Description</th>
+              <th class="px-6 py-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+            {% for comp in competences %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <!-- Icône -->
+              <td class="px-6 py-4">
+                <div class="w-10 h-10 flex items-center justify-center bg-primary/10 dark:bg-primary/20 rounded-lg">
+                  {% if comp.icon %}
+                    <span class="w-6 h-6 text-primary dark:text-blue-400">{{ comp.icon|safe }}</span>
+                  {% else %}
+                    <svg class="w-6 h-6 text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                  {% endif %}
+                </div>
+              </td>
+              
+              <!-- Titre -->
+              <td class="px-6 py-4">
+                <div class="font-semibold text-gray-900 dark:text-gray-100">{{ comp.title }}</div>
+                {% if comp.is_big %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 mt-1">
+                    Grande carte
+                  </span>
+                {% endif %}
+              </td>
+              
+              <!-- Catégorie avec badge coloré -->
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                  {% if comp.category == 'OBLIGATOIRE' %}
+                    bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300
+                  {% elif comp.category == 'OPTIONNELLE' %}
+                    bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300
+                  {% elif comp.category == 'FACULTATIVE' %}
+                    bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300
+                  {% elif comp.category == 'TRANSFEREE' %}
+                    bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300
+                  {% else %}
+                    bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                  {% endif %}">
+                  {{ comp.get_category_display }}
+                </span>
+              </td>
+              
+              <!-- Description tronquée -->
+              <td class="px-6 py-4">
+                <div class="text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
+                  {{ comp.description|striptags|truncatechars:80 }}
+                </div>
+              </td>
+              
+              <!-- Actions -->
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <a href="{% url 'competences:edit_competence' competence_id=comp.id %}" 
+                     class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition text-sm font-medium"
+                     title="Modifier">
+                    <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    Modifier
+                  </a>
+                  <a href="{% url 'competences:delete_competence' competence_id=comp.id %}" 
+                     class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 rounded-md hover:bg-red-100 transition text-sm font-medium"
+                     title="Supprimer">
+                    <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Supprimer
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <!-- État vide amélioré -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-12 text-center">
+      <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+        <svg class="w-8 h-8 text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Aucune compétence trouvée</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">Commencez par ajouter votre première compétence pour la gérer depuis cette interface.</p>
+      <a href="{% url 'competences:add_competence' %}" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition shadow-sm">
+        <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Ajouter une compétence
+      </a>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
