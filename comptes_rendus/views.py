@@ -59,6 +59,7 @@ def admin_page(request):
     # Statistiques
     total_conseils = all_conseils.count()
     conseils_a_venir = all_conseils.filter(date__gte=today).count()
+    conseils_passes = total_conseils - conseils_a_venir
     
     # Pagination
     from django.core.paginator import Paginator
@@ -73,6 +74,7 @@ def admin_page(request):
         "today": today,
         "total_conseils": total_conseils,
         "conseils_a_venir": conseils_a_venir,
+        "conseils_passes": conseils_passes,
     }
 
     return render(request, "comptes_rendus/admin_page.html", context)

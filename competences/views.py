@@ -47,15 +47,21 @@ def competences(request):
 @permission_required("competences.view_competence")
 def competences_list(request):
     """
-    Affiche la liste des compétences.
+    Affiche la liste des compétences avec statistiques.
     """
-    if Competence.objects.exists():
-        competences = get_list_or_404(Competence)
-    else:
-        competences = None
+    competences = Competence.objects.all().order_by("category", "title")
+
+    stats = {
+        "total": competences.count(),
+        "obligatoire": competences.filter(category=Competence.Category.OBLIGATOIRE).count(),
+        "optionnelle": competences.filter(category=Competence.Category.OPTIONNELLE).count(),
+        "facultative": competences.filter(category=Competence.Category.FACULTATIVE).count(),
+        "transferee": competences.filter(category=Competence.Category.TRANSFEREE).count(),
+    }
 
     context = {
         "competences": competences,
+        "stats": stats,
     }
     return render(request, "competences/admin_competences_list.html", context)
 

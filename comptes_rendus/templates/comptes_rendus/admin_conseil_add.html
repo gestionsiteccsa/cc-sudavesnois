@@ -2,65 +2,66 @@
 {% load widget_tweaks %}
 {% block title %}Programmer un Conseil - Comptes Rendus et Conseils{% endblock %}
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 md:p-8">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Programmer un conseil</h1>
-                <form method="POST" class="space-y-4" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% for field in form %}
-                    <div class="space-y-2">
-                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
-                            {{ field.label }}
-                        </label>
-                        {% render_field field class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" %}
-                        {% if field.errors %}
-                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ field.errors.0 }}</p>
-                        {% endif %}
-                        {% if field.help_text %}
-                        <p class="text-xs text-gray-600 dark:text-gray-600">{{ field.help_text }}</p>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <div>
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
-                            Publier
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<!-- Fil d'Ariane -->
+<div class="flex items-center justify-between mb-6">
+  <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
+    <span class="text-gray-400">/</span>
+    <a href="{% url 'comptes_rendus:admin_cr_list' %}" class="hover:text-primary transition-colors">Comptes Rendus</a>
+    <span class="text-gray-400">/</span>
+    <span class="text-primary font-semibold">Programmer</span>
+  </nav>
+  <a href="{% url 'comptes_rendus:admin_cr_list' %}"
+     class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-primary transition text-sm font-medium">
+    <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Retour
+  </a>
 </div>
-{% endblock %}
-{% block script %}
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
-<script>
-    ClassicEditor
-      .create(document.querySelector('#id_description'), {
-        toolbar: [
-          'bold',
-          'italic',
-          'link',
-          'bulletedList',
-          'numberedList',
-          'blockQuote',
-          'insertTable',
-          'undo',
-          'redo',
-          'heading'
-        ],
-        menuBar : {
-            is_visible: true,
-        }
-      })
-      .then(editor => {
-        console.log('CKEditor prêt à l\'emploi !', editor);
-      })
-      .catch(error => {
-        console.error('Erreur lors du chargement de CKEditor :', error);
-      });
-  </script>
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="p-6 md:p-8">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Programmer un conseil</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Remplissez les informations ci-dessous pour planifier un nouveau conseil communautaire.</p>
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-5">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="space-y-2">
+          <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+            {{ field.label }}
+          </label>
+          {% if field.name == 'day_order' %}
+            <div class="relative">
+              {% render_field field class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition" %}
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Format accepté : PDF uniquement.</p>
+          {% else %}
+            {% render_field field class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white text-sm" %}
+          {% endif %}
+          {% if field.errors %}
+          <p class="text-red-600 text-sm mt-1 dark:text-red-400 flex items-center gap-1">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {{ field.errors.0 }}
+          </p>
+          {% endif %}
+          {% if field.help_text %}
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+          <button type="submit" class="w-full sm:w-auto flex justify-center items-center px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition">
+            <svg class="w-4 h-4 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Programmer
+          </button>
+          <a href="{% url 'comptes_rendus:admin_cr_list' %}" class="w-full sm:w-auto flex justify-center items-center px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            Annuler
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

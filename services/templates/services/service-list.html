@@ -5,293 +5,393 @@
 {% block meta_description %}Gérez la liste des services de la Communauté de Communes Sud-Avesnois (CCSA).{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 md:p-8">
-                <!-- Header -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Liste des services</h1>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Gérez les services disponibles sur le site</p>
-                    </div>
-                    <a href="{% url 'services:add_service' %}" 
-                       class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 hover:shadow-lg">
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
-                        Ajouter un service
-                    </a>
-                </div>
-
-                {% if messages %}
-                <!-- Messages Toast -->
-                <div class="space-y-3 mb-6" id="toast-container">
-                    {% for message in messages %}
-                    <div class="rounded-lg p-4 shadow-md transform transition-all duration-300 animate-fade-in {% if message.tags == 'success' %}bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500{% elif message.tags == 'error' %}bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500{% else %}bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500{% endif %}" role="alert">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                {% if message.tags == 'success' %}
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                {% elif message.tags == 'error' %}
-                                <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                </svg>
-                                {% else %}
-                                <svg class="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                </svg>
-                                {% endif %}
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm {% if message.tags == 'success' %}text-green-800 dark:text-green-200{% elif message.tags == 'error' %}text-red-800 dark:text-red-200{% else %}text-blue-800 dark:text-blue-200{% endif %}">{{ message }}</p>
-                            </div>
-                            <button onclick="this.parentElement.parentElement.remove()" class="ml-auto flex-shrink-0 -mr-1 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Fermer le message">
-                                <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if services %}
-                <!-- Services Table - Desktop -->
-                <div class="hidden md:block overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Icône</th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Titre</th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider w-1/2">Contenu</th>
-                                    <th scope="col" class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                {% for service in services %}
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 text-2xl text-primary-500">
-                                            {{ service.icon|safe }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ service.title }}</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ service.content|safe|striptags }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <div class="flex items-center justify-center space-x-3">
-                                            <a href="{% url 'services:update_service' id=service.id %}" 
-                                               class="inline-flex items-center px-3 py-2 border border-transparent rounded-md text-sm font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 dark:text-primary-400 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                                               title="Modifier le service">
-                                                <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                                </svg>
-                                                Modifier
-                                            </a>
-                                            <button onclick="openDeleteModal('{{ service.id }}', '{{ service.title|escapejs }}')" 
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent rounded-md text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 dark:text-red-400 dark:bg-red-900/30 dark:hover:bg-red-900/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                                    title="Supprimer le service">
-                                                <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                                </svg>
-                                                Supprimer
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Services Cards - Mobile -->
-                <div class="md:hidden space-y-4">
-                    {% for service in services %}
-                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 text-2xl text-primary-500">
-                                {{ service.icon|safe }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{{ service.title }}</h3>
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ service.content|safe|striptags }}</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex items-center justify-end space-x-3">
-                            <a href="{% url 'services:update_service' id=service.id %}" 
-                               class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-                                <svg class="h-4 w-4 mr-1 text-primary-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                </svg>
-                                Modifier
-                            </a>
-                            <button onclick="openDeleteModal('{{ service.id }}', '{{ service.title|escapejs }}')" 
-                                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200">
-                                <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                                Supprimer
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                {% else %}
-                <!-- Empty State -->
-                <div class="text-center py-12 px-4">
-                    <div class="mx-auto w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-6">
-                        <svg class="h-12 w-12 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Aucun service pour le moment</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-                        Commencez par ajouter votre premier service pour le rendre visible sur le site.
-                    </p>
-                    <a href="{% url 'services:add_service' %}" 
-                       class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 hover:shadow-lg">
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
-                        Ajouter un service
-                    </a>
-                </div>
-                {% endif %}
-
-                <!-- Back Link -->
-                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                    <a href="{% url 'home' %}" 
-                       class="inline-flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200">
-                        <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                        </svg>
-                        Retour à l'accueil
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Fil d'Ariane -->
+<div class="flex items-center justify-between mb-6">
+  <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
+    <span class="text-gray-400">/</span>
+    <span class="text-primary font-semibold">Services</span>
+  </nav>
+  <a href="{% url 'accounts:admin_dashboard' %}"
+     class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-primary transition text-sm font-medium">
+    <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Admin
+  </a>
 </div>
+
+<!-- En-tête -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Liste des services</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="subtitle-count">{{ total }} service{{ total|pluralize }}</p>
+  </div>
+  <a href="{% url 'services:add_service' %}"
+     class="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+    <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Ajouter un service
+  </a>
+</div>
+
+{% if messages %}
+<!-- Messages Toast -->
+<div class="space-y-3 mb-6" id="toast-container">
+  {% for message in messages %}
+  <div class="rounded-lg p-4 shadow-md transform transition-all duration-300 animate-fade-in {% if message.tags == 'success' %}bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500{% elif message.tags == 'error' %}bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500{% else %}bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500{% endif %}" role="alert">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        {% if message.tags == 'success' %}
+        <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        {% elif message.tags == 'error' %}
+        <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+        {% else %}
+        <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+        {% endif %}
+      </div>
+      <div class="ml-3">
+        <p class="text-sm {% if message.tags == 'success' %}text-green-800 dark:text-green-200{% elif message.tags == 'error' %}text-red-800 dark:text-red-200{% else %}text-blue-800 dark:text-blue-200{% endif %}">{{ message }}</p>
+      </div>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-auto flex-shrink-0 -mr-1 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Fermer le message">
+        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if services %}
+<!-- Stats Card -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</div>
+    <div class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ total }}</div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+  <div class="flex flex-col lg:flex-row gap-4">
+    <div class="relative flex-1">
+      <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" id="search-input" placeholder="Rechercher par titre ou description..."
+             class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm"
+             aria-label="Rechercher un service">
+    </div>
+  </div>
+</div>
+
+<!-- Services Table - Desktop -->
+<div class="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse" id="services-table">
+      <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-20">Icône</th>
+          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-primary transition select-none group" onclick="sortTable('title')">
+            <span class="inline-flex items-center">
+              Titre
+              <svg class="w-3 h-3 ml-1 text-gray-400 sort-icon" data-col="title" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+            </span>
+          </th>
+          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right w-36">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="table-body">
+        {% for service in services %}
+        <tr class="service-row hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors animate-fade-in"
+            data-title="{{ service.title|lower }}"
+            data-content="{{ service.content|striptags|lower }}"
+            data-id="{{ service.id }}">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center justify-center w-14 h-14 rounded-xl bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-300">
+              <span class="w-7 h-7 flex items-center justify-center">{{ service.icon|safe }}</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ service.title }}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm text-gray-600 dark:text-gray-400 max-w-md cursor-pointer select-none hover:text-primary dark:hover:text-primary-400 transition-colors"
+                 onclick="this.classList.toggle('line-clamp-2');this.classList.toggle('line-clamp-none');"
+                 title="Cliquez pour développer/réduire">
+              <span class="line-clamp-2">{{ service.content|striptags }}</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right">
+            <div class="flex items-center justify-end gap-2">
+              <a href="{% url 'services:update_service' id=service.id %}"
+                 class="inline-flex items-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40 transition text-sm font-medium"
+                 title="Modifier">
+                <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Modifier
+              </a>
+              <button type="button"
+                      onclick="openDeleteModal('{% url 'services:delete_service' id=service.id %}', '{{ service.title|escapejs }}')"
+                      class="inline-flex items-center px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-900/40 transition text-sm font-medium"
+                      title="Supprimer">
+                <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Supprimer
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- État vide filtré -->
+  <div id="no-results" class="hidden p-12 text-center">
+    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+      <svg class="w-8 h-8 text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Aucun résultat</h3>
+    <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">Aucun service ne correspond à votre recherche.</p>
+    <button type="button" onclick="resetFilters()" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-sm font-medium text-sm">
+      Réinitialiser la recherche
+    </button>
+  </div>
+</div>
+
+<!-- Services Cards - Mobile -->
+<div class="md:hidden space-y-4" id="mobile-cards">
+  {% for service in services %}
+  <div class="service-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
+       data-title="{{ service.title|lower }}"
+       data-content="{{ service.content|striptags|lower }}">
+    <div class="flex items-start space-x-4">
+      <div class="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-xl bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-300">
+        <span class="w-7 h-7 flex items-center justify-center">{{ service.icon|safe }}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{{ service.title }}</h3>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ service.content|striptags }}</p>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center justify-end space-x-3">
+      <a href="{% url 'services:update_service' id=service.id %}"
+         class="inline-flex items-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40 transition text-sm font-medium">
+        <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Modifier
+      </a>
+      <button type="button"
+              onclick="openDeleteModal('{% url 'services:delete_service' id=service.id %}', '{{ service.title|escapejs }}')"
+              class="inline-flex items-center px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-900/40 transition text-sm font-medium">
+        <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        Supprimer
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- État vide filtré mobile -->
+<div id="no-results-mobile" class="hidden md:hidden p-12 text-center">
+  <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+    <svg class="w-8 h-8 text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+  </div>
+  <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Aucun résultat</h3>
+  <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">Aucun service ne correspond à votre recherche.</p>
+  <button type="button" onclick="resetFilters()" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-sm font-medium text-sm">
+    Réinitialiser la recherche
+  </button>
+</div>
+{% else %}
+<!-- État vide global -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+  <div class="w-20 h-20 mx-auto mb-6 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+    <svg class="w-10 h-10 text-primary" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+  </div>
+  <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Aucun service pour le moment</h3>
+  <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Commencez par ajouter votre premier service pour le rendre visible sur le site.</p>
+  <a href="{% url 'services:add_service' %}"
+     class="inline-flex items-center px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-sm font-medium text-sm">
+    <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Ajouter un service
+  </a>
+</div>
+{% endif %}
 
 <!-- Delete Confirmation Modal -->
 <div id="delete-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Backdrop -->
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity opacity-0" id="delete-modal-backdrop"></div>
-
-    <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <!-- Modal panel -->
-            <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" id="delete-modal-panel">
-                <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="h-6 w-6 text-red-600 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                            <h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-gray-100" id="modal-title">Confirmer la suppression</h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    Êtes-vous sûr de vouloir supprimer le service <strong id="service-title-to-delete" class="text-gray-900 dark:text-gray-100"></strong> ? Cette action est irréversible.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <form id="delete-form" method="post" action="">
-                        {% csrf_token %}
-                        <button type="submit" 
-                                class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">
-                            Supprimer
-                        </button>
-                    </form>
-                    <button type="button" 
-                            onclick="closeDeleteModal()"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto transition-colors duration-200">
-                        Annuler
-                    </button>
-                </div>
-            </div>
-        </div>
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0" id="delete-modal-backdrop" onclick="closeDeleteModal()"></div>
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6 transform scale-95 opacity-0 transition-all duration-200" id="delete-modal-panel">
+      <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+        <svg class="w-6 h-6 text-red-600 dark:text-red-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <h3 id="modal-title" class="text-lg font-bold text-center text-gray-900 dark:text-white mb-2">Confirmer la suppression</h3>
+      <p class="text-center text-gray-500 dark:text-gray-400 mb-6">Êtes-vous sûr de vouloir supprimer <strong id="service-title-to-delete" class="text-gray-900 dark:text-white"></strong>&nbsp;? Cette action est irréversible.</p>
+      <form method="post" id="delete-form" class="flex gap-3">
+        {% csrf_token %}
+        <button type="button" onclick="closeDeleteModal()" class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Annuler</button>
+        <button type="submit" class="flex-1 px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Supprimer</button>
+      </form>
     </div>
+  </div>
 </div>
+{% endblock %}
 
+{% block styles %}
 <style>
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in {
-        animation: fadeIn 0.3s ease-out;
-    }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeInUp 0.35s ease-out both;
+  }
+  .service-row:nth-child(1) { animation-delay: 0ms; }
+  .service-row:nth-child(2) { animation-delay: 40ms; }
+  .service-row:nth-child(3) { animation-delay: 80ms; }
+  .service-row:nth-child(4) { animation-delay: 120ms; }
+  .service-row:nth-child(5) { animation-delay: 160ms; }
+  .service-row:nth-child(6) { animation-delay: 200ms; }
+  .service-row:nth-child(7) { animation-delay: 240ms; }
+  .service-row:nth-child(8) { animation-delay: 280ms; }
+  .service-row:nth-child(9) { animation-delay: 320ms; }
+  .service-row:nth-child(10) { animation-delay: 360ms; }
 </style>
+{% endblock %}
 
+{% block javascript %}
 <script>
-    function openDeleteModal(serviceId, serviceTitle) {
-        const modal = document.getElementById('delete-modal');
-        const backdrop = document.getElementById('delete-modal-backdrop');
-        const panel = document.getElementById('delete-modal-panel');
-        const titleElement = document.getElementById('service-title-to-delete');
-        const form = document.getElementById('delete-form');
-        
-        // Mettre à jour le titre et l'action du formulaire
-        titleElement.textContent = serviceTitle;
-        form.action = `/services/adminccsa/${serviceId}/supprimer/`;
-        
-        // Afficher le modal
-        modal.classList.remove('hidden');
-        
-        // Animation d'entrée
-        setTimeout(() => {
-            backdrop.classList.remove('opacity-0');
-            panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            panel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
-        }, 10);
-        
-        // Empêcher le défilement du body
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeDeleteModal() {
-        const modal = document.getElementById('delete-modal');
-        const backdrop = document.getElementById('delete-modal-backdrop');
-        const panel = document.getElementById('delete-modal-panel');
-        
-        // Animation de sortie
-        backdrop.classList.add('opacity-0');
-        panel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
-        panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-        
-        // Masquer le modal après l'animation
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }, 300);
-    }
-    
-    // Fermer le modal avec la touche Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const modal = document.getElementById('delete-modal');
-            if (!modal.classList.contains('hidden')) {
-                closeDeleteModal();
-            }
-        }
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const rows = document.querySelectorAll('.service-row');
+  const cards = document.querySelectorAll('.service-card');
+  const noResults = document.getElementById('no-results');
+  const noResultsMobile = document.getElementById('no-results-mobile');
+  const subtitleCount = document.getElementById('subtitle-count');
+  let currentSort = { column: null, direction: 'asc' };
+
+  function normalize(str) {
+    return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function updateVisibility() {
+    const query = normalize(searchInput ? searchInput.value : '');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const title = normalize(row.dataset.title);
+      const content = normalize(row.dataset.content);
+      const matches = !query || title.includes(query) || content.includes(query);
+      if (matches) {
+        row.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        row.classList.add('hidden');
+      }
     });
-    
-    // Fermer le modal en cliquant sur le backdrop
-    document.getElementById('delete-modal-backdrop').addEventListener('click', closeDeleteModal);
+
+    cards.forEach(card => {
+      const title = normalize(card.dataset.title);
+      const content = normalize(card.dataset.content);
+      const matches = !query || title.includes(query) || content.includes(query);
+      if (matches) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+    if (noResultsMobile) noResultsMobile.classList.toggle('hidden', visibleCount > 0);
+    if (subtitleCount) {
+      let text = visibleCount + ' service' + (visibleCount !== 1 ? 's' : '');
+      if (query) text += ' trouvé' + (visibleCount !== 1 ? 's' : '');
+      subtitleCount.textContent = text;
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', updateVisibility);
+  }
+
+  window.resetFilters = function() {
+    if (searchInput) searchInput.value = '';
+    updateVisibility();
+  };
+
+  window.sortTable = function(column) {
+    const tbody = document.getElementById('table-body');
+    if (!tbody) return;
+    const rowsArray = Array.from(rows);
+
+    if (currentSort.column === column) {
+      currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      currentSort.column = column;
+      currentSort.direction = 'asc';
+    }
+
+    document.querySelectorAll('.sort-icon').forEach(icon => {
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>';
+      icon.classList.remove('text-primary');
+      icon.classList.add('text-gray-400');
+    });
+
+    const activeIcon = document.querySelector('.sort-icon[data-col="' + column + '"]');
+    if (activeIcon) {
+      activeIcon.classList.remove('text-gray-400');
+      activeIcon.classList.add('text-primary');
+      if (currentSort.direction === 'asc') {
+        activeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>';
+      } else {
+        activeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l4-4m-4 4l-4-4"/>';
+      }
+    }
+
+    rowsArray.sort((a, b) => {
+      let aVal = normalize(a.dataset.title);
+      let bVal = normalize(b.dataset.title);
+      if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    rowsArray.forEach(row => tbody.appendChild(row));
+    updateVisibility();
+  };
+
+  // Delete modal
+  const deleteModal = document.getElementById('delete-modal');
+  const modalBackdrop = document.getElementById('delete-modal-backdrop');
+  const modalPanel = document.getElementById('delete-modal-panel');
+  const modalTitle = document.getElementById('service-title-to-delete');
+  const deleteForm = document.getElementById('delete-form');
+
+  window.openDeleteModal = function(deleteUrl, serviceTitle) {
+    if (!deleteModal) return;
+    modalTitle.textContent = serviceTitle;
+    deleteForm.action = deleteUrl;
+    deleteModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => {
+      modalBackdrop.classList.remove('opacity-0');
+      modalPanel.classList.remove('scale-95', 'opacity-0');
+      modalPanel.classList.add('scale-100', 'opacity-100');
+    });
+  };
+
+  window.closeDeleteModal = function() {
+    if (!deleteModal) return;
+    modalBackdrop.classList.add('opacity-0');
+    modalPanel.classList.remove('scale-100', 'opacity-100');
+    modalPanel.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+      deleteModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 200);
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && deleteModal && !deleteModal.classList.contains('hidden')) {
+      closeDeleteModal();
+    }
+  });
+})();
 </script>
 {% endblock %}

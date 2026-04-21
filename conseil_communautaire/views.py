@@ -152,5 +152,19 @@ def admin_list_members(request):
         .all()
         .order_by("last_name", "first_name")
     )
-    context = {"members_list": members_list}
+
+    total = members_list.count()
+    titulaires = members_list.filter(is_suppleant=False).count()
+    suppleants = members_list.filter(is_suppleant=True).count()
+    cities = ConseilVille.objects.all().order_by("city_name")
+
+    context = {
+        "members_list": members_list,
+        "stats": {
+            "total": total,
+            "titulaires": titulaires,
+            "suppleants": suppleants,
+        },
+        "cities": cities,
+    }
     return render(request, "conseil_communautaire/admin_members_list.html", context)
