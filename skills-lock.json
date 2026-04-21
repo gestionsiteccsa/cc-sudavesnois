@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "accessibility-compliance": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "3e91f124d66be32b7f16892c6bcfb272fabe990cbeee2e893d8815d21e0c4b49"
+    },
+    "rgaa": {
+      "source": "etalab-ia/skills",
+      "sourceType": "github",
+      "computedHash": "c609353dfb4c22fbfe049883bb0f7826afb71a1c3b2b2e4095ea75d79363a1b0"
+    }
+  }
+}

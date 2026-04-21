@@ -38,6 +38,8 @@ urlpatterns = [
     path("accessibilite/", views.accessibilite, name="accessibilite"),
     # Médi@'pass
     path("mediapass/", views.mediapass, name="mediapass"),
+    # Convention Territoriale Globale (CTG)
+    path("ctg/", views.ctg, name="ctg"),
     # Guide Éco-Citoyen
     path("guide-eco-citoyen/", views.guide_eco_citoyen, name="guide_eco_citoyen"),
     # Documents PLUi

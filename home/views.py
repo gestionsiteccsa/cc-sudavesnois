@@ -342,6 +342,11 @@ def mediapass(request):
     return render(request, "home/mediapass.html")
 
 
+def ctg(request):
+    """Vue pour la page Convention Territoriale Globale (CTG)."""
+    return render(request, "home/ctg.html")
+
+
 
 def guide_eco_citoyen(request):
     """Vue pour la page Guide Pratique Éco-Citoyen."""
