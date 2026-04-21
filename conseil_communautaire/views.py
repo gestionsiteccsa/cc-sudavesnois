@@ -16,16 +16,21 @@ def conseil(request):
     city_number = len(cities_list)
 
     # Afficher les conseils depuis 2 jours avant aujourd'hui (conservés 2 jours après)
-    two_days_ago = timezone.now().date() - timedelta(days=2)
+    today = timezone.now().date()
+    two_days_ago = today - timedelta(days=2)
     conseils = Conseil.objects.filter(date__gte=two_days_ago).order_by("date")
     if not conseils.exists():
         conseils = None
+
+    # Déterminer le prochain conseil à venir (date >= aujourd'hui)
+    next_conseil = Conseil.objects.filter(date__gte=today).order_by("date").first()
 
     context = {
         "cities_list": cities_list,
         "members_list": members_list,
         "city_number": city_number,
         "conseils": conseils,
+        "next_conseil": next_conseil,
     }
 
     return render(request, "conseil_communautaire/conseil.html", context)

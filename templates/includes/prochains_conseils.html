@@ -24,7 +24,7 @@
                                         <time datetime="{{ conseil.date|date:'Y-m-d' }}" class="block text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                                             {{ conseil.date|date_fr_complete }}
                                         </time>
-                                        {% if forloop.first %}
+                                        {% if conseil == next_conseil %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary mt-2" aria-label="Prochain conseil communautaire">
                                             Prochain conseil
                                         </span>
