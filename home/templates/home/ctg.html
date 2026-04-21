@@ -104,10 +104,31 @@
                 <!-- Image CTG -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8">
                     <figure class="text-center">
-                        <img src="{% static 'img/CTG.webp' %}" alt="Schéma présentant les actions CTG 2026-2030 du Sud-Avesnois avec les 5 thématiques et 14 fiches actions" class="w-full h-auto rounded-lg" loading="lazy">
+                        <a href="#ctg-lightbox" class="block cursor-zoom-in" aria-label="Agrandir l'image des actions CTG 2026-2030">
+                            <img src="{% static 'img/CTG.webp' %}" alt="Schéma présentant les actions CTG 2026-2030 du Sud-Avesnois avec les 5 thématiques et 14 fiches actions" class="w-full h-auto rounded-lg" loading="lazy">
+                        </a>
                         <figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-400">Les actions CTG 2026-2030</figcaption>
                     </figure>
                 </div>
+
+                <!-- Lightbox -->
+                <div id="ctg-lightbox" class="fixed inset-0 z-50 hidden bg-black/90 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Image agrandie des actions CTG">
+                    <a href="#" class="absolute inset-0" aria-label="Fermer"></a>
+                    <div class="relative max-w-7xl w-full">
+                        <a href="#" class="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors" aria-label="Fermer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </a>
+                        <img src="{% static 'img/CTG.webp' %}" alt="Schéma présentant les actions CTG 2026-2030 du Sud-Avesnois avec les 5 thématiques et 14 fiches actions" class="w-full h-auto rounded-lg shadow-2xl">
+                    </div>
+                </div>
+
+                <style>
+                    #ctg-lightbox:target {
+                        display: flex;
+                    }
+                </style>
             </div>
         </div>
     </section>
