@@ -47,106 +47,98 @@
     </section>
 
     <!-- Président -->
-    {% if president != None %}
     <section id="president" class="py-12 bg-gray-50 dark:bg-gray-900">
         <div class="container mx-auto px-4 md:px-6">
             <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12">Le Président</h2>
             
-            <div class="max-w-5xl mx-auto">
-                <article class="elu-card bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden mx-auto max-w-md">
-                    <div class="elu-image-wrapper">
+            <div class="max-w-2xl mx-auto">
+                {% if president != None %}
+                <article class="elu-card elu-card-president bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-6 md:p-8">
+                    <div class="elu-image-wrapper-president">
                         {% if president.picture %}
-                        <img src="{{ president.picture.url }}" alt="Portrait de {{president.last_name}} {{president.first_name}}, Président de la Communauté de Communes Sud-Avesnois" class="transition-transform duration-300" onerror="this.src=''" loading="lazy">
+                        <img src="{{ president.picture.url }}" alt="Portrait de {{president.last_name}} {{president.first_name}}, Président de la Communauté de Communes Sud-Avesnois" class="elu-photo" onerror="this.src=''" loading="lazy">
                         {% else %}
-                        <div class="w-32 h-32 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full mx-auto">
-                            <span class="text-sm">Pas de photo</span>
+                        <div class="elu-photo-placeholder">
+                            <span>Pas de photo</span>
                         </div>
                         {% endif %}
                     </div>
-                    <div class="p-4">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{president.last_name}} {{president.first_name}}</h3>
-                        <p class="elu-role mb-1">{{ president.role }}</p>
+                    <div class="mt-6">
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{president.last_name}} {{president.first_name}}</h3>
+                        <p class="elu-role text-lg mb-1">{{ president.role }}</p>
                         <p class="elu-commune text-gray-600 dark:text-gray-600 mb-3">{{ president.profession }}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{ president.function|default:"" }}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-700">{{ president.function|default:"" }}</p>
                     </div>
                 </article>
+                {% else %}
+                <article class="elu-card elu-card-president bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-6 md:p-8">
+                    <div class="elu-image-wrapper-president">
+                        <div class="elu-photo-placeholder">
+                            <span>Pas de photo</span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Aucun président élu</h3>
+                        <p class="elu-role text-lg mb-1">Président de la Communauté de Communes Sud-Avesnois</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-700">Aucune fonction</p>
+                    </div>
+                </article>
+                {% endif %}
             </div>
         </div>
     </section>
-    {% else %}
-    <section id="president" class="py-12 bg-gray-50 dark:bg-gray-900">
-        <div class="container mx-auto px-4 md:px-6">
-            <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12">Le Président</h2>
-            
-            <div class="max-w-5xl mx-auto">
-                <article class="elu-card bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden mx-auto max-w-md">
-                    <div class="p-4">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">Aucun président élu</h3>
-                        <p class="elu-role mb-1">Président de la Communauté de Communes Sud-Avesnois</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">Aucune fonction</p>
-                    </div>
-                </article>
-            </div>
-        </div>
-    {% endif %}
 
 
     <!-- Vice-Présidents -->
-    {% if elus != None %}
     <section id="vice-presidents" class="py-12 dark:bg-gray-800">
         <div class="container mx-auto px-4 md:px-6">
             <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12">Les Vice-Présidents</h2>
             
             <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <!-- VP -->
+                {% if elus != None %}
                 {% for vicep in elus %}
-                <article class="elu-card bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden">
-                    <div class="elu-image-wrapper">
+                <article class="elu-card elu-card-vice bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-5">
+                    <div class="elu-image-wrapper-vice">
                         {% if vicep.picture %}
-                        <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.last_name}} {{vicep.first_name}}, {{vicep.rank}}  {{ vicep.role }}" class="transition-transform duration-300" onerror="this.src=''" loading="lazy">
+                        <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.last_name}} {{vicep.first_name}}, {{vicep.rank}} {{ vicep.role }}" class="elu-photo" onerror="this.src=''" loading="lazy">
                         {% else %}
-                        <div class="w-32 h-32 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full mx-auto">
-                            <span class="text-sm">Pas de photo</span>
+                        <div class="elu-photo-placeholder">
+                            <span>Pas de photo</span>
                         </div>
                         {% endif %}
                     </div>
-                    <div class="p-4">
+                    <div class="mt-4">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{vicep.last_name}} {{vicep.first_name}}</h3>
                         <p class="elu-role mb-1">
                             {% if vicep.rank == 1 %}
                                 {{ vicep.rank }}<sup>er</sup>
-                            {% endif %}
-                            {% if vicep.rank != 1 %}
+                            {% else %}
                                 {{ vicep.rank }}<sup>ème</sup>
                             {% endif %}
                             {{ vicep.role }}
                         </p>
-                        <p class="elu-commune text-gray-600 dark:text-gray-600 mb-3">{{vicep.profession}}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">{{vicep.function|default:""}}</p>
+                        <p class="elu-commune text-gray-600 dark:text-gray-600 mb-2">{{vicep.profession}}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-700">{{vicep.function|default:""}}</p>
                     </div>
                 </article>
                 {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% else %}
-    <section id="vice-presidents" class="py-12 dark:bg-gray-800">
-        <div class="container mx-auto px-4 md:px-6">
-            <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12">Les Vice-Présidents</h2>
-            
-            <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <!-- VP 1 -->
-                <article class="elu-card bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden">
-                    <div class="p-4">
+                {% else %}
+                <article class="elu-card elu-card-vice bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-5 sm:col-span-1 md:col-span-3 max-w-md mx-auto">
+                    <div class="elu-image-wrapper-vice">
+                        <div class="elu-photo-placeholder">
+                            <span>Pas de photo</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">Aucun vice-président élu</h3>
                         <p class="elu-role mb-1">Vice-Président de la Communauté de Communes Sud-Avesnois</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700 mb-4">Aucune fonction</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-700">Aucune fonction</p>
                     </div>
                 </article>
+                {% endif %}
             </div>
         </div>
     </section>
-    {% endif %}
 </div>
 
 {% endblock %}

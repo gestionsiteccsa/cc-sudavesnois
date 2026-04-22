@@ -12,26 +12,59 @@
     box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
 }
 
-.elu-card:hover .elu-image-wrapper img {
-    transform: scale(1.05);
-}
-
-.elu-image-wrapper {
-    overflow: hidden;
-    position: relative;
-    padding-top: 100%; /* Ratio 1:1 pour l'image */
-}
-
-.elu-image-wrapper img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+/* Photo circulaire (bulle) */
+.elu-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    border: 4px solid #e5e7eb;
+    transition: transform 0.5s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.elu-card:hover .elu-photo {
+    transform: scale(1.08);
+    box-shadow: 0 8px 12px rgba(0, 106, 179, 0.3);
+    border-color: #064d7e;
+}
+
+/* Placeholder photo */
+.elu-photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 4px solid #d1d5db;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Conteneurs d'image */
+.elu-image-wrapper-president,
+.elu-image-wrapper-vice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Carte président - plus grande */
+.elu-card-president {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.elu-card-president .elu-photo,
+.elu-card-president .elu-photo-placeholder {
+    width: 180px;
+    height: 180px;
+}
+
+/* Texte centré */
 .elu-role {
     color: #064d7e;
     font-weight: 500;
@@ -88,14 +121,30 @@
         transform: none !important;
     }
     
-    .elu-card:hover .elu-image-wrapper img {
+    .elu-card:hover .elu-photo {
         transform: none !important;
     }
 }
 
-/* Mode nuit pour les cartes des élus */
+/* Mode nuit */
+.dark .elu-photo {
+    border-color: #374151;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark .elu-card:hover .elu-photo {
+    border-color: #3b82f6;
+    box-shadow: 0 8px 12px rgba(59, 130, 246, 0.4);
+}
+
+.dark .elu-photo-placeholder {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #9ca3af;
+}
+
 .dark .elu-role {
-    color: #3b82f6; /* Couleur bleue plus claire pour le mode nuit */
+    color: #3b82f6;
 }
 
 .dark .elu-card:hover {
@@ -103,14 +152,14 @@
 }
 
 .dark .elu-card a {
-    color: #60a5fa; /* Bleu clair pour les liens en mode nuit */
+    color: #60a5fa;
 }
 
 .dark .elu-card a svg {
     stroke: #60a5fa;
 }
 
-/* Mode contraste élevé pour les cartes des élus */
+/* Mode contraste élevé */
 .high-contrast .elu-card {
     background-color: #000 !important;
     color: #fff !important;
@@ -146,10 +195,28 @@
     stroke: #00ffff !important;
 }
 
+.high-contrast .elu-photo-placeholder {
+    background-color: #000 !important;
+    border-color: #fff !important;
+    color: #fff !important;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
-    .elu-image-wrapper {
-        padding-top: 75%; /* Ratio 4:3 pour mobile */
+    .elu-photo {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .elu-photo-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .elu-card-president .elu-photo,
+    .elu-card-president .elu-photo-placeholder {
+        width: 150px;
+        height: 150px;
     }
     
     .elu-card {
