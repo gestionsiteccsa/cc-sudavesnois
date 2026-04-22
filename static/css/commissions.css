@@ -1,29 +1,32 @@
 /* Styles spécifiques pour la page des Commissions */
 
 .commission-card {
-    transition: all 0.3s ease;
+    background-color: #ffffff;
+    transition: none;
 }
 
 .commission-card:hover {
-    transform: translateY(-5px);
+    transform: none;
 }
 
-/* Style pour les icônes des commissions */
+/* Style pour les icônes des commissions - fond gris clair, icône noire */
 .commission-card .bg-primary\/10 {
-    transition: all 0.3s ease;
+    background-color: #f3f4f6 !important;
+    transition: none;
 }
 
 .commission-card:hover .bg-primary\/10 {
-    background-color: rgba(59, 130, 246, 0.2);
+    background-color: #f3f4f6 !important;
 }
 
-/* Style pour les titres des commissions */
+/* Style pour les titres des commissions - texte noir */
 .commission-card h3 {
-    transition: color 0.3s ease;
+    color: #000000 !important;
+    transition: none;
 }
 
 .commission-card:hover h3 {
-    color: #3b82f6;
+    color: #000000 !important;
 }
 
 /* Style pour les listes de membres */
@@ -39,26 +42,41 @@
 
 /* Style pour les étapes de fonctionnement */
 .flex-shrink-0.h-8.w-8 {
-    transition: all 0.3s ease;
+    transition: none;
 }
 
 .flex:hover .flex-shrink-0.h-8.w-8 {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    transform: none;
+    box-shadow: none;
 }
 
-/* Styles pour l'accordéon accessible */
+/* Styles pour l'accordéon accessible - fond blanc, texte noir */
 .accordion-trigger {
     cursor: pointer;
     width: 100%;
-    background-color: #f9fafb;
+    background-color: #ffffff !important;
+    color: #000000 !important;
 }
 
 .accordion-trigger:hover {
-    background-color: #006ab3 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
 }
 
-/* Au hover de la card, le texte et les icônes deviennent blancs */
+/* Force la couleur noire sur tous les éléments du bouton */
+.commission-card .accordion-trigger,
+.commission-card .accordion-trigger span,
+.commission-card .accordion-trigger svg,
+.commission-card .accordion-trigger .text-gray-800,
+.commission-card .accordion-trigger .text-gray-500,
+.commission-card .accordion-trigger .text-primary,
+.commission-card .accordion-trigger .dark\:text-gray-200,
+.commission-card .accordion-trigger .dark\:text-gray-400,
+.commission-card .accordion-trigger .dark\:text-blue-400 {
+    color: #000000 !important;
+}
+
+/* Au hover, tout reste noir */
 .commission-card:hover .accordion-trigger,
 .commission-card:hover .accordion-trigger span,
 .commission-card:hover .accordion-trigger svg,
@@ -68,20 +86,32 @@
 .commission-card:hover .accordion-trigger .dark\:text-gray-200,
 .commission-card:hover .accordion-trigger .dark\:text-gray-400,
 .commission-card:hover .accordion-trigger .dark\:text-blue-400 {
-    color: #ffffff !important;
+    color: #000000 !important;
 }
 
-/* Force la couleur blanche sur tous les éléments du bouton au hover */
+/* Force la couleur noire sur tous les éléments du bouton */
+.commission-card .accordion-trigger * {
+    color: #000000 !important;
+    fill: #000000 !important;
+    stroke: #000000 !important;
+}
+
+/* Au hover, tout reste noir */
 .commission-card:hover .accordion-trigger * {
-    color: #ffffff !important;
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
+    color: #000000 !important;
+    fill: #000000 !important;
+    stroke: #000000 !important;
 }
 
-/* Container de l'icône au hover */
+/* Container de l'icône - reste gris clair */
+.commission-card .accordion-trigger .bg-primary\/10,
+.commission-card .accordion-trigger .dark\:bg-primary\/20 {
+    background-color: #f3f4f6 !important;
+}
+
 .commission-card:hover .accordion-trigger .bg-primary\/10,
 .commission-card:hover .accordion-trigger .dark\:bg-primary\/20 {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: #f3f4f6 !important;
 }
 
 .accordion-trigger:focus-visible {
@@ -92,7 +122,7 @@
     --tw-ring-color: rgb(59 130 246);
     --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--shadow, 0 0 #0000);
 }
 
 .accordion-panel {
