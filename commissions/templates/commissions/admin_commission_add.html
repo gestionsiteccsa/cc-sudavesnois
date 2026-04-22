@@ -34,38 +34,110 @@
         <form method="POST" class="space-y-6">
           {% csrf_token %}
           
-          {% for field in form %}
+          <!-- Champ Title -->
           <div class="space-y-2">
-            <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-              {{ field.label }}
+            <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {{ form.title.label }} <span class="text-red-500" aria-hidden="true">*</span>
             </label>
-            
-            {% if field.name == 'icon' %}
+            {% render_field form.title class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" %}
+            {% if form.title.errors %}
+            <div class="flex items-center gap-2 text-red-600 text-sm mt-1">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              {{ form.title.errors.0 }}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Champ Icon -->
+          <div class="space-y-2">
+            <label for="{{ form.icon.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {{ form.icon.label }} <span class="text-red-500" aria-hidden="true">*</span>
+            </label>
             <div class="relative">
-              {% render_field field class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm" rows="4" %}
+              {% render_field form.icon class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm" rows="4" %}
               <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                 <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">Aperçu de l'icône :</p>
                 <div id="icon-preview" class="w-8 h-8 text-primary"></div>
               </div>
             </div>
-            {% else %}
-            {% render_field field class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" %}
-            {% endif %}
-            
-            {% if field.errors %}
+            {% if form.icon.errors %}
             <div class="flex items-center gap-2 text-red-600 text-sm mt-1">
               <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              {{ field.errors.0 }}
+              {{ form.icon.errors.0 }}
             </div>
             {% endif %}
-            
-            {% if field.help_text %}
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
-            {% endif %}
           </div>
-          {% endfor %}
-          
-          <div class="flex items-center gap-4 pt-4">
+
+          <!-- Champ Membres -->
+          <div class="space-y-3">
+            <fieldset>
+              <legend class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                {{ form.membres.label }}
+              </legend>
+              {% if form.membres.help_text %}
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">{{ form.membres.help_text }}</p>
+              {% endif %}
+              {% if form.membres.errors %}
+              <div class="p-4 mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                <p class="text-red-600 text-sm dark:text-red-400">{{ form.membres.errors.0 }}</p>
+              </div>
+              {% endif %}
+
+              {% if form.membres.field.queryset.exists %}
+              <div class="mb-4 flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1">
+                  <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <input
+                    type="text"
+                    id="search-membres"
+                    placeholder="Rechercher un membre..."
+                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm"
+                    aria-label="Filtrer les membres par nom"
+                  >
+                </div>
+                <button
+                  type="button"
+                  id="sort-membres"
+                  class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-label="Trier les membres par ordre alphabétique"
+                >
+                  <svg class="w-4 h-4 mr-2" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
+                  <span id="sort-label">Trier A → Z</span>
+                </button>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" role="group" aria-label="Liste des membres" id="membres-list">
+                  {% for membre in form.membres.field.queryset %}
+                  <div class="membre-item flex items-start gap-3 p-3 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors" data-nom="{{ membre.last_name|lower }} {{ membre.first_name|lower }}">
+                    <input
+                      type="checkbox"
+                      name="{{ form.membres.name }}"
+                      value="{{ membre.pk }}"
+                      id="membre_{{ membre.pk }}"
+                      class="mt-0.5 h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary dark:bg-gray-700 dark:border-gray-500"
+                    >
+                    <label for="membre_{{ membre.pk }}" class="flex-1 cursor-pointer">
+                      <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {{ membre.last_name|title }} {{ membre.first_name|title }}
+                      </span>
+                      <span class="block text-xs text-gray-500 dark:text-gray-400">
+                        {{ membre.city.city_name }}
+                        {% if membre.is_suppleant %}
+                          <span class="ml-1 text-amber-600 dark:text-amber-400">(Suppléant)</span>
+                        {% endif %}
+                      </span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% else %}
+                <p class="text-gray-500 dark:text-gray-400 text-sm italic p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">Aucun membre disponible.</p>
+              {% endif %}
+            </fieldset>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button type="submit" class="inline-flex items-center px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-dark transition shadow-sm font-medium">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
               Ajouter la commission
@@ -84,7 +156,7 @@
   // Prévisualisation de l'icône SVG
   const iconField = document.querySelector('textarea[name="icon"]');
   const iconPreview = document.getElementById('icon-preview');
-  
+
   if (iconField && iconPreview) {
     iconField.addEventListener('input', function() {
       iconPreview.innerHTML = this.value;
@@ -92,5 +164,47 @@
     // Initialiser avec la valeur actuelle
     iconPreview.innerHTML = iconField.value;
   }
+
+  // Recherche et tri des membres
+  (function() {
+    const searchInput = document.getElementById('search-membres');
+    const sortBtn = document.getElementById('sort-membres');
+    const sortLabel = document.getElementById('sort-label');
+    const listContainer = document.getElementById('membres-list');
+
+    if (!searchInput || !sortBtn || !listContainer) return;
+
+    let sortAsc = true;
+
+    function normalize(str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    }
+
+    // Filtrage
+    searchInput.addEventListener('input', function() {
+      const query = normalize(this.value);
+      const items = listContainer.querySelectorAll('.membre-item');
+      items.forEach(function(item) {
+        const nom = normalize(item.dataset.nom);
+        item.style.display = nom.includes(query) ? '' : 'none';
+      });
+    });
+
+    // Tri
+    sortBtn.addEventListener('click', function() {
+      const items = Array.from(listContainer.querySelectorAll('.membre-item'));
+      items.sort(function(a, b) {
+        const aNom = normalize(a.dataset.nom);
+        const bNom = normalize(b.dataset.nom);
+        return sortAsc ? aNom.localeCompare(bNom) : bNom.localeCompare(aNom);
+      });
+      items.forEach(function(item) {
+        listContainer.appendChild(item);
+      });
+      sortAsc = !sortAsc;
+      sortLabel.textContent = sortAsc ? 'Trier A → Z' : 'Trier Z → A';
+      sortBtn.setAttribute('aria-label', sortAsc ? 'Trier les membres par ordre alphabétique croissant' : 'Trier les membres par ordre alphabétique décroissant');
+    });
+  })();
 </script>
 {% endblock %}

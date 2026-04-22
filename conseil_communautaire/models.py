@@ -67,8 +67,9 @@ class ConseilMembre(models.Model):
     city = models.ForeignKey(ConseilVille, on_delete=models.CASCADE)
     is_suppleant = models.BooleanField(default=False)
     sexe = models.CharField(max_length=8, choices=Sexe, default=Sexe.Monsieur)
-    linked_commission = models.ForeignKey(
-        Commission, on_delete=models.CASCADE, null=True, blank=True, default=None
+    linked_commission = models.ManyToManyField(
+        Commission, blank=True, related_name="membres",
+        help_text="Sélectionnez jusqu'à 5 commissions pour ce membre."
     )
 
     # class Meta:

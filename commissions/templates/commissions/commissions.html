@@ -29,13 +29,13 @@
                 <div class="bg-white dark:bg-gray-700 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Rôle des commissions</h2>
                     <p class="text-gray-600 dark:text-gray-700 mb-6">
-                        Méconnues du grand public, les commissions communautaires ont pour mission, en liaison avec le Bureau (composé du Président et des 9 VP), d'élaborer les projets, de suivre les réalisations en cours ou encore de réfléchir au développement des services.
+                        Méconnues du grand public, les commissions communautaires ont pour mission, en liaison avec le Bureau (composé du Président et des 9 Vice-présidents), d'élaborer les projets, de suivre les réalisations en cours ou encore de réfléchir au développement des services.
                     </p>
                     <p class="text-gray-600 dark:text-gray-700 mb-6">
                         Composés d'élus communautaires issus de chaque commune du Sud-Avesnois, elles travaillent en étroite collaboration avec les agents de la collectivité.
                     </p>
                     <p class="text-gray-600 dark:text-gray-700">
-                        Chacune d'entre elles travaille sur des thématiques particulières et est rattachée à des vice présidences qui en assurent l'animation.
+                        Chacune d'entre elles travaille sur des thématiques particulières et est rattachée à des vice-présidences qui en assurent l'animation. Les membres du bureau sont membres de droit de l'ensemble des commissions.
                     </p>
                 </div>
             </div>
@@ -43,41 +43,78 @@
     </section>
 
     <!-- Liste des commissions -->
-    <section class="py-12 bg-gray-100 dark:bg-gray-800">
+    <section class="py-12 bg-gray-100 dark:bg-gray-800" aria-labelledby="commissions-heading">
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-4xl mx-auto">
-                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Pour le mandat {{mandat.start_year}}-{{mandat.end_year}}, la CCSA compte {{ nb_commissions }} commission{% if nb_commissions > 1 %}s{% endif %}</h2>
-                <div class="space-y-8">
-                    <!-- Commissions -->
-                    {% if commissions %}
+                <h2 id="commissions-heading" class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">
+                    Pour le mandat {{mandat.start_year}}-{{mandat.end_year}}, la CCSA compte {{ nb_commissions }} commission{% if nb_commissions > 1 %}s{% endif %}
+                </h2>
+
+                {% if commissions %}
+                <div class="space-y-4" role="region" aria-label="Liste des commissions">
                     {% for com in commissions %}
-                    <div class="commission-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
-                        <div class="p-6">
-                            <div class="flex items-center mb-4">
-                                <div style="width: 58px;" class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
-                                    {{com.icon|safe}}
+                    <div class="commission-card bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden">
+                        <h3 class="m-0">
+                            <button
+                                type="button"
+                                class="accordion-trigger w-full flex items-center justify-between p-6 text-left transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+                                aria-expanded="false"
+                                aria-controls="commission-panel-{{ com.id }}"
+                                id="commission-trigger-{{ com.id }}">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full flex-shrink-0" aria-hidden="true">
+                                        <div class="w-6 h-6 text-primary dark:text-blue-400">
+                                            {{com.icon|safe}}
+                                        </div>
+                                    </div>
+                                    <span class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{com.title}}</span>
                                 </div>
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{com.title}}</h3>
+                                <span class="accordion-icon flex-shrink-0 ml-4 text-gray-500 dark:text-gray-400 transition-transform duration-300" aria-hidden="true">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </span>
+                            </button>
+                        </h3>
+                        <div
+                            id="commission-panel-{{ com.id }}"
+                            role="region"
+                            aria-labelledby="commission-trigger-{{ com.id }}"
+                            class="accordion-panel hidden"
+                            hidden>
+                            <div class="p-6 pt-2">
+                                {% if com.membres.all %}
+                                <h4 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+                                    Membres de la commission
+                                </h4>
+                                <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" role="list">
+                                    {% for membre in com.membres.all %}
+                                    <li>
+                                        <a href="{% url 'conseil_communautaire:conseil' %}"
+                                           class="flex items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-600 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                                {{ membre.last_name|title }} {{ membre.first_name|title }}
+                                            </span>
+                                            <span class="ml-auto text-xs text-gray-400 dark:text-gray-500">{{ membre.city.city_name }}</span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text-gray-500 dark:text-gray-400 text-sm italic">
+                                    Aucun membre n'est actuellement lié à cette commission.
+                                </p>
+                                {% endif %}
                             </div>
-                            {% for elu in elus %}
-                                {% if com in elu.linked_commission.all %}
-                                    <a href="{% url 'bureau-communautaire:elus' %}">
-                                        {{ elu.first_name }} {{ elu.last_name }}
-                                    </a>
-                                {% endif %}
-                            {% endfor %}
-                            {% for membre in membres %}
-                                {% if membre.linked_commission == com %}
-                                    <a href="{% url 'conseil_communautaire:conseil' %}">
-                                        {{ membre.first_name }} {{ membre.last_name }}
-                                    </a>
-                                {% endif %}
-                            {% endfor %}
                         </div>
                     </div>
                     {% endfor %}
-                    {% endif %}
                 </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500 dark:text-gray-400">Aucune commission n'est disponible pour le moment.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -113,4 +150,69 @@
         </div>
     </section>
 </main>
+{% endblock %}
+
+{% block script %}
+<script>
+(function() {
+    'use strict';
+    
+    const triggers = document.querySelectorAll('.accordion-trigger');
+    
+    triggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            const panelId = this.getAttribute('aria-controls');
+            const panel = document.getElementById(panelId);
+            const icon = this.querySelector('.accordion-icon');
+            
+            // Fermer tous les autres panneaux (accordéon exclusif)
+            triggers.forEach(function(otherTrigger) {
+                if (otherTrigger !== trigger) {
+                    otherTrigger.setAttribute('aria-expanded', 'false');
+                    const otherPanelId = otherTrigger.getAttribute('aria-controls');
+                    const otherPanel = document.getElementById(otherPanelId);
+                    const otherIcon = otherTrigger.querySelector('.accordion-icon');
+                    if (otherPanel) {
+                        otherPanel.classList.add('hidden');
+                        otherPanel.setAttribute('hidden', '');
+                    }
+                    if (otherIcon) {
+                        otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+            
+            // Toggle le panneau courant
+            if (isExpanded) {
+                this.setAttribute('aria-expanded', 'false');
+                if (panel) {
+                    panel.classList.add('hidden');
+                    panel.setAttribute('hidden', '');
+                }
+                if (icon) {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            } else {
+                this.setAttribute('aria-expanded', 'true');
+                if (panel) {
+                    panel.classList.remove('hidden');
+                    panel.removeAttribute('hidden');
+                }
+                if (icon) {
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            }
+        });
+        
+        // Support clavier : Entrée et Espace
+        trigger.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.click();
+            }
+        });
+    });
+})();
+</script>
 {% endblock %}

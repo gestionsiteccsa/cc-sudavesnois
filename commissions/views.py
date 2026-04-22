@@ -26,20 +26,14 @@ def commissions(request):
             {"maintenance_message": maintenance_message},
         )
 
-    # Récupération optimisée avec prefetch_related pour la relation ManyToMany Elus
-    # Le related_name est "elus" (défini dans le modèle Elus)
-    commissions_qs = Commission.objects.prefetch_related("elus")
+    # Récupération optimisée avec prefetch_related pour les relations ManyToMany
+    commissions_qs = Commission.objects.prefetch_related("elus", "membres", "membres__city")
     commissions_list = list(commissions_qs)
     nb_commissions = len(commissions_list) if commissions_list else 0
 
     # Récupération optimisée des élus avec select_related pour city
     elus_qs = Elus.objects.select_related("city")
     elus_list = list(elus_qs)
-
-    # Récupération optimisée des membres avec select_related pour city et linked_commission
-    # linked_commission est une ForeignKey vers Commission
-    membres_qs = ConseilMembre.objects.select_related("city", "linked_commission")
-    membres_list = list(membres_qs)
 
     # Document et mandat
     document = Document.objects.first()
@@ -56,7 +50,6 @@ def commissions(request):
         "nb_commissions": nb_commissions,
         "mandat": mandat,
         "elus": elus_list if elus_list else None,
-        "membres": membres_list if membres_list else None,
     }
 
     return render(request, "commissions/commissions.html", context)
