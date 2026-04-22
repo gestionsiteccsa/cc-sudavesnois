@@ -153,7 +153,8 @@ def delete_member(request, id):
 @permission_required("conseil_communautaire.view_conseilmembre")
 def admin_list_members(request):
     members_list = (
-        ConseilMembre.objects.select_related("city", "linked_commission")
+        ConseilMembre.objects.select_related("city")
+        .prefetch_related("linked_commission")
         .all()
         .order_by("last_name", "first_name")
     )
