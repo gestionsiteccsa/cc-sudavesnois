@@ -11,8 +11,8 @@ class ConseilVille(models.Model):
         Madame = "Mme."
         Monsieur = "M."
 
-    city_name = models.CharField(max_length=30, unique=True)
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
+    city_name = models.CharField(max_length=30, unique=True, db_index=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, db_index=True)
     mayor_sex = models.CharField(max_length=7, choices=Sexe, default=Sexe.Monsieur)
     mayor_first_name = models.CharField(max_length=20, null=False, blank=False)
     mayor_last_name = models.CharField(max_length=20, null=False, blank=False)

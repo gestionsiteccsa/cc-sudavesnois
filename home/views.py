@@ -39,24 +39,22 @@ def is_staff_or_superuser(user):
     return user.is_staff or user.is_superuser
 
 
+from django.views.decorators.cache import cache_page
+
+
+@cache_page(300)
 def home(request):
     # Donnée requises pour la page d'accueil
-    from django.db.models import Count, Sum
     
-    # Optimisé : requête unique avec agrégation pour les statistiques
+    # Optimisé : récupération unique des services
     services = list(Service.objects.order_by("title"))
     services = services if services else None
     
-    # Agrégation en base de données au lieu de Python
-    stats = ConseilVille.objects.aggregate(
-        nb_communes=Count('id'),
-        nb_habitants=Sum('nb_habitants')
-    )
-    
+    # Optimisé : une seule requête pour les communes + stats calculées en Python
     communes = list(ConseilVille.objects.all())
     communes = communes if communes else None
-    nb_communes = stats['nb_communes'] if stats['nb_communes'] else None
-    nb_habitants = stats['nb_habitants'] if stats['nb_habitants'] else None
+    nb_communes = len(communes) if communes else None
+    nb_habitants = sum(c.nb_habitants for c in communes) if communes else None
 
     # Récupérer le dernier journal (trié par numéro décroissant)
     dernier_journal = Journal.objects.order_by("-number").first()

@@ -32,7 +32,7 @@ class Journal(models.Model):
         upload_to="MSA/couvertures",
     )
 
-    number = models.IntegerField(default=0)  # Numéro du journal
+    number = models.IntegerField(default=0, db_index=True)  # Numéro du journal
     page_number = models.IntegerField(default=0)  # Nombre de pages du journal
 
     def __str__(self):

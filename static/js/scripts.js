@@ -273,6 +273,20 @@ function initBackToTopButton() {
 
 // Animations au défilement
 function initScrollAnimations() {
+    // Respecter la préférence utilisateur de réduction des mouvements
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // Si l'utilisateur préfère réduire les animations, rendre tout visible immédiatement
+    if (prefersReducedMotion) {
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            el.classList.add('animate-active');
+        });
+        document.querySelectorAll('.reveal').forEach(el => {
+            el.classList.add('active');
+        });
+        return;
+    }
+    
     // Animation pour les éléments avec la classe animate-on-scroll
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
     

@@ -721,6 +721,23 @@ textarea:-ms-input-placeholder {
     color: #9ca3af; /* gray-400 - contraste suffisant sur fond gris foncé */
 }
 
+/* Correction globale pour les éléments avec focus:outline-none */
+/* S'assure que le focus reste visible même si outline-none est utilisé */
+*[class*="focus:outline-none"]:focus-visible {
+    outline: 2px solid #006ab3 !important;
+    outline-offset: 2px !important;
+}
+
+/* Support prefers-reduced-motion pour les animations JS */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .animate-on-scroll {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
+
 .dark input::-webkit-input-placeholder,
 .dark textarea::-webkit-input-placeholder {
     color: #9ca3af;
