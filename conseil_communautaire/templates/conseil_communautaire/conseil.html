@@ -2,10 +2,11 @@
 {% load static %}
 {% block title %}Conseil Communautaire{% endblock %}
 {% block styles %}
+<link rel="stylesheet" href="{% static 'css/elus.css' %}">
 {% endblock %}
 {% block content %}
 <!-- Contenu principal -->
-<div>
+<div class="dark:bg-gray-900">
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -22,54 +23,177 @@
     {% include "includes/prochains_conseils.html" %}
 
     <!-- Liste des membres par commune -->
-    <section class="py-12 bg-gray-50">
+    <section class="py-12 bg-gray-50 dark:bg-gray-900" aria-label="Liste des membres du Conseil Communautaire par commune">
         <div class="container mx-auto px-4 md:px-6">
-            <div class="max-w-5xl mx-auto">
-                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-12">Les membres du Conseil Communautaire</h2>
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12">Les membres du Conseil Communautaire</h2>
                 
                 {% if cities_list %}
-                <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="space-y-10">
                     {% for city in cities_list %}
                     <!-- Ville -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg" id="commune-{{ city.city_name|slugify }}">
-                        <div class="bg-primary/10 p-4">
-                            <h3 class="text-xl font-bold text-primary">{{ city.city_name }}</h3>
-                        </div>
-                        <div class="p-5">
-                            <ul class="space-y-3">
-                                <!-- Liste des membre non suppléants -->
+                    <article class="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden" id="commune-{{ city.city_name|slugify }}">
+                        <header class="bg-primary p-4 text-center">
+                            <h3 class="text-xl md:text-2xl font-bold text-white">{{ city.city_name }}</h3>
+                        </header>
+                        <div class="p-6">
+                            <div class="conseil-members-container">
+                                <!-- Liste des membres non suppléants -->
                                 {% for member in members_list %}
                                     {% if member.city_id == city.id and not member.is_suppleant %}
-                                        <li class="flex items-start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 text-secondary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
-                                            <span>{{member.sexe}} {{member.first_name}} {{member.last_name}}</span>
-                                        </li>
+                                    <article class="elu-card conseil-member-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
+                                        {% if member.photo %}
+                                        <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}">
+                                            <img src="{{ member.photo.url }}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre titulaire du Conseil Communautaire" class="elu-photo" onerror="this.src=''" loading="lazy">
+                                        </div>
+                                        {% else %}
+                                        <div class="elu-image-wrapper-vice">
+                                            <div class="elu-photo-placeholder" aria-hidden="true">
+                                                {{ member.first_name|first }}{{ member.last_name|first }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <div class="mt-4">
+                                            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
+                                            <p class="elu-role text-sm mt-1">Membre titulaire</p>
+                                        </div>
+                                    </article>
                                     {% endif %}
                                 {% endfor %}
-                                <!-- Pour afficher les supléants en fin de liste -->
+                                
+                                <!-- Liste des suppléants -->
                                 {% for member in members_list %}
                                     {% if member.city_id == city.id and member.is_suppleant %}
-                                        <li class="flex items-start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 text-gray-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
-                                            <span class="text-gray-600">{{member.sexe}} {{member.first_name}} {{member.last_name}} (suppléant)</span>
-                                        </li>
+                                    <article class="elu-card conseil-member-card conseil-member-suppleant bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
+                                        {% if member.photo %}
+                                        <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}">
+                                            <img src="{{ member.photo.url }}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre suppléant du Conseil Communautaire" class="elu-photo" onerror="this.src=''" loading="lazy">
+                                        </div>
+                                        {% else %}
+                                        <div class="elu-image-wrapper-vice">
+                                            <div class="elu-photo-placeholder" aria-hidden="true">
+                                                {{ member.first_name|first }}{{ member.last_name|first }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <div class="mt-4">
+                                            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
+                                            <p class="elu-role text-sm mt-1">Membre suppléant</p>
+                                        </div>
+                                    </article>
                                     {% endif %}
                                 {% endfor %}
-                            </ul>
+                            </div>
                         </div>
-                    </div>
+                    </article>
                     {% endfor %}
                 </div>
                 {% else %}
-                <div class="text-center">
-                    <p class="text-lg text-gray-600">Aucune commune ni membre n'est disponible pour le moment.</p>
+                <div class="text-center p-8">
+                    <p class="text-lg text-gray-600 dark:text-gray-400">Aucune commune ni membre n'est disponible pour le moment.</p>
+                </div>
                 {% endif %}
             </div>
         </div>
     </section>
- </div>
+</div>
+
+<!-- Lightbox accessible -->
+<div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-label="Aperçu de l'image" tabindex="-1" hidden>
+    <button class="lightbox-close" aria-label="Fermer l'aperçu de l'image" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <img id="lightbox-image" src="" alt="">
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+(function() {
+    'use strict';
+    
+    const lightboxModal = document.getElementById('lightbox-modal');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxClose = lightboxModal.querySelector('.lightbox-close');
+    let lastFocusedElement = null;
+    let focusTrapHandler = null;
+    
+    function openLightbox(src, alt) {
+        lastFocusedElement = document.activeElement;
+        lightboxImage.src = src;
+        lightboxImage.alt = alt;
+        lightboxModal.hidden = false;
+        lightboxModal.classList.add('active');
+        lightboxClose.focus();
+        document.addEventListener('keydown', handleKeydown);
+        focusTrapHandler = createFocusTrap(lightboxModal);
+        document.addEventListener('keydown', focusTrapHandler);
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+        lightboxModal.classList.remove('active');
+        lightboxModal.hidden = true;
+        lightboxImage.src = '';
+        document.removeEventListener('keydown', handleKeydown);
+        if (focusTrapHandler) {
+            document.removeEventListener('keydown', focusTrapHandler);
+            focusTrapHandler = null;
+        }
+        document.body.style.overflow = '';
+        if (lastFocusedElement) lastFocusedElement.focus();
+    }
+    
+    function handleKeydown(e) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            closeLightbox();
+        }
+    }
+    
+    function createFocusTrap(element) {
+        return function(e) {
+            if (e.key !== 'Tab') return;
+            const focusableElements = element.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusableElements.length === 0) return;
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+            
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusable) {
+                    lastFocusable.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastFocusable) {
+                    firstFocusable.focus();
+                    e.preventDefault();
+                }
+            }
+        };
+    }
+    
+    // Détection des clics sur les wrappers d'images
+    document.querySelectorAll('.lightbox-trigger-wrapper').forEach(function(wrapper) {
+        wrapper.addEventListener('click', function(e) {
+            e.preventDefault();
+            const img = wrapper.querySelector('img');
+            if (img) openLightbox(img.src, img.alt);
+        });
+        
+        wrapper.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const img = wrapper.querySelector('img');
+                if (img) openLightbox(img.src, img.alt);
+            }
+        });
+    });
+    
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxModal.addEventListener('click', function(e) {
+        if (e.target === lightboxModal) closeLightbox();
+    });
+})();
+</script>
 {% endblock %}

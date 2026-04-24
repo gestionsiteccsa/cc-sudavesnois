@@ -54,15 +54,17 @@
             <div class="max-w-2xl mx-auto">
                 {% if president != None %}
                 <article class="elu-card elu-card-president bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-6 md:p-8">
-                    <div class="elu-image-wrapper-president">
-                        {% if president.picture %}
+                    {% if president.picture %}
+                    <div class="elu-image-wrapper-president lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ president.first_name }} {{ president.last_name }}">
                         <img src="{{ president.picture.url }}" alt="Portrait de {{president.last_name}} {{president.first_name}}, Président de la Communauté de Communes Sud-Avesnois" class="elu-photo" onerror="this.src=''" loading="lazy">
-                        {% else %}
-                        <div class="elu-photo-placeholder">
-                            <span>Pas de photo</span>
-                        </div>
-                        {% endif %}
                     </div>
+                    {% else %}
+                    <div class="elu-image-wrapper-president">
+                        <div class="elu-photo-placeholder" aria-hidden="true">
+                            {{ president.first_name|first }}{{ president.last_name|first }}
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="mt-6">
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{president.last_name}} {{president.first_name}}</h3>
                         <p class="elu-role text-lg mb-1">{{ president.role }}</p>
@@ -73,9 +75,7 @@
                 {% else %}
                 <article class="elu-card elu-card-president bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-6 md:p-8">
                     <div class="elu-image-wrapper-president">
-                        <div class="elu-photo-placeholder">
-                            <span>Pas de photo</span>
-                        </div>
+                        <div class="elu-photo-placeholder" aria-hidden="true">?</div>
                     </div>
                     <div class="mt-6">
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Aucun président élu</h3>
@@ -98,15 +98,17 @@
                 {% if elus != None %}
                 {% for vicep in elus %}
                 <article class="elu-card elu-card-vice bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-5">
-                    <div class="elu-image-wrapper-vice">
-                        {% if vicep.picture %}
+                    {% if vicep.picture %}
+                    <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ vicep.first_name }} {{ vicep.last_name }}">
                         <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.last_name}} {{vicep.first_name}}, {{vicep.rank}} {{ vicep.role }}" class="elu-photo" onerror="this.src=''" loading="lazy">
-                        {% else %}
-                        <div class="elu-photo-placeholder">
-                            <span>Pas de photo</span>
-                        </div>
-                        {% endif %}
                     </div>
+                    {% else %}
+                    <div class="elu-image-wrapper-vice">
+                        <div class="elu-photo-placeholder" aria-hidden="true">
+                            {{ vicep.first_name|first }}{{ vicep.last_name|first }}
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="mt-4">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">{{vicep.last_name}} {{vicep.first_name}}</h3>
                         <p class="elu-role mb-1">
@@ -125,9 +127,7 @@
                 {% else %}
                 <article class="elu-card elu-card-vice bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-5 sm:col-span-1 md:col-span-3 max-w-md mx-auto">
                     <div class="elu-image-wrapper-vice">
-                        <div class="elu-photo-placeholder">
-                            <span>Pas de photo</span>
-                        </div>
+                        <div class="elu-photo-placeholder" aria-hidden="true">?</div>
                     </div>
                     <div class="mt-4">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">Aucun vice-président élu</h3>
@@ -141,4 +141,102 @@
     </section>
 </div>
 
+<!-- Lightbox accessible -->
+<div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-label="Aperçu de l'image" tabindex="-1" hidden>
+    <button class="lightbox-close" aria-label="Fermer l'aperçu de l'image" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <img id="lightbox-image" src="" alt="">
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+(function() {
+    'use strict';
+    
+    const lightboxModal = document.getElementById('lightbox-modal');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxClose = lightboxModal.querySelector('.lightbox-close');
+    let lastFocusedElement = null;
+    let focusTrapHandler = null;
+    
+    function openLightbox(src, alt) {
+        lastFocusedElement = document.activeElement;
+        lightboxImage.src = src;
+        lightboxImage.alt = alt;
+        lightboxModal.hidden = false;
+        lightboxModal.classList.add('active');
+        lightboxClose.focus();
+        document.addEventListener('keydown', handleKeydown);
+        focusTrapHandler = createFocusTrap(lightboxModal);
+        document.addEventListener('keydown', focusTrapHandler);
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+        lightboxModal.classList.remove('active');
+        lightboxModal.hidden = true;
+        lightboxImage.src = '';
+        document.removeEventListener('keydown', handleKeydown);
+        if (focusTrapHandler) {
+            document.removeEventListener('keydown', focusTrapHandler);
+            focusTrapHandler = null;
+        }
+        document.body.style.overflow = '';
+        if (lastFocusedElement) lastFocusedElement.focus();
+    }
+    
+    function handleKeydown(e) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            closeLightbox();
+        }
+    }
+    
+    function createFocusTrap(element) {
+        return function(e) {
+            if (e.key !== 'Tab') return;
+            const focusableElements = element.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusableElements.length === 0) return;
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+            
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusable) {
+                    lastFocusable.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastFocusable) {
+                    firstFocusable.focus();
+                    e.preventDefault();
+                }
+            }
+        };
+    }
+    
+    // Détection des clics sur les wrappers d'images
+    document.querySelectorAll('.lightbox-trigger-wrapper').forEach(function(wrapper) {
+        wrapper.addEventListener('click', function(e) {
+            e.preventDefault();
+            const img = wrapper.querySelector('img');
+            if (img) openLightbox(img.src, img.alt);
+        });
+        
+        wrapper.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const img = wrapper.querySelector('img');
+                if (img) openLightbox(img.src, img.alt);
+            }
+        });
+    });
+    
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxModal.addEventListener('click', function(e) {
+        if (e.target === lightboxModal) closeLightbox();
+    });
+})();
+</script>
 {% endblock %}
