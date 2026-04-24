@@ -4,36 +4,6 @@
 {% load static %}
 {% load filters %}
 {% block content %}
-<!-- Fil d'Ariane -->
-<nav aria-label="Fil d'ariane" class="bg-gray-100 dark:bg-gray-900 py-3">
-    <div class="container mx-auto px-4 md:px-6">
-        <ol class="flex flex-wrap items-center text-sm text-gray-600 dark:text-gray-300" itemscope itemtype="https://schema.org/BreadcrumbList">
-            <li class="flex items-center" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                <a href="{% url 'home' %}" class="hover:text-primary dark:hover:text-blue-400 underline focus:outline-none focus:ring-2 focus:ring-primary" itemprop="item">
-                    <span itemprop="name">Accueil</span>
-                </a>
-                <meta itemprop="position" content="1" />
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </li>
-            <li class="flex items-center" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                <a href="{% url 'presentation' %}" class="hover:text-primary dark:hover:text-blue-400 underline focus:outline-none focus:ring-2 focus:ring-primary" itemprop="item">
-                    <span itemprop="name">Présentation</span>
-                </a>
-                <meta itemprop="position" content="2" />
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </li>
-            <li class="font-medium text-gray-800 dark:text-gray-200" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
-                <span itemprop="name">{{ commune.city_name }}</span>
-                <meta itemprop="position" content="3" />
-            </li>
-        </ol>
-    </div>
-</nav>
-
 <!-- Contenu principal -->
 <div>
     <!-- Bannière de la commune avec image en fond -->
