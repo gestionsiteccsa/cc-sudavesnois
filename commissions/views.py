@@ -2,6 +2,7 @@ import os
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.core.cache import cache
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
 from bureau_communautaire.models import Elus, PageStatus
@@ -27,29 +28,30 @@ def commissions(request):
         )
 
     # Récupération optimisée avec prefetch_related pour les relations ManyToMany
-    commissions_qs = Commission.objects.prefetch_related("elus", "membres", "membres__city")
+    commissions_qs = Commission.objects.prefetch_related("elus", "elus__city", "membres", "membres__city")
     commissions_list = list(commissions_qs)
     nb_commissions = len(commissions_list) if commissions_list else 0
 
-    # Récupération optimisée des élus avec select_related pour city
-    elus_qs = Elus.objects.select_related("city")
-    elus_list = list(elus_qs)
+    # Document et mandat (avec cache de 5 minutes)
+    document = cache.get('commissions_document')
+    if document is None:
+        document = Document.objects.first()
+        cache.set('commissions_document', document, 300)
 
-    # Document et mandat
-    document = Document.objects.first()
-
-    mandat = Mandat.objects.first()
-    if not mandat:
-        # Crée un mandat par défaut si aucun n'existe
-        mandat = Mandat(start_year=2020, end_year=2026)
-        mandat.save()
+    mandat = cache.get('commissions_mandat')
+    if mandat is None:
+        mandat = Mandat.objects.first()
+        if not mandat:
+            # Crée un mandat par défaut si aucun n'existe
+            mandat = Mandat(start_year=2020, end_year=2026)
+            mandat.save()
+        cache.set('commissions_mandat', mandat, 300)
 
     context = {
         "commissions": commissions_list if commissions_list else None,
         "document": document,
         "nb_commissions": nb_commissions,
         "mandat": mandat,
-        "elus": elus_list if elus_list else None,
     }
 
     return render(request, "commissions/commissions.html", context)

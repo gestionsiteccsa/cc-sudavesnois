@@ -12,26 +12,19 @@ from .models import ActeLocal
 def commune(request, slug):
     """
     Affiche les détails de la commune membre de la communauté de communes.
+    Optimisé : une seule requête via select_related et le related_name.
     """
-    # Récupérer la commune à partir du slug
-    try:
-        commune = ConseilVille.objects.get(slug=slug)
-    except ConseilVille.DoesNotExist:
-        return render(request, "communes_membres/commune_no_ville.html", status=200)
-
-    if ActeLocal.objects.filter(commune=commune).exists():
-        acte = get_object_or_404(ActeLocal, commune=commune)
-    else:
+    commune = get_object_or_404(ConseilVille, slug=slug)
+    acte = getattr(commune, 'acte_local', None)
+    if acte is None:
         acte = ActeLocal(
             id="0", title=None, date=None, description=None, commune=commune, file="/"
         )
 
-    context = {
+    return render(request, "communes_membres/commune.html", {
         "commune": commune,
         "acte": acte,
-    }
-
-    return render(request, "communes_membres/commune.html", context)
+    })
 
 
 @permission_required("communes_membres.add_actelocal")

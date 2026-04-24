@@ -1,5 +1,11 @@
 /* Styles personnalisés pour la Communauté de Communes du Sud Avesnois */
 
+/* Décalage du scroll pour le header sticky (hauteur 80px + marge) */
+html {
+    scroll-padding-top: 6rem;
+    scroll-behavior: smooth;
+}
+
 /* Styles pour l'accessibilité */
 .sr-only {
     position: absolute;

@@ -11,22 +11,22 @@
 
 /* Style pour les icônes des commissions - fond gris clair, icône noire */
 .commission-card .bg-primary\/10 {
-    background-color: #f3f4f6 !important;
+    background-color: #f3f4f6;
     transition: none;
 }
 
 .commission-card:hover .bg-primary\/10 {
-    background-color: #f3f4f6 !important;
+    background-color: #f3f4f6;
 }
 
 /* Style pour les titres des commissions - texte noir */
 .commission-card h3 {
-    color: #000000 !important;
+    color: #000000;
     transition: none;
 }
 
 .commission-card:hover h3 {
-    color: #000000 !important;
+    color: #000000;
 }
 
 /* Style pour les listes de membres */
@@ -51,19 +51,19 @@
 }
 
 /* Styles pour l'accordéon accessible - fond blanc, texte noir */
-.accordion-trigger {
+.commission-card .accordion-trigger {
     cursor: pointer;
     width: 100%;
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    background-color: #ffffff;
+    color: #000000;
 }
 
-.accordion-trigger:hover {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+.commission-card .accordion-trigger:hover {
+    background-color: #ffffff;
+    color: #000000;
 }
 
-/* Force la couleur noire sur tous les éléments du bouton */
+/* Force la couleur noire sur tous les éléments du bouton accordéon */
 .commission-card .accordion-trigger,
 .commission-card .accordion-trigger span,
 .commission-card .accordion-trigger svg,
@@ -73,7 +73,7 @@
 .commission-card .accordion-trigger .dark\:text-gray-200,
 .commission-card .accordion-trigger .dark\:text-gray-400,
 .commission-card .accordion-trigger .dark\:text-blue-400 {
-    color: #000000 !important;
+    color: #000000;
 }
 
 /* Au hover, tout reste noir */
@@ -86,35 +86,36 @@
 .commission-card:hover .accordion-trigger .dark\:text-gray-200,
 .commission-card:hover .accordion-trigger .dark\:text-gray-400,
 .commission-card:hover .accordion-trigger .dark\:text-blue-400 {
-    color: #000000 !important;
+    color: #000000;
 }
 
-/* Force la couleur noire sur tous les éléments du bouton */
+/* Force la couleur noire sur tous les éléments enfants du bouton */
 .commission-card .accordion-trigger * {
-    color: #000000 !important;
-    fill: #000000 !important;
-    stroke: #000000 !important;
+    color: #000000;
+    fill: #000000;
+    stroke: #000000;
 }
 
 /* Au hover, tout reste noir */
 .commission-card:hover .accordion-trigger * {
-    color: #000000 !important;
-    fill: #000000 !important;
-    stroke: #000000 !important;
+    color: #000000;
+    fill: #000000;
+    stroke: #000000;
 }
 
 /* Container de l'icône - reste gris clair */
 .commission-card .accordion-trigger .bg-primary\/10,
 .commission-card .accordion-trigger .dark\:bg-primary\/20 {
-    background-color: #f3f4f6 !important;
+    background-color: #f3f4f6;
 }
 
 .commission-card:hover .accordion-trigger .bg-primary\/10,
 .commission-card:hover .accordion-trigger .dark\:bg-primary\/20 {
-    background-color: #f3f4f6 !important;
+    background-color: #f3f4f6;
 }
 
-.accordion-trigger:focus-visible {
+/* Focus visible pour l'accordéon */
+.commission-card .accordion-trigger:focus-visible {
     outline: 2px solid transparent;
     outline-offset: 2px;
     --tw-ring-offset-width: 2px;
@@ -125,11 +126,12 @@
     box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--shadow, 0 0 #0000);
 }
 
-.accordion-panel {
+/* Panneau de l'accordéon */
+.commission-card .accordion-panel {
     transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
 }
 
-.accordion-panel:not(.hidden) {
+.commission-card .accordion-panel:not(.hidden) {
     animation: slideDown 0.3s ease-out;
 }
 
@@ -144,13 +146,13 @@
     }
 }
 
-.accordion-icon {
+.commission-card .accordion-icon {
     transition: transform 0.3s ease;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .ml-14 {
+    .commission-card .ml-14 {
         margin-left: 0;
         margin-top: 1rem;
     }
