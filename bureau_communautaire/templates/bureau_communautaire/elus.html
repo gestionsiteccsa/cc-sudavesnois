@@ -33,13 +33,13 @@
             <div class="max-w-4xl mx-auto">
                 <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Rôle du Bureau Communautaire</h2>
-                    <p class="text-lg text-gray-700 dark:text-gray-700 mb-6">Le Bureau Communautaire est formé par le Conseil Communautaire et est composé d'un président et de vice-présidents. Le président est élu au sein de l'assemblée selon les mêmes règles que pour un maire. Les membres du bureau examinent les projets, préparent les décisions à soumettre au Conseil de communauté et mettent en œuvre les politiques définies.</p>
+                    <p class="text-lg text-gray-700 dark:text-gray-200 mb-6">Le Bureau Communautaire est formé par le Conseil Communautaire et est composé d'un président et de vice-présidents. Le président est élu au sein de l'assemblée selon les mêmes règles que pour un maire. Les membres du bureau examinent les projets, préparent les décisions à soumettre au Conseil de communauté et mettent en œuvre les politiques définies.</p>
                     
                     <div class="flex items-center p-4 bg-blue-50 dark:bg-blue-900 rounded-md">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-8 w-8 text-primary dark:text-blue-400 mr-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="text-gray-700 dark:text-gray-700">Chaque vice-président est en charge d'une compétence spécifique et travaille en étroite collaboration avec les services communautaires pour mettre en œuvre les projets du territoire.</p>
+                        <p class="text-gray-700 dark:text-gray-200">Chaque vice-président est en charge d'une compétence spécifique et travaille en étroite collaboration avec les services communautaires pour mettre en œuvre les projets du territoire.</p>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <article class="elu-card elu-card-president bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-6 md:p-8">
                     {% if president.picture %}
                     <div class="elu-image-wrapper-president lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ president.first_name }} {{ president.last_name }}">
-                        <img src="{{ president.picture.url }}" alt="Portrait de {{president.last_name}} {{president.first_name}}, Président de la Communauté de Communes Sud-Avesnois" class="elu-photo" onerror="this.src=''" loading="lazy">
+                        <img src="{{ president.picture.url }}" alt="Portrait de {{president.last_name}} {{president.first_name}}, Président de la Communauté de Communes Sud-Avesnois" class="elu-photo" onerror="this.onerror=null;" loading="lazy">
                     </div>
                     {% else %}
                     <div class="elu-image-wrapper-president">
@@ -68,8 +68,8 @@
                     <div class="mt-6">
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{president.last_name}} {{president.first_name}}</h3>
                         <p class="elu-role text-lg mb-1">{{ president.role }}</p>
-                        <p class="elu-commune text-gray-600 dark:text-gray-600 mb-3">{{ president.profession }}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700">{{ president.function|default:"" }}</p>
+                        <p class="elu-commune text-gray-600 dark:text-gray-300 mb-3">{{ president.profession }}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-200">{{ president.function|default:"" }}</p>
                     </div>
                 </article>
                 {% else %}
@@ -80,7 +80,7 @@
                     <div class="mt-6">
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Aucun président élu</h3>
                         <p class="elu-role text-lg mb-1">Président de la Communauté de Communes Sud-Avesnois</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700">Aucune fonction</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-200">Aucune fonction</p>
                     </div>
                 </article>
                 {% endif %}
@@ -100,7 +100,7 @@
                 <article class="elu-card elu-card-vice bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden text-center p-5">
                     {% if vicep.picture %}
                     <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ vicep.first_name }} {{ vicep.last_name }}">
-                        <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.last_name}} {{vicep.first_name}}, {{vicep.rank}} {{ vicep.role }}" class="elu-photo" onerror="this.src=''" loading="lazy">
+                        <img src="{{ vicep.picture.url }}" alt="Portrait de {{vicep.last_name}} {{vicep.first_name}}, {{vicep.rank}} {{ vicep.role }}" class="elu-photo" onerror="this.onerror=null;" loading="lazy">
                     </div>
                     {% else %}
                     <div class="elu-image-wrapper-vice">
@@ -119,8 +119,8 @@
                             {% endif %}
                             {{ vicep.role }}
                         </p>
-                        <p class="elu-commune text-gray-600 dark:text-gray-600 mb-2">{{vicep.profession}}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700">{{vicep.function|default:""}}</p>
+                        <p class="elu-commune text-gray-600 dark:text-gray-300 mb-2">{{vicep.profession}}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-200">{{vicep.function|default:""}}</p>
                     </div>
                 </article>
                 {% endfor %}
@@ -132,7 +132,7 @@
                     <div class="mt-4">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">Aucun vice-président élu</h3>
                         <p class="elu-role mb-1">Vice-Président de la Communauté de Communes Sud-Avesnois</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-700">Aucune fonction</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-200">Aucune fonction</p>
                     </div>
                 </article>
                 {% endif %}

@@ -2,7 +2,7 @@
 
 /* Carte des élus */
 .elu-card {
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     height: 100%;
 }
@@ -31,10 +31,8 @@
 
 /* Effet tooltip au survol direct de l'image */
 .elu-photo:hover {
-    transform: scale(1.5);
-    z-index: 100;
-    position: relative;
-    box-shadow: 0 12px 24px rgba(0, 106, 179, 0.4);
+    transform: scale(1.15);
+    box-shadow: 0 8px 16px rgba(0, 106, 179, 0.3);
     border-color: #064d7e;
     cursor: pointer;
 }
@@ -234,7 +232,7 @@
     flex: 0 1 auto;
     min-width: 160px;
     max-width: 200px;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none !important;
 }
 
@@ -400,7 +398,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     line-height: 1;
 }
 

@@ -4,8 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Appliquer la taille minimale à tous les éléments interactifs (WCAG 2.1 Success Criterion 2.5.5 - Target Size)
-    applyMinimumTargetSize();
+    // NOTE: applyMinimumTargetSize() a été désactivé pour éviter les reflows forcés au chargement.
+    // Les classes min-h-[44px] et min-w-[44px] doivent être ajoutées directement dans le HTML/template.
+    // applyMinimumTargetSize();
 
     // Initialiser le filtre bleu
     initBlueFilter();
