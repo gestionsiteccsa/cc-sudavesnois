@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load conseil_filters %}
 {% block title %}Conseil Communautaire{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/elus.css' %}">
@@ -38,51 +39,43 @@
                         </header>
                         <div class="p-6">
                             <div class="conseil-members-container">
+                                {% with city_members=members_by_city|get_item:city.id %}
                                 <!-- Liste des membres non suppléants -->
-                                {% for member in members_list %}
-                                    {% if member.city_id == city.id and not member.is_suppleant %}
-                                    <article class="elu-card conseil-member-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
-                                        {% if member.photo %}
-                                        <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}">
-                                            <img src="{{ member.photo.url }}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre titulaire du Conseil Communautaire" class="elu-photo" onerror="this.src=''" loading="lazy">
+                                {% for member in city_members.titulaires %}
+                                <article class="elu-card conseil-member-card {% if member.photo %}has-photo{% endif %} bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
+                                    <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}" {% if not member.photo %}style="display:none"{% endif %}>
+                                        <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre titulaire du Conseil Communautaire" class="elu-photo" onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                    </div>
+                                    <div class="elu-image-wrapper-vice" {% if member.photo %}style="display:none"{% endif %}>
+                                        <div class="elu-photo-placeholder" aria-hidden="true">
+                                            {{ member.first_name|first }}{{ member.last_name|first }}
                                         </div>
-                                        {% else %}
-                                        <div class="elu-image-wrapper-vice">
-                                            <div class="elu-photo-placeholder" aria-hidden="true">
-                                                {{ member.first_name|first }}{{ member.last_name|first }}
-                                            </div>
-                                        </div>
-                                        {% endif %}
-                                        <div class="mt-4">
-                                            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
-                                            <p class="elu-role text-sm mt-1">Membre titulaire</p>
-                                        </div>
-                                    </article>
-                                    {% endif %}
+                                    </div>
+                                    <div class="mt-4">
+                                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
+                                        <p class="elu-role text-sm mt-1">Membre titulaire</p>
+                                    </div>
+                                </article>
                                 {% endfor %}
                                 
                                 <!-- Liste des suppléants -->
-                                {% for member in members_list %}
-                                    {% if member.city_id == city.id and member.is_suppleant %}
-                                    <article class="elu-card conseil-member-card conseil-member-suppleant bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
-                                        {% if member.photo %}
-                                        <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}">
-                                            <img src="{{ member.photo.url }}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre suppléant du Conseil Communautaire" class="elu-photo" onerror="this.src=''" loading="lazy">
+                                {% for member in city_members.suppleants %}
+                                <article class="elu-card conseil-member-card conseil-member-suppleant {% if member.photo %}has-photo{% endif %} bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
+                                    <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}" {% if not member.photo %}style="display:none"{% endif %}>
+                                        <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre suppléant du Conseil Communautaire" class="elu-photo" onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                    </div>
+                                    <div class="elu-image-wrapper-vice" {% if member.photo %}style="display:none"{% endif %}>
+                                        <div class="elu-photo-placeholder" aria-hidden="true">
+                                            {{ member.first_name|first }}{{ member.last_name|first }}
                                         </div>
-                                        {% else %}
-                                        <div class="elu-image-wrapper-vice">
-                                            <div class="elu-photo-placeholder" aria-hidden="true">
-                                                {{ member.first_name|first }}{{ member.last_name|first }}
-                                            </div>
-                                        </div>
-                                        {% endif %}
-                                        <div class="mt-4">
-                                            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
-                                            <p class="elu-role text-sm mt-1">Membre suppléant</p>
-                                        </div>
-                                    </article>
-                                    {% endif %}
+                                    </div>
+                                    <div class="mt-4">
+                                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
+                                        <p class="elu-role text-sm mt-1">Membre suppléant</p>
+                                    </div>
+                                </article>
                                 {% endfor %}
+                                {% endwith %}
                             </div>
                         </div>
                     </article>

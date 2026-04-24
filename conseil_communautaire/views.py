@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta
 
 from django.contrib.auth.decorators import permission_required
@@ -11,26 +12,29 @@ from .models import ConseilMembre, ConseilVille
 
 
 def conseil(request):
-    # Optimisé avec select_related pour éviter les N+1 queries
-    cities_list = list(ConseilVille.objects.all().order_by("city_name"))
-    members_list = list(ConseilMembre.objects.select_related('city'))
-    city_number = len(cities_list)
+    # Récupérer les villes (évaluation paresseuse)
+    cities_list = ConseilVille.objects.all().order_by("city_name")
+    city_number = cities_list.count()
 
-    # Afficher les conseils depuis 2 jours avant aujourd'hui (conservés 2 jours après)
+    # Pré-grouper les membres par ville pour éviter O(n×m) dans le template
+    members_by_city = defaultdict(lambda: {"titulaires": [], "suppleants": []})
+    for member in ConseilMembre.objects.select_related("city"):
+        key = "suppleants" if member.is_suppleant else "titulaires"
+        members_by_city[member.city_id][key].append(member)
+
+    # Afficher les conseils depuis 2 jours avant aujourd'hui
     today = timezone.now().date()
     two_days_ago = today - timedelta(days=2)
-    conseils = Conseil.objects.filter(date__gte=two_days_ago).order_by("date")
-    if not conseils.exists():
-        conseils = None
+    conseils = list(Conseil.objects.filter(date__gte=two_days_ago).order_by("date"))
 
-    # Déterminer le prochain conseil à venir (date >= aujourd'hui)
-    next_conseil = Conseil.objects.filter(date__gte=today).order_by("date").first()
+    # Déterminer le prochain conseil à venir depuis la liste déjà chargée
+    next_conseil = next((c for c in conseils if c.date >= today), None)
 
     context = {
         "cities_list": cities_list,
-        "members_list": members_list,
+        "members_by_city": dict(members_by_city),
         "city_number": city_number,
-        "conseils": conseils,
+        "conseils": conseils if conseils else None,
         "next_conseil": next_conseil,
     }
 

@@ -7,7 +7,7 @@
     height: 100%;
 }
 
-.elu-card:hover {
+.elu-card.has-photo:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
 }
@@ -23,10 +23,20 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.elu-card:hover .elu-photo {
+.elu-card.has-photo:hover .elu-photo {
     transform: scale(1.08);
     box-shadow: 0 8px 12px rgba(0, 106, 179, 0.3);
     border-color: #064d7e;
+}
+
+/* Effet tooltip au survol direct de l'image */
+.elu-photo:hover {
+    transform: scale(1.5);
+    z-index: 100;
+    position: relative;
+    box-shadow: 0 12px 24px rgba(0, 106, 179, 0.4);
+    border-color: #064d7e;
+    cursor: pointer;
 }
 
 /* Placeholder photo */
@@ -51,6 +61,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 /* Carte président - plus grande */
@@ -112,13 +123,18 @@
 
 /* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
-    .elu-card {
+    .elu-card,
+    .elu-photo,
+    .elu-photo-placeholder {
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
+        transition: none !important;
     }
     
-    .elu-card:hover {
+    .elu-card:hover,
+    .elu-photo:hover,
+    .elu-photo-placeholder:hover {
         transform: none !important;
     }
     
