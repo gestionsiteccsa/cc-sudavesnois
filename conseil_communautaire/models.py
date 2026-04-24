@@ -71,6 +71,15 @@ class ConseilMembre(models.Model):
         Commission, blank=True, related_name="membres",
         help_text="Sélectionnez jusqu'à 5 commissions pour ce membre."
     )
+    photo = models.ImageField(
+        upload_to="membres/photos/",
+        null=True,
+        blank=True,
+        validators=[
+            validate_taille_fichier,
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg", "webp"]),
+        ],
+    )
 
     # class Meta:
     #     unique_together = ("first_name", "last_name", "city")

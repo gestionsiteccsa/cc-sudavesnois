@@ -79,6 +79,7 @@
     <table class="w-full text-left border-collapse" id="members-table">
       <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
         <tr>
+          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Photo</th>
           <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-primary transition select-none group" onclick="sortTable('last_name')">
             <span class="inline-flex items-center">
               Nom
@@ -111,6 +112,15 @@
             data-commission="{% if member.linked_commission %}{{ member.linked_commission.title|lower }}{% else %}aucune{% endif %}"
             data-role="{% if member.is_suppleant %}suppleant{% else %}titulaire{% endif %}"
             data-id="{{ member.id }}">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center">
+              {% if member.photo %}
+              <img src="{{ member.photo.url }}" alt="{{ member.first_name }} {{ member.last_name }}" class="w-full h-full object-cover">
+              {% else %}
+              <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              {% endif %}
+            </div>
+          </td>
           <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-900 dark:text-gray-100">{{ member.last_name|title }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">{{ member.first_name|title }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">{{ member.city.city_name }}</td>

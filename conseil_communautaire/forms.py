@@ -54,6 +54,12 @@ class ConseilVilleForm(forms.ModelForm):
 
 
 class ConseilMembreForm(forms.ModelForm):
+    clear_photo = forms.BooleanField(
+        required=False,
+        label="Supprimer la photo actuelle",
+        widget=forms.CheckboxInput(attrs={"class": "w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"}),
+    )
+
     class Meta:
         model = ConseilMembre
         fields = [
@@ -63,7 +69,24 @@ class ConseilMembreForm(forms.ModelForm):
             "sexe",
             "city",
             "linked_commission",
+            "photo",
         ]
+        widgets = {
+            "first_name": forms.TextInput(attrs={"placeholder": "Jean"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "DUPONT"}),
+            "linked_commission": forms.CheckboxSelectMultiple(
+                attrs={"class": "commission-checkbox"}
+            ),
+        }
+        labels = {
+            "first_name": "Prénom",
+            "last_name": "Nom",
+            "is_suppleant": "Suppléant",
+            "sexe": "Civilité",
+            "city": "Commune",
+            "linked_commission": "Commissions",
+            "photo": "Photo du membre",
+        }
 
     def clean_last_name(self):
         return self.cleaned_data["last_name"].upper()

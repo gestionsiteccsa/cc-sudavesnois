@@ -412,10 +412,10 @@ class ConseilMembreViewsTestCase(TestCase):
         # Vérifie que le nom du membre est présent dans la réponse
         self.assertContains(response, "Test")
         self.assertRedirects(
-            response, reverse("conseil_communautaire:admin_list_cities")
+            response, reverse("conseil_communautaire:admin_membres_list")
         )
         self.assertTemplateUsed(
-            response, "conseil_communautaire/admin_cities_list.html"
+            response, "conseil_communautaire/admin_members_list.html"
         )  # Vérifie qu'on arrive bien sur la liste
 
     def test_add_conseil_membre_view_invalid_data(self):
@@ -471,10 +471,10 @@ class ConseilMembreViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(
-            response, reverse("conseil_communautaire:admin_list_cities")
+            response, reverse("conseil_communautaire:admin_membres_list")
         )
         self.assertTemplateUsed(
-            response, "conseil_communautaire/admin_cities_list.html"
+            response, "conseil_communautaire/admin_members_list.html"
         )
         self.assertContains(response, "Updated")
         self.assertContains(response, "MEMBER")
@@ -529,9 +529,9 @@ class ConseilMembreViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(
-            response, reverse("conseil_communautaire:admin_list_cities")
+            response, reverse("conseil_communautaire:admin_membres_list")
         )
         self.assertTemplateUsed(
-            response, "conseil_communautaire/admin_cities_list.html"
+            response, "conseil_communautaire/admin_members_list.html"
         )
         self.assertFalse(ConseilMembre.objects.filter(first_name="Jane").exists())

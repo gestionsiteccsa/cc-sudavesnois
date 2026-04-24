@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
 
+from app.utils import secure_file_removal
 from comptes_rendus.models import Conseil
 from .forms import ConseilMembreForm, ConseilVilleForm
 from .models import ConseilMembre, ConseilVille
@@ -105,11 +106,11 @@ def edit_city(request, city_id):
 @permission_required("conseil_communautaire.add_conseilmembre")
 def add_member(request):
     if request.method == "POST":
-        member_form = ConseilMembreForm(request.POST)
+        member_form = ConseilMembreForm(request.POST, request.FILES)
 
         if member_form.is_valid():
             member_form.save()
-            return redirect("conseil_communautaire:admin_list_cities")
+            return redirect("conseil_communautaire:admin_membres_list")
     else:
         member_form = ConseilMembreForm()
 
@@ -125,17 +126,22 @@ def edit_member(request, id):
     member = get_object_or_404(ConseilMembre, id=id)
 
     if request.method == "POST":
-        member_form = ConseilMembreForm(request.POST, instance=member)
+        member_form = ConseilMembreForm(request.POST, request.FILES, instance=member)
 
         if member_form.is_valid():
+            if member_form.cleaned_data.get("clear_photo") and member.photo:
+                secure_file_removal(member.photo)
+                member.photo = None
             member_form.save()
-            return redirect("conseil_communautaire:admin_list_cities")
+            return redirect("conseil_communautaire:admin_membres_list")
 
     else:
         member_form = ConseilMembreForm(instance=member)
 
     return render(
-        request, "conseil_communautaire/admin_member_edit.html", {"member": member_form}
+        request,
+        "conseil_communautaire/admin_member_edit.html",
+        {"member_form": member_form, "member_obj": member},
     )
 
 
@@ -143,8 +149,10 @@ def edit_member(request, id):
 def delete_member(request, id):
     member = get_object_or_404(ConseilMembre, id=id)
     if request.method == "POST":
+        if member.photo:
+            secure_file_removal(member.photo)
         member.delete()
-        return redirect("conseil_communautaire:admin_list_cities")
+        return redirect("conseil_communautaire:admin_membres_list")
     return render(
         request, "conseil_communautaire/admin_member_delete.html", {"member": member}
     )
