@@ -29,7 +29,7 @@ class Elus(models.Model):
         verbose_name="Photo de l'élu",
         validators=[
             validate_taille_fichier,
-            FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg"]),
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg", "webp"]),
         ],
     )
     city = models.ForeignKey(ConseilVille, on_delete=models.CASCADE)
