@@ -70,6 +70,9 @@ class ConseilMembreForm(forms.ModelForm):
             "city",
             "linked_commission",
             "photo",
+            "photo_position_x",
+            "photo_position_y",
+            "photo_zoom",
         ]
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "Jean"}),
@@ -77,6 +80,9 @@ class ConseilMembreForm(forms.ModelForm):
             "linked_commission": forms.CheckboxSelectMultiple(
                 attrs={"class": "commission-checkbox"}
             ),
+            "photo_position_x": forms.HiddenInput(),
+            "photo_position_y": forms.HiddenInput(),
+            "photo_zoom": forms.HiddenInput(),
         }
         labels = {
             "first_name": "Prénom",
@@ -86,6 +92,9 @@ class ConseilMembreForm(forms.ModelForm):
             "city": "Commune",
             "linked_commission": "Commissions",
             "photo": "Photo du membre",
+            "photo_position_x": "Position X (%)",
+            "photo_position_y": "Position Y (%)",
+            "photo_zoom": "Zoom (%)",
         }
 
     def clean_last_name(self):

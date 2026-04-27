@@ -1,5 +1,6 @@
 {% extends 'admin_base.html' %}
 {% load widget_tweaks %}
+{% load math_filters %}
 {% block title %}Modifier un membre - Conseil Communautaire{% endblock %}
 {% block content %}
 <!-- Fil d'Ariane -->
@@ -147,6 +148,81 @@
             {% endif %}
           </div>
 
+          {% if member_obj.photo %}
+          <!-- Position de la photo -->
+          <div class="space-y-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+              <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200">Ajuster la position de la photo</h3>
+            </div>
+            
+            <!-- Hidden inputs for form submission -->
+            {{ member_form.photo_position_x }}
+            {{ member_form.photo_position_y }}
+            {{ member_form.photo_zoom }}
+            
+            <!-- Preview (identique à la page publique) -->
+            <div class="flex justify-center">
+              <div class="elu-photo-wrapper">
+                <img id="edit-position-preview" src="{{ member_obj.photo.url }}" alt="Aperçu" class="elu-photo-inner transition-all duration-150" style="object-position: {{ member_obj.photo_position_x }}% {{ member_obj.photo_position_y }}%; transform: scale({{ member_obj.photo_zoom|default:100|div:100|stringformat:".2f" }});">
+              </div>
+            </div>
+            
+            <!-- Slider X -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Horizontal</label>
+                <span id="edit-position-x-display" class="text-xs font-bold text-primary">{{ member_obj.photo_position_x }}%</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="adjustEditPosition('x', -5)" class="p-1.5 rounded bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                  <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <input type="range" id="edit-position-x-slider" min="0" max="100" value="{{ member_obj.photo_position_x }}" class="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-primary">
+                <button type="button" onclick="adjustEditPosition('x', 5)" class="p-1.5 rounded bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                  <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Slider Y -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Vertical</label>
+                <span id="edit-position-y-display" class="text-xs font-bold text-primary">{{ member_obj.photo_position_y }}%</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="adjustEditPosition('y', -5)" class="p-1.5 rounded bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                  <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                </button>
+                <input type="range" id="edit-position-y-slider" min="0" max="100" value="{{ member_obj.photo_position_y }}" class="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-primary">
+                <button type="button" onclick="adjustEditPosition('y', 5)" class="p-1.5 rounded bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                  <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Slider Zoom -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Zoom</label>
+                <span id="edit-zoom-display" class="text-xs font-bold text-primary">{{ member_obj.photo_zoom|default:100 }}%</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="adjustEditZoom(-10)" class="p-1.5 rounded bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                  <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg>
+                </button>
+                <input type="range" id="edit-zoom-slider" min="50" max="200" value="{{ member_obj.photo_zoom|default:100 }}" class="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-primary">
+                <button type="button" onclick="adjustEditZoom(10)" class="p-1.5 rounded bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                  <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                </button>
+              </div>
+            </div>
+            
+            <p class="text-xs text-gray-500 dark:text-gray-400">Utilisez les sliders ou les flèches pour recentrer le visage dans le cadre.</p>
+          </div>
+          {% endif %}
+
           <div class="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button type="submit" class="w-full sm:w-auto flex justify-center items-center px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition">
               <svg class="w-4 h-4 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -262,6 +338,86 @@
       }
     });
   }
+
+  // Photo Position Adjustments
+  const positionXInput = document.getElementById('id_photo_position_x');
+  const positionYInput = document.getElementById('id_photo_position_y');
+  const zoomInput = document.getElementById('id_photo_zoom');
+  const editPositionPreview = document.getElementById('edit-position-preview');
+  const editPositionXSlider = document.getElementById('edit-position-x-slider');
+  const editPositionYSlider = document.getElementById('edit-position-y-slider');
+  const editZoomSlider = document.getElementById('edit-zoom-slider');
+  const editPositionXDisplay = document.getElementById('edit-position-x-display');
+  const editPositionYDisplay = document.getElementById('edit-position-y-display');
+  const editZoomDisplay = document.getElementById('edit-zoom-display');
+
+  function updateEditPosition() {
+    const x = parseInt(editPositionXSlider.value);
+    const y = parseInt(editPositionYSlider.value);
+    const zoom = parseInt(editZoomSlider.value);
+    if (positionXInput) positionXInput.value = x;
+    if (positionYInput) positionYInput.value = y;
+    if (zoomInput) zoomInput.value = zoom;
+    if (editPositionXDisplay) editPositionXDisplay.textContent = x + '%';
+    if (editPositionYDisplay) editPositionYDisplay.textContent = y + '%';
+    if (editZoomDisplay) editZoomDisplay.textContent = zoom + '%';
+    if (editPositionPreview) {
+      editPositionPreview.style.objectPosition = `${x}% ${y}%`;
+      editPositionPreview.style.transform = `scale(${zoom / 100})`;
+    }
+  }
+
+  window.adjustEditPosition = function(axis, delta) {
+    if (axis === 'x') {
+      editPositionXSlider.value = Math.max(0, Math.min(100, parseInt(editPositionXSlider.value) + delta));
+    } else {
+      editPositionYSlider.value = Math.max(0, Math.min(100, parseInt(editPositionYSlider.value) + delta));
+    }
+    updateEditPosition();
+  };
+
+  window.adjustEditZoom = function(delta) {
+    editZoomSlider.value = Math.max(50, Math.min(200, parseInt(editZoomSlider.value) + delta));
+    updateEditPosition();
+  };
+
+  if (editPositionXSlider) {
+    editPositionXSlider.addEventListener('input', updateEditPosition);
+  }
+  if (editPositionYSlider) {
+    editPositionYSlider.addEventListener('input', updateEditPosition);
+  }
+  if (editZoomSlider) {
+    editZoomSlider.addEventListener('input', updateEditPosition);
+  }
 })();
 </script>
+
+<style>
+  /* Styles pour l'aperçu photo (identique à la page publique) */
+  .elu-photo-wrapper {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: 0 auto;
+    background-color: #f3f4f6;
+  }
+
+  .elu-photo-inner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Dark mode support */
+  .dark .elu-photo-wrapper {
+    border-color: #4b5563;
+    background-color: #374151;
+  }
+</style>
 {% endblock %}

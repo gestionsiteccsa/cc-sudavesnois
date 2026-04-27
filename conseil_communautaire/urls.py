@@ -35,4 +35,9 @@ urlpatterns = [
         views.delete_member,
         name="admin_member_delete",
     ),
+    path(
+        "adminccsa/api/membre/<int:id>/photo-position/",
+        views.update_photo_position,
+        name="api_member_photo_position",
+    ),
 ]

@@ -1,4 +1,4 @@
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
 
@@ -79,6 +79,33 @@ class ConseilMembre(models.Model):
             validate_taille_fichier,
             FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg", "webp"]),
         ],
+    )
+    photo_position_x = models.IntegerField(
+        default=50,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(100),
+        ],
+        help_text="Position horizontale de la photo (0 = gauche, 50 = centre, 100 = droite)",
+        verbose_name="Position X (%)",
+    )
+    photo_position_y = models.IntegerField(
+        default=50,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(100),
+        ],
+        help_text="Position verticale de la photo (0 = haut, 50 = centre, 100 = bas)",
+        verbose_name="Position Y (%)",
+    )
+    photo_zoom = models.IntegerField(
+        default=100,
+        validators=[
+            MinValueValidator(50),
+            MaxValueValidator(200),
+        ],
+        help_text="Zoom de la photo (50% = plus petit, 100% = taille normale, 200% = plus grand)",
+        verbose_name="Zoom (%)",
     )
 
     # class Meta:

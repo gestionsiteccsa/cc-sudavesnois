@@ -1,9 +1,57 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load conseil_filters %}
+{% load math_filters %}
 {% block title %}Conseil Communautaire{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/elus.css' %}">
+<style>
+  /* Fallback styles - garantissent l'affichage même si elus.css est en cache */
+  .elu-photo-wrapper {
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 4px solid #e5e7eb !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    margin: 0 auto !important;
+    background-color: #f3f4f6 !important;
+    display: block !important;
+  }
+
+  .elu-photo-inner {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+
+  .elu-photo-placeholder-wrapper {
+    background-color: #064d7e !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .elu-photo-placeholder-text {
+    color: #ffffff !important;
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    line-height: 1 !important;
+  }
+
+  /* Dark mode support */
+  .dark .elu-photo-wrapper {
+    border-color: #4b5563 !important;
+    background-color: #374151 !important;
+  }
+</style>
 {% endblock %}
 {% block content %}
 <!-- Contenu principal -->
@@ -44,11 +92,13 @@
                                 {% for member in city_members.titulaires %}
                                 <article class="elu-card conseil-member-card {% if member.photo %}has-photo{% endif %} bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
                                     <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}" {% if not member.photo %}style="display:none"{% endif %}>
-                                        <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre titulaire du Conseil Communautaire" class="elu-photo" onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                        <div class="elu-photo-wrapper">
+                                            <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre titulaire du Conseil Communautaire" class="elu-photo-inner" style="object-position: {{ member.photo_position_x }}% {{ member.photo_position_y }}%; transform: scale({{ member.photo_zoom|default:100|div:100|stringformat:".2f" }});" onerror="this.parentElement.parentElement.style.display='none'; this.parentElement.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                        </div>
                                     </div>
                                     <div class="elu-image-wrapper-vice" {% if member.photo %}style="display:none"{% endif %}>
-                                        <div class="elu-photo-placeholder" aria-hidden="true">
-                                            {{ member.first_name|first }}{{ member.last_name|first }}
+                                        <div class="elu-photo-wrapper elu-photo-placeholder-wrapper">
+                                            <span class="elu-photo-placeholder-text">{{ member.first_name|first }}{{ member.last_name|first }}</span>
                                         </div>
                                     </div>
                                     <div class="mt-4">
@@ -62,11 +112,13 @@
                                 {% for member in city_members.suppleants %}
                                 <article class="elu-card conseil-member-card conseil-member-suppleant {% if member.photo %}has-photo{% endif %} bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
                                     <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}" {% if not member.photo %}style="display:none"{% endif %}>
-                                        <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre suppléant du Conseil Communautaire" class="elu-photo" onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                        <div class="elu-photo-wrapper">
+                                            <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre suppléant du Conseil Communautaire" class="elu-photo-inner" style="object-position: {{ member.photo_position_x }}% {{ member.photo_position_y }}%; transform: scale({{ member.photo_zoom|default:100|div:100|stringformat:".2f" }});" onerror="this.parentElement.parentElement.style.display='none'; this.parentElement.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                        </div>
                                     </div>
                                     <div class="elu-image-wrapper-vice" {% if member.photo %}style="display:none"{% endif %}>
-                                        <div class="elu-photo-placeholder" aria-hidden="true">
-                                            {{ member.first_name|first }}{{ member.last_name|first }}
+                                        <div class="elu-photo-wrapper elu-photo-placeholder-wrapper">
+                                            <span class="elu-photo-placeholder-text">{{ member.first_name|first }}{{ member.last_name|first }}</span>
                                         </div>
                                     </div>
                                     <div class="mt-4">

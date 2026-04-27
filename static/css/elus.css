@@ -12,7 +12,65 @@
     box-shadow: 0 10px 20px rgba(0, 106, 179, 0.2);
 }
 
-/* Photo circulaire (bulle) */
+/* Wrapper circulaire pour la photo (conteneur avec overflow hidden) */
+.elu-photo-wrapper {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    margin: 0 auto;
+}
+
+/* Image à l'intérieur du wrapper */
+.elu-photo-inner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+/* Hover sur la carte : effet d'agrandissement */
+.elu-card.has-photo:hover .elu-photo-wrapper {
+    box-shadow: 0 8px 12px rgba(0, 106, 179, 0.3);
+    border-color: #064d7e;
+}
+
+.elu-card.has-photo:hover .elu-photo-inner {
+    transform: scale(1.08);
+}
+
+/* Hover direct sur le wrapper */
+.elu-photo-wrapper:hover {
+    box-shadow: 0 8px 16px rgba(0, 106, 179, 0.3);
+    border-color: #064d7e;
+    cursor: pointer;
+}
+
+.elu-photo-wrapper:hover .elu-photo-inner {
+    transform: scale(1.15);
+}
+
+/* Placeholder photo wrapper */
+.elu-photo-placeholder-wrapper {
+    background-color: #064d7e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.elu-photo-placeholder-text {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Rétrocompatibilité : .elu-photo direct sur img (autres pages) */
 .elu-photo {
     width: 150px;
     height: 150px;
@@ -29,7 +87,6 @@
     border-color: #064d7e;
 }
 
-/* Effet tooltip au survol direct de l'image */
 .elu-photo:hover {
     transform: scale(1.15);
     box-shadow: 0 8px 16px rgba(0, 106, 179, 0.3);
@@ -37,7 +94,7 @@
     cursor: pointer;
 }
 
-/* Placeholder photo */
+/* Placeholder photo (rétrocompatibilité) */
 .elu-photo-placeholder {
     width: 150px;
     height: 150px;
@@ -245,10 +302,13 @@
     box-shadow: none;
 }
 
-.conseil-member-card:hover .elu-photo {
-    transform: scale(1.08);
+.conseil-member-card:hover .elu-photo-wrapper {
     box-shadow: 0 8px 12px rgba(0, 106, 179, 0.3);
     border-color: #064d7e;
+}
+
+.conseil-member-card:hover .elu-photo-inner {
+    transform: scale(1.08);
 }
 
 /* Style différent pour les suppléants */
@@ -256,12 +316,15 @@
     border: 2px dashed #d1d5db;
 }
 
-.conseil-member-suppleant .elu-photo {
+.conseil-member-suppleant .elu-photo-wrapper {
     border-color: #d1d5db;
+}
+
+.conseil-member-suppleant .elu-photo-inner {
     filter: grayscale(30%);
 }
 
-.conseil-member-suppleant .elu-photo-placeholder {
+.conseil-member-suppleant .elu-photo-placeholder-wrapper {
     background-color: #d1d5db;
     border-color: #9ca3af;
 }
@@ -280,11 +343,11 @@
     border-color: #6b7280;
 }
 
-.dark .conseil-member-suppleant .elu-photo {
+.dark .conseil-member-suppleant .elu-photo-wrapper {
     border-color: #4b5563;
 }
 
-.dark .conseil-member-suppleant .elu-photo-placeholder {
+.dark .conseil-member-suppleant .elu-photo-placeholder-wrapper {
     background-color: #4b5563;
     border-color: #6b7280;
 }
@@ -302,12 +365,15 @@
     border: 2px dashed #fff !important;
 }
 
-.high-contrast .conseil-member-suppleant .elu-photo {
+.high-contrast .conseil-member-suppleant .elu-photo-wrapper {
     border-color: #fff !important;
+}
+
+.high-contrast .conseil-member-suppleant .elu-photo-inner {
     filter: none !important;
 }
 
-.high-contrast .conseil-member-suppleant .elu-photo-placeholder {
+.high-contrast .conseil-member-suppleant .elu-photo-placeholder-wrapper {
     background-color: #000 !important;
     border-color: #fff !important;
     color: #fff !important;
@@ -428,10 +494,13 @@
     border-radius: 50%;
 }
 
-.lightbox-trigger-wrapper:focus-visible .elu-photo {
-    transform: scale(1.08);
+.lightbox-trigger-wrapper:focus-visible .elu-photo-wrapper {
     box-shadow: 0 8px 12px rgba(0, 106, 179, 0.3);
     border-color: #064d7e;
+}
+
+.lightbox-trigger-wrapper:focus-visible .elu-photo-inner {
+    transform: scale(1.08);
 }
 
 .lightbox-trigger-wrapper {
@@ -485,7 +554,7 @@
         transition: none;
     }
     
-    .lightbox-trigger-wrapper:focus .elu-photo {
+    .lightbox-trigger-wrapper:focus .elu-photo-inner {
         transform: none;
     }
 }

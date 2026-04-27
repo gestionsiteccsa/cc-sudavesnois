@@ -1,9 +1,14 @@
 from collections import defaultdict
 from datetime import timedelta
 
+import json
+
 from django.contrib.auth.decorators import permission_required
+from django.http import JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from app.utils import secure_file_removal
 from comptes_rendus.models import Conseil
@@ -160,6 +165,54 @@ def delete_member(request, id):
     return render(
         request, "conseil_communautaire/admin_member_delete.html", {"member": member}
     )
+
+
+@permission_required("conseil_communautaire.change_conseilmembre")
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_photo_position(request, id):
+    """
+    API endpoint pour mettre à jour la position et le zoom de la photo d'un membre.
+    Accepte un JSON avec photo_position_x, photo_position_y et photo_zoom.
+    """
+    member = get_object_or_404(ConseilMembre, id=id)
+    
+    try:
+        data = json.loads(request.body)
+        position_x = data.get('photo_position_x')
+        position_y = data.get('photo_position_y')
+        zoom = data.get('photo_zoom')
+        
+        if position_x is not None:
+            position_x = max(0, min(100, int(position_x)))
+            member.photo_position_x = position_x
+            
+        if position_y is not None:
+            position_y = max(0, min(100, int(position_y)))
+            member.photo_position_y = position_y
+            
+        if zoom is not None:
+            zoom = max(50, min(200, int(zoom)))
+            member.photo_zoom = zoom
+            
+        member.save(update_fields=['photo_position_x', 'photo_position_y', 'photo_zoom'])
+        
+        return JsonResponse({
+            'success': True,
+            'photo_position_x': member.photo_position_x,
+            'photo_position_y': member.photo_position_y,
+            'photo_zoom': member.photo_zoom,
+        })
+    except (ValueError, TypeError) as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Valeur invalide: {str(e)}'
+        }, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'JSON invalide'
+        }, status=400)
 
 
 @permission_required("conseil_communautaire.view_conseilmembre")
