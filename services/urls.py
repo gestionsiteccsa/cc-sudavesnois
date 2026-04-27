@@ -20,4 +20,10 @@ urlpatterns = [
     ),
     # Page de liste des services
     path("adminccsa/liste-services/", views.service_list, name="admin_services_list"),
+    # API drag & drop reorder
+    path(
+        "adminccsa/services/reorder/",
+        views.reorder_services,
+        name="reorder_services",
+    ),
 ]
