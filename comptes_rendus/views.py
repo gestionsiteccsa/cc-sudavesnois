@@ -6,7 +6,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404, redirect, rende
 from django.utils import timezone
 
 from .forms import ConseilForm, CRForm
-from .models import CompteRendu, Conseil
+from .models import CompteRendu, Conseil, DocumentConseil
 
 
 # Partie publique
@@ -93,7 +93,10 @@ def add_conseil(request):
     if request.method == "POST":
         form = ConseilForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            conseil = form.save()
+            files = request.FILES.getlist("documents")
+            for f in files:
+                DocumentConseil.objects.create(conseil=conseil, file=f)
             return redirect("comptes_rendus:admin_cr_list")
     else:
         form = ConseilForm()
@@ -111,18 +114,28 @@ def edit_conseil(request, conseil_id):
     Fonction pour éditer un conseil
     """
     conseil = get_object_or_404(Conseil, id=conseil_id)
-    last_day_order = conseil.day_order
 
     if request.method == "POST":
         form = ConseilForm(request.POST, request.FILES, instance=conseil)
         if form.is_valid():
-            conseil = form.save(commit=False)
-            # Vérifier si un nouveau fichier est uploadé et si un ancien fichier existe
-            if conseil.day_order and last_day_order:
-                if conseil.day_order != last_day_order:
-                    if os.path.exists(last_day_order.path):
-                        os.remove(last_day_order.path)
-            form.save()
+            conseil = form.save()
+            # Mettre à jour les titres des documents existants
+            for doc in conseil.documents.all():
+                title_key = f"doc_title_{doc.id}"
+                if title_key in request.POST:
+                    new_title = request.POST[title_key].strip()
+                    if new_title != doc.title:
+                        doc.title = new_title
+                        doc.save()
+            # Mode écraser/remplacer : supprimer tous les anciens documents
+            files = request.FILES.getlist("documents")
+            if files:
+                for doc in conseil.documents.all():
+                    if os.path.exists(doc.file.path):
+                        os.remove(doc.file.path)
+                    doc.delete()
+                for f in files:
+                    DocumentConseil.objects.create(conseil=conseil, file=f)
             return redirect("comptes_rendus:admin_cr_list")
     else:
         form = ConseilForm(instance=conseil)
@@ -143,9 +156,10 @@ def delete_conseil(request, conseil_id):
     conseil = get_object_or_404(Conseil, id=conseil_id)
 
     if request.method == "POST":
-        if conseil.day_order:
-            if os.path.exists(conseil.day_order.path):
-                os.remove(conseil.day_order.path)
+        for doc in conseil.documents.all():
+            if os.path.exists(doc.file.path):
+                os.remove(doc.file.path)
+            doc.delete()
         conseil.delete()
 
         return redirect("comptes_rendus:admin_cr_list")

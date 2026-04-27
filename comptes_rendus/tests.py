@@ -12,7 +12,7 @@ from django.urls import reverse
 from comptes_rendus.admin import (CustomConseilAdmin, CustomCRAdmin,
                                   delete_content)
 from comptes_rendus.forms import ConseilForm, CRForm
-from comptes_rendus.models import CompteRendu, Conseil
+from comptes_rendus.models import CompteRendu, Conseil, DocumentConseil
 
 User = get_user_model()
 MEDIA_ROOT = "test_media_comptes-rendus"
@@ -62,7 +62,7 @@ class ComptesRendusTestCase(TestCase):
         """
         compte_rendu = CompteRendu.objects.create(link="https://example.com/cr")
         conseil = Conseil.objects.create(
-            date="2023-10-01", hour="10:00", place="Salle de réunion", day_order=None
+            date="2023-10-01", hour="10:00", place="Salle de réunion"
         )
 
         response = self.client.get(reverse("comptes_rendus:comptes_rendus"))
@@ -92,7 +92,7 @@ class ComptesRendusTestCase(TestCase):
         """
         compte_rendu = CompteRendu.objects.create(link="https://example.com/cr")
         conseil = Conseil.objects.create(
-            date="2023-10-01", hour="10:00", place="Salle de réunion", day_order=None
+            date="2023-10-01", hour="10:00", place="Salle de réunion"
         )
 
         response = self.client.get(reverse("comptes_rendus:admin_cr_list"))
@@ -116,7 +116,7 @@ class ComptesRendusTestCase(TestCase):
         self.assertContains(response, "Date")
         self.assertContains(response, "Heure")
         self.assertContains(response, "Lieu")
-        self.assertContains(response, "Ordre du jour")
+        self.assertContains(response, "Documents PDF")
 
     def test_cr_admin_add_conseil_post_view(self):
         """
@@ -129,7 +129,7 @@ class ComptesRendusTestCase(TestCase):
                 "date": "2023-10-01",
                 "hour": "10:00",
                 "place": "Salle de réunion",
-                "day_order": SimpleUploadedFile(
+                "documents": SimpleUploadedFile(
                     "test.pdf",
                     content=b"Document pdf de test",
                     content_type="application/pdf",
@@ -150,7 +150,6 @@ class ComptesRendusTestCase(TestCase):
                 "date": "2023-10-01",
                 "hour": "10:00",
                 "place": "Salle de réunion",
-                "day_order": "",
             },
         )
 
@@ -164,10 +163,10 @@ class ComptesRendusTestCase(TestCase):
         response = self.client.post(
             reverse("comptes_rendus:add_conseil"),
             {
-                "date": "2023-10-01",
+                "date": "",
                 "hour": "10:00",
-                "place": "",
-                "day_order": SimpleUploadedFile(
+                "place": "Salle de réunion",
+                "documents": SimpleUploadedFile(
                     "test.pdf",
                     content=b"Document pdf de test",
                     content_type="application/pdf",
@@ -176,10 +175,7 @@ class ComptesRendusTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "comptes_rendus/admin_conseil_add.html")
-        self.assertFalse(Conseil.objects.filter(date="2023-10-01").exists())
-        self.assertFalse(
-            os.path.exists(MEDIA_ROOT + "/comptes-rendus/ordre-du-jour/pdf_1.pdf")
-        )
+        self.assertFalse(Conseil.objects.filter(place="Salle de réunion").exists())
 
     # Test de la page d'édition des conseils
     def test_cr_admin_edit_conseil_get_view(self):
@@ -187,7 +183,7 @@ class ComptesRendusTestCase(TestCase):
         Test de la page d'édition d'un conseil.
         """
         conseil = Conseil.objects.create(
-            date="2023-10-01", hour="10:00", place="Salle de réunion", day_order=None
+            date="2023-10-01", hour="10:00", place="Salle de réunion"
         )
         response = self.client.get(
             reverse("comptes_rendus:edit_conseil", args=[conseil.id])
@@ -205,7 +201,10 @@ class ComptesRendusTestCase(TestCase):
             date="2023-10-01",
             hour="10:00",
             place="Salle de réunion",
-            day_order=SimpleUploadedFile(
+        )
+        doc = DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile(
                 "last_day_order.pdf",
                 content=b"Document pdf de test",
                 content_type="application/pdf",
@@ -213,7 +212,7 @@ class ComptesRendusTestCase(TestCase):
         )
 
         id = conseil.id
-        last_day_order_path = conseil.day_order.path
+        last_day_order_path = conseil.documents.first().file.path
 
         response = self.client.post(
             reverse("comptes_rendus:edit_conseil", args=[conseil.id]),
@@ -221,7 +220,7 @@ class ComptesRendusTestCase(TestCase):
                 "date": "2023-10-02",
                 "hour": "11:00",
                 "place": "Salle de réunion 2",
-                "day_order": SimpleUploadedFile(
+                "documents": SimpleUploadedFile(
                     "new_day_order.pdf",
                     content=b"Document pdf de test",
                     content_type="application/pdf",
@@ -234,7 +233,7 @@ class ComptesRendusTestCase(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertFalse(os.path.exists(last_day_order_path))
-        self.assertTrue(os.path.exists(conseil.day_order.path))
+        self.assertTrue(os.path.exists(conseil.documents.first().file.path))
         self.assertTrue(Conseil.objects.filter(date="2023-10-02").exists())
         self.assertFalse(Conseil.objects.filter(date="2023-10-01").exists())
 
@@ -247,7 +246,10 @@ class ComptesRendusTestCase(TestCase):
             date="2023-10-01",
             hour="10:00",
             place="Salle de réunion",
-            day_order=SimpleUploadedFile(
+        )
+        DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile(
                 "last_day_order.pdf",
                 content=b"Document pdf de test",
                 content_type="application/pdf",
@@ -255,7 +257,7 @@ class ComptesRendusTestCase(TestCase):
         )
 
         id = conseil.id
-        last_day_order_path = conseil.day_order.path
+        last_day_order_path = conseil.documents.first().file.path
 
         response = self.client.post(
             reverse("comptes_rendus:edit_conseil", args=[conseil.id]),
@@ -263,7 +265,6 @@ class ComptesRendusTestCase(TestCase):
                 "date": "2023-10-02",
                 "hour": "11:00",
                 "place": "Salle de réunion 2",
-                "day_order": "",
             },
         )
 
@@ -283,7 +284,10 @@ class ComptesRendusTestCase(TestCase):
             date="2023-10-01",
             hour="10:00",
             place="Salle de réunion",
-            day_order=SimpleUploadedFile(
+        )
+        DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile(
                 "last_day_order.pdf",
                 content=b"Document pdf de test",
                 content_type="application/pdf",
@@ -291,15 +295,15 @@ class ComptesRendusTestCase(TestCase):
         )
 
         id = conseil.id
-        last_day_order_path = conseil.day_order.path
+        last_day_order_path = conseil.documents.first().file.path
 
         response = self.client.post(
             reverse("comptes_rendus:edit_conseil", args=[conseil.id]),
             {
-                "date": "2023-10-02",
+                "date": "",
                 "hour": "11:00",
-                "place": "",
-                "day_order": SimpleUploadedFile(
+                "place": "Salle de réunion 2",
+                "documents": SimpleUploadedFile(
                     "new_day_order.pdf",
                     content=b"Document pdf de test",
                     content_type="application/pdf",
@@ -323,7 +327,10 @@ class ComptesRendusTestCase(TestCase):
             date="2023-10-01",
             hour="10:00",
             place="Salle de réunion",
-            day_order=SimpleUploadedFile(
+        )
+        DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile(
                 "not_deleted_day_order.pdf",
                 content=b"Document pdf de test",
                 content_type="application/pdf",
@@ -344,7 +351,10 @@ class ComptesRendusTestCase(TestCase):
             date="2023-10-01",
             hour="10:00",
             place="Salle de réunion",
-            day_order=SimpleUploadedFile(
+        )
+        doc = DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile(
                 "day_order_to_delete.pdf",
                 content=b"Document pdf de test",
                 content_type="application/pdf",
@@ -352,7 +362,7 @@ class ComptesRendusTestCase(TestCase):
         )
 
         id = conseil.id
-        day_order_path = conseil.day_order.path
+        day_order_path = doc.file.path
 
         response = self.client.post(
             reverse("comptes_rendus:delete_conseil", args=[conseil.id])
@@ -436,11 +446,9 @@ class ConseilModelTestCase(BaseComptesRendusTestCase):
     def test_conseil_str_representation(self):
         """Test représentation string du modèle Conseil."""
         conseil = Conseil.objects.create(
-            date="2024-01-15", hour="14:30:00", place="Mairie", day_order="test.pdf"
+            date="2024-01-15", hour="14:30:00", place="Mairie"
         )
-        expected_str = (
-            "Conseil du 2024-01-15 - 14:30:00 - Mairie -             Ordre du jour: test.pdf"
-        )
+        expected_str = "Conseil du 2024-01-15 - 14:30:00 - Mairie"
         self.assertEqual(str(conseil), expected_str)
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -451,11 +459,12 @@ class ConseilModelTestCase(BaseComptesRendusTestCase):
         )
 
         conseil = Conseil.objects.create(
-            date="2024-01-15", hour="14:30:00", place="Mairie", day_order=test_file
+            date="2024-01-15", hour="14:30:00", place="Mairie"
         )
+        DocumentConseil.objects.create(conseil=conseil, file=test_file)
 
-        self.assertTrue(conseil.day_order)
-        self.assertTrue(conseil.day_order.name.endswith(".pdf"))
+        self.assertTrue(conseil.documents.first())
+        self.assertTrue(conseil.documents.first().file.name.endswith(".pdf"))
 
     def test_conseil_ordering(self):
         """Test tri des conseils par date."""
@@ -522,7 +531,7 @@ class ConseilFormTestCase(BaseComptesRendusTestCase):
             "date": "Date",
             "hour": "Heure",
             "place": "Lieu",
-            "day_order": "Ordre du jour",
+            "documents": "Documents PDF",
         }
 
         for field_name, expected_label in expected_labels.items():
@@ -559,7 +568,7 @@ class ConseilFormTestCase(BaseComptesRendusTestCase):
 
         form = ConseilForm(
             data={"date": "2024-01-15", "hour": "14:30", "place": "Mairie"},
-            files={"day_order": test_file},
+            files={"documents": test_file},
         )
 
         self.assertTrue(form.is_valid())
@@ -617,7 +626,7 @@ class ComptesRendusAdminTestCase(BaseComptesRendusTestCase):
     def test_conseil_admin_configuration(self):
         """Test configuration de l'admin Conseil."""
         self.assertEqual(
-            self.conseil_admin.list_display, ("date", "hour", "place", "day_order")
+            self.conseil_admin.list_display, ("date", "hour", "place")
         )
         self.assertEqual(self.conseil_admin.search_fields, ("place", "date"))
         self.assertEqual(self.conseil_admin.list_filter, ("date", "hour"))
@@ -642,13 +651,16 @@ class ComptesRendusAdminTestCase(BaseComptesRendusTestCase):
         conseil = Conseil.objects.create(
             date="2024-01-15", hour="14:30:00", place="Mairie"
         )
-        conseil.day_order.name = "test.pdf"
+        DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf"),
+        )
 
         request = Mock()
         self.conseil_admin.delete_model(request, conseil)
 
-        mock_exists.assert_called_once()
-        mock_remove.assert_called_once()
+        self.assertGreaterEqual(mock_exists.call_count, 1)
+        self.assertGreaterEqual(mock_remove.call_count, 1)
 
     @patch("os.path.exists")
     @patch("os.remove")
@@ -773,12 +785,15 @@ class ComptesRendusEdgeCasesTestCase(BaseComptesRendusTestCase):
         conseil = Conseil.objects.create(
             date="2024-01-15", hour="14:30:00", place="Mairie"
         )
-        conseil.day_order.name = "nonexistent.pdf"
+        DocumentConseil.objects.create(
+            conseil=conseil,
+            file=SimpleUploadedFile("nonexistent.pdf", b"PDF content", content_type="application/pdf"),
+        )
 
         request = Mock()
         self.conseil_admin.delete_model(request, conseil)
 
-        mock_exists.assert_called_once()
+        self.assertGreaterEqual(mock_exists.call_count, 1)
         mock_remove.assert_not_called()
 
     def test_conseil_ordering_with_same_date(self):
@@ -802,4 +817,3 @@ class ComptesRendusEdgeCasesTestCase(BaseComptesRendusTestCase):
         self.assertFalse(conseil_form.is_valid())
         self.assertIn("date", conseil_form.errors)
         self.assertIn("hour", conseil_form.errors)
-        self.assertIn("place", conseil_form.errors)

@@ -31,11 +31,11 @@
           <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             {{ field.label }}
           </label>
-          {% if field.name == 'day_order' %}
+          {% if field.name == 'documents' %}
             <div class="relative">
               {% render_field field class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition" %}
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400">Format accepté : PDF uniquement.</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Format accepté : PDF uniquement. Vous pouvez sélectionner plusieurs fichiers.</p>
           {% else %}
             {% render_field field class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white text-sm" %}
           {% endif %}

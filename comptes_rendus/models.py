@@ -1,3 +1,5 @@
+import os
+
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
@@ -22,16 +24,45 @@ class Conseil(models.Model):
     date = models.DateField()
     hour = models.TimeField()
     place = models.CharField(max_length=100, blank=True)
-    day_order = models.FileField(
-        upload_to="comptes-rendus/ordre-du-jour/",
+
+    def __str__(self):
+        place_display = self.place if self.place else "Lieu à communiquer"
+        return f"Conseil du {self.date} - {self.hour} - {place_display}"
+
+
+class DocumentConseil(models.Model):
+    conseil = models.ForeignKey(
+        Conseil,
+        on_delete=models.CASCADE,
+        related_name="documents",
+    )
+    file = models.FileField(
+        upload_to="comptes-rendus/documents/",
         validators=[
             FileExtensionValidator(allowed_extensions=["pdf"]),
             validate_taille_fichier,
         ],
-        blank=True,
     )
+    title = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Titre personnalisé (laisser vide pour utiliser le nom du fichier)",
+    )
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["file"]
+
+    @property
+    def display_name(self):
+        if self.title:
+            return self.title
+        # Nettoyer le nom du fichier automatiquement
+        filename = self.file.name.split("/")[-1]
+        filename = os.path.splitext(filename)[0]  # Enlever .pdf
+        filename = filename.replace("_", " ")  # Remplacer _ par espaces
+        filename = " ".join(filename.split())  # Nettoyer espaces multiples
+        return filename
 
     def __str__(self):
-        place_display = self.place if self.place else "Lieu à communiquer"
-        return f"Conseil du {self.date} - {self.hour} - {place_display} - \
-            Ordre du jour: {self.day_order}"
+        return self.display_name

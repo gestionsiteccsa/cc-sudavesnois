@@ -3,21 +3,27 @@ import os
 from django.contrib import admin
 
 from .forms import ConseilForm, CRForm
-from .models import CompteRendu, Conseil
+from .models import CompteRendu, Conseil, DocumentConseil
 
 
 def delete_content(modeladmin, request, queryset):
     """
-    Supprime le contenu sélectionné
+    Supprime le contenu sélectionné et ses fichiers associés
     """
     for obj in queryset:
-        if obj.day_order:
-            if os.path.exists(obj.day_order.path):
-                os.remove(obj.day_order.path)
+        for doc in obj.documents.all():
+            if os.path.exists(doc.file.path):
+                os.remove(doc.file.path)
+            doc.delete()
     queryset.delete()
 
 
 delete_content.short_description = "Supprimer le contenu sélectionné et ses fichiers"
+
+
+class DocumentConseilInline(admin.TabularInline):
+    model = DocumentConseil
+    extra = 1
 
 
 class CustomConseilAdmin(admin.ModelAdmin):
@@ -27,7 +33,8 @@ class CustomConseilAdmin(admin.ModelAdmin):
 
     form = ConseilForm
     model = Conseil
-    list_display = ("date", "hour", "place", "day_order")
+    inlines = [DocumentConseilInline]
+    list_display = ("date", "hour", "place")
     search_fields = ("place", "date")
     list_filter = ("date", "hour")
     ordering = ("date", "hour")
@@ -39,9 +46,10 @@ class CustomConseilAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if obj.day_order:
-            if os.path.exists(obj.day_order.path):
-                os.remove(obj.day_order.path)
+        for doc in obj.documents.all():
+            if os.path.exists(doc.file.path):
+                os.remove(doc.file.path)
+            doc.delete()
 
         super().delete_model(request, obj)
 
@@ -58,7 +66,7 @@ class CustomConseilAdmin(admin.ModelAdmin):
 
 class CustomCRAdmin(admin.ModelAdmin):
     """
-    Administration personnalisée pour le modèle Conseil
+    Administration personnalisée pour le modèle CompteRendu
     """
 
     form = CRForm
@@ -66,5 +74,16 @@ class CustomCRAdmin(admin.ModelAdmin):
     list_display = ("link",)
 
 
+class DocumentConseilAdmin(admin.ModelAdmin):
+    """
+    Administration pour les documents de conseil
+    """
+
+    list_display = ("conseil", "file", "title", "uploaded_at")
+    list_filter = ("conseil", "uploaded_at")
+    search_fields = ("title", "file")
+
+
 admin.site.register(Conseil, CustomConseilAdmin)
 admin.site.register(CompteRendu, CustomCRAdmin)
+admin.site.register(DocumentConseil, DocumentConseilAdmin)
