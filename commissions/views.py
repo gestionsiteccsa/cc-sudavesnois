@@ -3,6 +3,7 @@ import os
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
+from django.db.models import Prefetch
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
 from bureau_communautaire.models import Elus, PageStatus
@@ -28,7 +29,11 @@ def commissions(request):
         )
 
     # Récupération optimisée avec prefetch_related pour les relations ManyToMany
-    commissions_qs = Commission.objects.prefetch_related("elus", "elus__city", "membres", "membres__city")
+    elus_prefetch = Prefetch("elus", queryset=Elus.objects.order_by("last_name", "first_name"))
+    membres_prefetch = Prefetch("membres", queryset=ConseilMembre.objects.order_by("last_name", "first_name"))
+    commissions_qs = Commission.objects.order_by("title").prefetch_related(
+        elus_prefetch, "elus__city", membres_prefetch, "membres__city"
+    )
     commissions_list = list(commissions_qs)
     nb_commissions = len(commissions_list) if commissions_list else 0
 
