@@ -6,6 +6,7 @@ import logging
 from datetime import datetime
 from typing import Dict, Any
 
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
@@ -68,9 +69,11 @@ class EmailService:
                 f"Demande de modification PLUi - "
                 f"{context['nom_prenom']} ({context['commune']})"
             )
-            from_email = context["email"]
+            from_email = settings.DEFAULT_FROM_EMAIL
+            reply_to = [context["email"]]
             msg = EmailMultiAlternatives(
-                subject, text_content, from_email, to_emails, bcc=bcc_emails
+                subject, text_content, from_email, to_emails, bcc=bcc_emails,
+                reply_to=reply_to,
             )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
