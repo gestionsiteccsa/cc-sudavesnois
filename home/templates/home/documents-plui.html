@@ -146,119 +146,18 @@
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-5xl mx-auto">
                 <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-12">Formulaire de demande de modification</h2>
-                <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md dark:shadow-gray-900">
-                    <!-- Section d'introduction -->
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Demander une modification du PLUi</h3>
-                        <p class="text-gray-600 dark:text-gray-700">
-                            Si vous souhaitez demander une modification du Plan Local d'Urbanisme intercommunal, 
-                            vous devez remplir le formulaire officiel de demande de modification.
-                        </p>
-                    </div>
-                    
-                    <!-- Formulaire complet -->
-                    <div class="bg-primary/5 p-6 rounded-lg">
-                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Formulaire de demande de modification</h4>
-                        <form class="space-y-4" method="post" action="{% url 'documents_plui' %}">
-                            {% csrf_token %}
-                            
-                            <!-- Section DEMANDEUR -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
-                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDEUR</h5>
-                                <div class="space-y-3">
-                                    <div>
-                                        {{ form.nom_prenom.label_tag }}
-                                        {{ form.nom_prenom }}
-                                        {% if form.nom_prenom.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.nom_prenom.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        {{ form.adresse.label_tag }}
-                                        {{ form.adresse }}
-                                        {% if form.adresse.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.adresse.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <div>
-                                            {{ form.email.label_tag }}
-                                            {{ form.email }}
-                                            {% if form.email.errors %}
-                                                <div class="text-red-500 text-sm mt-1">
-                                                    {% for error in form.email.errors %}{{ error }}{% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        <div>
-                                            {{ form.telephone.label_tag }}
-                                            {{ form.telephone }}
-                                            {% if form.telephone.errors %}
-                                                <div class="text-red-500 text-sm mt-1">
-                                                    {% for error in form.telephone.errors %}{{ error }}{% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Section PARCELLES CADASTRALES -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
-                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">N° DE(S) PARCELLE(S) CADASTRALE(S) CONCERNEE(S)</h5>
-                                <div class="space-y-3">
-                                    <div>
-                                        {{ form.parcelles.label_tag }}
-                                        {{ form.parcelles }}
-                                        {% if form.parcelles.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.parcelles.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        {{ form.commune.label_tag }}
-                                        {{ form.commune }}
-                                        {% if form.commune.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.commune.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Section DEMANDE -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
-                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDE</h5>
-                                <div>
-                                    {{ form.demande.label_tag }}
-                                    {{ form.demande }}
-                                    {% if form.demande.errors %}
-                                        <div class="text-red-500 text-sm mt-1">
-                                            {% for error in form.demande.errors %}{{ error }}{% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <!-- Bouton de soumission -->
-                            <div class="pt-4">
-                                <button type="submit" 
-                                        class="w-full bg-primary text-white font-medium py-3 px-6 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                                    </svg>
-                                    Envoyer la demande
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="text-center mb-8">
+                    <a href="{% url 'plui' %}#formulaire-modification"
+                       class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-300 shadow-md hover:shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Accéder au formulaire PLUi
+                    </a>
                 </div>
+
+
             </div>
         </div>
     </section>
