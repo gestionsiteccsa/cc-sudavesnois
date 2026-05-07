@@ -34,7 +34,6 @@ class EmailService:
         """
         if to_emails is None:
             to_emails = [
-                "plui@cc-sudavesnois.fr",
                 "contact@cc-sudavesnois.fr",
             ]
         elif isinstance(to_emails, str):

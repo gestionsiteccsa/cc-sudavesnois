@@ -93,7 +93,7 @@
                                 <article class="elu-card conseil-member-card {% if member.photo %}has-photo{% endif %} bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
                                     <div class="elu-image-wrapper-vice lightbox-trigger-wrapper" tabindex="0" role="button" aria-label="Voir l'image en grand : Portrait de {{ member.first_name }} {{ member.last_name }}" {% if not member.photo %}style="display:none"{% endif %}>
                                         <div class="elu-photo-wrapper">
-                                            <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}, membre titulaire du Conseil Communautaire" class="elu-photo-inner" style="object-position: {{ member.photo_position_x }}% {{ member.photo_position_y }}%; transform: scale({{ member.photo_zoom|default:100|div:100|stringformat:".2f" }});" onerror="this.parentElement.parentElement.style.display='none'; this.parentElement.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
+                                            <img src="{% if member.photo %}{{ member.photo.url }}{% endif %}" alt="Portrait de {{ member.first_name }} {{ member.last_name }}" class="elu-photo-inner" style="object-position: {{ member.photo_position_x }}% {{ member.photo_position_y }}%; transform: scale({{ member.photo_zoom|default:100|div:100|stringformat:".2f" }});" onerror="this.parentElement.parentElement.style.display='none'; this.parentElement.parentElement.nextElementSibling.style.display='flex';" loading="lazy">
                                         </div>
                                     </div>
                                     <div class="elu-image-wrapper-vice" {% if member.photo %}style="display:none"{% endif %}>
@@ -103,7 +103,6 @@
                                     </div>
                                     <div class="mt-4">
                                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ member.first_name }} {{ member.last_name }}</h4>
-                                        <p class="elu-role text-sm mt-1">Membre titulaire</p>
                                     </div>
                                 </article>
                                 {% endfor %}
