@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // // Formulaire de contact
     // initContactForm();
     
+    // Popup Jeu de l'oie
+    initCtgPopup();
+    
     // Formulaire de recherche
     initSearchForm();
 });
@@ -788,4 +791,65 @@ function initSearchForm() {
             }
         }
     }
+}
+
+// Popup Jeu de l'oie
+function initCtgPopup() {
+    const overlay = document.getElementById('ctg-popup-overlay');
+    const closeBtn = document.getElementById('ctg-popup-close');
+    const links = document.querySelectorAll('.ctg-popup-link');
+    const today = new Date().toDateString();
+
+    if (!overlay) return;
+
+    if (localStorage.getItem('ctg-popup-dismissed') === today) return;
+
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    function dismissPopup() {
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+        localStorage.setItem('ctg-popup-dismissed', today);
+    }
+
+    closeBtn.addEventListener('click', dismissPopup);
+
+    links.forEach(function (link) {
+        link.addEventListener('click', function () {
+            localStorage.setItem('ctg-popup-dismissed', today);
+        });
+    });
+
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) {
+            dismissPopup();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.style.display === 'flex') {
+            dismissPopup();
+        }
+    });
+
+    overlay.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+            const focusable = overlay.querySelectorAll('button, a');
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+    });
+
+    setTimeout(function () {
+        closeBtn.focus();
+    }, 100);
 }
