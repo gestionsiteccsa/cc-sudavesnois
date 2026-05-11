@@ -42,7 +42,7 @@
                                     </svg>
                                     <div>
                                         <span class="font-medium block dark:text-gray-200">Maire :</span>
-                                        <span class="dark:text-gray-300">{{ commune.mayor_sex }} {{ commune.mayor_first_name }} {{ commune.mayor_last_name }}</span>
+                                        <span class="dark:text-gray-300">{% if commune.mayor_sex == "Mme." %}Mme{% else %}{{ commune.mayor_sex }}{% endif %} {{ commune.mayor_first_name }} {{ commune.mayor_last_name }}</span>
                                     </div>
                                 </li>
                                 <li class="flex items-start">
