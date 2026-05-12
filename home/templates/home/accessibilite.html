@@ -46,62 +46,6 @@
         </div>
     </section>
 
-    <!-- Documents officiels -->
-    <section class="mb-10">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Documents officiels</h2>
-        <div class="grid md:grid-cols-2 gap-4">
-            <a href="https://ara.numerique.gouv.fr/rapport/cFcBmnE1eK-J3xQ7X9jGE/"
-               target="_blank"
-               rel="noopener"
-               class="group block p-5 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/20 dark:to-primary/30 border border-primary/20 rounded-xl hover:shadow-lg hover:border-primary/40 transition-all duration-300"
-               aria-label="Consulter le rapport d'audit RGAA (nouvelle fenêtre)">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 bg-primary/10 dark:bg-primary/30 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <svg class="w-6 h-6 text-primary" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-primary transition-colors">Rapport d'audit RGAA</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Consultez le rapport complet d'audit d'accessibilité de notre site</p>
-                        <span class="inline-flex items-center gap-1 text-primary text-sm font-medium mt-2 group-hover:underline">
-                            Voir le rapport
-                            <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                            <span class="sr-only">(nouvelle fenêtre)</span>
-                        </span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://ara.numerique.gouv.fr/declaration/cFcBmnE1eK-J3xQ7X9jGE"
-               target="_blank"
-               rel="noopener"
-               class="group block p-5 bg-gradient-to-br from-secondary/5 to-secondary/10 dark:from-secondary/20 dark:to-secondary/30 border border-secondary/20 rounded-xl hover:shadow-lg hover:border-secondary/40 transition-all duration-300"
-               aria-label="Consulter la déclaration sur ARA (nouvelle fenêtre)">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 bg-secondary/10 dark:bg-secondary/30 rounded-lg flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
-                        <svg class="w-6 h-6 text-secondary" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors">Déclaration sur ARA</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Consultez notre déclaration officielle sur le portail gouvernemental</p>
-                        <span class="inline-flex items-center gap-1 text-green-700 dark:text-green-400 text-sm font-medium mt-2 group-hover:underline">
-                            Voir la déclaration
-                            <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                            <span class="sr-only">(nouvelle fenêtre)</span>
-                        </span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </section>
-
     <!-- Résultats de l'audit -->
     <section class="mb-10 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center gap-3 mb-4">
@@ -135,6 +79,58 @@
             </svg>
             Les non-conformités résiduelles (AAA uniquement) sont en cours de traitement.
         </p>
+    </section>
+
+    <!-- Contenus non accessibles -->
+    <section class="mb-10 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-600 dark:text-red-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Contenus non accessibles</h2>
+        </div>
+
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Non-conformités résiduelles</h3>
+        <p class="text-gray-700 dark:text-gray-300 text-sm mb-4">
+            Malgré les corrections appliquées, les non-conformités suivantes subsistent (niveau WCAG AAA uniquement, hors périmètre légal AA) :
+        </p>
+        <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+            <li class="flex items-start gap-2">
+                <span class="text-red-500 mt-0.5" aria-hidden="true">•</span>
+                <span><strong>WCAG AAA 1.4.6 — Contraste renforcé</strong> : Le texte blanc sur fond primary (#005a9e) atteint un ratio de 7.1:1, inférieur au seuil AAA de 7:1. Conforme AA (seuil 4.5:1).</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-500 mt-0.5" aria-hidden="true">•</span>
+                <span><strong>WCAG AAA 2.4.11 — Focus visible renforcé</strong> : Certains éléments interactifs n'ont pas d'indicateur de focus suffisamment épais pour le niveau AAA.</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-500 mt-0.5" aria-hidden="true">•</span>
+                <span><strong>WCAG AAA 1.4.6 — Contraste des placeholders</strong> : Les placeholders de formulaire utilisent une couleur conforme AA mais insuffisante pour le niveau AAA.</span>
+            </li>
+        </ul>
+
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 mt-6">Dérogations pour charge disproportionnée</h3>
+        <p class="text-gray-700 dark:text-gray-300 text-sm mb-4">
+            Aucune dérogation pour charge disproportionnée n'a été appliquée. Les non-conformités résiduelles concernent exclusivement le niveau WCAG AAA, dont l'atteinte n'est pas exigée par le cadre légal (loi n°2005-102).
+        </p>
+
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 mt-6">Contenus non soumis à l'obligation d'accessibilité</h3>
+        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li class="flex items-start gap-2">
+                <span class="text-gray-400 mt-0.5" aria-hidden="true">•</span>
+                <span>Documents PDF hébergés par des tiers (guides, actes administratifs sur SharePoint) — non contrôlés par la CCSA.</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-gray-400 mt-0.5" aria-hidden="true">•</span>
+                <span>Contenus externes intégrés via iframes ou widgets tiers (Google Analytics, réseaux sociaux).</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-gray-400 mt-0.5" aria-hidden="true">•</span>
+                <span>Pages d'administration (back-office) réservées aux agents de la CCSA.</span>
+            </li>
+        </ul>
     </section>
 
     <!-- Méthodologie -->
@@ -264,9 +260,9 @@
             <table class="w-full text-sm text-left">
                 <thead>
                     <tr class="border-b border-gray-200 dark:border-gray-600">
-                        <th class="py-2 pr-4 font-semibold text-gray-900 dark:text-white">Priorité</th>
-                        <th class="py-2 pr-4 font-semibold text-gray-900 dark:text-white">Correctif</th>
-                        <th class="py-2 pr-4 font-semibold text-gray-900 dark:text-white">Échéance</th>
+                        <th scope="col" class="py-2 pr-4 font-semibold text-gray-900 dark:text-white">Priorité</th>
+                        <th scope="col" class="py-2 pr-4 font-semibold text-gray-900 dark:text-white">Correctif</th>
+                        <th scope="col" class="py-2 pr-4 font-semibold text-gray-900 dark:text-white">Échéance</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 dark:text-gray-300">
