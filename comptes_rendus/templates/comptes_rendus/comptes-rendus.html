@@ -6,8 +6,6 @@
 {% endblock %}
 {% block content %}
 
-<!-- Contenu principal -->
-<main id="main-content">
     <!-- Bannière -->
     <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24">
         <div class="container mx-auto px-4 md:px-6">
@@ -17,8 +15,8 @@
             </div>
         </div>
         <!-- Motif décoratif -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
     </section>
 
     <!-- Introduction -->
@@ -33,7 +31,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-8 w-8 text-primary dark:text-blue-400 mr-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="text-gray-700 dark:text-gray-700">
+                        <p class="text-gray-700 dark:text-gray-300">
                             Conformément aux articles L. 5211-3 et suivants du Code général des collectivités territoriales et à l'ordonnance n° 2021-1310 du 7 octobre 2021 portant réforme des règles de publicité, d'entrée en vigueur et de conservation des actes pris par les collectivités territoriales et leurs groupements, le compte rendu de la séance du conseil communautaire est publié et mis en ligne sur le site internet de la communauté de communes conformément aux obligations de publicité des actes de l'EPCI en vigueur depuis le 1er juillet 2022.
                         </p>
                     </div>
@@ -46,19 +44,19 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                Arrêtés
+                                Arrêtés<span class="sr-only"> (nouvelle fenêtre)</span>
                             </a>
                             <a href="https://ccsa59-my.sharepoint.com/:f:/g/personal/j_brechoire_cc-sudavesnois_fr/IgBj_YSTxvVuQpO1csrw3D5DAdMjcUHSnDf-vrhXFh8Rigo?e=xLva3J&web=1" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-purple-600 dark:bg-purple-600 text-white rounded-md font-medium hover:bg-purple-700 dark:hover:bg-purple-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                Décisions
+                                Décisions<span class="sr-only"> (nouvelle fenêtre)</span>
                             </a>
                             <a href="https://ccsa59-my.sharepoint.com/:f:/g/personal/j_brechoire_cc-sudavesnois_fr/IgCqA4vOvQCAToHRjUWvFaHoAal2hfmTgk3VvMYkGP25V3A?e=gcklAE&web=1" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-red-600 dark:bg-red-600 text-white rounded-md font-medium hover:bg-red-700 dark:hover:bg-red-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                Délibérations
+                                Délibérations<span class="sr-only"> (nouvelle fenêtre)</span>
                             </a>
                         </div>
                     </div>
@@ -68,6 +66,5 @@
     </section>
 
     {% include "includes/prochains_conseils.html" %}
-</main>
 
 {% endblock %}

@@ -24,6 +24,7 @@ module.exports = {
       colors: {
         // Couleurs optimisées pour l'accessibilité (contraste WCAG AA)
         primary: '#005a9e',        // Bleu plus foncé (contraste ~6:1 avec blanc)
+        'primary-dark': '#003f6f', // Bleu très foncé pour contraste renforcé (>7:1)
         secondary: '#7a9f0a',      // Vert plus foncé
         facebook: '#1877F2',
         linkedin: '#0A66C2',

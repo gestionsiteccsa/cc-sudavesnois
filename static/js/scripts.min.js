@@ -806,6 +806,7 @@ function initCtgPopup() {
 
     overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    overlay.setAttribute('aria-live', 'assertive');
 
     function dismissPopup() {
         overlay.style.display = 'none';
@@ -835,7 +836,7 @@ function initCtgPopup() {
 
     overlay.addEventListener('keydown', function (e) {
         if (e.key === 'Tab') {
-            const focusable = overlay.querySelectorAll('button, a');
+            const focusable = overlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
             if (focusable.length === 0) return;
             const first = focusable[0];
             const last = focusable[focusable.length - 1];

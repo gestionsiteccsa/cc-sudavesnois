@@ -15,7 +15,7 @@
             </div>
         </div>
         <!-- Motif décoratif -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
         <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);"></div>
     </section>
 
@@ -28,7 +28,7 @@
                 <div class="mb-12">
                     <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900 mb-8">
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Collecte des déchets ménagers et recyclables</h2>
-                        <p class="text-gray-600 dark:text-gray-700 mb-6">
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">
                             La collecte des déchets ménagers s'effectue en porte-à-porte une fois par semaine, en même temps que les déchets recyclables.
                         </p>
                         
@@ -56,15 +56,15 @@
                                 </select>
                             
                                 <div id="search-section" style="display: none;">
-  <label for="search" class="block text-gray-600 dark:text-gray-700 text-sm mb-2">Recherchez le nom de votre rue dans la liste et cliquez dessus pour afficher le jour de passage</label>
+  <label for="search" class="block text-gray-600 dark:text-gray-300 text-sm mb-2">Recherchez le nom de votre rue dans la liste et cliquez dessus pour afficher le jour de passage</label>
   <div class="flex flex-col md:flex-row gap-2 md:gap-4 items-stretch md:items-center">
     <input type="text" id="search" placeholder="Saisir le nom d'une rue..." oninput="searchStreet()" class="flex-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-gray-800 dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-600" />
     <button id="clearBtn" onclick="clearSearch()" class="bg-primary text-white rounded-lg px-4 py-2 font-medium hover:bg-primary-dark transition-colors duration-200">Effacer</button>
   </div>
-                                <div id="suggestions"></div>
+                                <div id="suggestions" aria-live="polite"></div>
                             </div>
                             
-                                <div id="result"></div>
+                                <div id="result" aria-live="polite"></div>
                             </div>
                         </div>
                         
@@ -79,7 +79,7 @@
                                     </div>
                                     <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Horaires</h3>
                                 </div>
-                                <p class="text-gray-600 dark:text-gray-700 ml-14">
+                                <p class="text-gray-600 dark:text-gray-300 ml-14">
                                     Les collectes débutent tôt le matin. Pensez à sortir vos poubelles la veille au soir pour éviter tout oubli.
                                 </p>
                             </div>
@@ -93,7 +93,7 @@
                                     </div>
                                     <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Positionnement</h3>
                                 </div>
-                                <p class="text-gray-600 dark:text-gray-700 ml-14">
+                                <p class="text-gray-600 dark:text-gray-300 ml-14">
                                     Placez vos poubelles de manière visible et accessible pour les agents de collecte, poignées orientées vers la route.
                                 </p>
                             </div>
@@ -107,7 +107,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
                             <div>
                                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Collecte du Verre</h2>
-                                <p class="text-gray-600 dark:text-gray-700 mb-6">
+                                <p class="text-gray-600 dark:text-gray-300 mb-6">
                                     La collecte du verre s'effectue également en porte-à-porte. Merci de présenter votre poubelle à verre poignée vers la route, et uniquement si elle est remplie au moins à 50%.
                                 </p>
                                 
@@ -116,28 +116,28 @@
                                     <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Consignes de tri du verre</h3>
                                     <ul class="space-y-3">
                                         <li class="flex items-start">
-                                            <svg class="h-5 aria-hidden="true" focusable="false"  w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                             </svg>
-                                            <span class="text-gray-600 dark:text-gray-700">Bouteilles en verre (sans bouchon)</span>
+                                            <span class="text-gray-600 dark:text-gray-300">Bouteilles en verre (sans bouchon)</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <svg class="h-5 aria-hidden="true" focusable="false"  w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                             </svg>
-                                            <span class="text-gray-600 dark:text-gray-700">Pots et bocaux en verre (sans couvercle)</span>
+                                            <span class="text-gray-600 dark:text-gray-300">Pots et bocaux en verre (sans couvercle)</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <svg class="h-5 aria-hidden="true" focusable="false"  w-5 text-red-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-5 w-5 text-red-500 mt-0.5 mr-2" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
-                                            <span class="text-gray-600 dark:text-gray-700">Pas de vaisselle, vitres ou miroirs</span>
+                                            <span class="text-gray-600 dark:text-gray-300">Pas de vaisselle, vitres ou miroirs</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <svg class="h-5 aria-hidden="true" focusable="false"  w-5 text-red-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-5 w-5 text-red-500 mt-0.5 mr-2" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
-                                            <span class="text-gray-600 dark:text-gray-700">Pas d'ampoules ou néons</span>
+                                            <span class="text-gray-600 dark:text-gray-300">Pas d'ampoules ou néons</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -164,7 +164,7 @@
                                 </div>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Compostez</h3>
-                            <p class="text-gray-600 dark:text-gray-700">
+                            <p class="text-gray-600 dark:text-gray-300">
                                 Transformez vos déchets organiques en ressource pour votre jardin
                             </p>
                         </div>
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Achetez en vrac</h3>
-                            <p class="text-gray-600 dark:text-gray-700">
+                            <p class="text-gray-600 dark:text-gray-300">
                                 Limitez les emballages en privilégiant les achats sans conditionnement
                             </p>
                         </div>
@@ -192,7 +192,7 @@
                                 </div>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Réutilisez</h3>
-                            <p class="text-gray-600 dark:text-gray-700">
+                            <p class="text-gray-600 dark:text-gray-300">
                                 Donnez une seconde vie à vos objets avant de les jeter
                             </p>
                         </div>
@@ -202,7 +202,7 @@
                 <!-- Contact et informations supplémentaires -->
                 <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Besoin d'informations supplémentaires ?</h2>
-                    <p class="text-gray-600 dark:text-gray-700 mb-6">
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
                         Pour toute question concernant la collecte des déchets, n'hésitez pas à contacter le service environnement de la Communauté de Communes Sud-Avesnois.
                     </p>
                     
