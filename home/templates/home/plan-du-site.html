@@ -5,7 +5,6 @@
 {% block meta_description %}Plan du site de la Communauté de Communes Sud-Avesnois. Accédez rapidement à toutes les pages : services, territoire, institutions, événements et informations pratiques.{% endblock %}
 
 {% block content %}
-<!-- Bannière avec breadcrumb pour SEO -->
 <section class="relative bg-gradient-to-r from-primary to-primary/80 py-12 md:py-16">
     <div class="container mx-auto px-4 md:px-6">
         <h1 class="text-3xl md:text-4xl font-bold text-white">Plan du site</h1>
@@ -15,8 +14,7 @@
 <section class="py-12 bg-white dark:bg-gray-900">
   <div class="container mx-auto px-4 md:px-6">
     <div class="max-w-5xl mx-auto">
-      
-      <!-- Introduction SEO -->
+
       <div class="mb-12 text-center">
         <p class="text-lg text-gray-700 dark:text-gray-300">
           Retrouvez l'ensemble des pages et services de la Communauté de Communes Sud-Avesnois
@@ -24,13 +22,13 @@
       </div>
 
       <nav aria-label="Plan du site" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
+
         <!-- Section 1: Accueil et Présentation -->
         <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
           <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
             <span aria-hidden="true">🏛️</span> Accueil et Présentation
           </h2>
-          <ul class="space-y-3" role="list">
+          <ul class="space-y-3">
             <li>
               <a href="{% url 'home' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
                 <span class="mr-2">→</span> Accueil
@@ -52,14 +50,189 @@
         <!-- Section 2: Institution et Gouvernance -->
         <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
           <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
-<span aria-hidden="true">👥</span> Institution et Gouvernance
-<span aria-hidden="true">🗺️</span> Territoire et Urbanisme
-<span aria-hidden="true">🛠️</span> Services aux Habitants
-<span aria-hidden="true">🎭</span> Culture et Événements
-<span aria-hidden="true">📋</span> Administration et Contact
-<span aria-hidden="true">⚖️</span> Informations Légales
+            <span aria-hidden="true">👥</span> Institution et Gouvernance
           </h2>
-          <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3" role="list">
+          <ul class="space-y-3">
+            <li>
+              <a href="{% url 'bureau-communautaire:elus' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Bureau Communautaire
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'conseil_communautaire:conseil' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Conseil Communautaire
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'commissions:commissions' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Commissions
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'competences:competences' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Compétences
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'comptes_rendus:comptes_rendus' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Actes administratifs
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'comptes_rendus:proces_verbaux' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Procès-verbaux
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'rapports_activite:rapports_activite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Rapports d'Activité
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 3: Territoire -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            <span aria-hidden="true">🗺️</span> Territoire et Urbanisme
+          </h2>
+          <ul class="space-y-3">
+            <li>
+              <a href="{% url 'plui' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> PLUi
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'documents_plui' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Documents PLUi
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'dev_eco' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Développement Économique
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'guide_eco_citoyen' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Guide Éco-Citoyen
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'partenaires:partenaires' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Nos partenaires
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 4: Services -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            <span aria-hidden="true">🛠️</span> Services aux Habitants
+          </h2>
+          <ul class="space-y-3">
+            <li>
+              <a href="{% url 'ctg' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Convention Territoriale Globale (CTG)
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'collecte_dechets' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Collecte des Déchets
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'dechetteries' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Déchetteries
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'encombrants' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Encombrants
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'habitat' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Habitat
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'maisons_sante' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Maisons de Santé
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'mutuelle' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Mutuelle
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'contrat_local_sante' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Contrat Local de Santé
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'mobilite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Mobilité
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 5: Culture et Événements -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            <span aria-hidden="true">🎭</span> Culture et Événements
+          </h2>
+          <ul class="space-y-3">
+            <li>
+              <a href="{% url 'semestriels:semestriel' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Calendrier Semestriel
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'journal:journal' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Journal Communautaire
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'mediapass' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Médi@'pass
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 6: Administration et Contact -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            <span aria-hidden="true">📋</span> Administration et Contact
+          </h2>
+          <ul class="space-y-3">
+            <li>
+              <a href="{% url 'marches_publics' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Marchés Publics
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'accessibilite' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Accessibilité
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'search' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
+                <span class="mr-2">→</span> Recherche
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 7: Informations Légales -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow md:col-span-2">
+          <h2 class="text-xl font-bold text-primary dark:text-secondary mb-4 pb-2 border-b-2 border-primary/20">
+            <span aria-hidden="true">⚖️</span> Informations Légales
+          </h2>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <li>
               <a href="{% url 'mentions_legales' %}" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
                 <span class="mr-2">→</span> Mentions Légales
@@ -83,13 +256,12 @@
           </ul>
         </div>
 
-      </nav>      
+      </nav>
 
     </div>
   </div>
 </section>
 
-<!-- Schema.org pour SEO -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
