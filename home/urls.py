@@ -44,6 +44,8 @@ urlpatterns = [
     path("guide-eco-citoyen/", views.guide_eco_citoyen, name="guide_eco_citoyen"),
     # Documents PLUi
     path("documents-plui/", views.documents_plui, name="documents_plui"),
+    # Modification Simplifiée n°1
+    path("modification-simplifiee-1/", views.modification_simplifiee_1, name="modification_simplifiee_1"),
     # Développement économique
     path("developpement-economique/", views.dev_eco, name="dev_eco"),
     # Kit de logos CCSA

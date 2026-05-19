@@ -398,6 +398,11 @@ def documents_plui(request):
     return render(request, "home/documents-plui.html", context)
 
 
+def modification_simplifiee_1(request):
+    """Vue pour la page Modification Simplifiée n°1 du PLUi."""
+    return render(request, "home/modification-simplifiee-1.html")
+
+
 def test_email(request):
     """Vue de test pour l'envoi d'emails."""
     from django.contrib import messages
