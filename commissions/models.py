@@ -34,6 +34,22 @@ class Document(models.Model):
         super().save(*args, **kwargs)
 
 
+class CommissionCompetence(models.Model):
+    commission = models.ForeignKey(
+        Commission, on_delete=models.CASCADE, related_name="competences"
+    )
+    title = models.CharField(max_length=255, verbose_name="Compétence")
+    order = models.IntegerField(default=0, verbose_name="Ordre d'affichage")
+
+    class Meta:
+        ordering = ["order", "title"]
+        verbose_name = "Compétence de commission"
+        verbose_name_plural = "Compétences de commission"
+
+    def __str__(self):
+        return self.title
+
+
 class Mandat(models.Model):
     start_year = models.IntegerField(verbose_name="Start Year")
     end_year = models.IntegerField(verbose_name="End Year")

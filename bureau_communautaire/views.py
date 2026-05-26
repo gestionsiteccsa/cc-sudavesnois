@@ -2,9 +2,11 @@ import logging
 import os
 
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Prefetch
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
 from app.utils import secure_file_removal
+from conseil_communautaire.models import Commission
 from .forms import DocumentForm, ElusForm
 from .models import Document, Elus, PageStatus
 
@@ -23,8 +25,12 @@ def elus(request):
             {"maintenance_message": maintenance_message},
         )
 
-    # Récupérer les élus avec select_related pour city et prefetch_related pour linked_commission
-    elus_qs = Elus.objects.select_related("city").prefetch_related("linked_commission")
+    # Récupérer les élus avec select_related pour city et prefetch_related pour linked_commission + competences
+    commission_prefetch = Prefetch(
+        "linked_commission",
+        queryset=Commission.objects.prefetch_related("competences"),
+    )
+    elus_qs = Elus.objects.select_related("city").prefetch_related(commission_prefetch)
 
     vice_presidents = list(elus_qs.filter(role="Vice-Président"))
     elus = vice_presidents if vice_presidents else None

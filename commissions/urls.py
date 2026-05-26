@@ -41,6 +41,22 @@ urlpatterns = [
         views.edit_mandat,
         name="edit_mandat",
     ),
+    # Partie compétences des commissions
+    path(
+        "adminccsa/commissions/competences/",
+        views.list_commission_competences,
+        name="admin_competences",
+    ),
+    path(
+        "adminccsa/commissions/competences/ajouter/",
+        views.add_competence,
+        name="admin_add_competence",
+    ),
+    path(
+        "adminccsa/commissions/competences/supprimer/<int:pk>/",
+        views.delete_competence,
+        name="admin_delete_competence",
+    ),
     # Partie gestion du statut de page
     path(
         "adminccsa/commissions/statut-page/",

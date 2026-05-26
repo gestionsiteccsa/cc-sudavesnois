@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from .models import Commission, Document, Mandat
+from .models import Commission, CommissionCompetence, Document, Mandat
 
 User = get_user_model()
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -507,3 +507,158 @@ class CommissionTestCase(TestCase):
         mandat.refresh_from_db()
         self.assertEqual(mandat.start_year, 2023)
         self.assertEqual(mandat.end_year, 2024)
+
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class CommissionCompetenceTestCase(TestCase):
+    """Tests pour le modèle CommissionCompetence"""
+
+    def setUp(self):
+        self.commission = Commission.objects.create(
+            title="Test Commission", icon="<svg></svg>"
+        )
+        self.comp1 = CommissionCompetence.objects.create(
+            commission=self.commission,
+            title="Compétence A",
+            order=2,
+        )
+        self.comp2 = CommissionCompetence.objects.create(
+            commission=self.commission,
+            title="Compétence B",
+            order=1,
+        )
+        self.comp3 = CommissionCompetence.objects.create(
+            commission=self.commission,
+            title="Compétence C",
+            order=1,
+        )
+
+    def tearDown(self):
+        CommissionCompetence.objects.all().delete()
+        Commission.objects.all().delete()
+
+    def test_commission_competence_str(self):
+        """Test de la méthode __str__ du modèle CommissionCompetence"""
+        self.assertEqual(str(self.comp1), "Compétence A")
+
+    def test_commission_competence_ordering(self):
+        """Test que les compétences sont ordonnées par order puis title"""
+        competences = list(CommissionCompetence.objects.all())
+        self.assertEqual(competences[0].title, "Compétence B")
+        self.assertEqual(competences[1].title, "Compétence C")
+        self.assertEqual(competences[2].title, "Compétence A")
+
+    def test_commission_competence_cascade_delete(self):
+        """Test que la suppression d'une commission supprime ses compétences"""
+        commission_id = self.commission.id
+        self.commission.delete()
+        self.assertFalse(
+            CommissionCompetence.objects.filter(commission_id=commission_id).exists()
+        )
+
+    def test_commission_competence_related_name(self):
+        """Test du related_name 'competences' sur Commission"""
+        competences = self.commission.competences.all()
+        self.assertEqual(competences.count(), 3)
+
+    def test_commission_competence_empty(self):
+        """Test qu'une commission sans compétence retourne une liste vide"""
+        new_commission = Commission.objects.create(
+            title="Empty Commission", icon="<svg></svg>"
+        )
+        self.assertFalse(new_commission.competences.exists())
+
+    def test_admin_competence_inline_registered(self):
+        """Test que l'inline est bien enregistré dans l'admin Commission"""
+        from django.contrib import admin
+        from .admin import CustomCommissionAdmin
+
+        model_admin = CustomCommissionAdmin(Commission, admin.site)
+        inlines = model_admin.inlines
+        self.assertTrue(len(inlines) > 0)
+        from .admin import CompetenceInline
+
+        self.assertIn(CompetenceInline, inlines)
+
+    def test_admin_competences_list_view(self):
+        """Test que la page admin des compétences s'affiche et contient les données"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        superuser = User.objects.create_superuser(
+            email="admin@test.com", password="password123"
+        )
+        self.client.login(email="admin@test.com", password="password123")
+        response = self.client.get(reverse("commissions:admin_competences"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "commissions/admin_competences_list.html")
+        self.assertContains(response, "Test Commission")
+        self.assertContains(response, "Compétence A")
+        self.assertContains(response, "Compétence B")
+        self.assertContains(response, "Compétence C")
+
+    def test_admin_add_competence_post(self):
+        """Test que l'ajout d'une compétence fonctionne"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        superuser = User.objects.create_superuser(
+            email="admin2@test.com", password="password123"
+        )
+        self.client.login(email="admin2@test.com", password="password123")
+        response = self.client.post(
+            reverse("commissions:admin_add_competence"),
+            {"commission": self.commission.id, "title": "Nouvelle compétence", "order": 3},
+        )
+        self.assertRedirects(response, reverse("commissions:admin_competences"))
+        self.assertTrue(
+            CommissionCompetence.objects.filter(
+                commission=self.commission, title="Nouvelle compétence"
+            ).exists()
+        )
+
+    def test_admin_add_competence_post_invalid(self):
+        """Test que l'ajout sans titre est rejeté"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        superuser = User.objects.create_superuser(
+            email="admin3@test.com", password="password123"
+        )
+        self.client.login(email="admin3@test.com", password="password123")
+        initial_count = CommissionCompetence.objects.count()
+        response = self.client.post(
+            reverse("commissions:admin_add_competence"),
+            {"commission": self.commission.id, "title": "", "order": 0},
+        )
+        self.assertRedirects(response, reverse("commissions:admin_competences"))
+        self.assertEqual(CommissionCompetence.objects.count(), initial_count)
+
+    def test_admin_delete_competence_post(self):
+        """Test que la suppression d'une compétence fonctionne"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        superuser = User.objects.create_superuser(
+            email="admin4@test.com", password="password123"
+        )
+        self.client.login(email="admin4@test.com", password="password123")
+        response = self.client.post(
+            reverse("commissions:admin_delete_competence", args=[self.comp1.pk])
+        )
+        self.assertRedirects(response, reverse("commissions:admin_competences"))
+        self.assertFalse(
+            CommissionCompetence.objects.filter(pk=self.comp1.pk).exists()
+        )
+
+    def test_admin_delete_competence_get(self):
+        """Test que la suppression en GET redirige sans supprimer"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        superuser = User.objects.create_superuser(
+            email="admin5@test.com", password="password123"
+        )
+        self.client.login(email="admin5@test.com", password="password123")
+        response = self.client.get(
+            reverse("commissions:admin_delete_competence", args=[self.comp1.pk])
+        )
+        self.assertRedirects(response, reverse("commissions:admin_competences"))
+        self.assertTrue(
+            CommissionCompetence.objects.filter(pk=self.comp1.pk).exists()
+        )

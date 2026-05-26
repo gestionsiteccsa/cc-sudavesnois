@@ -11,6 +11,7 @@ from PIL import Image
 
 from conseil_communautaire.models import ConseilVille
 
+from commissions.models import Commission, CommissionCompetence
 from .models import Document, Elus
 
 User = get_user_model()
@@ -1146,3 +1147,132 @@ class FinalCoverageTestCase(TestCase):
         # )
         # La variable 'document' n'est pas utilisée, donc on la commente ou on l'enlève.
         pass
+
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class BureauCommissionCompetenceDisplayTestCase(TestCase):
+    """Tests pour l'affichage des compétences des commissions sur la page bureau"""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.superuser = User.objects.create_superuser(
+            email="admin@example.com", password="password123"
+        )
+
+    def setUp(self):
+        self.client = Client()
+        self.client.login(email="admin@example.com", password="password123")
+
+        self.city = ConseilVille.objects.create(
+            city_name="Fourmies",
+            mayor_sex="M",
+            mayor_first_name="Jean",
+            mayor_last_name="Dupont",
+            address="1 rue de la Mairie",
+            postal_code="59610",
+            phone_number="0321234567",
+            website="http://www.fourmies.fr",
+            image=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=b"fake_image_content",
+                content_type="image/jpeg",
+            ),
+            slogan="La ville de Fourmies, c'est la vie !",
+            nb_habitants="10000",
+        )
+
+        self.commission = Commission.objects.create(
+            title="Test Commission", icon="<svg></svg>"
+        )
+        self.competence1 = CommissionCompetence.objects.create(
+            commission=self.commission,
+            title="Compétence 1",
+            order=1,
+        )
+        self.competence2 = CommissionCompetence.objects.create(
+            commission=self.commission,
+            title="Compétence 2",
+            order=2,
+        )
+
+        self.elu = Elus.objects.create(
+            first_name="Jean",
+            last_name="Dupont",
+            rank=1,
+            role=Elus.Role.VICE_PRESIDENT,
+            function="Test",
+            picture=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=b"fake_image_content",
+                content_type="image/jpeg",
+            ),
+            city=self.city,
+            profession="Test",
+        )
+        self.elu.linked_commission.add(self.commission)
+
+    def tearDown(self):
+        Elus.objects.all().delete()
+        CommissionCompetence.objects.all().delete()
+        Commission.objects.all().delete()
+        ConseilVille.objects.all().delete()
+        if os.path.exists(MEDIA_ROOT):
+            shutil.rmtree(MEDIA_ROOT)
+
+    def test_commission_displayed_on_bureau_page(self):
+        """Test que le bouton Voir plus est affiché quand une commission est liée"""
+        response = self.client.get(reverse("bureau-communautaire:elus"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Voir plus")
+
+    def test_competences_displayed_in_context(self):
+        """Test que les compétences sont passées via le contexte"""
+        response = self.client.get(reverse("bureau-communautaire:elus"))
+        self.assertEqual(response.status_code, 200)
+        # Vérifier que les compétences sont présentes dans le rendu
+        self.assertContains(response, "Compétence 1")
+        self.assertContains(response, "Compétence 2")
+
+    def test_competences_not_displayed_without_commission(self):
+        """Test qu'aucune compétence ne s'affiche si pas de commission liée"""
+        elu2 = Elus.objects.create(
+            first_name="Marie",
+            last_name="Martin",
+            rank=2,
+            role=Elus.Role.VICE_PRESIDENT,
+            function="Test",
+            picture=SimpleUploadedFile(
+                name="test_image2.jpg",
+                content=b"fake_image_content2",
+                content_type="image/jpeg",
+            ),
+            city=self.city,
+            profession="Test",
+        )
+        response = self.client.get(reverse("bureau-communautaire:elus"))
+        self.assertEqual(response.status_code, 200)
+        # Les compétences de la commission liée à elu1 restent affichées
+        self.assertContains(response, "Compétence 1")
+        self.assertContains(response, "Compétence 2")
+
+    def test_accordion_markup_present(self):
+        """Test que le markup du toggle Voir plus est présent dans le HTML"""
+        response = self.client.get(reverse("bureau-communautaire:elus"))
+        self.assertEqual(response.status_code, 200)
+        # Vérifier les attributs ARIA du toggle
+        self.assertContains(response, "vp-competences-trigger-")
+        self.assertContains(response, "vp-competences-panel-")
+        self.assertContains(response, "aria-expanded")
+        self.assertContains(response, "aria-controls")
+        self.assertContains(response, "vp-competences-toggle")
+
+    def test_multiple_competences_ordered(self):
+        """Test que les compétences sont affichées dans le bon ordre"""
+        response = self.client.get(reverse("bureau-communautaire:elus"))
+        self.assertEqual(response.status_code, 200)
+        # L'ordre dans le HTML doit correspondre à l'ordre du modèle
+        html = response.content.decode()
+        pos_comp1 = html.index("Compétence 1")
+        pos_comp2 = html.index("Compétence 2")
+        self.assertLess(pos_comp1, pos_comp2)

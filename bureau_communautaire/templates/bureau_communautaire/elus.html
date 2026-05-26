@@ -120,7 +120,51 @@
                             {{ vicep.role }}
                         </p>
                         <p class="elu-commune text-gray-600 dark:text-gray-300 mb-2">{{vicep.profession}}</p>
-                        <p class="elu-fonction text-gray-700 dark:text-gray-200">{{vicep.function|default:""}}</p>
+                        <p class="elu-fonction text-gray-700 dark:text-gray-200 mb-3">{{vicep.function|default:""}}</p>
+
+                        {% if vicep.linked_commission.all %}
+                        <div class="vp-competences-wrapper border-t border-gray-200 dark:border-gray-600 pt-3 mt-3">
+                            <button
+                                type="button"
+                                class="vp-competences-toggle group"
+                                aria-expanded="false"
+                                aria-controls="vp-competences-panel-{{ vicep.id }}"
+                                id="vp-competences-trigger-{{ vicep.id }}">
+                                <span class="vp-competences-toggle-label">Voir plus</span>
+                                <svg class="vp-competences-toggle-chevron w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div
+                                id="vp-competences-panel-{{ vicep.id }}"
+                                role="region"
+                                aria-labelledby="vp-competences-trigger-{{ vicep.id }}"
+                                class="vp-competences-panel"
+                                aria-hidden="true">
+                                {% for commission in vicep.linked_commission.all %}
+                                    {% if commission.competences.all %}
+                                    <div class="vp-competences-group">
+                                        <ul class="vp-competences-list" role="list">
+                                            {% for competence in commission.competences.all %}
+                                            <li>
+                                                <span class="vp-competences-bullet" aria-hidden="true">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </span>
+                                                <span class="vp-competences-text">{{ competence.title }}</span>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                    {% if not forloop.last %}
+                                    <div class="vp-competences-separator" role="separator" aria-orientation="horizontal"></div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </article>
                 {% endfor %}
@@ -236,6 +280,41 @@
     lightboxClose.addEventListener('click', closeLightbox);
     lightboxModal.addEventListener('click', function(e) {
         if (e.target === lightboxModal) closeLightbox();
+    });
+
+    // Toggle "Voir plus" pour les competences des commissions dans les cartes VP
+    const vpCompetencesToggles = document.querySelectorAll('.vp-competences-toggle');
+
+    vpCompetencesToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            const panelId = this.getAttribute('aria-controls');
+            const panel = document.getElementById(panelId);
+            const label = this.querySelector('.vp-competences-toggle-label');
+
+            if (isExpanded) {
+                this.setAttribute('aria-expanded', 'false');
+                if (label) label.textContent = 'Voir plus';
+                if (panel) {
+                    panel.classList.remove('open');
+                    panel.setAttribute('aria-hidden', 'true');
+                }
+            } else {
+                this.setAttribute('aria-expanded', 'true');
+                if (label) label.textContent = 'Voir moins';
+                if (panel) {
+                    panel.classList.add('open');
+                    panel.setAttribute('aria-hidden', 'false');
+                }
+            }
+        });
+
+        toggle.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.click();
+            }
+        });
     });
 })();
 </script>

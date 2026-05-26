@@ -3,7 +3,15 @@ import os
 from django.contrib import admin
 
 from .forms import CommissionDocForm, CommissionForm, MandatForm
-from .models import Commission, Document, Mandat
+from .models import Commission, CommissionCompetence, Document, Mandat
+
+
+class CompetenceInline(admin.TabularInline):
+    model = CommissionCompetence
+    extra = 1
+    fields = ("title", "order")
+    verbose_name = "Compétence"
+    verbose_name_plural = "Compétences"
 
 
 class CustomCommissionAdmin(admin.ModelAdmin):
@@ -17,6 +25,7 @@ class CustomCommissionAdmin(admin.ModelAdmin):
     list_filter = ("title", "icon")
     search_fields = ("title", "icon")
     ordering = ("title",)
+    inlines = [CompetenceInline]
 
 
 def delete_content(modeladmin, request, queryset):

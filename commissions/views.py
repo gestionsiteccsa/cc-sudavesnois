@@ -10,7 +10,7 @@ from bureau_communautaire.models import Elus, PageStatus
 from conseil_communautaire.models import ConseilMembre
 
 from .forms import CommissionDocForm, CommissionForm, MandatForm
-from .models import Commission, Document, Mandat
+from .models import Commission, CommissionCompetence, Document, Mandat
 
 
 def commissions(request):
@@ -258,3 +258,45 @@ def manage_page_status(request):
     }
 
     return render(request, "commissions/admin_page_status.html", context)
+
+
+@permission_required("commissions.view_commission")
+def list_commission_competences(request):
+    """Affiche la liste des commissions avec leurs compétences."""
+    commissions_qs = Commission.objects.order_by("title").prefetch_related("competences")
+    commissions = list(commissions_qs)
+    commissions = commissions if commissions else None
+
+    context = {
+        "commissions": commissions,
+    }
+    return render(request, "commissions/admin_competences_list.html", context)
+
+
+@permission_required("commissions.add_commission")
+def add_competence(request):
+    """Ajoute une compétence à une commission."""
+    if request.method == "POST":
+        commission_id = request.POST.get("commission")
+        title = request.POST.get("title", "").strip()
+        order = request.POST.get("order", 0)
+        if commission_id and title:
+            CommissionCompetence.objects.create(
+                commission_id=commission_id,
+                title=title,
+                order=int(order) if str(order).isdigit() else 0,
+            )
+            messages.success(request, "Compétence ajoutée avec succès.")
+        else:
+            messages.error(request, "Veuillez remplir tous les champs obligatoires.")
+    return redirect("commissions:admin_competences")
+
+
+@permission_required("commissions.delete_commission")
+def delete_competence(request, pk):
+    """Supprime une compétence."""
+    competence = get_object_or_404(CommissionCompetence, pk=pk)
+    if request.method == "POST":
+        competence.delete()
+        messages.success(request, "Compétence supprimée.")
+    return redirect("commissions:admin_competences")
