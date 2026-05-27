@@ -8,10 +8,18 @@ def list_contact_emails(request):
     """View to list all contact emails."""
     if ContactEmail.objects.exists():
         contact_emails = get_list_or_404(ContactEmail.objects.order_by("-is_active"))
+        total = ContactEmail.objects.count()
+        actifs = ContactEmail.objects.filter(is_active=True).count()
     else:
         contact_emails = None
+        total = 0
+        actifs = 0
     return render(
-        request, "contact/list_contacts.html", {"contact_emails": contact_emails}
+        request, "contact/list_contacts.html", {
+            "contact_emails": contact_emails,
+            "total": total,
+            "actifs": actifs,
+        }
     )
 
 
@@ -30,7 +38,10 @@ def edit_contact_email(request, id):
     else:
         form = ContactEmailForm(instance=contact_email)
 
-    return render(request, "contact/edit_contact.html", {"form": form})
+    return render(request, "contact/edit_contact.html", {
+        "form": form,
+        "contact": contact_email,
+    })
 
 
 def delete_contact_email(request, id):

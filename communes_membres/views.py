@@ -49,17 +49,21 @@ def list_acte_local(request):
     Affiche la liste des actes locaux.
     Optimisé avec select_related pour éviter les N+1 queries sur la commune.
     """
-    # Récupérer tous les actes locaux avec select_related pour la commune
     actes_qs = ActeLocal.objects.select_related('commune')
     actes_list = list(actes_qs)
+    total = len(actes_list)
     
     if not actes_list:
         actes_list = [
             ActeLocal(id="-1", date=None, description=None, commune=None, file="/")
         ]
+        total = 0
 
     return render(
-        request, "communes_membres/admin_acte_list.html", {"actes_locaux": actes_list}
+        request, "communes_membres/admin_acte_list.html", {
+            "actes_locaux": actes_list,
+            "total": total,
+        }
     )
 
 
@@ -103,4 +107,7 @@ def update_acte_local(request, id):
     else:
         form = ActesLocForm(instance=acte_local)
 
-    return render(request, "communes_membres/admin_acte_edit.html", {"form_acte": form})
+    return render(request, "communes_membres/admin_acte_edit.html", {
+        "form_acte": form,
+        "acte": acte_local,
+    })

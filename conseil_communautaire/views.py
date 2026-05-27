@@ -67,15 +67,36 @@ def add_city(request):
 def list_cities(request):
     """
     Affiche la liste des villes.
-    Optimisé pour éviter le double pattern .exists() + requête.
+    Optimisé avec prefetch des commissions et groupement des membres.
     """
-    cities_list = list(ConseilVille.objects.all())
+    cities_list = list(ConseilVille.objects.all().order_by("city_name"))
     cities_list = cities_list if cities_list else None
-    
-    members_list = list(ConseilMembre.objects.all())
-    members_list = members_list if members_list else None
-    
-    context = {"cities_list": cities_list, "members_list": members_list}
+
+    members_qs = (
+        ConseilMembre.objects.select_related("city")
+        .prefetch_related("linked_commission")
+        .all()
+        .order_by("last_name", "first_name")
+    )
+
+    members_list = list(members_qs)
+
+    member_counts = {}
+    for m in members_list:
+        member_counts[m.city_id] = member_counts.get(m.city_id, 0) + 1
+
+    total_cities = len(cities_list) if cities_list else 0
+    total_members = len(members_list)
+    total_population = sum(c.nb_habitants for c in cities_list) if cities_list else 0
+
+    context = {
+        "cities_list": cities_list,
+        "members_list": members_list,
+        "member_counts": member_counts,
+        "total_cities": total_cities,
+        "total_members": total_members,
+        "total_population": total_population,
+    }
     return render(request, "conseil_communautaire/admin_cities_list.html", context)
 
 

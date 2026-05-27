@@ -1,121 +1,379 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 
-{% block title %}Liste des partenaires{% endblock %}
+{% block title %}Partenaires | {{ block.super }}{% endblock %}
+{% block breadcrumb %}Partenaires{% endblock %}
+
+{% block styles %}
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeInUp 0.35s ease-out both;
+  }
+  .partner-row:nth-child(1) { animation-delay: 0ms; }
+  .partner-row:nth-child(2) { animation-delay: 40ms; }
+  .partner-row:nth-child(3) { animation-delay: 80ms; }
+  .partner-row:nth-child(4) { animation-delay: 120ms; }
+  .partner-row:nth-child(5) { animation-delay: 160ms; }
+  .partner-row:nth-child(6) { animation-delay: 200ms; }
+  .partner-row:nth-child(7) { animation-delay: 240ms; }
+  .partner-row:nth-child(8) { animation-delay: 280ms; }
+  .partner-row:nth-child(9) { animation-delay: 320ms; }
+  .partner-row:nth-child(10) { animation-delay: 360ms; }
+  .partner-row:nth-child(11) { animation-delay: 400ms; }
+  .partner-row:nth-child(12) { animation-delay: 440ms; }
+  .partner-row:nth-child(13) { animation-delay: 480ms; }
+  .partner-row:nth-child(14) { animation-delay: 520ms; }
+  .partner-row:nth-child(15) { animation-delay: 560ms; }
+
+  .highlight {
+    background-color: #fef08a;
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+  .dark .highlight {
+    background-color: #854d0e;
+    color: #fef08a;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in { animation: none; }
+  }
+  @media (forced-colors: active) {
+    .action-btn { border: 1px solid ButtonText; }
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12 min-h-screen">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Partenaires</h1>
-            <p class="text-gray-600 dark:text-gray-700 mt-2">Gérez les partenaires de la CCSA</p>
-        </div>
-
-        <!-- Messages -->
-        {% if messages %}
-        <div class="mb-6">
-            {% for message in messages %}
-            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Boutons d'action -->
-        <div class="mb-6 flex flex-wrap gap-4">
-            <a href="{% url 'partenaires:add_partenaire' %}" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-                <svg class="w-5 aria-hidden="true" focusable="false"  h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Ajouter un partenaire
-            </a>
-            <a href="{% url 'partenaires:admin_categories_list' %}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                <svg class="w-5 aria-hidden="true" focusable="false"  h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                </svg>
-                Gérer les catégories
-            </a>
-        </div>
-
-        <!-- Tableau -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Logo</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Nom</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Catégorie</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Fond</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Ordre</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Statut</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-700 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        {% for partenaire in partenaires %}
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {% if partenaire.logo %}
-                                <div class="h-10 w-10 rounded flex items-center justify-center overflow-hidden" style="background-color: {{ partenaire.couleur_fond }};">
-                                    <img src="{{ partenaire.logo.url }}" alt="Logo {{ partenaire.nom }}" class="h-full w-full object-contain p-1">
-                                </div>
-                                {% else %}
-                                <div class="h-10 w-10 rounded flex items-center justify-center" style="background-color: {{ partenaire.couleur_fond }};">
-                                    <svg class="h-5 aria-hidden="true" focusable="false"  w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                {% endif %}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                {{ partenaire.nom }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-700">
-                                {{ partenaire.categorie.nom|default:"—" }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-700">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded border border-gray-300" style="background-color: {{ partenaire.couleur_fond }};"></div>
-                                    <span class="text-xs">{{ partenaire.couleur_fond }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-700">
-                                {{ partenaire.ordre }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                {{ partenaire.nom }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-700">
-                                {{ partenaire.categorie.nom|default:"—" }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-700">
-                                {{ partenaire.ordre }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                {% if partenaire.active %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Actif</span>
-                                {% else %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Inactif</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{% url 'partenaires:edit_partenaire' partenaire.id %}" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-4">Modifier</a>
-                                <a href="{% url 'partenaires:delete_partenaire' partenaire.id %}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Supprimer</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-600 dark:text-gray-600">
-                                Aucun partenaire n'a été créé.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="flex items-center justify-between mb-6">
+  <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
+    <span class="text-gray-400">/</span>
+    <span class="text-primary font-semibold">Partenaires</span>
+  </nav>
+  <a href="{% url 'accounts:admin_dashboard' %}"
+     class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-primary transition text-sm font-medium">
+    <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Admin
+  </a>
 </div>
+
+{% if messages %}
+<div class="mb-6">
+  {% for message in messages %}
+  <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium mb-2 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800{% elif message.tags == 'error' or message.tags == 'warning' %}bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800{% else %}bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800{% endif %}" role="alert" aria-live="polite">
+    {% if message.tags == 'success' %}
+    <svg class="w-5 h-5 text-green-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% elif message.tags == 'error' or message.tags == 'warning' %}
+    <svg class="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% else %}
+    <svg class="w-5 h-5 text-blue-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- En-tête -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Partenaires</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="subtitle-count">
+      {{ total }} partenaire{{ total|pluralize }}
+    </p>
+  </div>
+  <div class="flex gap-2">
+    <a href="{% url 'partenaires:admin_categories_list' %}"
+       class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 text-sm">
+      <svg class="w-5 h-5 mr-2" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+      Catégories
+    </a>
+    <a href="{% url 'partenaires:add_partenaire' %}"
+       class="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+      <svg class="w-5 h-5 mr-2" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Ajouter
+    </a>
+  </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</div>
+        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ total }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-green-600 dark:text-green-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Actifs</div>
+        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ actifs }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 col-span-2 md:col-span-1">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Inactifs</div>
+        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ inactifs }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if partenaires %}
+<!-- Search bar -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+  <div class="relative">
+    <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    <input type="text" id="search-input" placeholder="Rechercher par nom, catégorie..."
+           class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm"
+           aria-label="Rechercher un partenaire">
+  </div>
+</div>
+
+<!-- Table -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse" id="partners-table">
+      <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
+        <tr>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Partenaire</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Catégorie</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Fond</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ordre</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right w-44">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="table-body">
+        {% for partenaire in partenaires %}
+        <tr class="partner-row hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors animate-fade-in"
+            data-name="{{ partenaire.nom|lower }}"
+            data-category="{{ partenaire.categorie.nom|lower|default:'' }}"
+            data-id="{{ partenaire.id }}">
+          <td class="px-5 py-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200 dark:border-gray-600" style="background-color: {{ partenaire.couleur_fond }};">
+                {% if partenaire.logo %}
+                <img src="{{ partenaire.logo.url }}" alt="" class="w-full h-full object-contain p-1" loading="lazy">
+                {% else %}
+                <svg class="w-4 h-4 text-gray-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                {% endif %}
+              </div>
+              <span class="text-sm font-semibold text-gray-900 dark:text-gray-100 searchable-name truncate">{{ partenaire.nom }}</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400 searchable-category whitespace-nowrap">
+            {{ partenaire.categorie.nom|default:"—" }}
+          </td>
+          <td class="px-5 py-3 whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded border border-gray-300 dark:border-gray-600 flex-shrink-0" style="background-color: {{ partenaire.couleur_fond }};"></div>
+              <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ partenaire.couleur_fond }}</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">{{ partenaire.ordre }}</td>
+          <td class="px-5 py-3 whitespace-nowrap">
+            {% if partenaire.active %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Actif</span>
+            {% else %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">Inactif</span>
+            {% endif %}
+          </td>
+          <td class="px-5 py-3 whitespace-nowrap text-right">
+            <div class="flex items-center justify-end gap-2">
+              <a href="{% url 'partenaires:edit_partenaire' partenaire.id %}"
+                 class="inline-flex items-center px-2.5 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition text-xs font-medium action-btn"
+                 aria-label="Modifier {{ partenaire.nom }}">
+                <svg class="w-3.5 h-3.5 mr-1" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Modifier
+              </a>
+              <button onclick="openDeleteModal('{{ partenaire.nom|escapejs }}', '{% url 'partenaires:delete_partenaire' partenaire.id %}')"
+                      class="inline-flex items-center px-2.5 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition text-xs font-medium action-btn"
+                      aria-label="Supprimer {{ partenaire.nom }}">
+                <svg class="w-3.5 h-3.5 mr-1" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Supprimer
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- État vide filtré -->
+  <div id="no-results" class="hidden p-12 text-center">
+    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+      <svg class="w-8 h-8 text-gray-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Aucun résultat</h3>
+    <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">Aucun partenaire ne correspond à votre recherche.</p>
+    <button type="button" onclick="resetFilters()" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-sm font-medium text-sm">
+      Réinitialiser
+    </button>
+  </div>
+</div>
+{% else %}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+  <div class="w-20 h-20 mx-auto mb-6 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+    <svg class="w-10 h-10 text-blue-500 dark:text-blue-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+  </div>
+  <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Aucun partenaire</h3>
+  <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Ajoutez votre premier partenaire pour commencer.</p>
+  <a href="{% url 'partenaires:add_partenaire' %}"
+     class="inline-flex items-center px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-sm font-medium text-sm">
+    <svg class="w-5 h-5 mr-2" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Ajouter un partenaire
+  </a>
+</div>
+{% endif %}
+
+<!-- Delete modal -->
+<div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div id="modal-backdrop" class="absolute inset-0 bg-black/50 dark:bg-black/70 opacity-0 transition-opacity duration-200" onclick="closeDeleteModal()"></div>
+  <div id="modal-panel" class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 scale-95 opacity-0 transition-all duration-200">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-red-600 dark:text-red-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h2 id="modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">Supprimer le partenaire</h2>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+      Êtes-vous sûr de vouloir supprimer <strong id="modal-item-name" class="text-gray-900 dark:text-white"></strong> ?
+    </p>
+    <form id="modal-delete-form" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="confirm" value="yes">
+      <div class="flex gap-3 justify-end">
+        <button type="button" onclick="closeDeleteModal()"
+                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm font-medium">
+          Annuler
+        </button>
+        <button type="submit"
+                class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition text-sm font-medium">
+          Supprimer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+(function() {
+  var searchInput = document.getElementById('search-input');
+  var rows = document.querySelectorAll('.partner-row');
+  var noResults = document.getElementById('no-results');
+  var subtitleCount = document.getElementById('subtitle-count');
+
+  function normalize(str) {
+    return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll('.highlight').forEach(function(el) {
+      el.outerHTML = el.textContent;
+    });
+  }
+
+  function highlightText(el, query) {
+    if (!query) return;
+    var safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp('(' + safe + ')', 'gi');
+    el.innerHTML = el.textContent.replace(regex, '<mark class="highlight">$1</mark>');
+  }
+
+  function updateVisibility() {
+    var query = normalize(searchInput ? searchInput.value : '');
+    var visibleCount = 0;
+    clearHighlights();
+
+    rows.forEach(function(row) {
+      var name = normalize(row.getAttribute('data-name') || '');
+      var category = normalize(row.getAttribute('data-category') || '');
+
+      if (!query || name.includes(query) || category.includes(query)) {
+        row.classList.remove('hidden');
+        visibleCount++;
+        if (query) {
+          row.querySelectorAll('.searchable-name').forEach(function(el) { highlightText(el, query); });
+          row.querySelectorAll('.searchable-category').forEach(function(el) { highlightText(el, query); });
+        }
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+
+    if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+    if (subtitleCount) {
+      var text = visibleCount + ' partenaire' + (visibleCount !== 1 ? 's' : '');
+      if (query) text += ' trouvé' + (visibleCount !== 1 ? 's' : '');
+      subtitleCount.textContent = text;
+    }
+  }
+
+  if (searchInput) searchInput.addEventListener('input', updateVisibility);
+
+  window.resetFilters = function() {
+    if (searchInput) searchInput.value = '';
+    updateVisibility();
+  };
+
+  var deleteModal = document.getElementById('delete-modal');
+  var modalBackdrop = document.getElementById('modal-backdrop');
+  var modalPanel = document.getElementById('modal-panel');
+  var modalDeleteForm = document.getElementById('modal-delete-form');
+  var modalItemName = document.getElementById('modal-item-name');
+
+  window.openDeleteModal = function(name, url) {
+    if (!deleteModal) return;
+    modalItemName.textContent = name;
+    modalDeleteForm.action = url;
+    deleteModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function() {
+      modalBackdrop.classList.remove('opacity-0');
+      modalPanel.classList.remove('scale-95', 'opacity-0');
+      modalPanel.classList.add('scale-100', 'opacity-100');
+    });
+  };
+
+  window.closeDeleteModal = function() {
+    if (!deleteModal) return;
+    modalBackdrop.classList.add('opacity-0');
+    modalPanel.classList.remove('scale-100', 'opacity-100');
+    modalPanel.classList.add('scale-95', 'opacity-0');
+    setTimeout(function() {
+      deleteModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 200);
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && deleteModal && !deleteModal.classList.contains('hidden')) {
+      closeDeleteModal();
+    }
+  });
+})();
+</script>
 {% endblock %}

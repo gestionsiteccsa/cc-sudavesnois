@@ -2,53 +2,239 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block title %}Modifier le journal — Mon Mag | {{ block.super }}{% endblock %}
+{% block breadcrumb %}Mon Mag{% endblock %}
+
+{% block styles %}
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeInUp 0.35s ease-out both;
+  }
+
+  input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    border: none;
+    background: #4f46e5;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.15s;
+  }
+  input[type="file"]::file-selector-button:hover {
+    background: #4338ca;
+  }
+  .dark input[type="file"] {
+    color: #d1d5db;
+  }
+  .dark input[type="file"]::file-selector-button {
+    background: #6366f1;
+    color: white;
+  }
+  .dark input[type="file"]::file-selector-button:hover {
+    background: #818cf8;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in { animation: none; }
+  }
+
+  @media (forced-colors: active) {
+    .current-file-thumb {
+      border: 2px solid ButtonText;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 md:p-8">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Modifier le journal</h1>
-                <form method="POST" enctype="multipart/form-data" class="space-y-4">
-                    {% csrf_token %}
-                    {% if messages %}
-                    <div class="mb-4">
-                        {% for message in messages %}
-                            <div class="p-3 rounded text-sm mb-2 {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% elif message.tags == 'error' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% else %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200{% endif %}" role="alert" aria-live="polite">
-                                {% if message.tags == 'success' %}<span aria-hidden="true">✔️</span>{% elif message.tags == 'error' %}<span aria-hidden="true">❌</span>{% else %}<span aria-hidden="true">ℹ️</span>{% endif %}
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% for field in journal %}
-                    <div class="space-y-2">
-                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
-                            {{ field.label }}
-                        </label>
-                        {% render_field field class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" %}
-                        {% if field.errors %}
-                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ field.errors.0 }}</p>
-                        {% endif %}
-                        {% if field.help_text %}
-                        <p class="text-xs text-gray-600 dark:text-gray-600">{{ field.help_text }}</p>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <div>
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
-                            Enregistrer les modifications
-                        </button>
-                    </div>
-                </form>
-                <div class="mt-6 text-center">
-                    <p class="text-sm text-gray-600 dark:text-gray-600">
-                        <a href="{% url 'journal:admin_journaux_list' %}" class="font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">
-                            Retour à la liste des journaux
-                        </a>
-                    </p>
-                </div>
-            </div>
-        </div>
+<div class="flex items-center justify-between mb-6">
+  <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
+    <span class="text-gray-400">/</span>
+    <a href="{% url 'journal:admin_journaux_list' %}" class="hover:text-primary transition-colors">Mon Mag</a>
+    <span class="text-gray-400">/</span>
+    <span class="text-primary font-semibold">Modifier</span>
+  </nav>
+  <a href="{% url 'journal:admin_journaux_list' %}"
+     class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-primary transition text-sm font-medium">
+    <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Mon Mag
+  </a>
+</div>
+
+{% if messages %}
+<div class="mb-6">
+  {% for message in messages %}
+  <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium mb-2 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800{% elif message.tags == 'error' or message.tags == 'warning' %}bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800{% else %}bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800{% endif %}" role="alert" aria-live="polite">
+    {% if message.tags == 'success' %}
+    <svg class="w-5 h-5 text-green-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% elif message.tags == 'error' or message.tags == 'warning' %}
+    <svg class="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% else %}
+    <svg class="w-5 h-5 text-blue-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="animate-fade-in">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Modifier le journal</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        N<sup>o</sup> {{ journal.number }} — {{ journal.title }}
+      </p>
     </div>
+    <a href="{% url 'journal:delete_journal' journal.id %}"
+       class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-sm">
+      <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      Supprimer ce numéro
+    </a>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+      <!-- Champs texte -->
+      <div class="p-6 md:p-8 space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Title -->
+          <div class="md:col-span-2 space-y-1.5">
+            <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Titre
+            </label>
+            {% render_field form.title class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm" placeholder="Titre du journal" %}
+            {% if form.title.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.title.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Number -->
+          <div class="space-y-1.5">
+            <label for="{{ form.number.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Numéro
+            </label>
+            {% render_field form.number class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm" placeholder="42" %}
+            {% if form.number.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.number.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Release date -->
+          <div class="space-y-1.5">
+            <label for="{{ form.release_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Date de publication
+            </label>
+            {% render_field form.release_date class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm" %}
+            {% if form.release_date.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.release_date.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Page number -->
+          <div class="space-y-1.5">
+            <label for="{{ form.page_number.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Nombre de pages
+            </label>
+            {% render_field form.page_number class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm" placeholder="12" %}
+            {% if form.page_number.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.page_number.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <hr class="border-gray-200 dark:border-gray-700">
+
+        <!-- Fichiers actuels -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-y-3">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+              <svg class="w-4 h-4 text-red-500" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Document PDF actuel
+            </h3>
+            {% if journal.document %}
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+              <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-red-600 dark:text-red-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{{ journal.document.name|slice:"13:" }}</p>
+                {% with doc_size=journal.get_document_size %}{% if doc_size %}
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ doc_size }}</p>
+                {% endif %}{% endwith %}
+              </div>
+              <a href="{{ journal.document.url }}" target="_blank" rel="noopener"
+                 class="flex-shrink-0 text-sm text-primary hover:text-primary-600 font-medium transition">Voir</a>
+            </div>
+            {% else %}
+            <p class="text-sm text-gray-400 dark:text-gray-500 italic">Aucun document</p>
+            {% endif %}
+
+            <label for="{{ form.document.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 pt-1">
+              Remplacer le PDF
+            </label>
+            {% render_field form.document class="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-600 file:transition file:cursor-pointer dark:text-gray-300" %}
+            {% if form.document.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.document.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+              <svg class="w-4 h-4 text-violet-500" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Couverture actuelle
+            </h3>
+            {% if journal.cover %}
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+              <img src="{{ journal.cover.url }}" alt="Couverture du journal {{ journal.title }}" class="w-10 h-14 object-cover rounded border border-gray-200 dark:border-gray-600 flex-shrink-0 current-file-thumb">
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{{ journal.cover.name|slice:"17:" }}</p>
+                {% with cover_size=journal.get_cover_size %}{% if cover_size %}
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ cover_size }}</p>
+                {% endif %}{% endwith %}
+              </div>
+              <a href="{{ journal.cover.url }}" target="_blank" rel="noopener"
+                 class="flex-shrink-0 text-sm text-primary hover:text-primary-600 font-medium transition">Voir</a>
+            </div>
+            {% else %}
+            <p class="text-sm text-gray-400 dark:text-gray-500 italic">Aucune couverture</p>
+            {% endif %}
+
+            <label for="{{ form.cover.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 pt-1">
+              Remplacer la couverture
+            </label>
+            {% render_field form.cover class="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-600 file:transition file:cursor-pointer dark:text-gray-300" %}
+            {% if form.cover.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.cover.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer actions -->
+      <div class="px-6 md:px-8 py-4 bg-gray-50 dark:bg-gray-900/50 rounded-b-xl border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <a href="{% url 'journal:admin_journaux_list' %}"
+           class="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm font-medium">
+          Annuler
+        </a>
+        <button type="submit"
+                class="inline-flex items-center px-5 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+          <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Enregistrer les modifications
+        </button>
+      </div>
+    </div>
+  </form>
 </div>
 {% endblock %}

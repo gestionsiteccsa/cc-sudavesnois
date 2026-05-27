@@ -32,7 +32,13 @@ def journal(request):
 def list_journals(request):
     """Vue de la liste des journaux pour l'administrateur"""
     journaux = Journal.objects.all().order_by("-number")
-    return render(request, "journal/list_journals.html", {"journaux": journaux})
+    pdf_count = sum(1 for j in journaux if j.document)
+    cover_count = sum(1 for j in journaux if j.cover)
+    return render(request, "journal/list_journals.html", {
+        "journaux": journaux,
+        "pdf_count": pdf_count,
+        "cover_count": cover_count,
+    })
 
 
 @permission_required("journal.add_journal")
@@ -49,7 +55,7 @@ def add_journal(request):
     else:
         journal_form = JournalForm()
 
-    return render(request, "journal/add_journal.html", {"journal": journal_form})
+    return render(request, "journal/add_journal.html", {"form": journal_form})
 
 
 @permission_required("journal.delete_journal")
@@ -123,4 +129,7 @@ def edit_journal(request, id):
     else:
         journal_form = JournalForm(instance=journal)
 
-    return render(request, "journal/edit_journal.html", {"journal": journal_form})
+    return render(request, "journal/edit_journal.html", {
+        "form": journal_form,
+        "journal": journal,
+    })

@@ -75,7 +75,16 @@ def partenaires(request):
 def list_categories(request):
     """Liste des catégories de partenaires"""
     categories = CategoriePartenaire.objects.all().order_by('ordre', 'nom')
-    return render(request, "partenaires/list_categories.html", {"categories": categories})
+    total = categories.count()
+    actives = categories.filter(active=True).count()
+    inactives = total - actives
+
+    return render(request, "partenaires/list_categories.html", {
+        "categories": categories,
+        "total": total,
+        "actives": actives,
+        "inactives": inactives,
+    })
 
 
 @login_required
@@ -147,7 +156,16 @@ def list_partenaires(request):
     partenaires_list = Partenaire.objects.all().select_related('categorie').order_by(
         'categorie__ordre', 'ordre', 'nom'
     )
-    return render(request, "partenaires/list_partenaires.html", {"partenaires": partenaires_list})
+    total = partenaires_list.count()
+    actifs = partenaires_list.filter(active=True).count()
+    inactifs = total - actifs
+
+    return render(request, "partenaires/list_partenaires.html", {
+        "partenaires": partenaires_list,
+        "total": total,
+        "actifs": actifs,
+        "inactifs": inactifs,
+    })
 
 
 @login_required

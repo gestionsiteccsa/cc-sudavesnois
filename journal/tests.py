@@ -67,7 +67,7 @@ class JournalAddJournalViewTestCase(TestCase):
         response = self.client.get(self.add_journal_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "journal/add_journal.html")
-        self.assertIsInstance(response.context["journal"], JournalForm)
+        self.assertIsInstance(response.context["form"], JournalForm)
 
     def test_add_journal_post_valid_data(self):
         """
@@ -139,8 +139,8 @@ class JournalAddJournalViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Journal.objects.count(), 0)
         self.assertTemplateUsed(response, "journal/add_journal.html")
-        self.assertIn("document", response.context["journal"].errors)
-        self.assertIn("cover", response.context["journal"].errors)
+        self.assertIn("document", response.context["form"].errors)
+        self.assertIn("cover", response.context["form"].errors)
 
     def test_add_journal_post_invalid_file_types(self):
         """
@@ -168,8 +168,8 @@ class JournalAddJournalViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Journal.objects.count(), 0)
         self.assertTemplateUsed(response, "journal/add_journal.html")
-        self.assertIn("document", response.context["journal"].errors)
-        self.assertIn("cover", response.context["journal"].errors)
+        self.assertIn("document", response.context["form"].errors)
+        self.assertIn("cover", response.context["form"].errors)
 
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -225,8 +225,8 @@ class JournalEditJournalViewTestCase(TestCase):
         response = self.client.get(self.edit_journal_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "journal/edit_journal.html")
-        self.assertIsInstance(response.context["journal"], JournalForm)
-        self.assertEqual(response.context["journal"].instance, self.journal)
+        self.assertIsInstance(response.context["form"], JournalForm)
+        self.assertEqual(response.context["form"].instance, self.journal)
 
     def test_edit_journal_post_valid_data(self):
         """

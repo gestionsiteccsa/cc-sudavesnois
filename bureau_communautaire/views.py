@@ -85,10 +85,18 @@ def list_elus(request):
     Affiche la liste des élus.
     Optimisé avec select_related pour city et prefetch_related pour linked_commission.
     """
-    elus = list(
-        Elus.objects.select_related("city").prefetch_related("linked_commission")
+    queryset = Elus.objects.select_related("city").prefetch_related("linked_commission")
+    elus = list(queryset)
+    stats = {
+        "total": queryset.count(),
+        "presidents": queryset.filter(role=Elus.Role.PRESIDENT).count(),
+        "vice_presidents": queryset.filter(role=Elus.Role.VICE_PRESIDENT).count(),
+    }
+    return render(
+        request,
+        "bureau_communautaire/admin_elus_list.html",
+        {"elus": elus, "stats": stats},
     )
-    return render(request, "bureau_communautaire/admin_elus_list.html", {"elus": elus})
 
 
 @permission_required("bureau_communautaire.change_elus")

@@ -55,6 +55,7 @@ def edit_content(request, pk):
 
     context = {
         "form": form,
+        "content": content,
     }
 
     return render(request, "semestriel/admin_content_edit.html", context)

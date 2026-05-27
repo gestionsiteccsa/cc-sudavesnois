@@ -40,11 +40,20 @@ def manage_rapports_activite(request):
     """
     if RapportActivite.objects.exists():
         rapports = get_list_or_404(RapportActivite.objects.all().order_by("-year"))
+        total = len(rapports)
+        latest = rapports[0].year if total > 0 else None
+        oldest = rapports[total - 1].year if total > 0 else None
     else:
         rapports = None
+        total = 0
+        latest = None
+        oldest = None
 
     context = {
         "rapports": rapports,
+        "total": total,
+        "latest": latest,
+        "oldest": oldest,
     }
 
     return render(request, gestion_rapport, context)
@@ -84,7 +93,7 @@ def edit_rapport_activite(request, id):
             return redirect("rapports_activite:gestion_rapports_activite")
     else:
         form = RapportActiviteForm(instance=rapport)
-    return render(request, modifier_rapport, {"form": form})
+    return render(request, modifier_rapport, {"form": form, "rapport": rapport})
 
 
 @permission_required("rapports_activite.delete_rapportactivite")
@@ -98,4 +107,4 @@ def delete_rapport_activite(request, id):
             os.remove(rapport.file.path)
         rapport.delete()
         return redirect("rapports_activite:gestion_rapports_activite")
-    return render(request, supprimer_rapport, {"form": rapport})
+    return render(request, supprimer_rapport, {"rapport": rapport})

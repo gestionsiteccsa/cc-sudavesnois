@@ -440,7 +440,7 @@ class RapportActiviteViewsTestCase(BaseRapportActiviteTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "rapports_activite/admin-rapport-delete.html")
-        self.assertEqual(response.context["form"], rapport)
+        self.assertEqual(response.context["rapport"], rapport)
 
     def test_delete_rapport_activite_view_post(self):
         """Test de suppression d'un rapport."""

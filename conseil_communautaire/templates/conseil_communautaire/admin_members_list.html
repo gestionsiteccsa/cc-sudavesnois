@@ -1,7 +1,78 @@
 {% extends 'admin_base.html' %}
-{% block title %}Liste des élus - Conseil Communautaire{% endblock %}
+{% load static %}
+{% load conseil_filters %}
+
+{% block title %}Liste des élus — Conseil Communautaire | {{ block.super }}{% endblock %}
+{% block breadcrumb %}Conseil communautaire{% endblock %}
+
+{% block styles %}
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeInUp 0.35s ease-out both;
+  }
+  .member-row:nth-child(1) { animation-delay: 0ms; }
+  .member-row:nth-child(2) { animation-delay: 40ms; }
+  .member-row:nth-child(3) { animation-delay: 80ms; }
+  .member-row:nth-child(4) { animation-delay: 120ms; }
+  .member-row:nth-child(5) { animation-delay: 160ms; }
+  .member-row:nth-child(6) { animation-delay: 200ms; }
+  .member-row:nth-child(7) { animation-delay: 240ms; }
+  .member-row:nth-child(8) { animation-delay: 280ms; }
+  .member-row:nth-child(9) { animation-delay: 320ms; }
+  .member-row:nth-child(10) { animation-delay: 360ms; }
+  .member-row:nth-child(11) { animation-delay: 400ms; }
+  .member-row:nth-child(12) { animation-delay: 440ms; }
+  .member-row:nth-child(13) { animation-delay: 480ms; }
+  .member-row:nth-child(14) { animation-delay: 520ms; }
+  .member-row:nth-child(15) { animation-delay: 560ms; }
+
+  .highlight {
+    background-color: #fef08a;
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+  .dark .highlight {
+    background-color: #854d0e;
+    color: #fef08a;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in { animation: none; }
+  }
+
+  @media (forced-colors: active) {
+    .action-btn { border: 1px solid ButtonText; }
+  }
+
+  .elu-photo-wrapper {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: 0 auto;
+    background-color: #f3f4f6;
+  }
+  .elu-photo-inner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .dark .elu-photo-wrapper {
+    border-color: #4b5563;
+    background-color: #374151;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Fil d'Ariane -->
 <div class="flex items-center justify-between mb-6">
   <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
     <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
@@ -15,6 +86,23 @@
   </a>
 </div>
 
+{% if messages %}
+<div class="mb-6">
+  {% for message in messages %}
+  <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium mb-2 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800{% elif message.tags == 'error' or message.tags == 'warning' %}bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800{% else %}bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800{% endif %}" role="alert" aria-live="polite">
+    {% if message.tags == 'success' %}
+    <svg class="w-5 h-5 text-green-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% elif message.tags == 'error' or message.tags == 'warning' %}
+    <svg class="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% else %}
+    <svg class="w-5 h-5 text-blue-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <!-- En-tête -->
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
   <div>
@@ -23,26 +111,54 @@
       {{ stats.total }} élu{{ stats.total|pluralize }}
     </p>
   </div>
-  <a href="{% url 'conseil_communautaire:admin_member_add' %}"
-     class="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-    <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-    Ajouter un membre
-  </a>
+  <div class="flex gap-2">
+    <a href="{% url 'conseil_communautaire:admin_list_cities' %}"
+       class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 text-sm">
+      <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+      Villes
+    </a>
+    <a href="{% url 'conseil_communautaire:admin_member_add' %}"
+       class="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+      <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Ajouter un membre
+    </a>
+  </div>
 </div>
 
 <!-- Stats Cards -->
 <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
   <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</div>
-    <div class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.total }}</div>
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</div>
+        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ stats.total }}</div>
+      </div>
+    </div>
   </div>
-  <div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/20">
-    <div class="text-xs font-medium text-primary dark:text-primary-400 uppercase tracking-wide">Titulaires</div>
-    <div class="text-2xl font-bold text-primary dark:text-primary-300 mt-1">{{ stats.titulaires }}</div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-primary/20 dark:bg-primary/30 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-primary dark:text-primary-300" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Titulaires</div>
+        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ stats.titulaires }}</div>
+      </div>
+    </div>
   </div>
-  <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-100 dark:border-amber-800/30">
-    <div class="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wide">Suppléants</div>
-    <div class="text-2xl font-bold text-amber-700 dark:text-amber-300 mt-1">{{ stats.suppleants }}</div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 col-span-2 md:col-span-1">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Suppléants</div>
+        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ stats.suppleants }}</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -79,28 +195,16 @@
     <table class="w-full text-left border-collapse" id="members-table">
       <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
         <tr>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Photo</th>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-primary transition select-none group" onclick="sortTable('last_name')">
-            <span class="inline-flex items-center">
-              Nom
-              <svg class="w-3 h-3 ml-1 text-gray-400 sort-icon" data-col="last_name" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
-            </span>
-          </th>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-primary transition select-none group" onclick="sortTable('first_name')">
-            <span class="inline-flex items-center">
-              Prénom
-              <svg class="w-3 h-3 ml-1 text-gray-400 sort-icon" data-col="first_name" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
-            </span>
-          </th>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-primary transition select-none group" onclick="sortTable('city')">
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Membre</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-primary transition select-none group" onclick="sortTable('city')">
             <span class="inline-flex items-center">
               Ville
               <svg class="w-3 h-3 ml-1 text-gray-400 sort-icon" data-col="city" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
             </span>
           </th>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rôle</th>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Commission</th>
-          <th scope="col" class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right w-36">Actions</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rôle</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Commission</th>
+          <th scope="col" class="px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right w-44">Actions</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="table-body">
@@ -109,57 +213,73 @@
             data-last-name="{{ member.last_name|lower }}"
             data-first-name="{{ member.first_name|lower }}"
             data-city="{{ member.city.city_name|lower }}"
-            data-commission="{% if member.linked_commission %}{{ member.linked_commission.title|lower }}{% else %}aucune{% endif %}"
+            data-commission="{% for comm in member.linked_commission.all %}{{ comm.title|lower }} {% endfor %}"
             data-role="{% if member.is_suppleant %}suppleant{% else %}titulaire{% endif %}"
             data-id="{{ member.id }}">
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center">
-              {% if member.photo %}
-              <img src="{{ member.photo.url }}" alt="{{ member.first_name }} {{ member.last_name }}" class="w-full h-full object-cover">
-              {% else %}
-              <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              {% endif %}
+          <!-- Membre -->
+          <td class="px-5 py-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center flex-shrink-0">
+                {% if member.photo %}
+                <img src="{{ member.photo.url }}" alt="{{ member.first_name }} {{ member.last_name }}" class="w-full h-full object-cover" loading="lazy">
+                {% else %}
+                <span class="text-white text-[10px] font-bold bg-gradient-to-br from-gray-400 to-gray-500 dark:from-gray-500 dark:to-gray-400 w-full h-full flex items-center justify-center">{{ member.first_name|slice:":1"|upper }}{{ member.last_name|slice:":1"|upper }}</span>
+                {% endif %}
+              </div>
+              <div class="min-w-0">
+                <span class="text-sm font-semibold text-gray-900 dark:text-gray-100 searchable-name">
+                  {{ member.first_name|title }} <strong>{{ member.last_name|upper }}</strong>
+                </span>
+              </div>
             </div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-900 dark:text-gray-100">{{ member.last_name|title }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">{{ member.first_name|title }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">{{ member.city.city_name }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">
+          <!-- Ville -->
+          <td class="px-5 py-3 text-sm text-gray-700 dark:text-gray-300 searchable-city whitespace-nowrap">{{ member.city.city_name }}</td>
+          <!-- Rôle -->
+          <td class="px-5 py-3 whitespace-nowrap">
             {% if member.is_suppleant %}
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">Suppléant</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">Suppléant</span>
             {% else %}
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300">Titulaire</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300">Titulaire</span>
             {% endif %}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">
-            {% if member.linked_commission %}
-              <span class="truncate max-w-[180px] block" title="{{ member.linked_commission.title }}">{{ member.linked_commission.title|truncatechars:30 }}</span>
+          <!-- Commissions -->
+          <td class="px-5 py-3">
+            {% with commissions=member.linked_commission.all %}
+            {% if commissions %}
+            <div class="flex flex-wrap gap-1">
+              {% for comm in commissions %}
+              <span class="inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/50 searchable-commission">{{ comm.title }}</span>
+              {% endfor %}
+            </div>
             {% else %}
-              <span class="text-gray-400 dark:text-gray-500 text-sm">—</span>
+            <span class="text-gray-400 dark:text-gray-500 text-sm">—</span>
             {% endif %}
+            {% endwith %}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-right">
+          <!-- Actions -->
+          <td class="px-5 py-3 whitespace-nowrap text-right">
             <div class="flex items-center justify-end gap-2">
               {% if member.photo %}
               <button type="button"
                       onclick="openPositionModal({{ member.id }}, '{{ member.first_name|escapejs }} {{ member.last_name|escapejs }}', '{{ member.photo.url }}', {{ member.photo_position_x }}, {{ member.photo_position_y }}, {{ member.photo_zoom|default:100 }})"
-                      class="inline-flex items-center px-3 py-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-md hover:bg-green-100 dark:hover:bg-green-900/40 transition text-sm font-medium"
+                      class="inline-flex items-center px-2.5 py-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition text-xs font-medium action-btn"
                       title="Ajuster la position de la photo">
-                <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                <svg class="w-3.5 h-3.5 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
                 Position
               </button>
               {% endif %}
               <a href="{% url 'conseil_communautaire:admin_member_edit' id=member.id %}"
-                 class="inline-flex items-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40 transition text-sm font-medium"
+                 class="inline-flex items-center px-2.5 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition text-xs font-medium action-btn"
                  title="Modifier">
-                <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <svg class="w-3.5 h-3.5 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 Modifier
               </a>
               <button type="button"
                       onclick="openDeleteModal('{{ member.first_name|escapejs }} {{ member.last_name|escapejs }}', '{% url 'conseil_communautaire:admin_member_delete' id=member.id %}')"
-                      class="inline-flex items-center px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-900/40 transition text-sm font-medium"
+                      class="inline-flex items-center px-2.5 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition text-xs font-medium action-btn"
                       title="Supprimer">
-                <svg class="w-4 h-4 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <svg class="w-3.5 h-3.5 mr-1" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 Supprimer
               </button>
             </div>
@@ -200,7 +320,7 @@
 
 <!-- Delete Modal -->
 <div id="delete-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog" aria-labelledby="modal-title">
-  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop" onclick="closeDeleteModal()"></div>
+  <div class="absolute inset-0 bg-black/50 transition-opacity opacity-0" id="modal-backdrop" onclick="closeDeleteModal()"></div>
   <div class="flex items-center justify-center min-h-screen p-4">
     <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6 transform scale-95 opacity-0 transition-all duration-200" id="modal-panel">
       <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
@@ -219,7 +339,7 @@
 
 <!-- Photo Position Modal -->
 <div id="position-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog" aria-labelledby="position-modal-title">
-  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0" id="position-modal-backdrop" onclick="closePositionModal()"></div>
+  <div class="absolute inset-0 bg-black/50 transition-opacity opacity-0" id="position-modal-backdrop" onclick="closePositionModal()"></div>
   <div class="flex items-center justify-center min-h-screen p-4">
     <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-lg w-full p-6 transform scale-95 opacity-0 transition-all duration-200" id="position-modal-panel">
       <button type="button" onclick="closePositionModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
@@ -228,16 +348,13 @@
       
       <h3 id="position-modal-title" class="text-lg font-bold text-center text-gray-900 dark:text-white mb-4">Ajuster la position de la photo</h3>
       
-      <!-- Preview Container (identique à la page publique) -->
       <div class="flex justify-center mb-6">
         <div class="elu-photo-wrapper" id="position-preview-wrapper">
           <img id="position-preview-img" src="" alt="Aperçu" class="elu-photo-inner transition-all duration-150">
         </div>
       </div>
       
-      <!-- Controls -->
       <div class="space-y-6">
-        <!-- Position X -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Horizontal (X)</label>
@@ -254,7 +371,6 @@
           </div>
         </div>
         
-        <!-- Position Y -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Vertical (Y)</label>
@@ -271,7 +387,6 @@
           </div>
         </div>
         
-        <!-- Zoom -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Zoom</label>
@@ -289,112 +404,83 @@
         </div>
       </div>
       
-      <!-- Actions -->
       <div class="flex gap-3 mt-6">
         <button type="button" onclick="closePositionModal()" class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Annuler</button>
         <button type="button" onclick="savePosition()" class="flex-1 px-4 py-2.5 rounded-lg bg-primary hover:bg-primary-600 text-white transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" id="save-position-btn">Sauvegarder</button>
       </div>
       
-      <!-- Message -->
       <div id="position-message" class="mt-4 text-center text-sm hidden"></div>
     </div>
   </div>
 </div>
 {% endblock %}
 
-{% block styles %}
-<style>
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in {
-    animation: fadeInUp 0.35s ease-out both;
-  }
-  .member-row:nth-child(1) { animation-delay: 0ms; }
-  .member-row:nth-child(2) { animation-delay: 40ms; }
-  .member-row:nth-child(3) { animation-delay: 80ms; }
-  .member-row:nth-child(4) { animation-delay: 120ms; }
-  .member-row:nth-child(5) { animation-delay: 160ms; }
-  .member-row:nth-child(6) { animation-delay: 200ms; }
-  .member-row:nth-child(7) { animation-delay: 240ms; }
-  .member-row:nth-child(8) { animation-delay: 280ms; }
-  .member-row:nth-child(9) { animation-delay: 320ms; }
-  .member-row:nth-child(10) { animation-delay: 360ms; }
-
-  /* Styles pour l'aperçu photo (identique à la page publique) */
-  .elu-photo-wrapper {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid #e5e7eb;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-    margin: 0 auto;
-    background-color: #f3f4f6;
-  }
-
-  .elu-photo-inner {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* Dark mode support */
-  .dark .elu-photo-wrapper {
-    border-color: #4b5563;
-    background-color: #374151;
-  }
-</style>
-{% endblock %}
-
 {% block javascript %}
 <script>
 (function() {
-  const searchInput = document.getElementById('search-input');
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  const rows = document.querySelectorAll('.member-row');
-  const noResults = document.getElementById('no-results');
-  const subtitleCount = document.getElementById('subtitle-count');
+  var searchInput = document.getElementById('search-input');
+  var filterButtons = document.querySelectorAll('.filter-btn');
+  var rows = document.querySelectorAll('.member-row');
+  var noResults = document.getElementById('no-results');
+  var subtitleCount = document.getElementById('subtitle-count');
 
-  let currentFilter = 'all';
-  let currentCity = 'all';
-  let currentSort = { column: null, direction: 'asc' };
+  var currentFilter = 'all';
+  var currentCity = 'all';
+  var currentSort = { column: null, direction: 'asc' };
 
   function normalize(str) {
-    return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll('.highlight').forEach(function(el) {
+      el.outerHTML = el.textContent;
+    });
+  }
+
+  function highlightText(el, query) {
+    if (!query) return;
+    var safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp('(' + safe + ')', 'gi');
+    el.innerHTML = el.textContent.replace(regex, '<mark class="highlight">$1</mark>');
   }
 
   function updateVisibility() {
-    const query = normalize(searchInput ? searchInput.value : '');
-    let visibleCount = 0;
+    var query = normalize(searchInput ? searchInput.value : '');
+    var visibleCount = 0;
 
-    rows.forEach(row => {
-      const lastName = normalize(row.dataset.lastName);
-      const firstName = normalize(row.dataset.firstName);
-      const city = normalize(row.dataset.city);
-      const commission = normalize(row.dataset.commission);
-      const role = row.dataset.role;
+    clearHighlights();
 
-      const matchesSearch = !query || lastName.includes(query) || firstName.includes(query) || city.includes(query) || commission.includes(query);
-      const matchesFilter = currentFilter === 'all' || role === currentFilter;
-      const matchesCity = currentCity === 'all' || city === currentCity;
+    rows.forEach(function(row) {
+      var lastName = normalize(row.getAttribute('data-last-name'));
+      var firstName = normalize(row.getAttribute('data-first-name'));
+      var city = normalize(row.getAttribute('data-city'));
+      var commission = normalize(row.getAttribute('data-commission'));
+      var role = row.getAttribute('data-role');
+
+      var matchesSearch = !query || lastName.includes(query) || firstName.includes(query) || city.includes(query) || commission.includes(query);
+      var matchesFilter = currentFilter === 'all' || role === currentFilter;
+      var matchesCity = currentCity === 'all' || city === currentCity;
 
       if (matchesSearch && matchesFilter && matchesCity) {
         row.classList.remove('hidden');
         visibleCount++;
+        if (query) {
+          var nameEls = row.querySelectorAll('.searchable-name');
+          nameEls.forEach(function(el) { highlightText(el, query); });
+          var cityEls = row.querySelectorAll('.searchable-city');
+          cityEls.forEach(function(el) { highlightText(el, query); });
+          var commEls = row.querySelectorAll('.searchable-commission');
+          commEls.forEach(function(el) { highlightText(el, query); });
+        }
       } else {
         row.classList.add('hidden');
       }
     });
 
-    if (noResults) {
-      noResults.classList.toggle('hidden', visibleCount > 0);
-    }
+    if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
     if (subtitleCount) {
-      let text = visibleCount + ' élu' + (visibleCount !== 1 ? 's' : '');
+      var text = visibleCount + ' élu' + (visibleCount !== 1 ? 's' : '');
       if (currentFilter !== 'all' || currentCity !== 'all' || query) {
         text += ' trouvé' + (visibleCount !== 1 ? 's' : '');
       }
@@ -402,26 +488,24 @@
     }
   }
 
-  if (searchInput) {
-    searchInput.addEventListener('input', updateVisibility);
-  }
+  if (searchInput) searchInput.addEventListener('input', updateVisibility);
 
-  filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterButtons.forEach(b => {
+  filterButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterButtons.forEach(function(b) {
         b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
         b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-300');
       });
       btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-300');
       btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
-      currentFilter = btn.dataset.filter;
+      currentFilter = btn.getAttribute('data-filter');
       updateVisibility();
     });
   });
 
-  const citySelect = document.getElementById('city-filter');
+  var citySelect = document.getElementById('city-filter');
   if (citySelect) {
-    citySelect.addEventListener('change', () => {
+    citySelect.addEventListener('change', function() {
       currentCity = citySelect.value;
       updateVisibility();
     });
@@ -429,7 +513,7 @@
 
   window.resetFilters = function() {
     if (searchInput) searchInput.value = '';
-    const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+    var allBtn = document.querySelector('.filter-btn[data-filter="all"]');
     if (allBtn) allBtn.click();
     if (citySelect) {
       citySelect.value = 'all';
@@ -439,9 +523,9 @@
   };
 
   window.sortTable = function(column) {
-    const tbody = document.getElementById('table-body');
+    var tbody = document.getElementById('table-body');
     if (!tbody) return;
-    const rowsArray = Array.from(rows);
+    var rowsArray = Array.from(rows);
 
     if (currentSort.column === column) {
       currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -450,13 +534,13 @@
       currentSort.direction = 'asc';
     }
 
-    document.querySelectorAll('.sort-icon').forEach(icon => {
+    document.querySelectorAll('.sort-icon').forEach(function(icon) {
       icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>';
       icon.classList.remove('text-primary');
       icon.classList.add('text-gray-400');
     });
 
-    const activeIcon = document.querySelector('.sort-icon[data-col="' + column + '"]');
+    var activeIcon = document.querySelector('.sort-icon[data-col="' + column + '"]');
     if (activeIcon) {
       activeIcon.classList.remove('text-gray-400');
       activeIcon.classList.add('text-primary');
@@ -467,17 +551,11 @@
       }
     }
 
-    rowsArray.sort((a, b) => {
-      let aVal, bVal;
-      if (column === 'last_name') {
-        aVal = normalize(a.dataset.lastName);
-        bVal = normalize(b.dataset.lastName);
-      } else if (column === 'first_name') {
-        aVal = normalize(a.dataset.firstName);
-        bVal = normalize(b.dataset.firstName);
-      } else if (column === 'city') {
-        aVal = normalize(a.dataset.city);
-        bVal = normalize(b.dataset.city);
+    rowsArray.sort(function(a, b) {
+      var aVal, bVal;
+      if (column === 'city') {
+        aVal = normalize(a.getAttribute('data-city'));
+        bVal = normalize(b.getAttribute('data-city'));
       } else {
         return 0;
       }
@@ -486,16 +564,16 @@
       return 0;
     });
 
-    rowsArray.forEach(row => tbody.appendChild(row));
+    rowsArray.forEach(function(row) { tbody.appendChild(row); });
     updateVisibility();
   };
 
   // Delete modal
-  const deleteModal = document.getElementById('delete-modal');
-  const modalBackdrop = document.getElementById('modal-backdrop');
-  const modalPanel = document.getElementById('modal-panel');
-  const modalDeleteForm = document.getElementById('modal-delete-form');
-  const modalMemberName = document.getElementById('modal-member-name');
+  var deleteModal = document.getElementById('delete-modal');
+  var modalBackdrop = document.getElementById('modal-backdrop');
+  var modalPanel = document.getElementById('modal-panel');
+  var modalDeleteForm = document.getElementById('modal-delete-form');
+  var modalMemberName = document.getElementById('modal-member-name');
 
   window.openDeleteModal = function(name, url) {
     if (!deleteModal) return;
@@ -503,7 +581,7 @@
     modalDeleteForm.action = url;
     deleteModal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => {
+    requestAnimationFrame(function() {
       modalBackdrop.classList.remove('opacity-0');
       modalPanel.classList.remove('scale-95', 'opacity-0');
       modalPanel.classList.add('scale-100', 'opacity-100');
@@ -515,7 +593,7 @@
     modalBackdrop.classList.add('opacity-0');
     modalPanel.classList.remove('scale-100', 'opacity-100');
     modalPanel.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
+    setTimeout(function() {
       deleteModal.classList.add('hidden');
       document.body.style.overflow = '';
     }, 200);
@@ -528,28 +606,28 @@
   });
 
   // Photo Position Modal
-  const positionModal = document.getElementById('position-modal');
-  const positionModalBackdrop = document.getElementById('position-modal-backdrop');
-  const positionModalPanel = document.getElementById('position-modal-panel');
-  const positionPreviewImg = document.getElementById('position-preview-img');
-  const positionXSlider = document.getElementById('position-x-slider');
-  const positionYSlider = document.getElementById('position-y-slider');
-  const positionXValue = document.getElementById('position-x-value');
-  const positionYValue = document.getElementById('position-y-value');
-  const zoomSlider = document.getElementById('zoom-slider');
-  const zoomValue = document.getElementById('zoom-value');
-  const positionMessage = document.getElementById('position-message');
-  const savePositionBtn = document.getElementById('save-position-btn');
+  var positionModal = document.getElementById('position-modal');
+  var positionModalBackdrop = document.getElementById('position-modal-backdrop');
+  var positionModalPanel = document.getElementById('position-modal-panel');
+  var positionPreviewImg = document.getElementById('position-preview-img');
+  var positionXSlider = document.getElementById('position-x-slider');
+  var positionYSlider = document.getElementById('position-y-slider');
+  var positionXValue = document.getElementById('position-x-value');
+  var positionYValue = document.getElementById('position-y-value');
+  var zoomSlider = document.getElementById('zoom-slider');
+  var zoomValue = document.getElementById('zoom-value');
+  var positionMessage = document.getElementById('position-message');
+  var savePositionBtn = document.getElementById('save-position-btn');
 
-  let currentMemberId = null;
-  let currentPositionX = 50;
-  let currentPositionY = 50;
-  let currentZoom = 100;
+  var currentMemberId = null;
+  var currentPositionX = 50;
+  var currentPositionY = 50;
+  var currentZoom = 100;
 
   function updatePreview() {
     if (positionPreviewImg) {
-      positionPreviewImg.style.objectPosition = `${currentPositionX}% ${currentPositionY}%`;
-      positionPreviewImg.style.transform = `scale(${currentZoom / 100})`;
+      positionPreviewImg.style.objectPosition = currentPositionX + '% ' + currentPositionY + '%';
+      positionPreviewImg.style.transform = 'scale(' + (currentZoom / 100) + ')';
     }
     if (positionXValue) positionXValue.textContent = currentPositionX + '%';
     if (positionYValue) positionYValue.textContent = currentPositionY + '%';
@@ -581,7 +659,7 @@
     if (positionModal) {
       positionModal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => {
+      requestAnimationFrame(function() {
         if (positionModalBackdrop) positionModalBackdrop.classList.remove('opacity-0');
         if (positionModalPanel) {
           positionModalPanel.classList.remove('scale-95', 'opacity-0');
@@ -597,7 +675,7 @@
       positionModalPanel.classList.remove('scale-100', 'opacity-100');
       positionModalPanel.classList.add('scale-95', 'opacity-0');
     }
-    setTimeout(() => {
+    setTimeout(function() {
       if (positionModal) positionModal.classList.add('hidden');
       document.body.style.overflow = '';
       if (positionPreviewImg) positionPreviewImg.src = '';
@@ -619,44 +697,22 @@
     updatePreview();
   };
 
-  if (positionXSlider) {
-    positionXSlider.addEventListener('input', function() {
-      currentPositionX = parseInt(this.value);
-      updatePreview();
-    });
-  }
-
-  if (positionYSlider) {
-    positionYSlider.addEventListener('input', function() {
-      currentPositionY = parseInt(this.value);
-      updatePreview();
-    });
-  }
-
-  if (zoomSlider) {
-    zoomSlider.addEventListener('input', function() {
-      currentZoom = parseInt(this.value);
-      updatePreview();
-    });
-  }
+  if (positionXSlider) positionXSlider.addEventListener('input', function() { currentPositionX = parseInt(this.value); updatePreview(); });
+  if (positionYSlider) positionYSlider.addEventListener('input', function() { currentPositionY = parseInt(this.value); updatePreview(); });
+  if (zoomSlider) zoomSlider.addEventListener('input', function() { currentZoom = parseInt(this.value); updatePreview(); });
 
   window.savePosition = function() {
     if (!currentMemberId) return;
+    if (savePositionBtn) { savePositionBtn.disabled = true; savePositionBtn.textContent = 'Sauvegarde...'; }
 
-    if (savePositionBtn) {
-      savePositionBtn.disabled = true;
-      savePositionBtn.textContent = 'Sauvegarde...';
-    }
+    var url = '{% url "conseil_communautaire:api_member_photo_position" id=0 %}'.replace('/0/', '/' + currentMemberId + '/');
 
-    const url = '{% url "conseil_communautaire:api_member_photo_position" id=0 %}'.replace('/0/', '/' + currentMemberId + '/');
-
-    // Get CSRF token from cookie
     function getCookie(name) {
-      let cookieValue = null;
+      var cookieValue = null;
       if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
           if (cookie.substring(0, name.length + 1) === (name + '=')) {
             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
             break;
@@ -668,44 +724,22 @@
 
     fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken') || '',
-      },
-      body: JSON.stringify({
-        photo_position_x: currentPositionX,
-        photo_position_y: currentPositionY,
-        photo_zoom: currentZoom,
-      }),
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: JSON.stringify({ photo_position_x: currentPositionX, photo_position_y: currentPositionY, photo_zoom: currentZoom }),
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
       if (data.success) {
-        if (positionMessage) {
-          positionMessage.textContent = 'Position sauvegardée avec succès !';
-          positionMessage.className = 'mt-4 text-center text-sm text-green-600 dark:text-green-400';
-          positionMessage.classList.remove('hidden');
-        }
-        if (savePositionBtn) {
-          savePositionBtn.textContent = 'Sauvegardé !';
-        }
-        setTimeout(() => {
-          closePositionModal();
-        }, 1200);
+        if (positionMessage) { positionMessage.textContent = 'Position sauvegardée avec succès !'; positionMessage.className = 'mt-4 text-center text-sm text-green-600 dark:text-green-400'; positionMessage.classList.remove('hidden'); }
+        if (savePositionBtn) savePositionBtn.textContent = 'Sauvegardé !';
+        setTimeout(function() { closePositionModal(); }, 1200);
       } else {
         throw new Error(data.error || 'Erreur inconnue');
       }
     })
-    .catch(error => {
-      if (positionMessage) {
-        positionMessage.textContent = 'Erreur: ' + error.message;
-        positionMessage.className = 'mt-4 text-center text-sm text-red-600 dark:text-red-400';
-        positionMessage.classList.remove('hidden');
-      }
-      if (savePositionBtn) {
-        savePositionBtn.disabled = false;
-        savePositionBtn.textContent = 'Sauvegarder';
-      }
+    .catch(function(error) {
+      if (positionMessage) { positionMessage.textContent = 'Erreur: ' + error.message; positionMessage.className = 'mt-4 text-center text-sm text-red-600 dark:text-red-400'; positionMessage.classList.remove('hidden'); }
+      if (savePositionBtn) { savePositionBtn.disabled = false; savePositionBtn.textContent = 'Sauvegarder'; }
     });
   };
 

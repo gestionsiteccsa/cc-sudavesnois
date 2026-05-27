@@ -90,16 +90,16 @@
             </div>
         </div>
 
-        <!-- Elus -->
-        <div id="nav-elus" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-elus')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+        <!-- Bureau -->
+        <div id="nav-bureau" class="nav-section">
+            <button type="button" onclick="toggleNavSection('nav-bureau')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-amber-600 dark:text-amber-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
-                    <span class="font-medium text-sm">Elus</span>
+                    <span class="font-medium text-sm">Bureau</span>
                 </div>
                 <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -109,11 +109,11 @@
                 <div class="ml-11 mt-1 space-y-0.5">
                     <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                        Liste des elus
+                        Liste des élus
                     </a>
                     <a href="{% url 'bureau-communautaire:admin_elu_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Ajouter un elu
+                        Ajouter un élu
                     </a>
                     <a href="{% url 'bureau-communautaire:admin_page_status' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -314,7 +314,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
                         </svg>
                     </div>
-                    <span class="font-medium text-sm">Comptes rendus</span>
+                    <span class="font-medium text-sm">Conseils Communautaires</span>
                 </div>
                 <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -324,11 +324,11 @@
                 <div class="ml-11 mt-1 space-y-0.5">
                     <a href="{% url 'comptes_rendus:admin_cr_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                        Liste des comptes rendus
+                        Liste des conseils
                     </a>
                     <a href="{% url 'comptes_rendus:add_conseil' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Ajouter un compte rendu
+                        Programmer un conseil
                     </a>
                 </div>
             </div>

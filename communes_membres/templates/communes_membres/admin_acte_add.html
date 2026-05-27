@@ -1,36 +1,100 @@
 {% extends 'admin_base.html' %}
+{% load static %}
 {% load widget_tweaks %}
-{% block title %}Ajouter un acte local - Communes Membres{% endblock %}
+
+{% block title %}Ajouter un acte local — Communes Membres | {{ block.super }}{% endblock %}
+{% block breadcrumb %}Actes locaux{% endblock %}
+
+{% block styles %}
+<style>
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in { animation: fadeInUp 0.35s ease-out both; }
+  input[type="file"]::file-selector-button { margin-right: 1rem; border: none; background: #4f46e5; padding: 0.5rem 1rem; border-radius: 0.5rem; color: white; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: background-color 0.15s; }
+  input[type="file"]::file-selector-button:hover { background: #4338ca; }
+  .dark input[type="file"] { color: #d1d5db; }
+  .dark input[type="file"]::file-selector-button { background: #6366f1; color: white; }
+  .dark input[type="file"]::file-selector-button:hover { background: #818cf8; }
+  @media (prefers-reduced-motion: reduce) { .animate-fade-in { animation: none; } }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 md:p-8">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Ajouter un acte local</h1>
-                <form method="POST" class="space-y-4" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% for field in form_acte %}
-                    <div class="space-y-2">
-                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-700">
-                            {{ field.label }}
-                        </label>
-                        {% render_field field class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" %}
-                        {% if field.errors %}
-                        <p class="text-red-600 text-sm mt-1 dark:text-red-400">{{ field.errors.0 }}</p>
-                        {% endif %}
-                        {% if field.help_text %}
-                        <p class="text-xs text-gray-600 dark:text-gray-600">{{ field.help_text }}</p>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <div>
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-primary">
-                            Publier
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+<div class="flex items-center justify-between mb-6">
+  <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
+    <span class="text-gray-400">/</span>
+    <a href="{% url 'communes-membres:admin_acte_list' %}" class="hover:text-primary transition-colors">Actes locaux</a>
+    <span class="text-gray-400">/</span>
+    <span class="text-primary font-semibold">Ajouter</span>
+  </nav>
+  <a href="{% url 'communes-membres:admin_acte_list' %}"
+     class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-primary transition text-sm font-medium">
+    <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Actes locaux
+  </a>
+</div>
+
+{% if messages %}
+<div class="mb-6">
+  {% for message in messages %}
+  <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium mb-2 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800{% elif message.tags == 'error' or message.tags == 'warning' %}bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800{% else %}bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800{% endif %}" role="alert" aria-live="polite">
+    {% if message.tags == 'success' %}
+    <svg class="w-5 h-5 text-green-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% elif message.tags == 'error' or message.tags == 'warning' %}
+    <svg class="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% else %}
+    <svg class="w-5 h-5 text-blue-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="animate-fade-in max-w-lg mx-auto">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Ajouter un acte local</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Publiez un acte administratif pour une commune.</p>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    {% csrf_token %}
+    <div class="p-6 md:p-8 space-y-5">
+      {% for field in form_acte %}
+      <div class="space-y-1.5">
+        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {% if field.name == 'title' %}
+          <svg class="w-4 h-4 inline-block mr-1 text-blue-500" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          {% elif field.name == 'date' %}
+          <svg class="w-4 h-4 inline-block mr-1 text-green-500" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          {% elif field.name == 'description' %}
+          <svg class="w-4 h-4 inline-block mr-1 text-purple-500" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+          {% elif field.name == 'commune' %}
+          <svg class="w-4 h-4 inline-block mr-1 text-amber-500" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          {% elif field.name == 'file' %}
+          <svg class="w-4 h-4 inline-block mr-1 text-red-500" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          {% endif %}
+          {{ field.label }}
+        </label>
+        {% if field.name == 'file' %}
+        {% render_field field class="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-600 file:transition file:cursor-pointer dark:text-gray-300" %}
+        {% else %}
+        {% render_field field class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-sm" %}
+        {% endif %}
+        {% if field.errors %}
+        <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ field.errors.0 }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
+
+    <div class="px-6 md:px-8 py-4 bg-gray-50 dark:bg-gray-900/50 rounded-b-xl border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+      <a href="{% url 'communes-membres:admin_acte_list' %}" class="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm font-medium">Annuler</a>
+      <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+        <svg class="w-4 h-4 mr-1.5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Publier
+      </button>
+    </div>
+  </form>
 </div>
 {% endblock %}

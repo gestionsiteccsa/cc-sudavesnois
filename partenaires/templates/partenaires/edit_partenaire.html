@@ -1,279 +1,278 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 
-{% block title %}Modifier un partenaire{% endblock %}
+{% block title %}Modifier le partenaire — Partenaires | {{ block.super }}{% endblock %}
+{% block breadcrumb %}Partenaires{% endblock %}
+
+{% block styles %}
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in { animation: fadeInUp 0.35s ease-out both; }
+
+  input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    border: none;
+    background: #4f46e5;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.15s;
+  }
+  input[type="file"]::file-selector-button:hover { background: #4338ca; }
+  .dark input[type="file"] { color: #d1d5db; }
+  .dark input[type="file"]::file-selector-button { background: #6366f1; color: white; }
+  .dark input[type="file"]::file-selector-button:hover { background: #818cf8; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in { animation: none; }
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 dark:bg-gray-900 py-12 min-h-screen">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Modifier un partenaire</h1>
-            <p class="text-gray-600 dark:text-gray-700 mt-2">Modifiez les informations de "{{ partenaire.nom }}"</p>
-        </div>
-
-        <!-- Messages -->
-        {% if messages %}
-        <div class="mb-6">
-            {% for message in messages %}
-            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Layout 2 colonnes : Formulaire + Sidebar -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Colonne gauche : Formulaire -->
-            <div class="lg:col-span-2">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <form method="post" enctype="multipart/form-data" class="space-y-6" id="partenaireForm">
-                        {% csrf_token %}
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="id_nom" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Nom <span class="text-red-500">*</span></label>
-                                {{ form.nom }}
-                                {% if form.nom.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.nom.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-
-                            <div>
-                                <label for="id_categorie" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Catégorie (optionnel)</label>
-                                {{ form.categorie }}
-                                {% if form.categorie.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.categorie.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="id_description" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Description <span class="text-red-500">*</span></label>
-                            {{ form.description }}
-                            <!-- Aide Markdown sous le champ -->
-                            <p class="mt-2 text-xs text-gray-600 dark:text-gray-600">
-                                💡 <strong>Astuce :</strong> Vous pouvez utiliser la syntaxe Markdown pour les liens. 
-                                <a href="#" onclick="document.getElementById('markdown-help').scrollIntoView({behavior: 'smooth'}); return false;" class="text-primary underline hover:no-underline">Voir les exemples →</a>
-                            </p>
-                            {% if form.description.errors %}
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.description.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <!-- Type de lien -->
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                            <label for="id_type_lien" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Type de lien <span class="text-red-500">*</span></label>
-                            {{ form.type_lien }}
-                            {% if form.type_lien.help_text %}
-                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-600">{{ form.type_lien.help_text }}</p>
-                            {% endif %}
-                            {% if form.type_lien.errors %}
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.type_lien.errors.0 }}</p>
-                            {% endif %}
-
-                            <!-- Lien externe (URL) -->
-                            <div id="lien-externe-field" class="mt-4 hidden">
-                                <label for="id_site_web" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Site web (URL) <span class="text-red-500">*</span></label>
-                                {{ form.site_web }}
-                                {% if form.site_web.help_text %}
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-600">{{ form.site_web.help_text }}</p>
-                                {% endif %}
-                                {% if form.site_web.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.site_web.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-
-                            <!-- Lien interne (page du site) -->
-                            <div id="lien-interne-field" class="mt-4 hidden">
-                                <label for="id_lien_interne" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Page du site <span class="text-red-500">*</span></label>
-                                {{ form.lien_interne }}
-                                {% if form.lien_interne.help_text %}
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-600">{{ form.lien_interne.help_text }}</p>
-                                {% endif %}
-                                {% if form.lien_interne.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.lien_interne.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="id_logo" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Logo</label>
-                                
-                                {% if partenaire.logo %}
-                                <div class="mb-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-600 mb-2">Aperçu avec fond sélectionné :</p>
-                                    <div class="h-20 w-20 rounded flex items-center justify-center overflow-hidden border" style="background-color: {{ partenaire.couleur_fond }};">
-                                        <img src="{{ partenaire.logo.url }}" alt="Logo actuel" class="h-full w-full object-contain p-1">
-                                    </div>
-                                </div>
-                                {% endif %}
-
-                                {{ form.logo }}
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-600">Formats acceptés : PNG, JPG, JPEG, WEBP, SVG. Max 60 Mo. Laissez vide pour conserver le logo actuel.</p>
-                                {% if form.logo.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.logo.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-
-                            <div>
-                                <label for="id_couleur_fond" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Couleur de fond du logo</label>
-                                {{ form.couleur_fond }}
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-600">Choisissez une couleur adaptée à votre logo.</p>
-                                {% if form.couleur_fond.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.couleur_fond.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="id_ordre" class="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-2">Ordre d'affichage</label>
-                                {{ form.ordre }}
-                                {% if form.ordre.errors %}
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ form.ordre.errors.0 }}</p>
-                                {% endif %}
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-600">Les partenaires sont triés par ordre croissant</p>
-                            </div>
-
-                            <div class="flex items-center">
-                                <div class="flex items-center h-full pt-6">
-                                    {{ form.active }}
-                                    <label for="id_active" class="ml-2 block text-sm text-gray-700 dark:text-gray-700">Actif</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            {{ form.active }}
-                            <label for="id_active" class="ml-2 block text-sm text-gray-700 dark:text-gray-700">Actif</label>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-                            <a href="{% url 'partenaires:admin_partenaires_list' %}" class="text-gray-600 hover:text-gray-900 dark:text-gray-600 dark:hover:text-gray-200">
-                                ← Retour à la liste
-                            </a>                    
-                            <button type="submit" class="inline-flex items-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-                                Enregistrer les modifications
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Colonne droite : Sidebar Markdown -->
-            <div class="lg:col-span-1">
-                <div id="markdown-help" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 sticky top-6">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="bg-indigo-100 dark:bg-indigo-900 p-2 rounded-lg">
-                            <svg class="w-5 aria-hidden="true" focusable="false"  h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Guide Markdown</h2>
-                    </div>
-                    
-                    <p class="text-sm text-gray-600 dark:text-gray-600 mb-4">
-                        Utilisez cette syntaxe pour enrichir vos descriptions :
-                    </p>
-
-                    <div class="space-y-4">
-                        <!-- Lien avec texte -->
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">🔗 Lien avec texte</h3>
-                            <code class="block text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-700">
-                                [cliquez ici](https://example.com)
-                            </code>
-                            <p class="text-xs text-gray-600 dark:text-gray-600 mt-1">Résultat : <a href="#" class="text-primary">cliquez ici</a></p>
-                        </div>
-
-                        <!-- URL directe -->
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">🌐 URL directe</h3>
-                            <code class="block text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-700">
-                                https://www.example.com
-                            </code>
-                            <p class="text-xs text-gray-600 dark:text-gray-600 mt-1">Converti automatiquement en lien</p>
-                        </div>
-
-                        <!-- Texte en gras -->
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">💪 Texte en gras</h3>
-                            <code class="block text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-700">
-                                **texte important**
-                            </code>
-                            <p class="text-xs text-gray-600 dark:text-gray-600 mt-1">Résultat : <strong>texte important</strong></p>
-                        </div>
-
-                        <!-- Texte en italique -->
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">✍️ Texte en italique</h3>
-                            <code class="block text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-700">
-                                *texte emphatique*
-                            </code>
-                            <p class="text-xs text-gray-600 dark:text-gray-600 mt-1">Résultat : <em>texte emphatique</em></p>
-                        </div>
-
-                        <!-- Retour à la ligne -->
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">⏎ Retour à la ligne</h3>
-                            <p class="text-xs text-gray-600 dark:text-gray-600">
-                                Appuyez sur <kbd class="bg-gray-200 dark:bg-gray-600 px-1 rounded">Entrée</kbd> pour créer un nouveau paragraphe
-                            </p>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">📧 Lien email</h3>
-                            <code class="block text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-700">
-                                [contact](mailto:email@exemple.com)
-                            </code>
-                            <p class="text-xs text-gray-600 dark:text-gray-600 mt-1">Ouvre le client mail</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Exemple complet :</h3>
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-xs text-gray-600 dark:text-gray-600 font-mono">
-                            <p class="mb-1">Partenaire officiel de la</p>
-                            <p class="mb-1">**Communauté de Communes**.</p>
-                            <p class="mb-1"></p>
-                            <p class="mb-1">Visitez [notre site](https://example.com)</p>
-                            <p>ou contactez-nous par email.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
+<div class="flex items-center justify-between mb-6">
+  <nav class="flex text-sm text-gray-500 dark:text-gray-400 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:text-primary transition-colors">Accueil</a>
+    <span class="text-gray-400">/</span>
+    <a href="{% url 'partenaires:admin_partenaires_list' %}" class="hover:text-primary transition-colors">Partenaires</a>
+    <span class="text-gray-400">/</span>
+    <span class="text-primary font-semibold">Modifier</span>
+  </nav>
+  <a href="{% url 'partenaires:admin_partenaires_list' %}"
+     class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-primary transition text-sm font-medium">
+    <svg class="w-4 h-4 mr-1.5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Partenaires
+  </a>
 </div>
+
+{% if messages %}
+<div class="mb-6">
+  {% for message in messages %}
+  <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium mb-2 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800{% elif message.tags == 'error' or message.tags == 'warning' %}bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800{% else %}bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800{% endif %}" role="alert" aria-live="polite">
+    {% if message.tags == 'success' %}
+    <svg class="w-5 h-5 text-green-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% elif message.tags == 'error' or message.tags == 'warning' %}
+    <svg class="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% else %}
+    <svg class="w-5 h-5 text-blue-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="animate-fade-in">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Modifier le partenaire</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ partenaire.nom }}</p>
+    </div>
+    <a href="{% url 'partenaires:delete_partenaire' partenaire.id %}"
+       class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-sm">
+      <svg class="w-4 h-4 mr-1.5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      Supprimer
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Formulaire -->
+    <div class="lg:col-span-2">
+      <form method="post" enctype="multipart/form-data" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {% csrf_token %}
+        <div class="p-6 md:p-8 space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label for="id_nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Nom <span class="text-red-500">*</span>
+              </label>
+              {{ form.nom }}
+              {% if form.nom.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.nom.errors.0 }}</p>
+              {% endif %}
+            </div>
+            <div class="space-y-1.5">
+              <label for="id_categorie" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Catégorie
+              </label>
+              {{ form.categorie }}
+              {% if form.categorie.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.categorie.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="id_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Description <span class="text-red-500">*</span>
+            </label>
+            {{ form.description }}
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              <strong>Markdown</strong> accepté : <code>[texte](https://...)</code>, <code>**gras**</code>, <code>*italique*</code> —
+              <a href="#" onclick="document.getElementById('markdown-help').scrollIntoView({behavior: 'smooth'}); return false;" class="text-primary underline hover:no-underline">voir le guide →</a>
+            </p>
+            {% if form.description.errors %}
+            <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.description.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Type de lien -->
+          <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30">
+            <div class="space-y-1.5">
+              <label for="id_type_lien" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <svg class="w-4 h-4 inline-block mr-1 text-blue-500" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                Type de lien <span class="text-red-500">*</span>
+              </label>
+              {{ form.type_lien }}
+              {% if form.type_lien.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.type_lien.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <div id="lien-externe-field" class="mt-4 hidden space-y-1.5">
+              <label for="id_site_web" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Site web (URL) <span class="text-red-500">*</span>
+              </label>
+              {{ form.site_web }}
+              {% if form.site_web.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.site_web.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <div id="lien-interne-field" class="mt-4 hidden space-y-1.5">
+              <label for="id_lien_interne" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Page du site <span class="text-red-500">*</span>
+              </label>
+              {{ form.lien_interne }}
+              {% if form.lien_interne.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.lien_interne.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label for="id_logo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logo</label>
+              {% if partenaire.logo %}
+              <div class="mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Aperçu avec fond {{ partenaire.couleur_fond }} :</p>
+                <div class="w-16 h-16 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600" style="background-color: {{ partenaire.couleur_fond }};">
+                  <img src="{{ partenaire.logo.url }}" alt="Logo actuel" class="w-full h-full object-contain p-1">
+                </div>
+              </div>
+              {% endif %}
+              {{ form.logo }}
+              <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, JPEG, WEBP, SVG — max 60 Mo. Laissez vide pour conserver le logo.</p>
+              {% if form.logo.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.logo.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="id_couleur_fond" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Couleur de fond</label>
+              {{ form.couleur_fond }}
+              <p class="text-xs text-gray-500 dark:text-gray-400">Adaptez la couleur au logo pour un meilleur rendu.</p>
+              {% if form.couleur_fond.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.couleur_fond.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="flex items-end gap-5">
+            <div class="space-y-1.5">
+              <label for="id_ordre" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ordre</label>
+              {{ form.ordre }}
+              <p class="text-xs text-gray-500 dark:text-gray-400">Tri croissant</p>
+              {% if form.ordre.errors %}
+              <p class="text-red-600 text-xs mt-1 dark:text-red-400">{{ form.ordre.errors.0 }}</p>
+              {% endif %}
+            </div>
+            <div class="flex items-center gap-2 pb-1">
+              {{ form.active }}
+              <label for="id_active" class="text-sm font-medium text-gray-700 dark:text-gray-300">Actif</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 md:px-8 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <a href="{% url 'partenaires:admin_partenaires_list' %}"
+             class="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm font-medium">
+            Annuler
+          </a>
+          <button type="submit"
+                  class="inline-flex items-center px-5 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg transition shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+            <svg class="w-4 h-4 mr-1.5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sidebar Markdown -->
+    <div class="lg:col-span-1">
+      <div id="markdown-help" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sticky top-6">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+            <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-white">Guide Markdown</h2>
+        </div>
+
+        <div class="space-y-3 text-sm">
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
+            <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Lien avec texte</h3>
+            <code class="block text-xs bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-300">[cliquez ici](https://...)</code>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
+            <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Texte en gras</h3>
+            <code class="block text-xs bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-300">**important**</code>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
+            <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Texte en italique</h3>
+            <code class="block text-xs bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-300">*emphase*</code>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
+            <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Lien email</h3>
+            <code class="block text-xs bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-300">[contact](mailto:...)</code>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
+            <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Nouveau paragraphe</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Appuyez sur <kbd class="bg-gray-200 dark:bg-gray-600 px-1 rounded text-xs">Entrée</kbd> pour un nouveau paragraphe</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
 {% block javascript %}
 <script>
 function toggleLienFields() {
-    const typeLien = document.getElementById('id_type_lien').value;
-    const lienExterneField = document.getElementById('lien-externe-field');
-    const lienInterneField = document.getElementById('lien-interne-field');
-    
-    if (typeLien === 'externe') {
-        lienExterneField.classList.remove('hidden');
-        lienInterneField.classList.add('hidden');
-    } else if (typeLien === 'interne') {
-        lienExterneField.classList.add('hidden');
-        lienInterneField.classList.remove('hidden');
-    } else {
-        lienExterneField.classList.add('hidden');
-        lienInterneField.classList.add('hidden');
-    }
+  var typeLien = document.getElementById('id_type_lien').value;
+  var externe = document.getElementById('lien-externe-field');
+  var interne = document.getElementById('lien-interne-field');
+
+  if (typeLien === 'externe') {
+    externe.classList.remove('hidden');
+    interne.classList.add('hidden');
+  } else if (typeLien === 'interne') {
+    externe.classList.add('hidden');
+    interne.classList.remove('hidden');
+  } else {
+    externe.classList.add('hidden');
+    interne.classList.add('hidden');
+  }
 }
 
-// Initialiser au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
-    toggleLienFields();
+  toggleLienFields();
 });
 </script>
-{% endblock javascript %}
-{% endblock content %}
+{% endblock %}
