@@ -12,25 +12,21 @@ from .models import CompteRendu, Conseil, DocumentConseil
 
 # Partie publique
 def comptes_rendus(request):
-    if CompteRendu.objects.exists():
-        comptes_rendus = get_object_or_404(CompteRendu)
-    else:
-        comptes_rendus = None
+    comptes_rendus = CompteRendu.objects.first()
 
     # Afficher les conseils depuis 2 jours avant aujourd'hui (conservés 2 jours après)
     # et limiter aux 5 prochains
     today = timezone.now().date()
     two_days_ago = today - timedelta(days=2)
-    conseils = Conseil.objects.filter(date__gte=two_days_ago).order_by("date")[:5]
-    if not conseils:
-        conseils = None
+    conseils = list(Conseil.objects.filter(date__gte=two_days_ago).order_by("date")[:5])
 
     # Déterminer le prochain conseil à venir (date >= aujourd'hui)
-    next_conseil = Conseil.objects.filter(date__gte=today).order_by("date").first()
+    # Extrait de la liste déjà chargée pour éviter une requête supplémentaire
+    next_conseil = next((c for c in conseils if c.date >= today), None)
 
     context = {
         "comptes_rendus": comptes_rendus,
-        "conseils": conseils,
+        "conseils": conseils or None,
         "next_conseil": next_conseil,
     }
 
@@ -38,10 +34,7 @@ def comptes_rendus(request):
 
 
 def proces_verbaux(request):
-    if CompteRendu.objects.exists():
-        proces_verbaux = get_object_or_404(CompteRendu)
-    else:
-        proces_verbaux = None
+    proces_verbaux = CompteRendu.objects.first()
 
     context = {
         "proces_verbaux": proces_verbaux,
@@ -53,10 +46,7 @@ def proces_verbaux(request):
 # Partie gestion des conseils
 @permission_required("comptes_rendus.view_conseil")
 def admin_page(request):
-    if CompteRendu.objects.exists():
-        comptes_rendus = get_object_or_404(CompteRendu)
-    else:
-        comptes_rendus = None
+    comptes_rendus = CompteRendu.objects.first()
 
     # Récupérer tous les conseils triés par date décroissante (plus récent en premier)
     today = timezone.now().date()

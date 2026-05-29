@@ -6,10 +6,7 @@ from .models import SemestrielPage
 
 
 def semestriel(request):
-    if SemestrielPage.objects.exists():
-        content = get_object_or_404(SemestrielPage)
-    else:
-        content = None
+    content = SemestrielPage.objects.first()
 
     context = {
         "content": content,
@@ -63,13 +60,7 @@ def edit_content(request, pk):
 
 @permission_required("semestriels.view_event")
 def list_content(request):
-    """
-    Fonction de vue pour lister le contenu de la page Semestriels
-    """
-    if SemestrielPage.objects.exists():
-        content = get_object_or_404(SemestrielPage)
-    else:
-        content = None
+    content = SemestrielPage.objects.first()
 
     context = {
         "content": content,

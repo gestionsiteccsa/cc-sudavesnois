@@ -38,10 +38,9 @@ def elus(request):
     president = elus_qs.filter(role="Président").first()
 
     # Récupérer les documents
-    import os
-
-    if Document.objects.exists():
-        documents_raw = get_list_or_404(Document)
+    documents_raw = list(Document.objects.all())
+    documents = None
+    if documents_raw:
         documents = []
         for doc in documents_raw:
             # Vérifie l'existence physique du fichier

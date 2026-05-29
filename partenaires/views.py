@@ -1,4 +1,5 @@
 import unicodedata
+from collections import defaultdict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -20,45 +21,44 @@ def remove_accents(input_str):
 
 def partenaires(request):
     """Vue publique affichant tous les partenaires actifs groupés par catégorie"""
-    # Récupérer uniquement les partenaires actifs
-    all_partenaires = Partenaire.objects.filter(active=True).select_related('categorie')
-    
-    # Récupérer les catégories actives de type NORMAL qui ont des partenaires
+    all_partenaires = list(Partenaire.objects.filter(active=True).select_related('categorie'))
+
+    # Grouper en Python pour eviter N+1 requetes
+    by_cat = defaultdict(list)
+    for p in all_partenaires:
+        by_cat[p.categorie_id].append(p)
+
+    # Partenaires par categorie normale
     categories_normales = CategoriePartenaire.objects.filter(
         active=True,
         type_section='normal',
         partenaire__active=True
     ).distinct().order_by('ordre', 'nom')
-    
-    # Créer un dictionnaire des partenaires par catégorie normale
-    # Tri alphabétique sans accents (É, È, Ê traités comme E)
-    partenaires_par_categorie = {}
-    for categorie in categories_normales:
-        partenaires_list = list(all_partenaires.filter(categorie=categorie))
-        partenaires_list.sort(key=lambda p: remove_accents(p.nom).lower())
-        partenaires_par_categorie[categorie] = partenaires_list
 
-    # Récupérer les catégories de type SUBVENTION qui ont des partenaires
+    partenaires_par_categorie = {}
+    for cat in categories_normales:
+        lst = by_cat.get(cat.id, [])
+        lst.sort(key=lambda p: remove_accents(p.nom).lower())
+        partenaires_par_categorie[cat] = lst
+
+    # Partenaires par categorie subvention
     categories_subventions = CategoriePartenaire.objects.filter(
         active=True,
         type_section='subvention',
         partenaire__active=True
     ).distinct().order_by('ordre', 'nom')
 
-    # Créer un dictionnaire des partenaires par catégorie subvention
-    # Tri alphabétique sans accents (É, È, Ê traités comme E)
     partenaires_subventions = {}
-    for categorie in categories_subventions:
-        partenaires_list = list(all_partenaires.filter(categorie=categorie))
-        partenaires_list.sort(key=lambda p: remove_accents(p.nom).lower())
-        partenaires_subventions[categorie] = partenaires_list
+    for cat in categories_subventions:
+        lst = by_cat.get(cat.id, [])
+        lst.sort(key=lambda p: remove_accents(p.nom).lower())
+        partenaires_subventions[cat] = lst
 
-    # Partenaires sans catégorie
-    # Tri alphabétique sans accents (É, È, Ê traités comme E)
-    partenaires_sans_categorie = list(
-        all_partenaires.filter(categorie__isnull=True)
+    # Partenaires sans categorie
+    partenaires_sans_categorie = sorted(
+        by_cat.get(None, []),
+        key=lambda p: remove_accents(p.nom).lower()
     )
-    partenaires_sans_categorie.sort(key=lambda p: remove_accents(p.nom).lower())
 
     context = {
         "partenaires_par_categorie": partenaires_par_categorie,

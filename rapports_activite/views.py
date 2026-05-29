@@ -17,8 +17,8 @@ def rapports_activite(request):
     """
     View function to render the 'rapports_activite' page.
     """
-    if RapportActivite.objects.exists():
-        rapports = get_list_or_404(RapportActivite.objects.all().order_by("-year"))
+    rapports = list(RapportActivite.objects.all().order_by("-year"))
+    if rapports:
         rapport_recents = rapports[:4]
         archive = rapports[4:]
     else:
@@ -38,14 +38,13 @@ def manage_rapports_activite(request):
     """
     View function to render the 'manage_rapports_activite' page.
     """
-    if RapportActivite.objects.exists():
-        rapports = get_list_or_404(RapportActivite.objects.all().order_by("-year"))
-        total = len(rapports)
-        latest = rapports[0].year if total > 0 else None
-        oldest = rapports[total - 1].year if total > 0 else None
+    rapports = list(RapportActivite.objects.all().order_by("-year"))
+    total = len(rapports)
+    if total > 0:
+        latest = rapports[0].year
+        oldest = rapports[-1].year
     else:
         rapports = None
-        total = 0
         latest = None
         oldest = None
 
