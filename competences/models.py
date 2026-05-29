@@ -16,6 +16,7 @@ class Competence(models.Model):
         choices=Category.choices,
         default=Category.FACULTATIVE,
         verbose_name="Category",
+        db_index=True,
     )
     is_big = models.BooleanField(default=False, verbose_name="Is Big")
 

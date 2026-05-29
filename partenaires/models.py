@@ -28,9 +28,12 @@ class CategoriePartenaire(models.Model):
         choices=TYPE_SECTION_CHOICES,
         default="normal",
         verbose_name="Type de section",
+        db_index=True,
     )
-    ordre = models.IntegerField(default=0, verbose_name="Ordre d'affichage")
-    active = models.BooleanField(default=True, verbose_name="Actif")
+    ordre = models.IntegerField(
+        default=0, verbose_name="Ordre d'affichage", db_index=True
+    )
+    active = models.BooleanField(default=True, verbose_name="Actif", db_index=True)
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -143,8 +146,10 @@ class Partenaire(models.Model):
         default="#f3f4f6",
         verbose_name="Couleur de fond du logo",
     )
-    ordre = models.IntegerField(default=0, verbose_name="Ordre d'affichage")
-    active = models.BooleanField(default=True, verbose_name="Actif")
+    ordre = models.IntegerField(
+        default=0, verbose_name="Ordre d'affichage", db_index=True
+    )
+    active = models.BooleanField(default=True, verbose_name="Actif", db_index=True)
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
 

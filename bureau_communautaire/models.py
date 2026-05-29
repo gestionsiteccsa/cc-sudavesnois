@@ -22,6 +22,7 @@ class Elus(models.Model):
         choices=Role.choices,
         default=Role.VICE_PRESIDENT,
         verbose_name="Rôle",
+        db_index=True,
     )
     function = models.CharField(max_length=200, blank=True, null=True)
     picture = models.ImageField(

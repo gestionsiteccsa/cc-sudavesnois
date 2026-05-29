@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
@@ -6,33 +8,19 @@ from .models import Competence
 
 
 def competences(request):
-    if Competence.objects.filter(category=Competence.Category.OBLIGATOIRE).exists():
-        c_obligatoires = Competence.objects.filter(
-            category=Competence.Category.OBLIGATOIRE
-        )
-    else:
-        c_obligatoires = None
-
-    if Competence.objects.filter(category=Competence.Category.OPTIONNELLE).exists():
-        c_optionnelles = Competence.objects.filter(
-            category=Competence.Category.OPTIONNELLE
-        )
-    else:
-        c_optionnelles = None
-
-    if Competence.objects.filter(category=Competence.Category.FACULTATIVE).exists():
-        c_facultatives = Competence.objects.filter(
-            category=Competence.Category.FACULTATIVE
-        )
-    else:
-        c_facultatives = None
-
-    if Competence.objects.filter(category=Competence.Category.TRANSFEREE).exists():
-        c_transferees = Competence.objects.filter(
-            category=Competence.Category.TRANSFEREE
-        )
-    else:
-        c_transferees = None
+    toutes = Competence.objects.all()
+    c_obligatoires = [
+        c for c in toutes if c.category == Competence.Category.OBLIGATOIRE
+    ] or None
+    c_optionnelles = [
+        c for c in toutes if c.category == Competence.Category.OPTIONNELLE
+    ] or None
+    c_facultatives = [
+        c for c in toutes if c.category == Competence.Category.FACULTATIVE
+    ] or None
+    c_transferees = [
+        c for c in toutes if c.category == Competence.Category.TRANSFEREE
+    ] or None
 
     context = {
         "c_obligatoires": c_obligatoires,
@@ -50,13 +38,13 @@ def competences_list(request):
     Affiche la liste des compétences avec statistiques.
     """
     competences = Competence.objects.all().order_by("category", "title")
-
+    compteurs = dict(Counter(competences.values_list("category", flat=True)))
     stats = {
-        "total": competences.count(),
-        "obligatoire": competences.filter(category=Competence.Category.OBLIGATOIRE).count(),
-        "optionnelle": competences.filter(category=Competence.Category.OPTIONNELLE).count(),
-        "facultative": competences.filter(category=Competence.Category.FACULTATIVE).count(),
-        "transferee": competences.filter(category=Competence.Category.TRANSFEREE).count(),
+        "total": len(competences),
+        "obligatoire": compteurs.get(Competence.Category.OBLIGATOIRE, 0),
+        "optionnelle": compteurs.get(Competence.Category.OPTIONNELLE, 0),
+        "facultative": compteurs.get(Competence.Category.FACULTATIVE, 0),
+        "transferee": compteurs.get(Competence.Category.TRANSFEREE, 0),
     }
 
     context = {

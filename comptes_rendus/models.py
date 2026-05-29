@@ -21,7 +21,7 @@ class CompteRendu(models.Model):
 
 
 class Conseil(models.Model):
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     hour = models.TimeField()
     place = models.CharField(max_length=100, blank=True)
 

@@ -195,17 +195,10 @@ def conseil(request):
 
 
 def presentation(request):
-    # Optimisé : agrégation en base de données
-    from django.db.models import Count, Sum
-
-    stats = ConseilVille.objects.aggregate(
-        nb_communes=Count("id"), nb_habitants=Sum("nb_habitants")
-    )
-
     communes = list(ConseilVille.objects.all())
     communes = communes if communes else None
-    nb_communes = stats["nb_communes"] or 0
-    nb_habitants = stats["nb_habitants"] or 0
+    nb_communes = len(communes) if communes else 0
+    nb_habitants = sum(c.nb_habitants for c in communes) if communes else 0
 
     context = {
         "communes": communes,

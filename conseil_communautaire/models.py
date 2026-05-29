@@ -1,4 +1,8 @@
-from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    FileExtensionValidator,
+    MaxValueValidator,
+    MinValueValidator,
+)
 from django.db import models
 from django.utils.text import slugify
 
@@ -65,11 +69,13 @@ class ConseilMembre(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     city = models.ForeignKey(ConseilVille, on_delete=models.CASCADE)
-    is_suppleant = models.BooleanField(default=False)
+    is_suppleant = models.BooleanField(default=False, db_index=True)
     sexe = models.CharField(max_length=8, choices=Sexe, default=Sexe.Monsieur)
     linked_commission = models.ManyToManyField(
-        Commission, blank=True, related_name="membres",
-        help_text="Sélectionnez jusqu'à 5 commissions pour ce membre."
+        Commission,
+        blank=True,
+        related_name="membres",
+        help_text="Sélectionnez jusqu'à 5 commissions pour ce membre.",
     )
     photo = models.ImageField(
         upload_to="membres/photos/",

@@ -95,10 +95,12 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        "CONN_MAX_AGE": env.int("CONN_MAX_AGE", default=300),
     }
 }
 
 # Paramètres de sécurité recommandés pour la production
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env("SECURE_SSL_REDIRECT", default=not DEBUG)  # Force HTTPS
 SECURE_HSTS_SECONDS = env("SECURE_HSTS_SECONDS", default=31536000)  # HSTS header
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
@@ -107,8 +109,6 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
 SECURE_HSTS_PRELOAD = env("SECURE_HSTS_PRELOAD", default=True)  # Préchargement HSTS
 SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", default=True)  # Cookies sécurisés
 CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", default=True)  # Cookies CSRF sécurisés
-
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Headers de sécurité supplémentaires
 SESSION_COOKIE_HTTPONLY = (
@@ -163,6 +163,9 @@ STATICFILES_FINDERS = [
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 60 * 1024 * 1024  # 60 Mo
+
+# Sessions en cache pour les performances
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # Configuration des backups
 BACKUP_ROOT = env("BACKUP_ROOT", default=os.path.join(BASE_DIR, "backups"))
