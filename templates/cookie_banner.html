@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', function () {
     gtag('consent', 'update', {
       'analytics_storage': 'granted'
     });
-    // Envoyer la page vue differee
+    gtag('js', new Date());
+    gtag('config', 'G-XZ0DPFZXMN', { 'send_page_view': false });
     gtag('event', 'page_view');
     // Charger le script GA s'il n'est pas deja charge
     if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {

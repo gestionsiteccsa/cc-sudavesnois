@@ -9,6 +9,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.views.decorators.cache import cache_page
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -38,9 +39,6 @@ def is_staff_or_superuser(user):
         bool: True si l'utilisateur est staff ou superuser.
     """
     return user.is_staff or user.is_superuser
-
-
-from django.views.decorators.cache import cache_page
 
 
 @cache_page(300)
