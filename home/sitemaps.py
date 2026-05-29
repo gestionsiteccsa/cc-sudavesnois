@@ -2,7 +2,6 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from conseil_communautaire.models import ConseilVille
-from journal.models import Journal
 
 
 class StaticViewSitemap(Sitemap):
@@ -61,17 +60,14 @@ class CommunesSitemap(Sitemap):
 
 class JournalSitemap(Sitemap):
     """
-    Sitemap pour les publications du journal.
+    Sitemap pour la page d'accueil du journal.
     """
 
     priority = 0.6
     changefreq = "monthly"
 
     def items(self):
-        return Journal.objects.all()
+        return ["journal:journal"]
 
-    def lastmod(self, obj):
-        return obj.release_date
-
-    def location(self, obj):
-        return reverse("journal:journal_detail", kwargs={"id": obj.id})
+    def location(self, item):
+        return reverse(item)

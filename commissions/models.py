@@ -1,9 +1,14 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
+
+from journal.models import validate_taille_fichier
 
 
 class Commission(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
-    icon = models.TextField(verbose_name="Icon SVG", help_text="Code SVG complet de l'icône")
+    icon = models.TextField(
+        verbose_name="Icon SVG", help_text="Code SVG complet de l'icône"
+    )
 
     class Meta:
         verbose_name = "Commission"
@@ -14,7 +19,25 @@ class Commission(models.Model):
 
 
 class Document(models.Model):
-    file = models.FileField(upload_to="commissions/documents/")
+    file = models.FileField(
+        upload_to="commissions/documents/",
+        validators=[
+            validate_taille_fichier,
+            FileExtensionValidator(
+                allowed_extensions=[
+                    "pdf",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "webp",
+                    "xls",
+                    "xlsx",
+                    "doc",
+                    "docx",
+                ]
+            ),
+        ],
+    )
 
     class Meta:
         verbose_name = "Document"

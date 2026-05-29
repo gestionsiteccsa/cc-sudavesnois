@@ -14,7 +14,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # ATTENTION : DEBUG doit être à False en production !
 # Utilisez env.bool('DEBUG', default=False) pour gérer le .env
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool("DEBUG", default=False)
 
 # Liste blanche des hôtes autorisés (sécurité obligatoire en prod)
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "watson.middleware.SearchContextMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 APPEND_SLASH = True
@@ -108,11 +109,13 @@ SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", default=True)  # Cookies s�
 CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", default=True)  # Cookies CSRF sécurisés
 
 # Headers de sécurité supplémentaires
-SESSION_COOKIE_HTTPONLY = True  # Empêche l'accès aux cookies via JavaScript (protection XSS)
-SESSION_COOKIE_SAMESITE = 'Lax'  # Protection contre CSRF
+SESSION_COOKIE_HTTPONLY = (
+    True  # Empêche l'accès aux cookies via JavaScript (protection XSS)
+)
+SESSION_COOKIE_SAMESITE = "Lax"  # Protection contre CSRF
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Empêche le MIME type sniffing
 SECURE_BROWSER_XSS_FILTER = True  # Active le filtre XSS du navigateur
-X_FRAME_OPTIONS = 'DENY'  # Empêche le clickjacking
+X_FRAME_OPTIONS = "DENY"  # Empêche le clickjacking
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -147,12 +150,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Configuration WhiteNoise pour servir les fichiers statiques en production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Force Django à servir les fichiers statiques même en production
 STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
 
 MEDIA_ROOT = BASE_DIR / "media"
@@ -171,6 +174,21 @@ LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "accounts:profile"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://www.googletagmanager.com",
+    "https://cdn.tailwindcss.com",
+)
+CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'", "data:", "https://cc-sudavesnois.fr")
+CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
+CSP_CONNECT_SRC = ("'self'", "https://www.google-analytics.com")
+CSP_FRAME_SRC = ("'none'",)
+CSP_FORM_ACTION = ("'self'",)
+CSP_OBJECT_SRC = ("'none'",)
 
 # Active les pages d'erreur personnalisées
 HANDLER404 = "home.views.custom_handler404"
