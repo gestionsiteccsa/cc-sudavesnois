@@ -53,7 +53,7 @@
                     <!-- Pièces signées -->
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
                         <div class="overflow-hidden">
-                            <img src="{% static 'img/Presentation-territoire-CCSA-V3.png' %}" alt="Pièces signées" class="w-full h-64 object-cover" loading="lazy">
+                            <img src="{% static 'img/Presentation-territoire-CCSA-V3.png' %}" alt="Pièces signées" class="w-full h-48 sm:h-56 md:h-64 object-cover" loading="lazy">
                         </div>
                         <a href="{% url 'documents_plui' %}" class="block bg-primary hover:bg-primary-dark transition-colors duration-300 p-6 text-white">
                             <h3 class="text-2xl font-bold mb-2 text-center">PLUi en vigueur</h3>
@@ -63,7 +63,7 @@
                     <!-- Modification Simplifiée n°1 -->
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
                         <div class="overflow-hidden">
-                            <img src="https://placehold.co/800x400/e2e8f0/64748b?text=Modification+Simplifi%C3%A9e+n%C2%B01" alt="Modification Simplifiée n°1" class="w-full h-64 object-cover" loading="lazy">
+                            <img src="https://placehold.co/800x400/e2e8f0/64748b?text=Modification+Simplifi%C3%A9e+n%C2%B01" alt="Modification Simplifiée n°1" class="w-full h-48 sm:h-56 md:h-64 object-cover" loading="lazy">
                         </div>
                         <a href="{% url 'modification_simplifiee_1' %}" class="block bg-primary hover:bg-primary-dark transition-colors duration-300 p-6 text-white">
                             <h3 class="text-2xl font-bold mb-2 text-center">Modification Simplifiée n°1</h3>
@@ -100,17 +100,17 @@
                     <div class="mb-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Demander une modification du PLUi</h3>
                         <p class="text-gray-600 dark:text-gray-300">
-                            Si vous souhaitez demander une modification du Plan Local d'Urbanisme intercommunal, 
+                            Si vous souhaitez demander une modification du Plan Local d'Urbanisme intercommunal,
                             vous devez remplir le formulaire officiel de demande de modification.
                         </p>
                     </div>
-                    
+
                     <!-- Formulaire complet -->
                     <div class="bg-primary/5 p-6 rounded-lg">
                         <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Formulaire de demande de modification</h4>
                         <form class="space-y-4" method="post" action="{% url 'plui' %}">
                             {% csrf_token %}
-                            
+
                             <!-- Section DEMANDEUR -->
                             <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
                                 <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDEUR</h5>
@@ -197,7 +197,7 @@
 
                             <!-- Bouton de soumission -->
                             <div class="pt-4">
-                                <button type="submit" 
+                                <button type="submit"
                                         class="w-full bg-primary text-white font-medium py-3 px-6 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -230,8 +230,8 @@
                 <div class="space-y-6">
                     <!-- SRADDET -->
                     <article class="group bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
-                        <a href="https://www.hautsdefrance.fr/schema-regional-damenagement-de-developpement-durable-et-degalite-des-territoires/" 
-                           target="_blank" 
+                        <a href="https://www.hautsdefrance.fr/schema-regional-damenagement-de-developpement-durable-et-degalite-des-territoires/"
+                           target="_blank"
                            rel="noopener noreferrer"
                            aria-label="Consulter le SRADDET des Hauts-de-France (nouvelle fenêtre)"
                            class="flex flex-col md:flex-row items-stretch focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl">
@@ -269,8 +269,8 @@
 
                     <!-- SCoT -->
                     <article class="group bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
-                        <a href="https://www.scot-sambre-avesnois.fr/M2-qu-est-ce-qu-un-scot-7.html" 
-                           target="_blank" 
+                        <a href="https://www.scot-sambre-avesnois.fr/M2-qu-est-ce-qu-un-scot-7.html"
+                           target="_blank"
                            rel="noopener noreferrer"
                            aria-label="Consulter le SCoT Sambre-Avesnois (nouvelle fenêtre)"
                            class="flex flex-col md:flex-row items-stretch focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl">
@@ -308,8 +308,8 @@
 
                     <!-- Charte du PNRA -->
                     <article class="group bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
-                        <a href="https://www.parc-naturel-avesnois.fr/blog/2023/01/27/orientations-2040/" 
-                           target="_blank" 
+                        <a href="https://www.parc-naturel-avesnois.fr/blog/2023/01/27/orientations-2040/"
+                           target="_blank"
                            rel="noopener noreferrer"
                            aria-label="Consulter la Charte du Parc Naturel Régional de l'Avesnois - Orientations 2040 (nouvelle fenêtre)"
                            class="flex flex-col md:flex-row items-stretch focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl">

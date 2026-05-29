@@ -10,6 +10,7 @@
   .elu-photo-wrapper {
     width: 150px !important;
     height: 150px !important;
+    max-width: 100% !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     border: 4px solid #e5e7eb !important;
@@ -76,7 +77,7 @@
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-6xl mx-auto">
                 <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12">Les membres du Conseil Communautaire</h2>
-                
+
                 {% if cities_list %}
                 <div class="space-y-10">
                     {% for city in cities_list %}
@@ -106,7 +107,7 @@
                                     </div>
                                 </article>
                                 {% endfor %}
-                                
+
                                 <!-- Liste des suppléants -->
                                 {% for member in city_members.suppleants %}
                                 <article class="elu-card conseil-member-card conseil-member-suppleant {% if member.photo %}has-photo{% endif %} bg-white dark:bg-gray-800 rounded-xl overflow-hidden text-center p-4">
@@ -155,13 +156,13 @@
 <script>
 (function() {
     'use strict';
-    
+
     const lightboxModal = document.getElementById('lightbox-modal');
     const lightboxImage = document.getElementById('lightbox-image');
     const lightboxClose = lightboxModal.querySelector('.lightbox-close');
     let lastFocusedElement = null;
     let focusTrapHandler = null;
-    
+
     function openLightbox(src, alt) {
         lastFocusedElement = document.activeElement;
         lightboxImage.src = src;
@@ -172,9 +173,15 @@
         document.addEventListener('keydown', handleKeydown);
         focusTrapHandler = createFocusTrap(lightboxModal);
         document.addEventListener('keydown', focusTrapHandler);
+        var scrollY = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = '-' + scrollY + 'px';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
         document.body.style.overflow = 'hidden';
     }
-    
+
     function closeLightbox() {
         lightboxModal.classList.remove('active');
         lightboxModal.hidden = true;
@@ -184,17 +191,24 @@
             document.removeEventListener('keydown', focusTrapHandler);
             focusTrapHandler = null;
         }
+        var bodyTop = parseInt(document.body.style.top);
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
         document.body.style.overflow = '';
+        window.scrollTo(0, -bodyTop);
         if (lastFocusedElement) lastFocusedElement.focus();
     }
-    
+
     function handleKeydown(e) {
         if (e.key === 'Escape') {
             e.preventDefault();
             closeLightbox();
         }
     }
-    
+
     function createFocusTrap(element) {
         return function(e) {
             if (e.key !== 'Tab') return;
@@ -202,7 +216,7 @@
             if (focusableElements.length === 0) return;
             const firstFocusable = focusableElements[0];
             const lastFocusable = focusableElements[focusableElements.length - 1];
-            
+
             if (e.shiftKey) {
                 if (document.activeElement === firstFocusable) {
                     lastFocusable.focus();
@@ -216,7 +230,7 @@
             }
         };
     }
-    
+
     // Détection des clics sur les wrappers d'images
     document.querySelectorAll('.lightbox-trigger-wrapper').forEach(function(wrapper) {
         wrapper.addEventListener('click', function(e) {
@@ -224,7 +238,7 @@
             const img = wrapper.querySelector('img');
             if (img) openLightbox(img.src, img.alt);
         });
-        
+
         wrapper.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -233,7 +247,7 @@
             }
         });
     });
-    
+
     lightboxClose.addEventListener('click', closeLightbox);
     lightboxModal.addEventListener('click', function(e) {
         if (e.target === lightboxModal) closeLightbox();

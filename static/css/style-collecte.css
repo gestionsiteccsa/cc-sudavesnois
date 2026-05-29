@@ -1,0 +1,62 @@
+#suggestions {
+    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+#suggestions div {
+    padding: 12px 15px;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    margin-bottom: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+#suggestions div:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+}
+#result {
+    margin-top: 25px;
+    font-size: 16px;
+    padding: 25px;
+    border-radius: 12px;
+    display: none;
+    animation: fadeIn 0.5s ease;
+    background-color: white;
+    border: 2px dashed var(--primary-dark);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.result-header {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed var(--primary-dark);
+    color: var(--primary-dark);
+}
+.result-section {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: var(--primary-primary);
+    border-radius: 8px;
+}
+.result-section-collecte {
+    padding: 10px;
+    background-color: var(--primary-collecte);
+    border-radius: 8px;
+}
+.result-section-collecte-verre {
+    padding: 10px;
+    background-color: var(--primary-collecte-verre);
+    border-radius: 8px;
+}
+.dates-list {
+    line-height: 1.8;
+    padding: 10px;
+    border-radius: 6px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
