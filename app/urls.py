@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic import RedirectView, TemplateView
+from django.views.static import serve
 
 from home.sitemaps import CommunesSitemap, JournalSitemap, StaticViewSitemap
 
@@ -69,6 +70,10 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# En production :
-# - Les fichiers statiques sont servis par WhiteNoise (via WSGI)
-# - Les fichiers médias doivent être servis par le serveur web (nginx/Apache)
+else:
+    # En production :
+    # - Les fichiers statiques sont servis par WhiteNoise (via WSGI)
+    # - Les fichiers médias sont servis par Django (en attendant la configuration nginx)
+    urlpatterns += [
+        path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT}),
+    ]
