@@ -174,8 +174,8 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ doc_size }}</p>
                 {% endif %}{% endwith %}
               </div>
-              <a href="{{ journal.document.url }}" target="_blank" rel="noopener"
-                 class="flex-shrink-0 text-sm text-primary hover:text-primary-600 font-medium transition">Voir</a>
+<a href="{{ journal.document.url }}" target="_blank" rel="noopener"
+                  class="flex-shrink-0 text-sm text-primary hover:text-primary-600 font-medium transition">Voir<span class="sr-only"> (nouvelle fenêtre)</span></a>
             </div>
             {% else %}
             <p class="text-sm text-gray-400 dark:text-gray-500 italic">Aucun document</p>
@@ -204,8 +204,8 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ cover_size }}</p>
                 {% endif %}{% endwith %}
               </div>
-              <a href="{{ journal.cover.url }}" target="_blank" rel="noopener"
-                 class="flex-shrink-0 text-sm text-primary hover:text-primary-600 font-medium transition">Voir</a>
+<a href="{{ journal.cover.url }}" target="_blank" rel="noopener"
+                  class="flex-shrink-0 text-sm text-primary hover:text-primary-600 font-medium transition">Voir<span class="sr-only"> (nouvelle fenêtre)</span></a>
             </div>
             {% else %}
             <p class="text-sm text-gray-400 dark:text-gray-500 italic">Aucune couverture</p>
