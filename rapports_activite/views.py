@@ -1,7 +1,7 @@
-import os
-
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+
+from app.utils import secure_file_removal
 
 from .forms import RapportActiviteForm
 from .models import RapportActivite
@@ -87,8 +87,7 @@ def edit_rapport_activite(request, id):
         if form.is_valid():
             rapport = form.save(commit=False)
             if rapport.file != last_file:
-                if os.path.exists(last_file.path):
-                    os.remove(last_file.path)
+                secure_file_removal(last_file)
             rapport.save()
             return redirect("rapports_activite:gestion_rapports_activite")
     else:
@@ -103,8 +102,7 @@ def delete_rapport_activite(request, id):
     """
     rapport = get_object_or_404(RapportActivite, pk=id)
     if request.method == "POST":
-        if os.path.exists(rapport.file.path):
-            os.remove(rapport.file.path)
+        secure_file_removal(rapport.file)
         rapport.delete()
         return redirect("rapports_activite:gestion_rapports_activite")
     return render(request, supprimer_rapport, {"rapport": rapport})

@@ -1,11 +1,10 @@
-import os
-
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
 from django.db.models import Prefetch
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
+from app.utils import secure_file_removal
 from bureau_communautaire.models import Elus, PageStatus
 from conseil_communautaire.models import ConseilMembre
 
@@ -29,8 +28,12 @@ def commissions(request):
         )
 
     # Récupération optimisée avec prefetch_related pour les relations ManyToMany
-    elus_prefetch = Prefetch("elus", queryset=Elus.objects.order_by("last_name", "first_name"))
-    membres_prefetch = Prefetch("membres", queryset=ConseilMembre.objects.order_by("last_name", "first_name"))
+    elus_prefetch = Prefetch(
+        "elus", queryset=Elus.objects.order_by("last_name", "first_name")
+    )
+    membres_prefetch = Prefetch(
+        "membres", queryset=ConseilMembre.objects.order_by("last_name", "first_name")
+    )
     commissions_qs = Commission.objects.order_by("title").prefetch_related(
         elus_prefetch, "elus__city", membres_prefetch, "membres__city"
     )
@@ -38,19 +41,19 @@ def commissions(request):
     nb_commissions = len(commissions_list) if commissions_list else 0
 
     # Document et mandat (avec cache de 5 minutes)
-    document = cache.get('commissions_document')
+    document = cache.get("commissions_document")
     if document is None:
         document = Document.objects.first()
-        cache.set('commissions_document', document, 300)
+        cache.set("commissions_document", document, 300)
 
-    mandat = cache.get('commissions_mandat')
+    mandat = cache.get("commissions_mandat")
     if mandat is None:
         mandat = Mandat.objects.first()
         if not mandat:
             # Crée un mandat par défaut si aucun n'existe
             mandat = Mandat(start_year=2020, end_year=2026)
             mandat.save()
-        cache.set('commissions_mandat', mandat, 300)
+        cache.set("commissions_mandat", mandat, 300)
 
     context = {
         "commissions": commissions_list if commissions_list else None,
@@ -167,7 +170,7 @@ def edit_document(request, document_id):
             form.save(commit=False)
             if last_document != document.file:
                 # Supprime l'ancien fichier
-                os.remove(last_document.path)
+                secure_file_removal(last_document)
             form.save()
 
             return redirect("commissions:admin_list_commissions")
@@ -183,7 +186,7 @@ def delete_document(request, document_id):
     """
     document = get_object_or_404(Document, id=document_id)
     if request.method == "POST":
-        os.remove(document.file.path)  # Supprime le fichier
+        secure_file_removal(document.file)  # Supprime le fichier
         document.delete()
         return redirect("commissions:admin_list_commissions")
     return render(
@@ -263,7 +266,9 @@ def manage_page_status(request):
 @permission_required("commissions.view_commission")
 def list_commission_competences(request):
     """Affiche la liste des commissions avec leurs compétences."""
-    commissions_qs = Commission.objects.order_by("title").prefetch_related("competences")
+    commissions_qs = Commission.objects.order_by("title").prefetch_related(
+        "competences"
+    )
     commissions = list(commissions_qs)
     commissions = commissions if commissions else None
 

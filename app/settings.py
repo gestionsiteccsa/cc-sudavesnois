@@ -99,7 +99,7 @@ DATABASES = {
 }
 
 # Paramètres de sécurité recommandés pour la production
-SECURE_SSL_REDIRECT = env("SECURE_SSL_REDIRECT", default=False)  # Force HTTPS
+SECURE_SSL_REDIRECT = env("SECURE_SSL_REDIRECT", default=not DEBUG)  # Force HTTPS
 SECURE_HSTS_SECONDS = env("SECURE_HSTS_SECONDS", default=31536000)  # HSTS header
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
     "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
@@ -107,6 +107,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
 SECURE_HSTS_PRELOAD = env("SECURE_HSTS_PRELOAD", default=True)  # Préchargement HSTS
 SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", default=True)  # Cookies sécurisés
 CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", default=True)  # Cookies CSRF sécurisés
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Headers de sécurité supplémentaires
 SESSION_COOKIE_HTTPONLY = (
@@ -163,8 +165,8 @@ MEDIA_URL = "/media/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 60 * 1024 * 1024  # 60 Mo
 
 # Configuration des backups
-BACKUP_ROOT = "/home/noro8560/backupCCSA"
-BACKUP_RETENTION_COUNT = 4  # Garder 4 backups
+BACKUP_ROOT = env("BACKUP_ROOT", default=os.path.join(BASE_DIR, "backups"))
+BACKUP_RETENTION_COUNT = env.int("BACKUP_RETENTION_COUNT", default=4)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUser"

@@ -1,8 +1,7 @@
-import os
-
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
+from app.utils import secure_file_removal
 from conseil_communautaire.models import ConseilVille
 
 from .forms import ActesLocForm
@@ -15,16 +14,20 @@ def commune(request, slug):
     Optimisé : une seule requête via select_related et le related_name.
     """
     commune = get_object_or_404(ConseilVille, slug=slug)
-    acte = getattr(commune, 'acte_local', None)
+    acte = getattr(commune, "acte_local", None)
     if acte is None:
         acte = ActeLocal(
             id="0", title=None, date=None, description=None, commune=commune, file="/"
         )
 
-    return render(request, "communes_membres/commune.html", {
-        "commune": commune,
-        "acte": acte,
-    })
+    return render(
+        request,
+        "communes_membres/commune.html",
+        {
+            "commune": commune,
+            "acte": acte,
+        },
+    )
 
 
 @permission_required("communes_membres.add_actelocal")
@@ -49,10 +52,10 @@ def list_acte_local(request):
     Affiche la liste des actes locaux.
     Optimisé avec select_related pour éviter les N+1 queries sur la commune.
     """
-    actes_qs = ActeLocal.objects.select_related('commune')
+    actes_qs = ActeLocal.objects.select_related("commune")
     actes_list = list(actes_qs)
     total = len(actes_list)
-    
+
     if not actes_list:
         actes_list = [
             ActeLocal(id="-1", date=None, description=None, commune=None, file="/")
@@ -60,10 +63,12 @@ def list_acte_local(request):
         total = 0
 
     return render(
-        request, "communes_membres/admin_acte_list.html", {
+        request,
+        "communes_membres/admin_acte_list.html",
+        {
             "actes_locaux": actes_list,
             "total": total,
-        }
+        },
     )
 
 
@@ -99,15 +104,18 @@ def update_acte_local(request, id):
             acte_local = form.save(commit=False)
             # Vérifier si le fichier a été modifié
             if acte_local.file != fichier:
-                if os.path.exists(fichier.path):
-                    os.remove(fichier.path)
+                secure_file_removal(fichier)
             form.save()
 
             return redirect("communes-membres:admin_acte_list")
     else:
         form = ActesLocForm(instance=acte_local)
 
-    return render(request, "communes_membres/admin_acte_edit.html", {
-        "form_acte": form,
-        "acte": acte_local,
-    })
+    return render(
+        request,
+        "communes_membres/admin_acte_edit.html",
+        {
+            "form_acte": form,
+            "acte": acte_local,
+        },
+    )

@@ -86,23 +86,21 @@ def login_view(request):
     if request.method == "POST":
         # Rate limiting pour prévenir les attaques par force brute
         if not getattr(settings, "TESTING", False):
-            # Obtenir l'IP réelle du client de manière sécurisée
-            client_ip = (
-                request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
-                or request.META.get("REMOTE_ADDR")
-                or "unknown"
-            )
-            
+            # Obtenir l'IP réelle du client
+            client_ip = request.META.get("REMOTE_ADDR") or "unknown"
+
             # Créer des clés de rate limiting par IP et par email
             rate_key_ip = f"login_rate_ip:{client_ip}"
             email_key = request.POST.get("username", "unknown")
             rate_key_email = f"login_rate_email:{email_key}"
-            
+
             try:
                 # Vérifier le rate limiting par IP (max 10 tentatives par 15 minutes)
                 ip_attempts = cache.get(rate_key_ip, 0)
                 if ip_attempts >= 10:
-                    logger.warning(f"Trop de tentatives de connexion depuis l'IP {client_ip}")
+                    logger.warning(
+                        f"Trop de tentatives de connexion depuis l'IP {client_ip}"
+                    )
                     messages.error(
                         request,
                         _(
@@ -113,13 +111,15 @@ def login_view(request):
                     return render(
                         request,
                         "accounts/login.html",
-                        {"form": CustomAuthenticationForm(), "user_count": user_count}
+                        {"form": CustomAuthenticationForm(), "user_count": user_count},
                     )
-                
+
                 # Vérifier le rate limiting par email (max 5 tentatives par 15 minutes)
                 email_attempts = cache.get(rate_key_email, 0)
                 if email_attempts >= 5:
-                    logger.warning(f"Trop de tentatives de connexion pour l'email {email_key}")
+                    logger.warning(
+                        f"Trop de tentatives de connexion pour l'email {email_key}"
+                    )
                     messages.error(
                         request,
                         _(
@@ -130,18 +130,18 @@ def login_view(request):
                     return render(
                         request,
                         "accounts/login.html",
-                        {"form": CustomAuthenticationForm(), "user_count": user_count}
+                        {"form": CustomAuthenticationForm(), "user_count": user_count},
                     )
             except Exception as e:
                 logger.error(f"Erreur dans le rate limiting: {e}")
                 # En cas d'erreur, on continue mais on log l'erreur
-                
+
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             email = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             user = authenticate(username=email, password=password)
-            
+
             if user is not None:
                 # Connexion réussie - réinitialiser les compteurs de rate limiting
                 if not getattr(settings, "TESTING", False):
@@ -150,7 +150,7 @@ def login_view(request):
                         cache.delete(f"login_rate_email:{email}")
                     except Exception:
                         pass
-                        
+
                 login(request, user)
                 logger.info(f"Connexion réussie pour l'utilisateur {email}")
                 messages.success(request, _("Vous êtes maintenant connecté."))
@@ -164,17 +164,19 @@ def login_view(request):
                             cache.incr(rate_key_ip)
                         except ValueError:
                             cache.set(rate_key_ip, 1, timeout=900)  # 15 minutes
-                        
+
                         # Incrémenter le compteur email
                         try:
                             cache.incr(rate_key_email)
                         except ValueError:
                             cache.set(rate_key_email, 1, timeout=900)  # 15 minutes
-                            
-                        logger.warning(f"Échec de connexion pour {email_key} depuis {client_ip}")
+
+                        logger.warning(
+                            f"Échec de connexion pour {email_key} depuis {client_ip}"
+                        )
                     except Exception:
                         pass
-                        
+
                 messages.error(
                     request,
                     _("Adresse email ou mot de passe incorrect."),

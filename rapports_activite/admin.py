@@ -1,6 +1,6 @@
-import os
-
 from django.contrib import admin
+
+from app.utils import secure_file_removal
 
 from .models import RapportActivite
 
@@ -10,8 +10,7 @@ def delete_rapports_activite(modeladmin, request, queryset):
     Action pour supprimer les rapports d'activité sélectionnés.
     """
     for object in queryset:
-        if os.path.exists(object.file.path):
-            os.remove(object.file.path)
+        secure_file_removal(object.file)
         object.delete()
 
 
@@ -53,8 +52,7 @@ class CustomRapportActiviteAdmin(admin.ModelAdmin):
         Surcharge de la méthode delete_model pour
         supprimer le fichier associé au rapport d'activité
         """
-        if os.path.exists(obj.file.path):
-            os.remove(obj.file.path)
+        secure_file_removal(obj.file)
         super().delete_model(request, obj)
 
 

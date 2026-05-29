@@ -7,27 +7,33 @@
     <meta name="description" content="{% block meta_description %}Communauté de Communes Sud-Avesnois - Services et informations pour les habitants du territoire{% endblock %}">
     <meta name="author" content="Communauté de Communes Sud-Avesnois">
     <meta name="robots" content="index, follow">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZ0DPFZXMN"></script>
+    <!-- Google tag (gtag.js) - chargé uniquement après consentement -->
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+        });
+        gtag('set', 'ads_data_redaction', true);
+        gtag('set', 'url_passthrough', true);
         gtag('js', new Date());
-
-        gtag('config', 'G-XZ0DPFZXMN');
+        gtag('config', 'G-XZ0DPFZXMN', { 'send_page_view': false });
     </script>
-    
+
     <!-- URL canonique -->
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
     <!-- icone -->
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
 
     <title>{% block title %}Accueil{% endblock %} | Communauté de Communes Sud-Avesnois</title>
-    
+
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 
-    
+
     <!-- Préchargement des polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,11 +41,11 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     <link rel="preload" as="style" href="{% static 'icones/icofont.min.css' %}" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{% static 'icones/icofont.min.css' %}"></noscript>
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
     {% block styles %}{% endblock %}
-    
+
     <!-- Open Graph pour les réseaux sociaux -->
     <meta property="og:title" content="Communauté de Communes Sud-Avesnois">
     <meta property="og:description" content="Services et informations pour les habitants du territoire du Sud-Avesnois">
@@ -103,14 +109,14 @@
 
     <!-- Pied de page -->
     {% include 'footer.html' %}
-    
+
     <!-- Bouton retour en haut -->
     <button id="back-to-top" class="fixed bottom-6 right-6 bg-primary text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="Retour en haut de la page">
         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
-    
+
     <!-- Scripts -->
     <script defer src="{% static 'js/scripts.min.js' %}"></script>
     <script defer src="{% static 'js/accessibility.min.js' %}"></script>

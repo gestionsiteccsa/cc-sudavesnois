@@ -1,6 +1,6 @@
-import os
-
 from django.contrib import admin
+
+from app.utils import secure_file_removal
 
 from .forms import ConseilMembreForm, ConseilVilleForm
 from .models import ConseilMembre, ConseilVille
@@ -24,8 +24,7 @@ def delete_content(modeladmin, request, queryset):
     Supprime le contenu sélectionné
     """
     for obj in queryset:
-        if os.path.exists(obj.image.path):
-            os.remove(obj.image.path)
+        secure_file_removal(obj.image)
     queryset.delete()
 
 
@@ -71,8 +70,7 @@ class CustomCityAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if os.path.exists(obj.image.path):
-            os.remove(obj.image.path)
+        secure_file_removal(obj.image)
 
         super().delete_model(request, obj)
 

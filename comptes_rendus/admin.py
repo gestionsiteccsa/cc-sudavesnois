@@ -1,6 +1,6 @@
-import os
-
 from django.contrib import admin
+
+from app.utils import secure_file_removal
 
 from .forms import ConseilForm, CRForm
 from .models import CompteRendu, Conseil, DocumentConseil
@@ -12,8 +12,7 @@ def delete_content(modeladmin, request, queryset):
     """
     for obj in queryset:
         for doc in obj.documents.all():
-            if os.path.exists(doc.file.path):
-                os.remove(doc.file.path)
+            secure_file_removal(doc.file)
             doc.delete()
     queryset.delete()
 
@@ -47,8 +46,7 @@ class CustomConseilAdmin(admin.ModelAdmin):
         (Supp individuelle)
         """
         for doc in obj.documents.all():
-            if os.path.exists(doc.file.path):
-                os.remove(doc.file.path)
+            secure_file_removal(doc.file)
             doc.delete()
 
         super().delete_model(request, obj)

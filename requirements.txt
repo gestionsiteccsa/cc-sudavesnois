@@ -191,5 +191,6 @@ wrapt==1.15.0
 yarl==1.9.2
 zeep==4.2.1
 reportlab==4.4.10
+bleach==6.3.0
 django-csp==4.0
 django-watson==1.6.3

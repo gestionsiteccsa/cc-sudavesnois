@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from io import BytesIO
 
 from django.conf import settings
 from django.contrib import messages
@@ -8,21 +9,21 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, redirect, render
 from django.template.loader import render_to_string
+
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm, mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 from reportlab.lib.utils import ImageReader
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from watson import search as watson
 
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
+from home.data.collecte_data import city_data, get_dates_verre, get_jour_ordures
 from journal.models import Journal
 from services.models import Service
-from home.data.collecte_data import get_dates_verre, get_jour_ordures, city_data
-from io import BytesIO
-from watson import search as watson
 
 logger = logging.getLogger(__name__)
 
@@ -45,11 +46,11 @@ from django.views.decorators.cache import cache_page
 @cache_page(300)
 def home(request):
     # Donnée requises pour la page d'accueil
-    
+
     # Optimisé : récupération unique des services
     services = list(Service.objects.order_by("title"))
     services = services if services else None
-    
+
     # Optimisé : une seule requête pour les communes + stats calculées en Python
     communes = list(ConseilVille.objects.all())
     communes = communes if communes else None
@@ -62,11 +63,7 @@ def home(request):
     if request.method == "POST":
         # Rate limiting simple: 5 requêtes par minute par adresse IP
         if not getattr(settings, "TESTING", False):
-            client_ip = (
-                request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
-                or request.META.get("REMOTE_ADDR")
-                or "unknown"
-            )
+            client_ip = request.META.get("REMOTE_ADDR") or "unknown"
             rate_key = f"contact_rate:{client_ip}"
             try:
                 # Initialise le compteur avec expiration de 60s si absent
@@ -113,9 +110,7 @@ def home(request):
                 first_name = contact_form.cleaned_data["first_name"]
                 last_name = contact_form.cleaned_data["last_name"]
                 msg = EmailMultiAlternatives(
-                    subject=(
-                        f"CONTACT - CCSA : {first_name} {last_name}"
-                    ),
+                    subject=(f"CONTACT - CCSA : {first_name} {last_name}"),
                     body=text_content,
                     from_email=from_email,
                     to=to_email,
@@ -125,18 +120,17 @@ def home(request):
 
                 # Mail de confirmation au client depuis
                 # nepasrepondre@cc-sudavesnois.fr
-                text_content_client = render_to_string(
-                    "email_text_client.txt", context
-                )
+                text_content_client = render_to_string("email_text_client.txt", context)
                 html_content_client = render_to_string(
                     "email_html_client.html", context
                 )
-                from_email_confirmation = "CCSA - Ne pas répondre <nepasrepondre@cc-sudavesnois.fr>"
+                from_email_confirmation = (
+                    "CCSA - Ne pas répondre <nepasrepondre@cc-sudavesnois.fr>"
+                )
                 to_email_client = [contact_form.cleaned_data["email"]]
                 msg_client = EmailMultiAlternatives(
                     subject=(
-                        f"CONFIRMATION DE CONTACT - CCSA : "
-                        f"{first_name} {last_name}"
+                        f"CONFIRMATION DE CONTACT - CCSA : " f"{first_name} {last_name}"
                     ),
                     body=text_content_client,
                     from_email=from_email_confirmation,
@@ -154,9 +148,7 @@ def home(request):
                     ),
                 )
                 user_email = contact_form.cleaned_data["email"]
-                logger.info(
-                    f"Email de contact envoyé avec succès pour {user_email}"
-                )
+                logger.info(f"Email de contact envoyé avec succès pour {user_email}")
                 return redirect("home")
             except Exception as e:
                 logger.error(f"Erreur lors de l'envoi de l'email de contact: {e}")
@@ -205,16 +197,15 @@ def conseil(request):
 def presentation(request):
     # Optimisé : agrégation en base de données
     from django.db.models import Count, Sum
-    
+
     stats = ConseilVille.objects.aggregate(
-        nb_communes=Count('id'),
-        nb_habitants=Sum('nb_habitants')
+        nb_communes=Count("id"), nb_habitants=Sum("nb_habitants")
     )
-    
+
     communes = list(ConseilVille.objects.all())
     communes = communes if communes else None
-    nb_communes = stats['nb_communes'] or 0
-    nb_habitants = stats['nb_habitants'] or 0
+    nb_communes = stats["nb_communes"] or 0
+    nb_habitants = stats["nb_habitants"] or 0
 
     context = {
         "communes": communes,
@@ -263,10 +254,12 @@ def contrat_local_sante(request):
 
 def plui(request):
     """Vue pour la page PLUi et le formulaire de modification."""
+    import logging
+
     from django.contrib import messages
+
     from .forms import PLUiModificationForm
     from .services import EmailService
-    import logging
 
     logger = logging.getLogger(__name__)
 
@@ -281,19 +274,19 @@ def plui(request):
             if EmailService.send_plui_modification_request(form_data):
                 messages.success(
                     request,
-                    'Votre demande de modification PLUi a été envoyée avec succès. '
-                    'Nous vous contacterons dans les plus brefs délais.'
+                    "Votre demande de modification PLUi a été envoyée avec succès. "
+                    "Nous vous contacterons dans les plus brefs délais.",
                 )
                 logger.info(f"Demande PLUi envoyée pour {form_data['nom_prenom']}")
             else:
                 messages.error(
                     request,
-                    'Une erreur est survenue lors de l\'envoi de votre demande. '
-                    'Veuillez réessayer ou nous contacter directement.'
+                    "Une erreur est survenue lors de l'envoi de votre demande. "
+                    "Veuillez réessayer ou nous contacter directement.",
                 )
                 logger.error(f"Échec envoi email PLUi pour {form_data['nom_prenom']}")
 
-            return redirect('plui')
+            return redirect("plui")
         else:
             # Affichage des erreurs de validation
             for field, errors in form.errors.items():
@@ -304,7 +297,7 @@ def plui(request):
     else:
         form = PLUiModificationForm()
 
-    context = {'form': form}
+    context = {"form": form}
     return render(request, "home/plui.html", context)
 
 
@@ -345,7 +338,6 @@ def ctg(request):
     return render(request, "home/ctg.html")
 
 
-
 def guide_eco_citoyen(request):
     """Vue pour la page Guide Pratique Éco-Citoyen."""
     return render(request, "home/guide-eco-citoyen.html")
@@ -353,10 +345,12 @@ def guide_eco_citoyen(request):
 
 def documents_plui(request):
     """Vue pour la page des documents PLUi et le formulaire de modification."""
+    import logging
+
     from django.contrib import messages
+
     from .forms import PLUiModificationForm
     from .services import EmailService
-    import logging
 
     logger = logging.getLogger(__name__)
 
@@ -371,19 +365,19 @@ def documents_plui(request):
             if EmailService.send_plui_modification_request(form_data):
                 messages.success(
                     request,
-                    'Votre demande de modification PLUi a été envoyée avec succès. '
-                    'Nous vous contacterons dans les plus brefs délais.'
+                    "Votre demande de modification PLUi a été envoyée avec succès. "
+                    "Nous vous contacterons dans les plus brefs délais.",
                 )
                 logger.info(f"Demande PLUi envoyée pour {form_data['nom_prenom']}")
             else:
                 messages.error(
                     request,
-                    'Une erreur est survenue lors de l\'envoi de votre demande. '
-                    'Veuillez réessayer ou nous contacter directement.'
+                    "Une erreur est survenue lors de l'envoi de votre demande. "
+                    "Veuillez réessayer ou nous contacter directement.",
                 )
                 logger.error(f"Échec envoi email PLUi pour {form_data['nom_prenom']}")
 
-            return redirect('documents_plui')
+            return redirect("documents_plui")
         else:
             # Affichage des erreurs de validation
             for field, errors in form.errors.items():
@@ -394,7 +388,7 @@ def documents_plui(request):
     else:
         form = PLUiModificationForm()
 
-    context = {'form': form}
+    context = {"form": form}
     return render(request, "home/documents-plui.html", context)
 
 
@@ -406,32 +400,33 @@ def modification_simplifiee_1(request):
 def test_email(request):
     """Vue de test pour l'envoi d'emails."""
     from django.contrib import messages
+
     from .services import EmailService
-    
+
     # Données de test
     test_data = {
-        'nom_prenom': 'Test Utilisateur',
-        'adresse': '123 Rue de Test, 59000 Lille',
-        'email': 'test@example.com',
-        'telephone': '03 27 12 34 56',
-        'parcelles': '123, 124',
-        'commune': 'Féron',
-        'demande': 'Ceci est un test d\'envoi d\'email pour vérifier la configuration.'
+        "nom_prenom": "Test Utilisateur",
+        "adresse": "123 Rue de Test, 59000 Lille",
+        "email": "test@example.com",
+        "telephone": "03 27 12 34 56",
+        "parcelles": "123, 124",
+        "commune": "Féron",
+        "demande": "Ceci est un test d'envoi d'email pour vérifier la configuration.",
     }
-    
+
     try:
         # Test d'envoi
         success = EmailService.send_plui_modification_request(test_data)
-        
+
         if success:
-            messages.success(request, 'Email de test envoyé avec succès !')
+            messages.success(request, "Email de test envoyé avec succès !")
         else:
-            messages.error(request, 'Erreur lors de l\'envoi de l\'email de test.')
-            
+            messages.error(request, "Erreur lors de l'envoi de l'email de test.")
+
     except Exception as e:
-        messages.error(request, f'Erreur: {str(e)}')
-    
-    return redirect('documents_plui')
+        messages.error(request, f"Erreur: {str(e)}")
+
+    return redirect("documents_plui")
 
 
 def dev_eco(request):
@@ -452,6 +447,7 @@ def custom_handler500(request):
     """Vue personnalisée pour la page 500."""
     # Log de l'erreur pour le débogage (en production, utilisez un système de logging)
     import logging
+
     logger = logging.getLogger(__name__)
     logger.error(f"Erreur 500 sur {request.path}", exc_info=True)
 
@@ -463,15 +459,11 @@ def telecharger_calendrier_verre(request):
     """
     Vue pour générer et télécharger le calendrier de collecte du verre en PDF.
     """
-    from io import BytesIO
     import re
+    from io import BytesIO
 
     # Rate limiting: max 10 requêtes par minute par IP
-    client_ip = (
-        request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
-        or request.META.get("REMOTE_ADDR")
-        or "unknown"
-    )
+    client_ip = request.META.get("REMOTE_ADDR") or "unknown"
     rate_key = f"pdf_download:{client_ip}"
     try:
         created = cache.add(rate_key, 1, timeout=60)
@@ -479,28 +471,28 @@ def telecharger_calendrier_verre(request):
             current = cache.incr(rate_key)
             if current > 10:
                 return HttpResponse(
-                    "Trop de requetes. Veuillez reessayer dans une minute.".encode('utf-8'),
+                    "Trop de requetes. Veuillez reessayer dans une minute.".encode(
+                        "utf-8"
+                    ),
                     status=429,
-                    content_type='text/plain'
+                    content_type="text/plain",
                 )
     except Exception:
         pass
 
-    commune = request.GET.get('commune', '')
-    rue = request.GET.get('rue', '')
+    commune = request.GET.get("commune", "")
+    rue = request.GET.get("rue", "")
 
     if not commune:
         return HttpResponse(
-            b"Parametre 'commune' requis",
-            status=400,
-            content_type='text/plain'
+            b"Parametre 'commune' requis", status=400, content_type="text/plain"
         )
 
     if commune not in city_data:
         return HttpResponse(
-            f"Commune '{commune}' non trouvee".encode('utf-8'),
+            f"Commune '{commune}' non trouvee".encode("utf-8"),
             status=404,
-            content_type='text/plain'
+            content_type="text/plain",
         )
 
     # Déterminer le jour de collecte
@@ -511,9 +503,9 @@ def telecharger_calendrier_verre(request):
 
     if not dates_verre:
         return HttpResponse(
-            f"Aucune date de collecte du verre trouvee pour {commune}".encode('utf-8'),
+            f"Aucune date de collecte du verre trouvee pour {commune}".encode("utf-8"),
             status=404,
-            content_type='text/plain'
+            content_type="text/plain",
         )
 
     # Créer le PDF en mémoire
@@ -522,7 +514,7 @@ def telecharger_calendrier_verre(request):
     # Nettoyer le nom du fichier pour éviter les injections
     def sanitize_filename(text):
         # Supprime les caractères non alphanumériques sauf tirets et underscores
-        return re.sub(r'[^a-zA-Z0-9\-_]', '-', text.lower())
+        return re.sub(r"[^a-zA-Z0-9\-_]", "-", text.lower())
 
     # Nom du fichier
     safe_commune = sanitize_filename(commune)
@@ -536,59 +528,66 @@ def telecharger_calendrier_verre(request):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=2*cm,
-        leftMargin=2*cm,
-        topMargin=2*cm,
-        bottomMargin=2*cm
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
     )
-    
+
     # Styles
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
+        "CustomTitle",
+        parent=styles["Heading1"],
         fontSize=16,
-        textColor=colors.HexColor('#006ab3'),
+        textColor=colors.HexColor("#006ab3"),
         spaceAfter=5,
-        alignment=1  # Centre
+        alignment=1,  # Centre
     )
     subtitle_style = ParagraphStyle(
-        'CustomSubtitle',
-        parent=styles['Heading2'],
+        "CustomSubtitle",
+        parent=styles["Heading2"],
         fontSize=10,
-        textColor=colors.HexColor('#333333'),
-        spaceAfter=10
+        textColor=colors.HexColor("#333333"),
+        spaceAfter=10,
     )
     normal_style = styles["Normal"]
     normal_style.fontSize = 10
-    
+
     # Liste des éléments du PDF
     elements = []
-    
+
     # Logo
     try:
-        logo_path = settings.BASE_DIR / "static" / "img" / "Kits-Logos" / "PNG_Transparent" / "Logo_couleur.png"
+        logo_path = (
+            settings.BASE_DIR
+            / "static"
+            / "img"
+            / "Kits-Logos"
+            / "PNG_Transparent"
+            / "Logo_couleur.png"
+        )
         if logo_path.exists():
             img = ImageReader(str(logo_path))
             # Ajouter le logo (taille réduite)
             from reportlab.platypus import Image
-            logo = Image(str(logo_path), width=6*cm, height=3*cm)
+
+            logo = Image(str(logo_path), width=6 * cm, height=3 * cm)
             elements.append(logo)
-            elements.append(Spacer(1, 0.1*cm))
+            elements.append(Spacer(1, 0.1 * cm))
     except Exception as e:
         logger.warning(f"Impossible de charger le logo: {e}")
-    
+
     # Titre
-    elements.append(Paragraph(
-        f"Calendrier de collecte du verre de {commune}",
-        title_style
-    ))
-    elements.append(Spacer(1, 0.1*cm))
-    
+    elements.append(
+        Paragraph(f"Calendrier de collecte du verre de {commune}", title_style)
+    )
+    elements.append(Spacer(1, 0.1 * cm))
+
     # Informations de la rue
     if rue_trouvee:
         elements.append(Paragraph(f"<b>Rue :</b> {rue_trouvee}", subtitle_style))
-    
+
     # Jour de collecte du verre
     if isinstance(city_data[commune]["verre"], dict):
         if "jour" in city_data[commune]["verre"]:
@@ -597,115 +596,121 @@ def telecharger_calendrier_verre(request):
             jour_verre = jour_ordures
         else:
             jour_verre = list(city_data[commune]["verre"].keys())[0]
-        
-        elements.append(Paragraph(
-            f"<b>Collecte du verre :</b> le {jour_verre}",
-            normal_style
-        ))
-        elements.append(Spacer(1, 0.1*cm))
-    
+
+        elements.append(
+            Paragraph(f"<b>Collecte du verre :</b> le {jour_verre}", normal_style)
+        )
+        elements.append(Spacer(1, 0.1 * cm))
+
     # Tableau des dates
     elements.append(Paragraph("<b>Dates de collecte 2026-2027</b>", subtitle_style))
-    elements.append(Spacer(1, 0.1*cm))
-    
+    elements.append(Spacer(1, 0.1 * cm))
+
     # Mapping des jours anglais vers français
     jours_fr = {
-        'Monday': 'Lundi',
-        'Tuesday': 'Mardi',
-        'Wednesday': 'Mercredi',
-        'Thursday': 'Jeudi',
-        'Friday': 'Vendredi',
-        'Saturday': 'Samedi',
-        'Sunday': 'Dimanche'
+        "Monday": "Lundi",
+        "Tuesday": "Mardi",
+        "Wednesday": "Mercredi",
+        "Thursday": "Jeudi",
+        "Friday": "Vendredi",
+        "Saturday": "Samedi",
+        "Sunday": "Dimanche",
     }
-    
+
     # Séparer les dates par année
     dates_2026 = []
     dates_2027 = []
-    
+
     for date_str in dates_verre:
         try:
-            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-            jour_en = date_obj.strftime('%A')
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            jour_en = date_obj.strftime("%A")
             jour_semaine = jours_fr.get(jour_en, jour_en)
-            date_formatee = date_obj.strftime('%d/%m/%Y')
+            date_formatee = date_obj.strftime("%d/%m/%Y")
             ligne = f"Le {jour_semaine.lower()} {date_formatee}"
-            
+
             if date_obj.year == 2026:
                 dates_2026.append(ligne)
             elif date_obj.year == 2027:
                 dates_2027.append(ligne)
         except ValueError:
             continue
-    
+
     # Préparer les données du tableau (2 colonnes : 2026 et 2027)
-    table_data = [['2026', '2027']]
-    
+    table_data = [["2026", "2027"]]
+
     # Nombre maximum de lignes
     max_rows = max(len(dates_2026), len(dates_2027))
-    
+
     for i in range(max_rows):
         row = []
         # Colonne 2026
         if i < len(dates_2026):
             row.append(dates_2026[i])
         else:
-            row.append('')
+            row.append("")
         # Colonne 2027
         if i < len(dates_2027):
             row.append(dates_2027[i])
         else:
-            row.append('')
+            row.append("")
         table_data.append(row)
-    
+
     # Créer le tableau
-    table = Table(table_data, colWidths=[8*cm, 8*cm])
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#006ab3')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 11),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ]))
-    
+    table = Table(table_data, colWidths=[8 * cm, 8 * cm])
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#006ab3")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 11),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+                ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 1), (-1, -1), 10),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ]
+        )
+    )
+
     elements.append(table)
-    elements.append(Spacer(1, 0.5*cm))
-    
+    elements.append(Spacer(1, 0.5 * cm))
+
     # Ajouter l'image Collect.png
     try:
         collect_image_path = settings.BASE_DIR / "static" / "img" / "Collect.png"
         if collect_image_path.exists():
             from reportlab.platypus import Image
-            img = Image(str(collect_image_path), width=16*cm, height=6*cm)
+
+            img = Image(str(collect_image_path), width=16 * cm, height=6 * cm)
             elements.append(img)
-            elements.append(Spacer(1, 0.5*cm))
+            elements.append(Spacer(1, 0.5 * cm))
     except Exception as e:
         logger.warning(f"Impossible de charger l'image Collect.png: {e}")
-    
-    elements.append(Spacer(1, 0.5*cm))
-    
+
+    elements.append(Spacer(1, 0.5 * cm))
+
     # Footer avec contact
     footer_style = ParagraphStyle(
-        'Footer',
-        parent=styles['Normal'],
+        "Footer",
+        parent=styles["Normal"],
         fontSize=9,
         textColor=colors.grey,
-        alignment=1
+        alignment=1,
     )
-    elements.append(Paragraph(
-        "Communauté de Communes Sud-Avesnois<br/>"
-        "2 Rue du Général Raymond Chomel - 59610 FOURMIES<br/>"
-        "Tél : 03 27 60 65 24 | contact@cc-sudavesnois.fr",
-        footer_style
-    ))
-    
+    elements.append(
+        Paragraph(
+            "Communauté de Communes Sud-Avesnois<br/>"
+            "2 Rue du Général Raymond Chomel - 59610 FOURMIES<br/>"
+            "Tél : 03 27 60 65 24 | contact@cc-sudavesnois.fr",
+            footer_style,
+        )
+    )
+
     # Générer le PDF
     doc.build(elements)
 
@@ -713,53 +718,55 @@ def telecharger_calendrier_verre(request):
     pdf = buffer.getvalue()
     buffer.close()
 
-    response = HttpResponse(pdf, content_type='application/pdf')
+    response = HttpResponse(pdf, content_type="application/pdf")
 
     # Déterminer si c'est une visualisation ou un téléchargement
-    view_mode = request.GET.get('view', '')
-    if view_mode == '1':
+    view_mode = request.GET.get("view", "")
+    if view_mode == "1":
         # Mode visualisation : affiche le PDF dans le navigateur
-        response['Content-Disposition'] = f'inline; filename="{filename}"'
+        response["Content-Disposition"] = f'inline; filename="{filename}"'
     else:
         # Mode téléchargement (par défaut)
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
     return response
 
 
 def search_view(request):
     """Vue pour la recherche globale avec django-watson."""
+    from django.core.exceptions import ValidationError
     from django.core.paginator import Paginator
     from django.core.validators import URLValidator
-    from django.core.exceptions import ValidationError
-    
+
     MAX_QUERY_LENGTH = 200
-    
+
     # Limiter la longueur de la requête
-    query = request.GET.get('q', '').strip()[:MAX_QUERY_LENGTH]
+    query = request.GET.get("q", "").strip()[:MAX_QUERY_LENGTH]
     results = []
     page_obj = None
-    
+
     if query:
         # Recherche avec watson - classement par pertinence
         results = watson.search(query)
-        
+
         # Valider les URLs des résultats
         url_validator = URLValidator()
         validated_results = []
         for result in results:
             if result.url:
                 # Vérifier les protocoles dangereux
-                dangerous_protocols = ['javascript:', 'data:', 'vbscript:', 'file:']
+                dangerous_protocols = ["javascript:", "data:", "vbscript:", "file:"]
                 url_lower = result.url.lower().strip()
-                is_dangerous = any(url_lower.startswith(protocol) for protocol in dangerous_protocols)
-                
+                is_dangerous = any(
+                    url_lower.startswith(protocol) for protocol in dangerous_protocols
+                )
+
                 if is_dangerous:
                     # URL dangereuse - on ne l'ajoute pas
                     continue
-                
+
                 # Accepter les URLs relatives (/path/) sans validation
-                if result.url.startswith('/'):
+                if result.url.startswith("/"):
                     validated_results.append(result)
                 else:
                     # Valider les URLs absolues
@@ -771,17 +778,21 @@ def search_view(request):
                         continue
             else:
                 validated_results.append(result)
-        
+
         results = validated_results
-        
+
         # Pagination - 10 résultats par page
         paginator = Paginator(results, 10)
-        page_number = request.GET.get('page', 1)
+        page_number = request.GET.get("page", 1)
         page_obj = paginator.get_page(page_number)
 
-    return render(request, 'home/search_results.html', {
-        'query': query,
-        'results': page_obj if query else [],
-        'count': len(results) if query else 0,
-        'page_obj': page_obj
-    })
+    return render(
+        request,
+        "home/search_results.html",
+        {
+            "query": query,
+            "results": page_obj if query else [],
+            "count": len(results) if query else 0,
+            "page_obj": page_obj,
+        },
+    )

@@ -1,7 +1,7 @@
-import os
-
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+
+from app.utils import secure_file_removal
 
 from .forms import JournalForm
 from .models import Journal
@@ -12,10 +12,8 @@ def delete_content(modeladmin, request, queryset):
     Supprime le contenu sélectionné
     """
     for obj in queryset:
-        if os.path.exists(obj.cover.path):
-            os.remove(obj.cover.path)
-        if os.path.exists(obj.document.path):
-            os.remove(obj.document.path)
+        secure_file_removal(obj.cover)
+        secure_file_removal(obj.document)
     queryset.delete()
 
 
@@ -55,10 +53,8 @@ class CustomJournalAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if os.path.exists(obj.document.path):
-            os.remove(obj.document.path)
-        if os.path.exists(obj.cover.path):
-            os.remove(obj.cover.path)
+        secure_file_removal(obj.document)
+        secure_file_removal(obj.cover)
 
         super().delete_model(request, obj)
 

@@ -1,6 +1,6 @@
-import os
-
 from django.contrib import admin
+
+from app.utils import secure_file_removal
 
 from .forms import SemestrielForm
 from .models import SemestrielPage
@@ -11,10 +11,8 @@ def delete_content(modeladmin, request, queryset):
     Supprime le contenu sélectionné
     """
     for obj in queryset:
-        if os.path.exists(obj.picture.path):
-            os.remove(obj.picture.path)
-        if os.path.exists(obj.file.path):
-            os.remove(obj.file.path)
+        secure_file_removal(obj.picture)
+        secure_file_removal(obj.file)
     queryset.delete()
 
 
@@ -47,10 +45,8 @@ class CustomContentAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if os.path.exists(obj.picture.path):
-            os.remove(obj.picture.path)
-        if os.path.exists(obj.file.path):
-            os.remove(obj.file.path)
+        secure_file_removal(obj.picture)
+        secure_file_removal(obj.file)
 
         super().delete_model(request, obj)
 

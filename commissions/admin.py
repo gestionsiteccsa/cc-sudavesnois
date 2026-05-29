@@ -1,6 +1,6 @@
-import os
-
 from django.contrib import admin
+
+from app.utils import secure_file_removal
 
 from .forms import CommissionDocForm, CommissionForm, MandatForm
 from .models import Commission, CommissionCompetence, Document, Mandat
@@ -33,8 +33,7 @@ def delete_content(modeladmin, request, queryset):
     Supprime le contenu sélectionné
     """
     for obj in queryset:
-        if os.path.exists(obj.file.path):
-            os.remove(obj.file.path)
+        secure_file_removal(obj.file)
     queryset.delete()
 
 
@@ -69,8 +68,7 @@ class CustomDocumentAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if os.path.exists(obj.file.path):
-            os.remove(obj.file.path)
+        secure_file_removal(obj.file)
         super().delete_model(request, obj)
 
 

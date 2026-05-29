@@ -1,10 +1,11 @@
-from django.db import models
-from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
+import re
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-import re
 
 
 def validate_taille_fichier(value):
@@ -17,23 +18,23 @@ def validate_taille_fichier(value):
 
 class CategoriePartenaire(models.Model):
     TYPE_SECTION_CHOICES = [
-        ('normal', 'Normal'),
-        ('subvention', 'Subvention'),
+        ("normal", "Normal"),
+        ("subvention", "Subvention"),
     ]
 
     nom = models.CharField(max_length=100, unique=True, verbose_name="Nom")
     type_section = models.CharField(
         max_length=20,
         choices=TYPE_SECTION_CHOICES,
-        default='normal',
-        verbose_name="Type de section"
+        default="normal",
+        verbose_name="Type de section",
     )
     ordre = models.IntegerField(default=0, verbose_name="Ordre d'affichage")
     active = models.BooleanField(default=True, verbose_name="Actif")
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['ordre', 'nom']
+        ordering = ["ordre", "nom"]
         verbose_name = "Catégorie de partenaire"
         verbose_name_plural = "Catégories de partenaires"
 
@@ -43,64 +44,60 @@ class CategoriePartenaire(models.Model):
 
 class Partenaire(models.Model):
     TYPE_LIEN_CHOICES = [
-        ('externe', 'Lien externe (URL)'),
-        ('interne', 'Lien interne (page du site)'),
+        ("externe", "Lien externe (URL)"),
+        ("interne", "Lien interne (page du site)"),
     ]
 
     COULEUR_FOND_CHOICES = [
-        ('#f3f4f6', 'Gris très clair (par défaut)'),
-        ('#ffffff', 'Blanc'),
-        ('#e5e7eb', 'Gris clair'),
-        ('#9ca3af', 'Gris'),
-        ('#4b5563', 'Gris foncé'),
-        ('#dbeafe', 'Bleu très clair'),
+        ("#f3f4f6", "Gris très clair (par défaut)"),
+        ("#ffffff", "Blanc"),
+        ("#e5e7eb", "Gris clair"),
+        ("#9ca3af", "Gris"),
+        ("#4b5563", "Gris foncé"),
+        ("#dbeafe", "Bleu très clair"),
     ]
 
     # Liste des URLs internes disponibles (excluant les admin)
     LIENS_INTERNES_CHOICES = [
         # Pages principales
-        ('home', 'Accueil'),
-        ('presentation', 'Présentation'),
-        ('equipe', 'Équipe'),
-        
+        ("home", "Accueil"),
+        ("presentation", "Présentation"),
+        ("equipe", "Équipe"),
         # Thématiques
-        ('mobilite', 'Mobilité'),
-        ('habitat', 'Habitat'),
-        ('dev_eco', 'Développement économique'),
-        ('tourisme', 'Tourisme'),
-        ('pnra', 'Parc Naturel Régional'),
-        ('maisons_sante', 'Maisons de santé'),
-        ('mutuelle', 'Mutuelle intercommunautaire'),
-        ('contrat_local_sante', 'Contrat local santé'),
-        ('mediapass', 'Médi@\'pass'),
-        
+        ("mobilite", "Mobilité"),
+        ("habitat", "Habitat"),
+        ("dev_eco", "Développement économique"),
+        ("tourisme", "Tourisme"),
+        ("pnra", "Parc Naturel Régional"),
+        ("maisons_sante", "Maisons de santé"),
+        ("mutuelle", "Mutuelle intercommunautaire"),
+        ("contrat_local_sante", "Contrat local santé"),
+        ("mediapass", "Médi@'pass"),
         # Documents et informations
-        ('plui', 'PLUi'),
-        ('projet_plui', 'Projet PLUi'),
-        ('documents_plui', 'Documents PLUi'),
-        ('marches_publics', 'Marchés publics'),
-        ('mentions_legales', 'Mentions légales'),
-        ('politique_confidentialite', 'Politique de confidentialité'),
-        ('cookies', 'Politique de cookies'),
-        ('plan_du_site', 'Plan du site'),
-        ('accessibilite', 'Accessibilité'),
-        ('kit_logos', 'Kit de logos'),
-        ('guide_eco_citoyen', 'Guide éco-citoyen'),
-        
+        ("plui", "PLUi"),
+        ("projet_plui", "Projet PLUi"),
+        ("documents_plui", "Documents PLUi"),
+        ("marches_publics", "Marchés publics"),
+        ("mentions_legales", "Mentions légales"),
+        ("politique_confidentialite", "Politique de confidentialité"),
+        ("cookies", "Politique de cookies"),
+        ("plan_du_site", "Plan du site"),
+        ("accessibilite", "Accessibilité"),
+        ("kit_logos", "Kit de logos"),
+        ("guide_eco_citoyen", "Guide éco-citoyen"),
         # Collecte et déchets
-        ('collecte_dechets', 'Collecte des déchets'),
-        ('encombrants', 'Encombrants'),
-        ('dechetteries', 'Déchèteries'),
-        
+        ("collecte_dechets", "Collecte des déchets"),
+        ("encombrants", "Encombrants"),
+        ("dechetteries", "Déchèteries"),
         # Communes et institutions
-        ('communes-membres:commune', 'Page commune (nécessite un slug)'),
-        ('commissions:commissions', 'Commissions'),
-        ('competences:competences', 'Compétences'),
-        ('comptes_rendus:comptes_rendus', 'Comptes rendus'),
-        ('bureau-communautaire:elus', 'Élus du bureau communautaire'),
-        ('journal:journal_list', 'Journal'),
-        ('partenaires:partenaires', 'Partenaires'),
-        ('linktree:linktree', 'Liens utiles'),
+        ("communes-membres:commune", "Page commune (nécessite un slug)"),
+        ("commissions:commissions", "Commissions"),
+        ("competences:competences", "Compétences"),
+        ("comptes_rendus:comptes_rendus", "Comptes rendus"),
+        ("bureau-communautaire:elus", "Élus du bureau communautaire"),
+        ("journal:journal_list", "Journal"),
+        ("partenaires:partenaires", "Partenaires"),
+        ("linktree:linktree", "Liens utiles"),
     ]
 
     nom = models.CharField(max_length=200, verbose_name="Nom")
@@ -109,25 +106,25 @@ class Partenaire(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name="Catégorie"
+        verbose_name="Catégorie",
     )
     description = models.TextField(verbose_name="Description")
-    
+
     # Gestion des liens
     type_lien = models.CharField(
         max_length=10,
         choices=TYPE_LIEN_CHOICES,
-        default='externe',
-        verbose_name="Type de lien"
+        default="externe",
+        verbose_name="Type de lien",
     )
     site_web = models.URLField(blank=True, verbose_name="Site web (URL externe)")
     lien_interne = models.CharField(
         max_length=50,
         choices=LIENS_INTERNES_CHOICES,
         blank=True,
-        verbose_name="Page interne"
+        verbose_name="Page interne",
     )
-    
+
     logo = models.ImageField(
         upload_to="partenaires/logos/",
         blank=True,
@@ -138,13 +135,13 @@ class Partenaire(models.Model):
                 allowed_extensions=["png", "jpg", "jpeg", "webp", "svg"]
             ),
         ],
-        verbose_name="Logo"
+        verbose_name="Logo",
     )
     couleur_fond = models.CharField(
         max_length=7,
         choices=COULEUR_FOND_CHOICES,
-        default='#f3f4f6',
-        verbose_name="Couleur de fond du logo"
+        default="#f3f4f6",
+        verbose_name="Couleur de fond du logo",
     )
     ordre = models.IntegerField(default=0, verbose_name="Ordre d'affichage")
     active = models.BooleanField(default=True, verbose_name="Actif")
@@ -152,7 +149,7 @@ class Partenaire(models.Model):
     date_modification = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['categorie__ordre', 'ordre', 'nom']
+        ordering = ["categorie__ordre", "ordre", "nom"]
         verbose_name = "Partenaire"
         verbose_name_plural = "Partenaires"
 
@@ -167,26 +164,26 @@ class Partenaire(models.Model):
 
     def get_url(self):
         """Retourne l'URL du partenaire (externe ou interne)."""
-        if self.type_lien == 'interne' and self.lien_interne:
+        if self.type_lien == "interne" and self.lien_interne:
             try:
                 return reverse(self.lien_interne)
             except Exception:
                 return None
-        elif self.type_lien == 'externe' and self.site_web:
+        elif self.type_lien == "externe" and self.site_web:
             return self.site_web
         return None
 
     def is_external_link(self):
         """Retourne True si le lien est externe."""
-        return self.type_lien == 'externe' and bool(self.site_web)
+        return self.type_lien == "externe" and bool(self.site_web)
 
     def delete_logo_file(self):
         """Supprime le fichier logo du système de fichiers."""
         if self.logo:
             try:
-                import os
-                if os.path.exists(self.logo.path):
-                    os.remove(self.logo.path)
+                from app.utils import secure_file_removal
+
+                secure_file_removal(self.logo)
             except (OSError, ValueError):
                 pass
 
@@ -209,34 +206,60 @@ class Partenaire(models.Model):
     def clean(self):
         """Validation des champs."""
         super().clean()
-        if self.type_lien == 'externe' and not self.site_web:
+        if self.type_lien == "externe" and not self.site_web:
             raise ValidationError(
                 {"site_web": "Le site web est obligatoire pour un lien externe."}
             )
-        if self.type_lien == 'interne' and not self.lien_interne:
+        if self.type_lien == "interne" and not self.lien_interne:
             raise ValidationError(
-                {"lien_interne": "La page interne est obligatoire pour un lien interne."}
+                {
+                    "lien_interne": "La page interne est obligatoire pour un lien interne."
+                }
             )
 
     def get_description_html(self):
-        """Convertit la description markdown en HTML."""
+        """Convertit la description markdown en HTML securise."""
         if not self.description:
             return ""
-        
+
         try:
+            import bleach
             import markdown
+
             # Configuration markdown : activation des liens uniquement
-            md = markdown.Markdown(extensions=['nl2br'])
+            md = markdown.Markdown(extensions=["nl2br"])
             html = md.convert(str(self.description))
-            
+
+            # Nettoyer le HTML : seules les balises autorisees sont conservees
+            allowed_tags = [
+                "a",
+                "br",
+                "p",
+                "em",
+                "strong",
+                "ul",
+                "ol",
+                "li",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+            ]
+            allowed_attrs = {"a": ["href", "title", "target", "rel"]}
+            html = bleach.clean(
+                html, tags=allowed_tags, attributes=allowed_attrs, strip=True
+            )
+
             # Ajouter target="_blank" et rel="noopener noreferrer" aux liens externes
             html = re.sub(
                 r'<a href="(http[^"]+)"',
                 r'<a href="\1" target="_blank" rel="noopener noreferrer"',
-                html
+                html,
             )
-            
+
             return mark_safe(html)
         except ImportError:
             # Fallback si markdown n'est pas disponible
-            return mark_safe(str(self.description).replace('\n', '<br>'))
+            return mark_safe(str(self.description).replace("\n", "<br>"))

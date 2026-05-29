@@ -95,13 +95,20 @@ document.addEventListener('DOMContentLoaded', function () {
     showBanner();
   }
 
-  // Fonction à appeler pour activer les cookies non essentiels (ex: Matomo, Google Analytics)
+  // Active Google Analytics apres consentement
   function enableNonEssentialCookies() {
-    // Exemple : initialiser Matomo ou autre ici
-    // var _paq = window._paq = window._paq || [];
-    // _paq.push(['trackPageView']);
-    // _paq.push(['enableLinkTracking']);
-    // (function() { ... })();
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+    // Envoyer la page vue differee
+    gtag('event', 'page_view');
+    // Charger le script GA s'il n'est pas deja charge
+    if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
+      var gaScript = document.createElement('script');
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XZ0DPFZXMN';
+      gaScript.async = true;
+      document.head.appendChild(gaScript);
+    }
   }
 
   // Fonction à appeler pour désactiver/supprimer les cookies non essentiels si besoin
@@ -125,4 +132,4 @@ document.addEventListener('DOMContentLoaded', function () {
     hideBanner();
   });
 });
-</script> 
+</script>

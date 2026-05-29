@@ -1,9 +1,10 @@
-import os
 from datetime import timedelta
 
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
+
+from app.utils import secure_file_removal
 
 from .forms import ConseilForm, CRForm
 from .models import CompteRendu, Conseil, DocumentConseil
@@ -60,16 +61,17 @@ def admin_page(request):
     # Récupérer tous les conseils triés par date décroissante (plus récent en premier)
     today = timezone.now().date()
     all_conseils = Conseil.objects.all().order_by("-date")
-    
+
     # Statistiques
     total_conseils = all_conseils.count()
     conseils_a_venir = all_conseils.filter(date__gte=today).count()
     conseils_passes = total_conseils - conseils_a_venir
-    
+
     # Pagination
     from django.core.paginator import Paginator
+
     paginator = Paginator(all_conseils, 15)  # 15 conseils par page
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
     context = {
@@ -131,8 +133,7 @@ def edit_conseil(request, conseil_id):
             files = request.FILES.getlist("documents")
             if files:
                 for doc in conseil.documents.all():
-                    if os.path.exists(doc.file.path):
-                        os.remove(doc.file.path)
+                    secure_file_removal(doc.file)
                     doc.delete()
                 for f in files:
                     DocumentConseil.objects.create(conseil=conseil, file=f)
@@ -157,8 +158,7 @@ def delete_conseil(request, conseil_id):
 
     if request.method == "POST":
         for doc in conseil.documents.all():
-            if os.path.exists(doc.file.path):
-                os.remove(doc.file.path)
+            secure_file_removal(doc.file)
             doc.delete()
         conseil.delete()
 

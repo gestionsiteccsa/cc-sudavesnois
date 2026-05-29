@@ -1,6 +1,6 @@
-import os
-
 from django.contrib import admin
+
+from app.utils import secure_file_removal
 
 from .forms import DocumentForm, ElusForm
 from .models import Document, Elus
@@ -11,8 +11,7 @@ def delete_elus_image(modeladmin, request, queryset):
     Supprime le contenu sélectionné
     """
     for obj in queryset:
-        if os.path.exists(obj.picture.path):
-            os.remove(obj.picture.path)
+        secure_file_removal(obj.picture)
     queryset.delete()
 
 
@@ -24,8 +23,7 @@ def delete_document(modeladmin, request, queryset):
     Supprime le contenu sélectionné
     """
     for obj in queryset:
-        if os.path.exists(obj.document.path):
-            os.remove(obj.document.path)
+        secure_file_removal(obj.document)
     queryset.delete()
 
 
@@ -70,8 +68,7 @@ class CustomElusAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if os.path.exists(obj.picture.path):
-            os.remove(obj.picture.path)
+        secure_file_removal(obj.picture)
 
         super().delete_model(request, obj)
 
@@ -105,8 +102,7 @@ class CustomDocumentAdmin(admin.ModelAdmin):
         ET de son contenu
         (Supp individuelle)
         """
-        if os.path.exists(obj.document.path):
-            os.remove(obj.document.path)
+        secure_file_removal(obj.document)
 
         super().delete_model(request, obj)
 
