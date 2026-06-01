@@ -573,3 +573,228 @@
         transform: none;
     }
 }
+
+/* ===== Toggle "Voir plus" des competences dans les cartes VP ===== */
+
+.vp-competences-wrapper {
+    text-align: center;
+}
+
+.vp-competences-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #374151;
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vp-competences-toggle:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+    color: #111827;
+}
+
+.vp-competences-toggle:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.vp-competences-toggle[aria-expanded="true"] {
+    background: #064d7e;
+    border-color: #064d7e;
+    color: #ffffff;
+}
+
+.vp-competences-toggle[aria-expanded="true"]:hover {
+    background: #043d63;
+    border-color: #043d63;
+}
+
+.vp-competences-toggle-chevron {
+    transition: transform 0.3s ease;
+}
+
+.vp-competences-toggle[aria-expanded="true"] .vp-competences-toggle-chevron {
+    transform: rotate(180deg);
+}
+
+.vp-competences-panel {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s ease,
+                margin 0.4s ease;
+    margin-top: 0;
+    text-align: left;
+}
+
+.vp-competences-panel.open {
+    max-height: 800px;
+    opacity: 1;
+    margin-top: 0.75rem;
+}
+
+.vp-competences-group {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.75rem;
+}
+
+.vp-competences-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.vp-competences-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #374151;
+    line-height: 1.45;
+    padding: 0.25rem 0;
+}
+
+.vp-competences-bullet {
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.1rem;
+    color: #059669;
+}
+
+.vp-competences-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.vp-competences-separator {
+    height: 0;
+    margin: 0.5rem 0;
+    border-top: 1px dashed #d1d5db;
+}
+
+.dark .vp-competences-toggle {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+.dark .vp-competences-toggle:hover {
+    background: #374151;
+    border-color: #6b7280;
+    color: #f3f4f6;
+}
+
+.dark .vp-competences-toggle:focus-visible {
+    outline-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+}
+
+.dark .vp-competences-toggle[aria-expanded="true"] {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+}
+
+.dark .vp-competences-toggle[aria-expanded="true"]:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.dark .vp-competences-group {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+.dark .vp-competences-list li {
+    color: #d1d5db;
+}
+
+.dark .vp-competences-bullet {
+    color: #34d399;
+}
+
+.dark .vp-competences-separator {
+    border-color: #374151;
+}
+
+.high-contrast .vp-competences-toggle {
+    color: #000 !important;
+    background: #fff !important;
+    border: 2px solid #000 !important;
+}
+
+.high-contrast .vp-competences-toggle[aria-expanded="true"] {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+.high-contrast .vp-competences-toggle:focus-visible {
+    outline: 3px solid #ffff00 !important;
+    outline-offset: 2px !important;
+}
+
+.high-contrast .vp-competences-group {
+    background: #000 !important;
+    border: 1px solid #fff !important;
+}
+
+.high-contrast .vp-competences-list li {
+    color: #fff !important;
+}
+
+.high-contrast .vp-competences-bullet {
+    color: #ffff00 !important;
+}
+
+.high-contrast .vp-competences-separator {
+    border-color: #fff !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vp-competences-panel {
+        transition: none;
+    }
+
+    .vp-competences-toggle {
+        transition: none;
+    }
+
+    .vp-competences-toggle-chevron {
+        transition: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .vp-competences-toggle {
+        font-size: 0.75rem;
+        padding: 0.3125rem 0.75rem;
+    }
+
+    .vp-competences-list li {
+        font-size: 0.75rem;
+    }
+
+    .vp-competences-bullet {
+        width: 1rem;
+        height: 1rem;
+    }
+}
