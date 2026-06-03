@@ -5,8 +5,8 @@ from . import views
 app_name = "journal"  # Ajout du namespace
 
 urlpatterns = [
-    # Page d'accueil de la liste des journaux
     path("journal/", views.journal, name="journal"),
+    path("journal/<int:id>/", views.journal_detail, name="journal_detail"),
     # Administration des journaux
     path("adminccsa/ajouter-journal/", views.add_journal, name="add_journal"),
     path("adminccsa/liste-journaux/", views.list_journals, name="admin_journaux_list"),

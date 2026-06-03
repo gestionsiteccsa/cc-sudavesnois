@@ -27,12 +27,12 @@
                 <div class="bg-white dark:bg-gray-700 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">À propos du journal</h2>
                     <p class="text-gray-600 dark:text-gray-200 mb-6">
-                        Le journal "Mon Sud Avesnois" est la publication semestrielle de la Communauté de Communes Sud-Avesnois. 
-                        Il vous permet de suivre l'actualité du territoire, les projets en cours et à venir, ainsi que toutes les informations 
+                        Le journal "Mon Sud Avesnois" est la publication semestrielle de la Communauté de Communes Sud-Avesnois.
+                        Il vous permet de suivre l'actualité du territoire, les projets en cours et à venir, ainsi que toutes les informations
                         utiles concernant les services et les événements organisés par la Communauté de Communes.
                     </p>
                     <p class="text-gray-600 dark:text-gray-200">
-                        Distribué gratuitement dans toutes les boîtes aux lettres du territoire, il est également disponible en version numérique 
+                        Distribué gratuitement dans toutes les boîtes aux lettres du territoire, il est également disponible en version numérique
                         sur cette page. Retrouvez ci-dessous tous les numéros du journal "Mon Sud Avesnois".
                     </p>
                 </div>
@@ -45,7 +45,7 @@
     <div class="container mx-auto px-4 md:px-6">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">Tous les numéros</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list" aria-label="Liste des numéros du journal">
                 <!-- Journal 1 -->
                 {% if journals %}
@@ -67,27 +67,36 @@
                     <div class="p-5">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{% if journal.titre %}{{ journal.titre }}{% else %}Mon Sud Avesnois n°{{ journal.number }}{% endif %}</h3>
                         <p class="text-gray-600 dark:text-gray-200 mb-3">{{ journal.release_date|date:'F Y'|capfirst }}</p>
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col gap-2">
                             <span class="text-sm text-gray-600 dark:text-gray-600">{{ journal.page_number }} page(s)</span>
                             {% if journal.get_document_size %}
-                            <a href="{{ journal.document.url }}" 
-                               type="application/pdf"
-                               download
-                               class="inline-flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                               aria-label="Télécharger le journal n°{{ journal.number }} au format PDF">
-                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                                Télécharger (PDF)
-                            </a>
+                            <div class="flex flex-wrap gap-2 justify-center">
+                                <a href="{% url 'journal:journal_detail' journal.id %}"
+                                   class="inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
+                                   aria-label="Consulter le journal n°{{ journal.number }} en ligne">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Consulter
+                                </a>
+                                <a href="{{ journal.document.url }}"
+                                   type="application/pdf"
+                                   download
+                                   class="inline-flex items-center justify-center px-4 py-2 border-2 border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
+                                   aria-label="Télécharger le journal n°{{ journal.number }} au format PDF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Télécharger (PDF)
+                                </a>
+                            </div>
                             {% else %}
                             <span class="inline-flex items-center px-4 py-2 bg-gray-600 text-gray-200 rounded cursor-not-allowed" aria-disabled="true">
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                <span class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
-                                <span>Indisponible</span>
-                            </span>
+                                Indisponible
                             </span>
                             {% endif %}
                         </div>
@@ -129,7 +138,7 @@
                         {% endif %}
                     {% endfor %}
 
-                        
+
                     {% if journals.has_next %}
                     <a href="?page={{ journals.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <span class="sr-only">Suivant</span>

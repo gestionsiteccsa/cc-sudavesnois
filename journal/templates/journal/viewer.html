@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ journal.title|default:"Mon Sud Avesnois" }} n°{{ journal.number }} — Lecture{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/pdf-viewer.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="viewer-section" aria-label="Visionneuse du journal {{ journal.title|default:'Mon Sud Avesnois' }} numéro {{ journal.number }}">
+
+    <div class="viewer-toolbar" role="toolbar" aria-label="Contrôles de la visionneuse">
+        <div class="viewer-toolbar-start">
+            <a href="{% url 'journal:journal' %}"
+               class="viewer-btn viewer-btn--back"
+               aria-label="Retour à la liste des journaux">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span class="viewer-btn-label">Retour</span>
+            </a>
+        </div>
+
+        <div class="viewer-toolbar-center">
+            <h1 class="viewer-title">
+                {{ journal.title|default:"Mon Sud Avesnois" }}
+                <span class="viewer-title-number">n°{{ journal.number }}</span>
+            </h1>
+        </div>
+
+        <div class="viewer-toolbar-end">
+            <div class="viewer-zoom-group" role="group" aria-label="Contrôles de zoom">
+                <button type="button" id="btn-zoom-out" class="viewer-btn" aria-label="Zoom arrière">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                    </svg>
+                </button>
+                <span id="zoom-level" class="viewer-zoom-label" aria-live="polite">100 %</span>
+                <button type="button" id="btn-zoom-in" class="viewer-btn" aria-label="Zoom avant">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                </button>
+                <button type="button" id="btn-zoom-reset" class="viewer-btn" aria-label="Réinitialiser le zoom">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
+            <div class="viewer-sound-group">
+                <label for="sound-select" class="sr-only">Type de son de page</label>
+                <select id="sound-select" class="viewer-sound-select" aria-label="Type de son de page">
+                    <option value="paper">Son papier</option>
+                    <option value="book">Son livre</option>
+                    <option value="magazine">Son magazine</option>
+                </select>
+                <button type="button" id="btn-sound" class="viewer-btn" aria-label="Désactiver le son" aria-pressed="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="icon-sound-on">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="icon-sound-off" hidden>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                    </svg>
+                </button>
+            </div>
+            <a href="{{ journal.document.url }}"
+               download
+               class="viewer-btn viewer-btn--download"
+               aria-label="Télécharger le journal n°{{ journal.number }} au format PDF ({{ journal.get_document_size }})">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span class="viewer-btn-label">Télécharger</span>
+            </a>
+            <button type="button"
+                    id="btn-fullscreen"
+                    class="viewer-btn"
+                    aria-label="Activer le mode plein écran">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                <span class="viewer-btn-label">Plein écran</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="viewer-container"
+         class="viewer-container"
+         data-pdf-url="{{ pdf_url }}"
+         data-page-count="{{ journal.page_number }}"
+         data-journal-title="{{ journal.title|default:'Mon Sud Avesnois' }}"
+         data-journal-number="{{ journal.number }}"
+         role="region"
+         aria-label="Journal {{ journal.title|default:'Mon Sud Avesnois' }} numéro {{ journal.number }}, {{ journal.page_number }} pages">
+
+        <div id="viewer-loading" class="viewer-loading" role="status" aria-live="polite">
+            <div class="viewer-spinner" aria-hidden="true"></div>
+            <p>Chargement du journal en cours…</p>
+        </div>
+
+        <div id="viewer-error" class="viewer-error" role="alert" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-error-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <p>Impossible de charger le journal.</p>
+            <a href="{{ journal.document.url }}" download class="viewer-error-link">
+                Télécharger le PDF directement
+            </a>
+        </div>
+
+        <div id="flipbook" class="flipbook" aria-hidden="true"></div>
+    </div>
+
+    <nav class="viewer-nav" aria-label="Navigation dans les pages du journal">
+        <button type="button"
+                id="btn-prev"
+                class="viewer-nav-btn"
+                disabled
+                aria-label="Page précédente"
+                aria-keyshortcuts="ArrowLeft">
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+
+        <div class="viewer-page-info" role="status" aria-live="polite" aria-atomic="true">
+            <span id="page-current" class="viewer-page-current">—</span>
+            <span aria-hidden="true"> / </span>
+            <span id="page-total" class="viewer-page-total">{{ journal.page_number }}</span>
+        </div>
+
+        <button type="button"
+                id="btn-next"
+                class="viewer-nav-btn"
+                disabled
+                aria-label="Page suivante"
+                aria-keyshortcuts="ArrowRight">
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="viewer-nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </nav>
+
+    <div id="viewer-announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <noscript>
+        <div class="viewer-noscript">
+            <p>JavaScript est nécessaire pour utiliser la visionneuse interactive.</p>
+            <a href="{{ journal.document.url }}" download class="viewer-noscript-link">
+                Télécharger le journal au format PDF
+            </a>
+        </div>
+    </noscript>
+</section>
+
+{% endblock %}
+
+{% block script %}
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+<script defer src="{% static 'js/pdf-viewer.js' %}"></script>
+{% endblock %}
