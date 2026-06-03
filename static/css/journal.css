@@ -108,6 +108,7 @@ form button:hover {
     .journal-card,
     .journal-card img,
     .journal-card a.inline-flex,
+    .tooltip,
     nav[aria-label="Pagination"] a,
     form button {
         transition: none !important;
@@ -145,5 +146,11 @@ form button:hover {
         bottom: 100%;
         border-top-color: transparent;
         border-bottom-color: #1f2937;
+    }
+}
+
+@media (prefers-contrast: more) {
+    .tooltip {
+        border: 2px solid #ffffff;
     }
 }
