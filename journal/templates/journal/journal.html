@@ -50,7 +50,7 @@
                 <!-- Journal 1 -->
                 {% if journals %}
                 {% for journal in journals %}
-                <div class="journal-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <div class="journal-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 transition-all duration-300 hover:shadow-lg">
                     <div class="relative aspect-[3/4] overflow-hidden bg-gray-200 dark:bg-gray-600">
                         {% if journal.get_cover_size%}
                             <img src="{{ journal.cover.url }}" alt="Couverture du journal n°{{ journal.number }}" width="300" height="400" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy">
@@ -72,23 +72,47 @@
                             {% if journal.get_document_size %}
                             <div class="flex flex-wrap gap-2 justify-center">
                                 <a href="{% url 'journal:journal_detail' journal.id %}"
-                                   class="inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
-                                   aria-label="Consulter le journal n°{{ journal.number }} en ligne">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                   class="journal-btn inline-flex items-center justify-center px-3 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
+                                   aria-label="Visionneuse du journal n°{{ journal.number }}"
+                                   aria-describedby="tooltip-viewer-{{ journal.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
-                                    Consulter
+                                    <span>Visionneuse</span>
+                                    <span id="tooltip-viewer-{{ journal.id }}" role="tooltip" class="tooltip">
+                                        Feuillettez le journal comme un magazine avec animation des pages
+                                    </span>
+                                </a>
+                                <a href="{{ journal.document.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   type="application/pdf"
+                                   class="journal-btn inline-flex items-center justify-center px-3 py-2 border-2 border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
+                                   aria-label="Consulter le journal n°{{ journal.number }} (nouvelle fenêtre)"
+                                   aria-describedby="tooltip-view-{{ journal.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                    <span>Consulter</span>
+                                    <span class="sr-only"> (nouvelle fenêtre)</span>
+                                    <span id="tooltip-view-{{ journal.id }}" role="tooltip" class="tooltip">
+                                        Ouvrez le PDF dans un nouvel onglet avec les outils de votre navigateur
+                                    </span>
                                 </a>
                                 <a href="{{ journal.document.url }}"
                                    type="application/pdf"
                                    download
-                                   class="inline-flex items-center justify-center px-4 py-2 border-2 border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
-                                   aria-label="Télécharger le journal n°{{ journal.number }} au format PDF">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                   class="journal-btn inline-flex items-center justify-center px-3 py-2 border-2 border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px]"
+                                   aria-label="Télécharger le journal n°{{ journal.number }} au format PDF"
+                                   aria-describedby="tooltip-dl-{{ journal.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
-                                    Télécharger (PDF)
+                                    <span>Télécharger</span>
+                                    <span id="tooltip-dl-{{ journal.id }}" role="tooltip" class="tooltip">
+                                        Téléchargez le PDF sur votre appareil pour une lecture hors-ligne
+                                    </span>
                                 </a>
                             </div>
                             {% else %}
@@ -160,4 +184,8 @@
         </div>
     </div>
     </section>
+{% endblock %}
+
+{% block script %}
+<script defer src="{% static 'js/journal.js' %}"></script>
 {% endblock %}
