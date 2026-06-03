@@ -186,11 +186,14 @@ CSP_SCRIPT_SRC = (
     "'self'",
     "https://www.googletagmanager.com",
     "https://cdn.tailwindcss.com",
+    "https://cdnjs.cloudflare.com",
+    "https://cdn.jsdelivr.net",
 )
 CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com", "'unsafe-inline'")
 CSP_IMG_SRC = ("'self'", "data:", "https://cc-sudavesnois.fr")
 CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
 CSP_CONNECT_SRC = ("'self'", "https://www.google-analytics.com")
+CSP_WORKER_SRC = ("'self'", "https://cdnjs.cloudflare.com")
 CSP_FRAME_SRC = ("'none'",)
 CSP_FORM_ACTION = ("'self'",)
 CSP_OBJECT_SRC = ("'none'",)
