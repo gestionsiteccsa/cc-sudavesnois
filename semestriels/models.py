@@ -9,6 +9,12 @@ class SemestrielPage(models.Model):
     Modèle stockant l'image et le calendrier semestriel
     """
 
+    title = models.CharField(
+        max_length=200,
+        default="Calendrier semestriel",
+        verbose_name="Titre",
+    )
+
     picture = models.ImageField(
         upload_to="semestriels/image",
         validators=[

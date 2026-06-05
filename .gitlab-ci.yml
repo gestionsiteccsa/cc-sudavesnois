@@ -51,6 +51,8 @@ deploy:
   stage: deploy
   script:
     - echo "Déploiement en production"
+    - python manage.py migrate --noinput
+    - python manage.py buildwatson
     # Ajoute ici tes commandes de déploiement
   only:
     - main
@@ -80,4 +82,4 @@ deploy:
 #   only:
 #     - main
 #   rules:
-#     - if: $CI_COMMIT_BRANCH == "main" 
+#     - if: $CI_COMMIT_BRANCH == "main"

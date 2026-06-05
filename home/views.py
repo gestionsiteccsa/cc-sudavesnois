@@ -1,23 +1,21 @@
 import logging
 from datetime import datetime
-from io import BytesIO
 
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
-from django.shortcuts import get_list_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import cm, mm
+from reportlab.lib.units import cm
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
-from watson import search as watson
 
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
@@ -721,69 +719,3 @@ def telecharger_calendrier_verre(request):
         response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
     return response
-
-
-def search_view(request):
-    """Vue pour la recherche globale avec django-watson."""
-    from django.core.exceptions import ValidationError
-    from django.core.paginator import Paginator
-    from django.core.validators import URLValidator
-
-    MAX_QUERY_LENGTH = 200
-
-    # Limiter la longueur de la requête
-    query = request.GET.get("q", "").strip()[:MAX_QUERY_LENGTH]
-    results = []
-    page_obj = None
-
-    if query:
-        # Recherche avec watson - classement par pertinence
-        results = watson.search(query)
-
-        # Valider les URLs des résultats
-        url_validator = URLValidator()
-        validated_results = []
-        for result in results:
-            if result.url:
-                # Vérifier les protocoles dangereux
-                dangerous_protocols = ["javascript:", "data:", "vbscript:", "file:"]
-                url_lower = result.url.lower().strip()
-                is_dangerous = any(
-                    url_lower.startswith(protocol) for protocol in dangerous_protocols
-                )
-
-                if is_dangerous:
-                    # URL dangereuse - on ne l'ajoute pas
-                    continue
-
-                # Accepter les URLs relatives (/path/) sans validation
-                if result.url.startswith("/"):
-                    validated_results.append(result)
-                else:
-                    # Valider les URLs absolues
-                    try:
-                        url_validator(result.url)
-                        validated_results.append(result)
-                    except ValidationError:
-                        # URL invalide - on ne l'ajoute pas aux résultats
-                        continue
-            else:
-                validated_results.append(result)
-
-        results = validated_results
-
-        # Pagination - 10 résultats par page
-        paginator = Paginator(results, 10)
-        page_number = request.GET.get("page", 1)
-        page_obj = paginator.get_page(page_number)
-
-    return render(
-        request,
-        "home/search_results.html",
-        {
-            "query": query,
-            "results": page_obj if query else [],
-            "count": len(results) if query else 0,
-            "page_obj": page_obj,
-        },
-    )

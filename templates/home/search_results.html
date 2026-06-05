@@ -22,7 +22,7 @@
             </p>
         </div>
     </div>
-    
+
     <!-- Motif décoratif -->
     <div class="absolute bottom-0 left-0 right-0 h-6 md:h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
     <div class="absolute bottom-0 left-0 right-0 h-6 md:h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
@@ -32,32 +32,32 @@
 <main class="py-8 md:py-12 bg-white dark:bg-gray-900" role="main">
     <div class="container mx-auto px-4 md:px-6">
         <div class="max-w-5xl mx-auto">
-            
+
             <!-- Formulaire de recherche -->
             <div class="bg-white dark:bg-gray-800 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg mb-6 md:mb-8">
                 <form method="get" action="{% url 'search' %}" role="search" aria-label="Recherche sur le site">
                     <fieldset class="border-0 p-0 m-0">
                         <legend class="sr-only">Formulaire de recherche</legend>
-                        
+
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                             <div class="relative flex-1">
                                 <label for="search-input" class="sr-only">Terme de recherche</label>
-                                
+
                                 <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600" aria-hidden="true">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
-                                
-                                <input type="text" 
+
+                                <input type="text"
                                        id="search-input"
-                                       name="q" 
+                                       name="q"
                                        value="{{ query }}"
                                        class="w-full pl-12 pr-4 py-3 md:py-4 text-base md:text-lg border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100 transition-all"
                                        placeholder="Rechercher une page, un service, une commune..."
                                        aria-label="Saisissez votre terme de recherche">
                             </div>
-                            
+
                             <button type="submit"
                                     class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all duration-300 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary min-h-[48px] min-w-[120px]">
                                 <span class="flex items-center justify-center gap-2">
@@ -72,11 +72,31 @@
                 </form>
             </div>
 
-            {% if query %}
+            {% if rate_limited %}
+                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6 md:p-8 rounded-lg shadow text-center" role="alert">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-red-800 dark:text-red-200 mb-2">Trop de recherches</h3>
+                    <p class="text-red-700 dark:text-red-300">Vous avez effectué trop de recherches. Veuillez patienter une minute avant de réessayer.</p>
+                </div>
+            {% elif too_short %}
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-6 md:p-8 rounded-lg shadow text-center" role="alert">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-200 mb-2">Recherche trop courte</h3>
+                    <p class="text-yellow-700 dark:text-yellow-300">Veuillez saisir au moins {{ min_query_length }} caractères pour effectuer une recherche.</p>
+                </div>
+            {% elif query %}
                 <!-- Nombre de résultats -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6" aria-live="polite">
                     <h2 class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-200">
-                        <span class="text-primary" aria-label="{{ count }} résultats trouvés">{{ count }}</span> 
+                        <span class="text-primary" aria-label="{{ count }} résultats trouvés">{{ count }}</span>
                         <span>résultat{% if count > 1 %}s{% endif %} trouvé{% if count > 1 %}s{% endif %}</span>
                         <span class="text-sm md:text-base font-normal text-gray-600 dark:text-gray-300 ml-2">
                             pour "<mark class="bg-primary/10 px-1 rounded">{{ query|escape }}</mark>"
@@ -86,19 +106,19 @@
 
                 {% if results %}
                     <!-- Liste des résultats -->
-                    <div class="space-y-3 md:space-y-4" 
-                         id="search-results" 
-                         role="region" 
+                    <div class="space-y-3 md:space-y-4"
+                         id="search-results"
+                         role="region"
                          aria-label="Résultats de recherche">
-                        
+
                         {% for result in results %}
                         {% with model_name=result.model_name|lower %}
                         <article class="search-result-item bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg border border-gray-100 dark:border-gray-700 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300 overflow-hidden group"
                                   data-type="{{ model_name }}">
-                            
+
                             <div class="p-4 md:p-6">
                                 <div class="flex flex-col sm:flex-row sm:items-start gap-4">
-                                    
+
                                     <!-- Icône -->
                                     <div class="flex-shrink-0 mx-auto sm:mx-0">
                                         {% if model_name == 'staticpage' %}
@@ -174,6 +194,12 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                                 </svg>
                                             </div>
+                                        {% elif model_name == 'semestrielpage' %}
+                                            <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center" aria-hidden="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-6 w-6 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
                                         {% else %}
                                             <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center" aria-hidden="true">
                                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-6 w-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -188,7 +214,7 @@
                                         <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
                                             <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors">
                                                 {% if result.url %}
-                                                    <a href="{{ result.url }}" 
+                                                    <a href="{{ result.url }}"
                                                        class="hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded block">
                                                         {{ result.title|striptags|truncatechars:80|highlight:query }}
                                                     </a>
@@ -196,7 +222,7 @@
                                                     {{ result.title|striptags|truncatechars:80|highlight:query }}
                                                 {% endif %}
                                             </h3>
-                                            
+
                                             {% if model_name %}
                                             <!-- Badge catégorie -->
                                             <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary-700 dark:text-primary-300 border border-primary/20 self-start mx-auto sm:mx-0">
@@ -212,6 +238,7 @@
                                                 {% elif model_name == 'actelocal' %}Document
                                                 {% elif model_name == 'conseil' %}Conseil
                                                 {% elif model_name == 'lien' %}Lien
+                                                {% elif model_name == 'semestrielpage' %}Calendrier
                                                 {% else %}{{ result.model_name }}{% endif %}
                                             </span>
                                             {% endif %}
@@ -224,7 +251,7 @@
                                         {% endif %}
 
                                         {% if result.url %}
-                                            <a href="{{ result.url }}" 
+                                            <a href="{{ result.url }}"
                                                class="inline-flex items-center text-primary hover:text-primary font-medium text-sm group/link focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1 -ml-1">
                                                 Voir la page
                                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-4 w-4 ml-1 transform group-hover/link:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -245,7 +272,7 @@
                     <nav class="mt-8 flex justify-center" aria-label="Pagination">
                         <div class="flex items-center gap-2">
                             {% if page_obj.has_previous %}
-                                <a href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}" 
+                                <a href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}"
                                    class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                    aria-label="Page précédente">
                                     ← Précédent
@@ -261,7 +288,7 @@
                             </span>
 
                             {% if page_obj.has_next %}
-                                <a href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}" 
+                                <a href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}"
                                    class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                    aria-label="Page suivante">
                                     Suivant →
@@ -283,15 +310,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        
+
                         <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                             Aucun résultat trouvé
                         </h3>
-                        
+
                         <p class="text-gray-700 dark:text-gray-300 mb-4 md:mb-6 max-w-md mx-auto">
                             Nous n'avons trouvé aucun résultat pour "<strong class="text-primary">{{ query|escape }}</strong>".
                         </p>
-                        
+
                         <div class="space-y-4 text-sm text-gray-600 dark:text-gray-300">
                             <p class="font-semibold">Suggestions :</p>
                             <ul class="inline-block text-left space-y-2">
@@ -314,14 +341,14 @@
                                     Essayez des synonymes
                                 </li>
                             </ul>
-                            
+
                             {% with words=query|split_words %}
                             {% if words|length > 1 %}
                             <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                                 <p class="font-semibold mb-2">Essayez avec :</p>
                                 <div class="flex flex-wrap justify-center gap-2">
                                     {% for word in words %}
-                                    <a href="?q={{ word|urlencode }}" 
+                                    <a href="?q={{ word|urlencode }}"
                                        class="px-3 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-full text-sm transition-colors">
                                         {{ word }}
                                     </a>
@@ -337,44 +364,44 @@
             {% else %}
                 <!-- État initial - avant recherche -->
                 <div class="bg-white dark:bg-gray-800 p-6 md:p-12 rounded-lg shadow text-center">
-                    
+
                     <div class="w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 md:mb-6 rounded-full bg-primary/10 flex items-center justify-center" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-10 w-10 md:h-12 md:w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    
+
                     <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 md:mb-4">
                         Que recherchez-vous ?
                     </h3>
-                    
+
                     <p class="text-gray-700 dark:text-gray-300 max-w-xl mx-auto mb-6 md:mb-8">
                         Saisissez un terme de recherche ci-dessus pour explorer les pages, services, communes et documents de la CCSA.
                     </p>
-                    
+
                     <!-- Exemples de recherche -->
                     <div class="flex flex-wrap justify-center gap-2 md:gap-3" role="list" aria-label="Exemples de recherche">
                         <span class="text-sm text-gray-600 dark:text-gray-300 self-center mr-2">Exemples :</span>
-                        
-                        <a href="{% url 'search' %}?q=présentation" 
+
+                        <a href="{% url 'search' %}?q=présentation"
                            class="px-3 md:px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 text-gray-800 dark:text-gray-200 hover:text-primary rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
                            role="listitem">
                             Présentation
                         </a>
-                        
-                        <a href="{% url 'search' %}?q=mobilité" 
+
+                        <a href="{% url 'search' %}?q=mobilité"
                            class="px-3 md:px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 text-gray-800 dark:text-gray-200 hover:text-primary rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
                            role="listitem">
                             Mobilité
                         </a>
-                        
-                        <a href="{% url 'search' %}?q=Féron" 
+
+                        <a href="{% url 'search' %}?q=Féron"
                            class="px-3 md:px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 text-gray-800 dark:text-gray-200 hover:text-primary rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
                            role="listitem">
                             Féron
                         </a>
-                        
-                        <a href="{% url 'search' %}?q=déchets" 
+
+                        <a href="{% url 'search' %}?q=déchets"
                            class="px-3 md:px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 text-gray-800 dark:text-gray-200 hover:text-primary rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
                            role="listitem">
                             Déchets

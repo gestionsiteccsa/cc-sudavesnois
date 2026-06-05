@@ -17,6 +17,7 @@ sitemaps = {
 urlpatterns = [
     path("ccsa-admin/", admin.site.urls),
     path("", include("home.urls")),
+    path("", include("search.urls")),
     path("", include("accounts.urls", namespace="accounts")),
     path(
         "sitemap.xml",

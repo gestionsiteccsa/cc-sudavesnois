@@ -45,7 +45,11 @@ urlpatterns = [
     # Documents PLUi
     path("documents-plui/", views.documents_plui, name="documents_plui"),
     # Modification Simplifiée n°1
-    path("modification-simplifiee-1/", views.modification_simplifiee_1, name="modification_simplifiee_1"),
+    path(
+        "modification-simplifiee-1/",
+        views.modification_simplifiee_1,
+        name="modification_simplifiee_1",
+    ),
     # Développement économique
     path("developpement-economique/", views.dev_eco, name="dev_eco"),
     # Kit de logos CCSA
@@ -54,10 +58,8 @@ urlpatterns = [
     path(
         "collecte/telecharger-pdf/",
         views.telecharger_calendrier_verre,
-        name="telecharger_calendrier_verre"
+        name="telecharger_calendrier_verre",
     ),
-    # Recherche
-    path("recherche/", views.search_view, name="search"),
 ]
 
 if settings.DEBUG:
