@@ -46,11 +46,11 @@ html {
 
 /* Amélioration du contraste pour les boutons secondaires */
 .bg-secondary {
-    background-color: #4c5f0c; /* Couleur secondaire originale */
+    background-color: #3a4a08; /* Couleur secondaire optimisée pour le contraste WCAG AA */
 }
 
 .bg-secondary:hover {
-    background-color: #789712 !important; /* Version légèrement plus foncée pour le hover */
+    background-color: #5d7a0e !important; /* Version plus claire pour le hover */
 }
 
 /* Amélioration du contraste pour les cases à cocher */

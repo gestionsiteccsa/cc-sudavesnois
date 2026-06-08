@@ -48,11 +48,11 @@ html {
 
 /* Amélioration du contraste pour les boutons secondaires */
 .bg-secondary {
-    background-color: #4c5f0c; /* Couleur secondaire originale */
+    background-color: #3a4a08; /* Couleur secondaire optimisée pour le contraste WCAG AA */
 }
 
 .bg-secondary:hover {
-    background-color: #789712 !important; /* Version légèrement plus foncée pour le hover */
+    background-color: #5d7a0e !important; /* Version plus claire pour le hover */
 }
 
 /* Amélioration du contraste pour les cases à cocher */
@@ -78,9 +78,9 @@ input[type="checkbox"] {
     text-decoration: underline !important;
 }
 
-.high-contrast button, 
-.high-contrast input, 
-.high-contrast select, 
+.high-contrast button,
+.high-contrast input,
+.high-contrast select,
 .high-contrast textarea {
     background-color: #000 !important;
     color: #fff !important;
@@ -143,11 +143,11 @@ input[type="checkbox"] {
     border: 1px solid #fff !important;
 }
 
-.high-contrast h1, 
-.high-contrast h2, 
-.high-contrast h3, 
-.high-contrast h4, 
-.high-contrast h5, 
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast h5,
 .high-contrast h6,
 .high-contrast p,
 .high-contrast span,
@@ -356,13 +356,13 @@ input[type="checkbox"] {
     line-height: 1.8 !important;
 }
 
-.increased-line-height p, 
-.increased-line-height li, 
-.increased-line-height h1, 
-.increased-line-height h2, 
-.increased-line-height h3, 
-.increased-line-height h4, 
-.increased-line-height h5, 
+.increased-line-height p,
+.increased-line-height li,
+.increased-line-height h1,
+.increased-line-height h2,
+.increased-line-height h3,
+.increased-line-height h4,
+.increased-line-height h5,
 .increased-line-height h6 {
     line-height: 1.8 !important;
 }
@@ -372,13 +372,13 @@ input[type="checkbox"] {
     letter-spacing: 0.12em !important;
 }
 
-.increased-letter-spacing p, 
-.increased-letter-spacing li, 
-.increased-letter-spacing h1, 
-.increased-letter-spacing h2, 
-.increased-letter-spacing h3, 
-.increased-letter-spacing h4, 
-.increased-letter-spacing h5, 
+.increased-letter-spacing p,
+.increased-letter-spacing li,
+.increased-letter-spacing h1,
+.increased-letter-spacing h2,
+.increased-letter-spacing h3,
+.increased-letter-spacing h4,
+.increased-letter-spacing h5,
 .increased-letter-spacing h6 {
     letter-spacing: 0.12em !important;
 }
@@ -550,8 +550,8 @@ a:focus-visible {
 }
 
 /* Styles pour les formulaires */
-input:focus, 
-textarea:focus, 
+input:focus,
+textarea:focus,
 select:focus {
     outline: 2px solid #006ab3;
     outline-offset: 2px;
@@ -594,7 +594,7 @@ button:focus-visible {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-    
+
     .animate-on-scroll,
     .reveal {
         opacity: 1;
@@ -666,32 +666,32 @@ button:focus-visible {
 
 /* Styles d'impression */
 @media print {
-    header, 
-    footer, 
+    header,
+    footer,
     .no-print {
         display: none !important;
     }
-    
+
     body {
         font-size: 12pt;
         color: #000;
         background-color: #fff;
     }
-    
+
     a {
         color: #000;
         text-decoration: underline;
     }
-    
+
     a[href]:after {
         content: " (" attr(href) ")";
     }
 }
 
 /* Style pour les boutons qui doivent respecter la taille minimale */
-button, 
-input[type="button"], 
-input[type="submit"], 
+button,
+input[type="button"],
+input[type="submit"],
 input[type="reset"] {
     min-width: 44px;
     min-height: 44px;
