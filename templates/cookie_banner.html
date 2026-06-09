@@ -95,21 +95,14 @@ document.addEventListener('DOMContentLoaded', function () {
     showBanner();
   }
 
-  // Active Google Analytics apres consentement
+  // Active GTM et Google Analytics apres consentement
   function enableNonEssentialCookies() {
     gtag('consent', 'update', {
-      'analytics_storage': 'granted'
+      'analytics_storage': 'granted',
+      'ad_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted'
     });
-    gtag('js', new Date());
-    gtag('config', 'G-XZ0DPFZXMN', { 'send_page_view': false });
-    gtag('event', 'page_view');
-    // Charger le script GA s'il n'est pas deja charge
-    if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
-      var gaScript = document.createElement('script');
-      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XZ0DPFZXMN';
-      gaScript.async = true;
-      document.head.appendChild(gaScript);
-    }
   }
 
   // Fonction à appeler pour désactiver/supprimer les cookies non essentiels si besoin
