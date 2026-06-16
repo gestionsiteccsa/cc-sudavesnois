@@ -27,7 +27,7 @@ class Journal(models.Model):
     cover = models.ImageField(
         validators=[
             validate_taille_fichier,
-            FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg"]),
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg", "webp"]),
         ],
         upload_to="MSA/couvertures",
     )
