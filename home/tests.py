@@ -11,6 +11,14 @@ from django.urls import reverse
 
 from conseil_communautaire.models import ConseilVille
 from contact.models import ContactEmail
+from home.data.clea_data import (
+    AXES_SECTION,
+    INFO_CARDS,
+    META_DESCRIPTION,
+    PAGE_SUBTITLE,
+    PAGE_TITLE,
+    RESIDENCE_MISSION,
+)
 from journal.models import Journal
 from services.models import Service
 
@@ -734,3 +742,72 @@ class EdgeCasesTestCase(TestCase):
         # Nettoyer les fichiers de test
         if os.path.exists("test_media_home"):
             shutil.rmtree("test_media_home")
+
+
+class CleaViewTestCase(TestCase):
+    """Tests pour la page CLÉA+ (Contrat Local d'Éducation Artistique)."""
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("clea")
+
+    def test_clea_view_status_200(self):
+        """La vue CLÉA+ doit renvoyer un statut HTTP 200."""
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_clea_view_template_used(self):
+        """La vue CLÉA+ doit utiliser le bon template."""
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, "home/clea.html")
+
+    def test_clea_view_context_contains_page_data(self):
+        """Le contexte doit contenir les données de la page."""
+        response = self.client.get(self.url)
+        self.assertEqual(response.context["page_title"], PAGE_TITLE)
+        self.assertEqual(response.context["page_subtitle"], PAGE_SUBTITLE)
+        self.assertEqual(response.context["meta_description"], META_DESCRIPTION)
+        self.assertEqual(response.context["residence_mission"], RESIDENCE_MISSION)
+        self.assertEqual(response.context["axes_section"], AXES_SECTION)
+        self.assertEqual(response.context["info_cards"], INFO_CARDS)
+
+    def test_clea_view_contains_residence_mission_title(self):
+        """Le contenu de la résidence-mission doit être présent."""
+        response = self.client.get(self.url)
+        self.assertContains(response, RESIDENCE_MISSION["title"])
+        for paragraph in RESIDENCE_MISSION["paragraphs"]:
+            self.assertContains(response, paragraph)
+
+    def test_clea_view_contains_axes(self):
+        """Les axes prioritaires doivent être présents."""
+        response = self.client.get(self.url)
+        self.assertContains(response, AXES_SECTION["title"])
+        self.assertContains(response, AXES_SECTION["introduction"])
+        for axe in AXES_SECTION["axes"]:
+            self.assertContains(response, axe["title"])
+            self.assertContains(response, axe["content"])
+
+    def test_clea_view_contains_four_cards(self):
+        """Les quatre cartes Quoi/Qui/Quand/Comment doivent être présentes."""
+        response = self.client.get(self.url)
+        self.assertEqual(len(INFO_CARDS), 4)
+        for card in INFO_CARDS:
+            self.assertContains(response, card["title"])
+            self.assertContains(response, card["content"])
+
+    def test_clea_view_has_unique_h1(self):
+        """La page doit contenir un seul h1."""
+        response = self.client.get(self.url)
+        content = response.content.decode("utf-8")
+        self.assertEqual(content.count("<h1"), 1)
+        self.assertIn(PAGE_TITLE, content)
+
+    def test_clea_view_has_main_landmark(self):
+        """La page doit posséder une balise main avec id main-content."""
+        response = self.client.get(self.url)
+        self.assertContains(response, '<main id="main-content">')
+
+    def test_clea_view_has_skip_link(self):
+        """La page doit hériter du lien d'évitement."""
+        response = self.client.get(self.url)
+        self.assertContains(response, 'href="#main-content"')
