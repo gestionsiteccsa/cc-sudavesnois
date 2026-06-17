@@ -811,3 +811,16 @@ class CleaViewTestCase(TestCase):
         """La page doit hériter du lien d'évitement."""
         response = self.client.get(self.url)
         self.assertContains(response, 'href="#main-content"')
+
+    def test_clea_view_includes_dedicated_css(self):
+        """La page doit inclure la feuille de style dédiée clea.css."""
+        response = self.client.get(self.url)
+        self.assertContains(response, "css/clea.css")
+
+    def test_clea_view_cards_have_icons(self):
+        """Les cartes Quoi/Qui/Quand/Comment doivent posséder une icône SVG."""
+        response = self.client.get(self.url)
+        content = response.content.decode("utf-8")
+        # Chaque carte doit contenir un élément svg décoratif
+        svg_count = content.count("<svg")
+        self.assertGreaterEqual(svg_count, len(INFO_CARDS))

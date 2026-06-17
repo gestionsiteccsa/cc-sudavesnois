@@ -4,105 +4,148 @@
 {% block title %}{{ page_title }}{% endblock %}
 {% block meta_description %}{{ meta_description }}{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/clea.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<!-- Bannière -->
-<section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24" aria-labelledby="clea-main-heading">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-4xl mx-auto text-center text-white">
-            <h1 id="clea-main-heading" class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                {{ page_title|safe }}
-            </h1>
-            <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
-                {{ page_subtitle|safe }}
-            </p>
+<!-- Contenu principal -->
+<main id="main-content">
+    <!-- Bannière -->
+    <section class="relative bg-gradient-to-r from-primary to-primary/80 py-16 md:py-24" aria-labelledby="clea-main-heading">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 id="clea-main-heading" class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                    {{ page_title|safe }}
+                </h1>
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
+                    {{ page_subtitle|safe }}
+                </p>
+            </div>
         </div>
-    </div>
-    <!-- Motif décoratif -->
-    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
-    <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
-</section>
+        <!-- Motif décoratif -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
+    </section>
 
-<!-- Section 1 : Présentation de la résidence-mission -->
-<section class="py-12 bg-white dark:bg-gray-900" aria-labelledby="clea-residence-heading">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8 border-l-4 border-primary">
-                <div class="flex items-center mb-6">
-                    <div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                    </div>
-                    <h2 id="clea-residence-heading" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
+    <!-- Section principale : présentation de la résidence-mission -->
+    <section class="py-12 bg-white dark:bg-gray-900" aria-labelledby="clea-residence-heading">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="clea-main-card bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-md dark:shadow-gray-900">
+                    <h2 id="clea-residence-heading" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 pb-4 border-b-2 border-primary/30">
                         {{ residence_mission.title|safe }}
                     </h2>
-                </div>
 
-                <div class="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed">
-                    {% for paragraph in residence_mission.paragraphs %}
-                    <p class="{% if forloop.first %}text-lg{% endif %}">
-                        {{ paragraph|safe }}
-                    </p>
+                    <!-- Introduction avec icône -->
+                    <div class="flex items-start gap-4 mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-6 w-6 text-primary flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {{ residence_mission.paragraphs.0|safe }}
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {% for paragraph in residence_mission.paragraphs %}
+                            {% if not forloop.first %}
+                            <p>{{ paragraph|safe }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section En résumé : 4 cartes Quoi / Qui / Quand / Comment -->
+    <section class="py-12 bg-gray-50 dark:bg-gray-800" aria-labelledby="clea-cards-heading">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <h2 id="clea-cards-heading" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 text-center mb-8">
+                    En résumé
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {% for card in info_cards %}
+                    <article class="clea-card bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden p-6 text-center">
+                        <div class="flex justify-center mb-4">
+                            <div class="clea-icon-wrapper bg-primary/10 dark:bg-primary/20 p-4 rounded-full">
+                                {% if card.icon == "target" %}
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-8 w-8 text-primary dark:text-blue-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                {% elif card.icon == "users" %}
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-8 w-8 text-primary dark:text-blue-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                {% elif card.icon == "calendar" %}
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-8 w-8 text-primary dark:text-blue-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {% elif card.icon == "sparkles" %}
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-8 w-8 text-primary dark:text-blue-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                </svg>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                            {{ card.title|safe }}
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            {{ card.content|safe }}
+                        </p>
+                    </article>
                     {% endfor %}
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Section 2 : Les 4 cartes Quoi / Qui / Quand / Comment -->
-<section class="py-12 bg-gray-50 dark:bg-gray-800" aria-labelledby="clea-cards-heading">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-5xl mx-auto">
-            <h2 id="clea-cards-heading" class="sr-only">En résumé</h2>
-
-            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" role="list">
-                {% for card in info_cards %}
-                <li class="bg-white dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 p-6 text-center border-t-4 border-primary hover:shadow-lg transition-shadow duration-300">
-                    <h3 class="text-xl font-bold text-primary dark:text-blue-400 mb-4">
-                        {{ card.title|safe }}
-                    </h3>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        {{ card.content|safe }}
+    <!-- Section Axes prioritaires -->
+    <section class="py-12 bg-white dark:bg-gray-900" aria-labelledby="clea-axes-heading">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 id="clea-axes-heading" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+                        {{ axes_section.title|safe }}
+                    </h2>
+                    <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+                        {{ axes_section.introduction|safe }}
                     </p>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</section>
+                </div>
 
-<!-- Section 3 : Axes prioritaires -->
-<section class="py-12 bg-white dark:bg-gray-900" aria-labelledby="clea-axes-heading">
-    <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center mb-10">
-                <h2 id="clea-axes-heading" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">
-                    {{ axes_section.title|safe }}
-                </h2>
-                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-                    {{ axes_section.introduction|safe }}
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {% for axe in axes_section.axes %}
-                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-6 md:p-8 border-l-4 {% if axe.theme == 'green' %}border-green-500{% else %}border-primary{% endif %}">
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
-                        <span class="flex-shrink-0 w-8 h-8 rounded-full {% if axe.theme == 'green' %}bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400{% else %}bg-primary/10 dark:bg-primary/20 text-primary dark:text-blue-400{% endif %} flex items-center justify-center mr-3 text-sm" aria-hidden="true">
-                            {{ forloop.counter }}
-                        </span>
-                        {{ axe.title|safe }}
-                    </h3>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        {{ axe.content|safe }}
-                    </p>
-                </article>
-                {% endfor %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for axe in axes_section.axes %}
+                    <article class="clea-axis-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden p-6 h-full flex flex-col">
+                        <div class="flex items-center mb-4">
+                            <div class="clea-axis-icon {% if axe.theme == 'green' %}bg-green-100 dark:bg-green-900/30{% else %}bg-primary/10 dark:bg-primary/20{% endif %} p-3 rounded-full mr-4">
+                                {% if axe.theme == "green" %}
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {% endif %}
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                                {{ axe.title|safe }}
+                            </h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed flex-grow">
+                            {{ axe.content|safe }}
+                        </p>
+                    </article>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</main>
 
 {% endblock %}

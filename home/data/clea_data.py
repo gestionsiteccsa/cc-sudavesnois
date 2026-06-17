@@ -77,6 +77,7 @@ INFO_CARDS = [
     {
         "id": "quoi",
         "title": "Quoi ?",
+        "icon": "target",
         "content": (
             "L'objectif principal est de favoriser l'accès à la culture et "
             "à l'art contemporain au plus grand nombre."
@@ -85,6 +86,7 @@ INFO_CARDS = [
     {
         "id": "qui",
         "title": "Qui ?",
+        "icon": "users",
         "content": (
             "Tous les habitants du territoire de la CCSA et des artistes "
             "professionnels."
@@ -93,11 +95,13 @@ INFO_CARDS = [
     {
         "id": "quand",
         "title": "Quand ?",
+        "icon": "calendar",
         "content": ("Chaque année, pour une durée de quatre mois consécutifs."),
     },
     {
         "id": "comment",
         "title": "Comment ?",
+        "icon": "sparkles",
         "content": (
             "Par des rencontres entre les artistes et les habitants, la "
             "diffusion d'œuvres et l'expérimentation de gestes artistiques."

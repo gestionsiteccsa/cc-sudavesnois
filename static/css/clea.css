@@ -1,0 +1,81 @@
+/* Styles spécifiques pour la page CLÉA+ */
+
+/* Animation des cartes d'information */
+.clea-card {
+    transition: all 0.3s ease;
+}
+
+.clea-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Animation des icônes dans les cartes */
+.clea-card .clea-icon-wrapper {
+    transition: all 0.3s ease;
+}
+
+.clea-card:hover .clea-icon-wrapper {
+    background-color: rgba(0, 90, 158, 0.2);
+    transform: scale(1.1);
+}
+
+.clea-card:hover .clea-icon-wrapper svg {
+    transform: scale(1.1);
+}
+
+/* Titres des cartes */
+.clea-card h3 {
+    transition: color 0.3s ease;
+}
+
+.clea-card:hover h3 {
+    color: #005a9e;
+}
+
+/* Animation des cartes d'axes */
+.clea-axis-card {
+    transition: all 0.3s ease;
+}
+
+.clea-axis-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.clea-axis-card .clea-axis-icon {
+    transition: all 0.3s ease;
+}
+
+.clea-axis-card:hover .clea-axis-icon {
+    transform: scale(1.1);
+}
+
+/* Animation de la carte principale */
+.clea-main-card {
+    transition: all 0.3s ease;
+}
+
+.clea-main-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Icônes de liste */
+.clea-check-icon {
+    transition: all 0.3s ease;
+}
+
+.clea-list-item:hover .clea-check-icon {
+    transform: scale(1.2);
+    color: #005a9e;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .clea-card:hover,
+    .clea-axis-card:hover {
+        transform: none;
+    }
+}
