@@ -95,7 +95,18 @@
                             </ul>
                         </li>
                         <li><a href="{% url 'habitat' %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Habitat</a></li>
-                        <li><a href="{% url 'mediapass' %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Réseau Médi@'pass</a></li>
+                        <li class="relative nav-dropdown">
+                            <button class="w-full text-left block px-4 py-3 min-h-[44px] text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-mediapass">
+                                Réseau Médi@'pass
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-mediapass" class="submenu-level-2 submenu-right w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
+                                <li><a href="{% url 'clea' %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">CLEA</a></li>
+                                <li><a href="{% url 'mediapass' %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Médi@'pass</a></li>
+                            </ul>
+                        </li>
                         <li class="relative nav-dropdown">
                             <button class="w-full text-left block px-4 py-3 min-h-[44px] text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 flex justify-between items-center" aria-haspopup="menu" aria-expanded="false" aria-controls="submenu-sante">
                                 Santé
@@ -250,7 +261,7 @@
     </div>
 
        <!-- Menu mobile -->
-       <div id="mobile-menu" class="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 hidden">
+       <div id="mobile-menu" class="md:hidden fixed inset-x-0 top-20 bottom-0 bg-white dark:bg-gray-800 z-40 hidden overflow-y-auto overscroll-contain">
         <nav aria-label="Menu mobile" class="container mx-auto px-4">
             <ul class="py-2">
                 <!-- Barre de recherche Mobile -->
@@ -367,7 +378,18 @@
                             </ul>
                         </li>
                         <li><a href="{% url 'habitat' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Habitat</a></li>
-                        <li><a href="{% url 'mediapass' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Réseau Médi@'pass</a></li>
+                        <li>
+                            <button class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-mediapass-mobile">
+                                Réseau Médi@'pass
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <ul id="submenu-mediapass-mobile" class="pl-4 hidden">
+                                <li><a href="{% url 'clea' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">CLEA</a></li>
+                                <li><a href="{% url 'mediapass' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Médi@'pass</a></li>
+                            </ul>
+                        </li>
                         <li>
                             <button class="w-full flex justify-between items-center py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300" aria-expanded="false" aria-controls="submenu-sante-mobile">
                                 Santé
