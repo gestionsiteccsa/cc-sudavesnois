@@ -1,9 +1,9 @@
+import json
 from collections import defaultdict
 from datetime import timedelta
 
-import json
-
 from django.contrib.auth.decorators import permission_required
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
@@ -12,6 +12,7 @@ from django.views.decorators.http import require_http_methods
 
 from app.utils import secure_file_removal
 from comptes_rendus.models import Conseil
+
 from .forms import ConseilMembreForm, ConseilVilleForm
 from .models import ConseilMembre, ConseilVille
 
@@ -101,12 +102,14 @@ def list_cities(request):
 
 
 @permission_required("conseil_communautaire.delete_conseilville")
+@transaction.atomic
 def delete_city(request, city_id):
     city = get_object_or_404(ConseilVille, id=city_id)
     if request.method == "POST":
-        if city.image:
-            city.image.delete(save=False)  # Supprimer l'image du modèle
+        image = city.image
         city.delete()
+        if image:
+            transaction.on_commit(lambda img=image: secure_file_removal(img))
         return redirect("conseil_communautaire:admin_list_cities")
     return render(
         request, "conseil_communautaire/admin_city_delete.html", {"city": city}
@@ -152,6 +155,7 @@ def add_member(request):
 
 
 @permission_required("conseil_communautaire.change_conseilmembre")
+@transaction.atomic
 def edit_member(request, id):
     member = get_object_or_404(ConseilMembre, id=id)
 
@@ -160,8 +164,9 @@ def edit_member(request, id):
 
         if member_form.is_valid():
             if member_form.cleaned_data.get("clear_photo") and member.photo:
-                secure_file_removal(member.photo)
+                photo_to_remove = member.photo
                 member.photo = None
+                transaction.on_commit(lambda p=photo_to_remove: secure_file_removal(p))
             member_form.save()
             return redirect("conseil_communautaire:admin_membres_list")
 
@@ -176,12 +181,14 @@ def edit_member(request, id):
 
 
 @permission_required("conseil_communautaire.delete_conseilmembre")
+@transaction.atomic
 def delete_member(request, id):
     member = get_object_or_404(ConseilMembre, id=id)
     if request.method == "POST":
-        if member.photo:
-            secure_file_removal(member.photo)
+        photo = member.photo
         member.delete()
+        if photo:
+            transaction.on_commit(lambda p=photo: secure_file_removal(p))
         return redirect("conseil_communautaire:admin_membres_list")
     return render(
         request, "conseil_communautaire/admin_member_delete.html", {"member": member}
@@ -197,43 +204,43 @@ def update_photo_position(request, id):
     Accepte un JSON avec photo_position_x, photo_position_y et photo_zoom.
     """
     member = get_object_or_404(ConseilMembre, id=id)
-    
+
     try:
         data = json.loads(request.body)
-        position_x = data.get('photo_position_x')
-        position_y = data.get('photo_position_y')
-        zoom = data.get('photo_zoom')
-        
+        position_x = data.get("photo_position_x")
+        position_y = data.get("photo_position_y")
+        zoom = data.get("photo_zoom")
+
         if position_x is not None:
             position_x = max(0, min(100, int(position_x)))
             member.photo_position_x = position_x
-            
+
         if position_y is not None:
             position_y = max(0, min(100, int(position_y)))
             member.photo_position_y = position_y
-            
+
         if zoom is not None:
             zoom = max(50, min(200, int(zoom)))
             member.photo_zoom = zoom
-            
-        member.save(update_fields=['photo_position_x', 'photo_position_y', 'photo_zoom'])
-        
-        return JsonResponse({
-            'success': True,
-            'photo_position_x': member.photo_position_x,
-            'photo_position_y': member.photo_position_y,
-            'photo_zoom': member.photo_zoom,
-        })
+
+        member.save(
+            update_fields=["photo_position_x", "photo_position_y", "photo_zoom"]
+        )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "photo_position_x": member.photo_position_x,
+                "photo_position_y": member.photo_position_y,
+                "photo_zoom": member.photo_zoom,
+            }
+        )
     except (ValueError, TypeError) as e:
-        return JsonResponse({
-            'success': False,
-            'error': f'Valeur invalide: {str(e)}'
-        }, status=400)
+        return JsonResponse(
+            {"success": False, "error": f"Valeur invalide: {str(e)}"}, status=400
+        )
     except json.JSONDecodeError:
-        return JsonResponse({
-            'success': False,
-            'error': 'JSON invalide'
-        }, status=400)
+        return JsonResponse({"success": False, "error": "JSON invalide"}, status=400)
 
 
 @permission_required("conseil_communautaire.view_conseilmembre")

@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
+from django.db import transaction
 from django.db.models import Prefetch
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
@@ -43,7 +44,7 @@ def commissions(request):
     # Document et mandat (avec cache de 5 minutes)
     document = cache.get("commissions_document")
     if document is None:
-        document = Document.objects.first()
+        document = Document.get_solo()
         cache.set("commissions_document", document, 300)
 
     mandat = cache.get("commissions_mandat")
@@ -90,7 +91,7 @@ def list_commission(request):
     commissions = list(Commission.objects.all())
     commissions = commissions if commissions else None
 
-    document = Document.objects.first()
+    document = Document.get_solo()
 
     mandat = Mandat.objects.first()
     if not mandat:
@@ -139,12 +140,13 @@ def delete_commission(request, commission_id):
 
 
 @permission_required("commissions.add_document")
+@transaction.atomic
 def add_document(request):
     """
     Ajoute un document à la page de commissions.
     """
     # Revoie vers la liste si un document est déjà présent
-    if Document.objects.count() >= 1:
+    if Document.objects.exists():
         return redirect("commissions:admin_list_commissions")
     else:
         if request.method == "POST":
@@ -158,6 +160,7 @@ def add_document(request):
 
 
 @permission_required("commissions.change_document")
+@transaction.atomic
 def edit_document(request, document_id):
     """
     Modifie un document existant.
@@ -168,9 +171,10 @@ def edit_document(request, document_id):
         form = CommissionDocForm(request.POST, request.FILES, instance=document)
         if form.is_valid():
             form.save(commit=False)
-            if last_document != document.file:
-                # Supprime l'ancien fichier
-                secure_file_removal(last_document)
+            new_file = document.file
+            if last_document != new_file:
+                # Suppression effective après commit
+                transaction.on_commit(lambda: secure_file_removal(last_document))
             form.save()
 
             return redirect("commissions:admin_list_commissions")
@@ -180,14 +184,17 @@ def edit_document(request, document_id):
 
 
 @permission_required("commissions.delete_document")
+@transaction.atomic
 def delete_document(request, document_id):
     """
     Supprime une commission existante.
     """
     document = get_object_or_404(Document, id=document_id)
     if request.method == "POST":
-        secure_file_removal(document.file)  # Supprime le fichier
+        file_to_remove = document.file
         document.delete()
+        # Suppression effective du fichier après commit
+        transaction.on_commit(lambda: secure_file_removal(file_to_remove))
         return redirect("commissions:admin_list_commissions")
     return render(
         request, "commissions/admin_commission_delete_doc.html", {"document": document}

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import permission_required
+from django.db import transaction
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
 from app.utils import secure_file_removal
@@ -74,6 +75,7 @@ def add_rapport_activite(request):
 
 
 @permission_required("rapports_activite.change_rapportactivite")
+@transaction.atomic
 def edit_rapport_activite(request, id):
     """
     View function to render the 'edit_rapport_activite' page.
@@ -85,8 +87,8 @@ def edit_rapport_activite(request, id):
         form = RapportActiviteForm(request.POST, request.FILES, instance=rapport)
         if form.is_valid():
             rapport = form.save(commit=False)
-            if rapport.file != last_file:
-                secure_file_removal(last_file)
+            if rapport.file != last_file and last_file:
+                transaction.on_commit(lambda f=last_file: secure_file_removal(f))
             rapport.save()
             return redirect("rapports_activite:gestion_rapports_activite")
     else:
@@ -95,13 +97,16 @@ def edit_rapport_activite(request, id):
 
 
 @permission_required("rapports_activite.delete_rapportactivite")
+@transaction.atomic
 def delete_rapport_activite(request, id):
     """
     View function to delete a 'rapport_activite' instance.
     """
     rapport = get_object_or_404(RapportActivite, pk=id)
     if request.method == "POST":
-        secure_file_removal(rapport.file)
+        file_to_remove = rapport.file
         rapport.delete()
+        if file_to_remove:
+            transaction.on_commit(lambda f=file_to_remove: secure_file_removal(f))
         return redirect("rapports_activite:gestion_rapports_activite")
     return render(request, supprimer_rapport, {"rapport": rapport})

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -47,11 +48,17 @@ def home(request):
     services = list(Service.objects.order_by("title"))
     services = services if services else None
 
-    # Optimisé : une seule requête pour les communes + stats calculées en Python
-    communes = list(ConseilVille.objects.all())
+    # Optimisé : 1 aggregate pour les stats + 1 liste pour l'affichage
+    communes_stats = ConseilVille.objects.aggregate(
+        nb=Count("id"),
+        total_hab=Sum("nb_habitants"),
+    )
+    nb_communes = communes_stats["nb"] or 0
+    nb_habitants = communes_stats["total_hab"] or 0
+    communes = list(
+        ConseilVille.objects.only("city_name", "slug").order_by("city_name")
+    )
     communes = communes if communes else None
-    nb_communes = len(communes) if communes else None
-    nb_habitants = sum(c.nb_habitants for c in communes) if communes else None
 
     # Récupérer le dernier journal (trié par numéro décroissant)
     dernier_journal = Journal.objects.order_by("-number").first()
@@ -191,10 +198,17 @@ def conseil(request):
 
 
 def presentation(request):
-    communes = list(ConseilVille.objects.all())
+    # 1 aggregate + 1 liste au lieu de charger toutes les colonnes pour sommer
+    communes_stats = ConseilVille.objects.aggregate(
+        nb=Count("id"),
+        total_hab=Sum("nb_habitants"),
+    )
+    nb_communes = communes_stats["nb"] or 0
+    nb_habitants = communes_stats["total_hab"] or 0
+    communes = list(
+        ConseilVille.objects.only("city_name", "slug").order_by("city_name")
+    )
     communes = communes if communes else None
-    nb_communes = len(communes) if communes else 0
-    nb_habitants = sum(c.nb_habitants for c in communes) if communes else 0
 
     context = {
         "communes": communes,

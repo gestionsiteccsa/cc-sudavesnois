@@ -25,6 +25,9 @@ class CommissionTestCase(TestCase):
         )
 
     def setUp(self):
+        from django.core.cache import cache
+
+        cache.clear()  # Éviter les fuites de cache entre tests
         self.client = Client()
         self.client.login(
             email="admin@example.com", password="password123"
@@ -42,6 +45,9 @@ class CommissionTestCase(TestCase):
         return Commission.objects.create(title=title, icon=icon)
 
     def create_document(self, file_name):
+        # Document est désormais un SingletonModel (pk=1).
+        # On supprime l'instance existante pour repartir d'un état propre.
+        Document.objects.all().delete()
         return Document.objects.create(
             file=SimpleUploadedFile(
                 name=file_name, content=b"Test content", content_type="application/pdf"
@@ -342,16 +348,18 @@ class CommissionTestCase(TestCase):
         Test de la page de modification de document avec des données valides
         """
         document = self.create_document(file_name="test.pdf")
-        response = self.client.post(
-            reverse("commissions:edit_document", args=[document.id]),
-            {
-                "file": SimpleUploadedFile(
-                    name="modified_test.pdf",
-                    content=b"Modified content",
-                    content_type="application/pdf",
-                )
-            },
-        )
+        # La suppression de l'ancien fichier est faite via transaction.on_commit
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                reverse("commissions:edit_document", args=[document.id]),
+                {
+                    "file": SimpleUploadedFile(
+                        name="modified_test.pdf",
+                        content=b"Modified content",
+                        content_type="application/pdf",
+                    )
+                },
+            )
         # Vérifier que la réponse est une redirection (code 302)
         self.assertEqual(response.status_code, 302)
         # Vérifier que la redirection est correcte
@@ -415,9 +423,12 @@ class CommissionTestCase(TestCase):
         Test de la suppression de document
         """
         document = self.create_document(file_name="test.pdf")
-        response = self.client.post(
-            reverse("commissions:delete_document", args=[document.id])
-        )
+        # La suppression effective du fichier est faite via
+        # transaction.on_commit : on capture et exécute les callbacks ici.
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                reverse("commissions:delete_document", args=[document.id])
+            )
         # Vérifier que la réponse est correcte (code 302)
         self.assertEqual(response.status_code, 302)
         # Vérifier que la redirection est correcte
@@ -571,6 +582,7 @@ class CommissionCompetenceTestCase(TestCase):
     def test_admin_competence_inline_registered(self):
         """Test que l'inline est bien enregistré dans l'admin Commission"""
         from django.contrib import admin
+
         from .admin import CustomCommissionAdmin
 
         model_admin = CustomCommissionAdmin(Commission, admin.site)
@@ -583,6 +595,7 @@ class CommissionCompetenceTestCase(TestCase):
     def test_admin_competences_list_view(self):
         """Test que la page admin des compétences s'affiche et contient les données"""
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         superuser = User.objects.create_superuser(
             email="admin@test.com", password="password123"
@@ -599,6 +612,7 @@ class CommissionCompetenceTestCase(TestCase):
     def test_admin_add_competence_post(self):
         """Test que l'ajout d'une compétence fonctionne"""
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         superuser = User.objects.create_superuser(
             email="admin2@test.com", password="password123"
@@ -606,7 +620,11 @@ class CommissionCompetenceTestCase(TestCase):
         self.client.login(email="admin2@test.com", password="password123")
         response = self.client.post(
             reverse("commissions:admin_add_competence"),
-            {"commission": self.commission.id, "title": "Nouvelle compétence", "order": 3},
+            {
+                "commission": self.commission.id,
+                "title": "Nouvelle compétence",
+                "order": 3,
+            },
         )
         self.assertRedirects(response, reverse("commissions:admin_competences"))
         self.assertTrue(
@@ -618,6 +636,7 @@ class CommissionCompetenceTestCase(TestCase):
     def test_admin_add_competence_post_invalid(self):
         """Test que l'ajout sans titre est rejeté"""
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         superuser = User.objects.create_superuser(
             email="admin3@test.com", password="password123"
@@ -634,6 +653,7 @@ class CommissionCompetenceTestCase(TestCase):
     def test_admin_delete_competence_post(self):
         """Test que la suppression d'une compétence fonctionne"""
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         superuser = User.objects.create_superuser(
             email="admin4@test.com", password="password123"
@@ -643,13 +663,12 @@ class CommissionCompetenceTestCase(TestCase):
             reverse("commissions:admin_delete_competence", args=[self.comp1.pk])
         )
         self.assertRedirects(response, reverse("commissions:admin_competences"))
-        self.assertFalse(
-            CommissionCompetence.objects.filter(pk=self.comp1.pk).exists()
-        )
+        self.assertFalse(CommissionCompetence.objects.filter(pk=self.comp1.pk).exists())
 
     def test_admin_delete_competence_get(self):
         """Test que la suppression en GET redirige sans supprimer"""
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         superuser = User.objects.create_superuser(
             email="admin5@test.com", password="password123"
@@ -659,6 +678,4 @@ class CommissionCompetenceTestCase(TestCase):
             reverse("commissions:admin_delete_competence", args=[self.comp1.pk])
         )
         self.assertRedirects(response, reverse("commissions:admin_competences"))
-        self.assertTrue(
-            CommissionCompetence.objects.filter(pk=self.comp1.pk).exists()
-        )
+        self.assertTrue(CommissionCompetence.objects.filter(pk=self.comp1.pk).exists())

@@ -1,4 +1,6 @@
 from collections import Counter
+from itertools import groupby
+from operator import attrgetter
 
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
@@ -8,19 +10,13 @@ from .models import Competence
 
 
 def competences(request):
-    toutes = Competence.objects.all()
-    c_obligatoires = [
-        c for c in toutes if c.category == Competence.Category.OBLIGATOIRE
-    ] or None
-    c_optionnelles = [
-        c for c in toutes if c.category == Competence.Category.OPTIONNELLE
-    ] or None
-    c_facultatives = [
-        c for c in toutes if c.category == Competence.Category.FACULTATIVE
-    ] or None
-    c_transferees = [
-        c for c in toutes if c.category == Competence.Category.TRANSFEREE
-    ] or None
+    # 1 seule requête puis groupement en Python (au lieu de 4 parcours)
+    toutes = list(Competence.objects.all().order_by("category", "title"))
+    grouped = {k: list(g) for k, g in groupby(toutes, key=attrgetter("category"))}
+    c_obligatoires = grouped.get(Competence.Category.OBLIGATOIRE) or None
+    c_optionnelles = grouped.get(Competence.Category.OPTIONNELLE) or None
+    c_facultatives = grouped.get(Competence.Category.FACULTATIVE) or None
+    c_transferees = grouped.get(Competence.Category.TRANSFEREE) or None
 
     context = {
         "c_obligatoires": c_obligatoires,
@@ -37,8 +33,8 @@ def competences_list(request):
     """
     Affiche la liste des compétences avec statistiques.
     """
-    competences = Competence.objects.all().order_by("category", "title")
-    compteurs = dict(Counter(competences.values_list("category", flat=True)))
+    competences = list(Competence.objects.all().order_by("category", "title"))
+    compteurs = Counter(c.category for c in competences)
     stats = {
         "total": len(competences),
         "obligatoire": compteurs.get(Competence.Category.OBLIGATOIRE, 0),

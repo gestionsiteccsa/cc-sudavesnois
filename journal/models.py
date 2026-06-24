@@ -22,7 +22,7 @@ class Journal(models.Model):
         upload_to="MSA/documents",
     )
     # Date de publication
-    release_date = models.DateField(verbose_name="Date de publication")
+    release_date = models.DateField(verbose_name="Date de publication", db_index=True)
 
     cover = models.ImageField(
         validators=[

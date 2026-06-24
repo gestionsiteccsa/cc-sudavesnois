@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from app.utils import secure_file_removal_by_path
@@ -71,17 +72,23 @@ def add_journal(request):
 
 
 @permission_required("journal.delete_journal")
+@transaction.atomic
 def delete_journal(request, id):
     """Vue de suppression de journal pour l'administrateur"""
     journal = get_object_or_404(Journal, id=id)
     if request.method == "POST":
         if request.POST.get("confirm") == "yes":
-            # Supprimer les fichiers de manière sécurisée
-            if journal.document:
-                secure_file_removal_by_path(journal.document.path)
-            if journal.cover:
-                secure_file_removal_by_path(journal.cover.path)
+            # Snapshot des chemins avant suppression
+            doc_path = journal.document.path if journal.document else None
+            cover_path = journal.cover.path if journal.cover else None
             journal.delete()
+            # Suppression effective des fichiers après commit
+            if doc_path:
+                transaction.on_commit(lambda p=doc_path: secure_file_removal_by_path(p))
+            if cover_path:
+                transaction.on_commit(
+                    lambda p=cover_path: secure_file_removal_by_path(p)
+                )
             messages.success(request, "Le journal a été supprimé avec succès.")
             return redirect("journal:admin_journaux_list")
         else:
@@ -92,6 +99,7 @@ def delete_journal(request, id):
 
 
 @permission_required("journal.change_journal")
+@transaction.atomic
 def edit_journal(request, id):
     """Vue d'édition de journal pour l'administrateur"""
     journal = get_object_or_404(Journal, id=id)
@@ -106,33 +114,27 @@ def edit_journal(request, id):
 
         if journal_form.is_valid():
             journal = journal_form.save(commit=False)
-            # Vérifier si les fichiers ont changé
+            # Vérifier si les fichiers ont changé ; suppression après commit
             indisponible = False
             indisponible_files = []
-            # Vérification existence fichiers avant suppression sécurisée
-            if journal.document != last_document:
-                if last_document and hasattr(last_document, "path"):
-                    removed = secure_file_removal_by_path(last_document.path)
-                    if not removed:
-                        indisponible = True
-                        indisponible_files.append("document")
-            if journal.cover != last_cover:
-                if last_cover and hasattr(last_cover, "path"):
-                    removed = secure_file_removal_by_path(last_cover.path)
-                    if not removed:
-                        indisponible = True
-                        indisponible_files.append("couverture")
-            journal.save()
-            if indisponible:
-                msg = (
-                    "Fichier(s) suivant(s) non trouvé(s) sur le serveur : "
-                    + ", ".join(indisponible_files)
-                    + ". Ils ont été marqués comme \
-                        'Indisponible'."
+            if (
+                journal.document != last_document
+                and last_document
+                and hasattr(last_document, "path")
+            ):
+                doc_path = last_document.path
+                transaction.on_commit(lambda p=doc_path: secure_file_removal_by_path(p))
+            if (
+                journal.cover != last_cover
+                and last_cover
+                and hasattr(last_cover, "path")
+            ):
+                cover_path = last_cover.path
+                transaction.on_commit(
+                    lambda p=cover_path: secure_file_removal_by_path(p)
                 )
-                messages.warning(request, msg)
-            else:
-                messages.success(request, "Le journal a été modifié avec succès.")
+            journal.save()
+            messages.success(request, "Le journal a été modifié avec succès.")
             return redirect("journal:admin_journaux_list")
         else:
             messages.error(request, "Merci de corriger les erreurs dans le formulaire.")

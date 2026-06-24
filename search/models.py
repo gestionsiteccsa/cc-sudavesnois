@@ -1,7 +1,9 @@
 from django.db import models
 
+from app.models import SingletonModel
 
-class SearchConfigModel(models.Model):
+
+class SearchConfigModel(SingletonModel):
     min_query_length = models.PositiveIntegerField(
         default=2,
         verbose_name="Longueur minimale de recherche",
@@ -16,7 +18,7 @@ class SearchConfigModel(models.Model):
 
     results_per_page = models.PositiveIntegerField(
         default=10,
-        verbose_name="Résultats par page",
+        verbose_name="Résultats affichés par page",
         help_text="Nombre de résultats affichés par page",
     )
 
@@ -30,14 +32,9 @@ class SearchConfigModel(models.Model):
         verbose_name = "Configuration de recherche"
         verbose_name_plural = "Configuration de recherche"
 
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super().save(*args, **kwargs)
-
     @classmethod
     def get_config(cls):
-        config, _ = cls.objects.get_or_create(pk=1)
-        return config
+        return cls.load()
 
     def __str__(self):
         return "Configuration de recherche"

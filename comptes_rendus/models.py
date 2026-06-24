@@ -3,27 +3,26 @@ import os
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
+from app.models import SingletonModel
 from journal.models import validate_taille_fichier
 
 
-class CompteRendu(models.Model):
+class CompteRendu(SingletonModel):
     link = models.URLField(max_length=200, blank=False, null=False)
 
     def __str__(self):
         return self.link
-
-    def save(self, *args, **kwargs):
-        if CompteRendu.objects.exists():
-            # Si un objet existe déjà, on le supprime avant d'en créer un nouveau
-            # Limiter à un seul objet
-            CompteRendu.objects.all().delete()
-        super().save(*args, **kwargs)
 
 
 class Conseil(models.Model):
     date = models.DateField(db_index=True)
     hour = models.TimeField()
     place = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["date", "hour"], name="conseil_date_hour_idx"),
+        ]
 
     def __str__(self):
         place_display = self.place if self.place else "Lieu à communiquer"

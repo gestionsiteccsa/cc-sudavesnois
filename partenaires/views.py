@@ -1,27 +1,22 @@
-import unicodedata
 from collections import defaultdict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from app.utils import remove_accents
+
 from .forms import CategoriePartenaireForm, PartenaireForm
 from .models import CategoriePartenaire, Partenaire
 
-
-def remove_accents(input_str):
-    """Supprime les accents d'une chaîne de caractères pour le tri alphabétique."""
-    if not input_str:
-        return ""
-    nfkd_form = unicodedata.normalize('NFKD', input_str)
-    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
-
-
 # ==================== VUES PUBLIQUES ====================
+
 
 def partenaires(request):
     """Vue publique affichant tous les partenaires actifs groupés par catégorie"""
-    all_partenaires = list(Partenaire.objects.filter(active=True).select_related('categorie'))
+    all_partenaires = list(
+        Partenaire.objects.filter(active=True).select_related("categorie")
+    )
 
     # Grouper en Python pour eviter N+1 requetes
     by_cat = defaultdict(list)
@@ -29,11 +24,13 @@ def partenaires(request):
         by_cat[p.categorie_id].append(p)
 
     # Partenaires par categorie normale
-    categories_normales = CategoriePartenaire.objects.filter(
-        active=True,
-        type_section='normal',
-        partenaire__active=True
-    ).distinct().order_by('ordre', 'nom')
+    categories_normales = (
+        CategoriePartenaire.objects.filter(
+            active=True, type_section="normal", partenaire__active=True
+        )
+        .distinct()
+        .order_by("ordre", "nom")
+    )
 
     partenaires_par_categorie = {}
     for cat in categories_normales:
@@ -42,11 +39,13 @@ def partenaires(request):
         partenaires_par_categorie[cat] = lst
 
     # Partenaires par categorie subvention
-    categories_subventions = CategoriePartenaire.objects.filter(
-        active=True,
-        type_section='subvention',
-        partenaire__active=True
-    ).distinct().order_by('ordre', 'nom')
+    categories_subventions = (
+        CategoriePartenaire.objects.filter(
+            active=True, type_section="subvention", partenaire__active=True
+        )
+        .distinct()
+        .order_by("ordre", "nom")
+    )
 
     partenaires_subventions = {}
     for cat in categories_subventions:
@@ -56,8 +55,7 @@ def partenaires(request):
 
     # Partenaires sans categorie
     partenaires_sans_categorie = sorted(
-        by_cat.get(None, []),
-        key=lambda p: remove_accents(p.nom).lower()
+        by_cat.get(None, []), key=lambda p: remove_accents(p.nom).lower()
     )
 
     context = {
@@ -71,20 +69,25 @@ def partenaires(request):
 
 # ==================== VUES ADMIN - CATÉGORIES ====================
 
+
 @login_required
 def list_categories(request):
     """Liste des catégories de partenaires"""
-    categories = CategoriePartenaire.objects.all().order_by('ordre', 'nom')
+    categories = CategoriePartenaire.objects.all().order_by("ordre", "nom")
     total = categories.count()
     actives = categories.filter(active=True).count()
     inactives = total - actives
 
-    return render(request, "partenaires/list_categories.html", {
-        "categories": categories,
-        "total": total,
-        "actives": actives,
-        "inactives": inactives,
-    })
+    return render(
+        request,
+        "partenaires/list_categories.html",
+        {
+            "categories": categories,
+            "total": total,
+            "actives": actives,
+            "inactives": inactives,
+        },
+    )
 
 
 @login_required
@@ -120,10 +123,11 @@ def edit_categorie(request, id):
     else:
         form = CategoriePartenaireForm(instance=categorie)
 
-    return render(request, "partenaires/edit_categorie.html", {
-        "form": form,
-        "categorie": categorie
-    })
+    return render(
+        request,
+        "partenaires/edit_categorie.html",
+        {"form": form, "categorie": categorie},
+    )
 
 
 @login_required
@@ -138,34 +142,43 @@ def delete_categorie(request, id):
             if partenaires_count > 0:
                 messages.error(
                     request,
-                    f"Impossible de supprimer cette catégorie : elle est utilisée par {partenaires_count} partenaire(s)."
+                    f"Impossible de supprimer cette catégorie : elle est utilisée par {partenaires_count} partenaire(s).",
                 )
             else:
                 categorie.delete()
                 messages.success(request, "La catégorie a été supprimée avec succès.")
             return redirect("partenaires:admin_categories_list")
 
-    return render(request, "partenaires/delete_categorie.html", {"categorie": categorie})
+    return render(
+        request, "partenaires/delete_categorie.html", {"categorie": categorie}
+    )
 
 
 # ==================== VUES ADMIN - PARTENAIRES ====================
 
+
 @login_required
 def list_partenaires(request):
     """Liste des partenaires"""
-    partenaires_list = Partenaire.objects.all().select_related('categorie').order_by(
-        'categorie__ordre', 'ordre', 'nom'
+    partenaires_list = (
+        Partenaire.objects.all()
+        .select_related("categorie")
+        .order_by("categorie__ordre", "ordre", "nom")
     )
     total = partenaires_list.count()
     actifs = partenaires_list.filter(active=True).count()
     inactifs = total - actifs
 
-    return render(request, "partenaires/list_partenaires.html", {
-        "partenaires": partenaires_list,
-        "total": total,
-        "actifs": actifs,
-        "inactifs": inactifs,
-    })
+    return render(
+        request,
+        "partenaires/list_partenaires.html",
+        {
+            "partenaires": partenaires_list,
+            "total": total,
+            "actifs": actifs,
+            "inactifs": inactifs,
+        },
+    )
 
 
 @login_required
@@ -201,10 +214,11 @@ def edit_partenaire(request, id):
     else:
         form = PartenaireForm(instance=partenaire)
 
-    return render(request, "partenaires/edit_partenaire.html", {
-        "form": form,
-        "partenaire": partenaire
-    })
+    return render(
+        request,
+        "partenaires/edit_partenaire.html",
+        {"form": form, "partenaire": partenaire},
+    )
 
 
 @login_required
@@ -218,4 +232,6 @@ def delete_partenaire(request, id):
             messages.success(request, "Le partenaire a été supprimé avec succès.")
             return redirect("partenaires:admin_partenaires_list")
 
-    return render(request, "partenaires/delete_partenaire.html", {"partenaire": partenaire})
+    return render(
+        request, "partenaires/delete_partenaire.html", {"partenaire": partenaire}
+    )

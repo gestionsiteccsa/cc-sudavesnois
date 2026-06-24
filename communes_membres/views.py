@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import permission_required
+from django.db import transaction
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
 from app.utils import secure_file_removal
@@ -90,6 +91,7 @@ def delete_acte_local(request, id):
 
 
 @permission_required("communes_membres.change_actelocal")
+@transaction.atomic
 def update_acte_local(request, id):
     """
     Modifie un acte local.
@@ -102,9 +104,9 @@ def update_acte_local(request, id):
         form = ActesLocForm(request.POST, request.FILES, instance=acte_local)
         if form.is_valid():
             acte_local = form.save(commit=False)
-            # Vérifier si le fichier a été modifié
-            if acte_local.file != fichier:
-                secure_file_removal(fichier)
+            # Vérifier si le fichier a été modifié ; suppression après commit
+            if acte_local.file != fichier and fichier:
+                transaction.on_commit(lambda f=fichier: secure_file_removal(f))
             form.save()
 
             return redirect("communes-membres:admin_acte_list")

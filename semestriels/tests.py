@@ -10,6 +10,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+
 from PIL import Image
 
 from .admin import CustomContentAdmin, delete_content
@@ -60,8 +61,8 @@ class SemestrielPageModelTestCase(TestCase):
         self.assertEqual(SemestrielPage.objects.count(), 1)
 
     def test_semestriel_page_unique_constraint(self):
-        """Test que seule une page semestrielle peut exister"""
-        # Créer la première page
+        """Test que seule une page semestrielle peut exister (singleton)."""
+        # Créer la première page via load() (SingletonModel)
         image1 = SimpleUploadedFile(
             name="test1.jpg",
             content=self.generate_test_image().read(),
@@ -69,9 +70,12 @@ class SemestrielPageModelTestCase(TestCase):
         )
         pdf1 = self.generate_test_pdf("test1.pdf")
 
-        semestriel1 = SemestrielPage.objects.create(picture=image1, file=pdf1)
+        semestriel1 = SemestrielPage.load()
+        semestriel1.picture = image1
+        semestriel1.file = pdf1
+        semestriel1.save()
 
-        # Créer une deuxième page - doit remplacer la première
+        # update_or_create remplace l'instance unique (pas de doublon)
         image2 = SimpleUploadedFile(
             name="test2.jpg",
             content=self.generate_test_image().read(),
@@ -79,14 +83,14 @@ class SemestrielPageModelTestCase(TestCase):
         )
         pdf2 = self.generate_test_pdf("test2.pdf")
 
-        semestriel2 = SemestrielPage.objects.create(picture=image2, file=pdf2)
+        semestriel2, _ = SemestrielPage.update_or_create(
+            defaults={"picture": image2, "file": pdf2}
+        )
 
-        # Vérifier qu'il n'y a qu'une seule page
+        # Vérifier qu'il n'y a qu'une seule page (singleton)
         self.assertEqual(SemestrielPage.objects.count(), 1)
-
-        # Vérifier que c'est la deuxième page qui existe
-        remaining_page = SemestrielPage.objects.first()
-        self.assertEqual(remaining_page.id, semestriel2.id)
+        # Le PK du singleton reste 1
+        self.assertEqual(semestriel2.pk, 1)
 
     def test_file_extension_validation(self):
         """Test de validation des extensions de fichiers"""
@@ -607,8 +611,8 @@ class SemestrielEdgeCasesTestCase(TestCase):
         return file
 
     def test_multiple_semestriel_pages_creation(self):
-        """Test de création de plusieurs pages semestrielles"""
-        # Créer la première page
+        """Test du pattern singleton : une seule page autorisée."""
+        # Créer la première page via load() (SingletonModel)
         image1 = SimpleUploadedFile(
             name="test1.jpg",
             content=self.generate_test_image().read(),
@@ -620,10 +624,13 @@ class SemestrielEdgeCasesTestCase(TestCase):
             content_type="application/pdf",
         )
 
-        page1 = SemestrielPage.objects.create(picture=image1, file=pdf1)
+        page1 = SemestrielPage.load()
+        page1.picture = image1
+        page1.file = pdf1
+        page1.save()
         self.assertEqual(SemestrielPage.objects.count(), 1)
 
-        # Créer une deuxième page
+        # update_or_create remplace l'instance (singleton)
         image2 = SimpleUploadedFile(
             name="test2.jpg",
             content=self.generate_test_image().read(),
@@ -634,15 +641,14 @@ class SemestrielEdgeCasesTestCase(TestCase):
             content=b"Second PDF content",
             content_type="application/pdf",
         )
-
-        page2 = SemestrielPage.objects.create(picture=image2, file=pdf2)
+        page2, _ = SemestrielPage.update_or_create(
+            defaults={"picture": image2, "file": pdf2}
+        )
 
         # Vérifier qu'il n'y a toujours qu'une seule page
         self.assertEqual(SemestrielPage.objects.count(), 1)
-
-        # Vérifier que c'est la deuxième page qui existe
-        remaining_page = SemestrielPage.objects.first()
-        self.assertEqual(remaining_page.id, page2.id)
+        # La PK reste 1 (singleton)
+        self.assertEqual(page2.pk, 1)
 
     def test_form_with_different_image_formats(self):
         """Test du formulaire avec différents formats d'image"""
@@ -787,8 +793,8 @@ class SemestrielIntegrationTestCase(TestCase):
         self.assertIsNotNone(response.context["content"])
 
     def test_file_cleanup_on_replacement(self):
-        """Test que les anciens fichiers sont nettoyés lors du remplacement"""
-        # Créer une première page
+        """Test que le singleton SemestrielPage fonctionne."""
+        # Créer la première page via load() (SingletonModel)
         image1 = SimpleUploadedFile(
             name="first.jpg",
             content=self.generate_test_image().read(),
@@ -800,9 +806,12 @@ class SemestrielIntegrationTestCase(TestCase):
             content_type="application/pdf",
         )
 
-        page1 = SemestrielPage.objects.create(picture=image1, file=pdf1)
+        page1 = SemestrielPage.load()
+        page1.picture = image1
+        page1.file = pdf1
+        page1.save()
 
-        # Créer une deuxième page (doit remplacer la première)
+        # update_or_create remplace l'instance unique
         image2 = SimpleUploadedFile(
             name="second.jpg",
             content=self.generate_test_image().read(),
@@ -813,12 +822,11 @@ class SemestrielIntegrationTestCase(TestCase):
             content=b"Second PDF content",
             content_type="application/pdf",
         )
-
-        page2 = SemestrielPage.objects.create(picture=image2, file=pdf2)
+        page2, _ = SemestrielPage.update_or_create(
+            defaults={"picture": image2, "file": pdf2}
+        )
 
         # Vérifier qu'il n'y a qu'une seule page
         self.assertEqual(SemestrielPage.objects.count(), 1)
-
-        # Vérifier que c'est la deuxième page
-        remaining_page = SemestrielPage.objects.first()
-        self.assertEqual(remaining_page.id, page2.id)
+        # La PK du singleton reste 1
+        self.assertEqual(page2.pk, 1)

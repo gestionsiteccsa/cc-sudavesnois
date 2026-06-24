@@ -1,12 +1,14 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
+from app.models import SingletonModel
 from journal.models import validate_taille_fichier
 
 
-class SemestrielPage(models.Model):
+class SemestrielPage(SingletonModel):
     """
     Modèle stockant l'image et le calendrier semestriel
+    (singleton : une seule instance autorisée via SingletonModel).
     """
 
     title = models.CharField(
@@ -35,19 +37,3 @@ class SemestrielPage(models.Model):
             validate_taille_fichier,
         ],
     )
-
-    def save(self, *args, **kwargs):
-        """
-        Enregistre le modèle après avoir supprimé
-        l'ancien contenu s'il existe déjà
-        Permet de limiter à un seul contenu
-        """
-        if SemestrielPage.objects.exists():
-            for obj in SemestrielPage.objects.all():
-                if obj != self:
-                    if obj.picture and obj.file:
-                        obj.picture.delete()
-                        obj.file.delete()
-                    obj.delete()
-
-        super().save(*args, **kwargs)

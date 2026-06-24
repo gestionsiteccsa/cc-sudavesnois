@@ -2,11 +2,13 @@ import logging
 import os
 
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Prefetch
+from django.db import transaction
+from django.db.models import Count, Prefetch, Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 
 from app.utils import secure_file_removal
 from conseil_communautaire.models import Commission
+
 from .forms import DocumentForm, ElusForm
 from .models import Document, Elus, PageStatus
 
@@ -83,14 +85,15 @@ def list_elus(request):
     """
     Affiche la liste des élus.
     Optimisé avec select_related pour city et prefetch_related pour linked_commission.
+    Les stats sont calculées en 1 seule requête aggregate.
     """
     queryset = Elus.objects.select_related("city").prefetch_related("linked_commission")
     elus = list(queryset)
-    stats = {
-        "total": queryset.count(),
-        "presidents": queryset.filter(role=Elus.Role.PRESIDENT).count(),
-        "vice_presidents": queryset.filter(role=Elus.Role.VICE_PRESIDENT).count(),
-    }
+    stats = queryset.aggregate(
+        total=Count("id"),
+        presidents=Count("id", filter=Q(role=Elus.Role.PRESIDENT)),
+        vice_presidents=Count("id", filter=Q(role=Elus.Role.VICE_PRESIDENT)),
+    )
     return render(
         request,
         "bureau_communautaire/admin_elus_list.html",
@@ -117,13 +120,16 @@ def update_elu(request, id):
 
 
 @permission_required("bureau_communautaire.delete_elus")
+@transaction.atomic
 def delete_elu(request, id):
     """Supprime un élu de la base de données."""
     elu = get_object_or_404(Elus, id=id)
     if request.method == "POST":
-        if elu.picture:
-            elu.picture.delete(save=False)
+        picture = elu.picture
         elu.delete()
+        # Suppression effective du fichier après commit (rollback-safe)
+        if picture:
+            transaction.on_commit(lambda p=picture: secure_file_removal(p))
         return redirect("bureau-communautaire:admin_elus_list")
     return render(request, "bureau_communautaire/admin_elu_delete.html", {"elu": elu})
 
@@ -170,6 +176,7 @@ def list_documents(request):
 
 
 @permission_required("bureau_communautaire.change_document")
+@transaction.atomic
 def update_document(request, id):
     """Met à jour les informations d'un document."""
     document = get_object_or_404(Document, id=id)
@@ -178,9 +185,10 @@ def update_document(request, id):
         document_form = DocumentForm(request.POST, request.FILES, instance=document)
         if document_form.is_valid():
             document = document_form.save(commit=False)
-            # Si un nouveau document est téléchargé, supprimer l'ancien de manière sécurisée
-            if old_document != document.document:
-                secure_file_removal(old_document)
+            # Si un nouveau document est téléchargé, supprimer l'ancien
+            # après commit pour respecter la cohérence transactionnelle.
+            if old_document != document.document and old_document:
+                transaction.on_commit(lambda d=old_document: secure_file_removal(d))
             document_form.save()
             logger.info("Document mis à jour avec succès")
             return redirect("bureau-communautaire:admin_documents_list")
@@ -201,13 +209,15 @@ def update_document(request, id):
 
 
 @permission_required("bureau_communautaire.delete_document")
+@transaction.atomic
 def delete_document(request, id):
     """Supprime un document de la base de données."""
     document = get_object_or_404(Document, id=id)
     if request.method == "POST":
-        if document.document:
-            document.document.delete(save=False)
+        doc_file = document.document
         document.delete()
+        if doc_file:
+            transaction.on_commit(lambda f=doc_file: secure_file_removal(f))
         return redirect("bureau-communautaire:admin_documents_list")
     return render(
         request,

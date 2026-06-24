@@ -1,3 +1,4 @@
+import hashlib
 import logging
 
 from django.conf import settings
@@ -15,6 +16,17 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
+
+
+def _rate_limit_key(prefix, value):
+    """
+    Génère une clé de cache pour le rate-limiting en hashant la valeur
+    afin d'éviter les collisions et de respecter la limite de longueur
+    des clés (ex: memcached limite à 250 caractères).
+    """
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()[:32]
+    return f"{prefix}:{digest}"
+
 
 from .forms import (
     CustomAuthenticationForm,
@@ -90,9 +102,9 @@ def login_view(request):
             client_ip = request.META.get("REMOTE_ADDR") or "unknown"
 
             # Créer des clés de rate limiting par IP et par email
-            rate_key_ip = f"login_rate_ip:{client_ip}"
+            rate_key_ip = _rate_limit_key("login_rate_ip", client_ip)
             email_key = request.POST.get("username", "unknown")
-            rate_key_email = f"login_rate_email:{email_key}"
+            rate_key_email = _rate_limit_key("login_rate_email", email_key)
 
             try:
                 # Vérifier le rate limiting par IP (max 10 tentatives par 15 minutes)
@@ -146,8 +158,8 @@ def login_view(request):
                 # Connexion réussie - réinitialiser les compteurs de rate limiting
                 if not getattr(settings, "TESTING", False):
                     try:
-                        cache.delete(f"login_rate_ip:{client_ip}")
-                        cache.delete(f"login_rate_email:{email}")
+                        cache.delete(rate_key_ip)
+                        cache.delete(rate_key_email)
                     except Exception:
                         pass
 

@@ -1,6 +1,7 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
+from app.models import SingletonModel
 from journal.models import validate_taille_fichier
 
 
@@ -18,7 +19,7 @@ class Commission(models.Model):
         return self.title
 
 
-class Document(models.Model):
+class Document(SingletonModel):
     file = models.FileField(
         upload_to="commissions/documents/",
         validators=[
@@ -46,16 +47,6 @@ class Document(models.Model):
     def __str__(self):
         return f"{self.file.name}"
 
-    def save(self, *args, **kwargs):
-        """
-        La fonction save() est redéfinie pour s'assurer qu'il
-        n'y ait qu'une seule instance de Document.
-        Elle supprime l'instance précédente si elle existe.
-        """
-        if Document.objects.exists():
-            Document.objects.all().delete()
-        super().save(*args, **kwargs)
-
 
 class CommissionCompetence(models.Model):
     commission = models.ForeignKey(
@@ -80,6 +71,12 @@ class Mandat(models.Model):
     class Meta:
         verbose_name = "Mandat"
         verbose_name_plural = "Mandats"
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(end_year__gt=models.F("start_year")),
+                name="mandat_end_year_after_start_year",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.start_year} - {self.end_year}"

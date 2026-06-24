@@ -9,8 +9,7 @@ from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 
-from comptes_rendus.admin import (CustomConseilAdmin, CustomCRAdmin,
-                                  delete_content)
+from comptes_rendus.admin import CustomConseilAdmin, CustomCRAdmin, delete_content
 from comptes_rendus.forms import ConseilForm, CRForm
 from comptes_rendus.models import CompteRendu, Conseil, DocumentConseil
 
@@ -411,17 +410,21 @@ class CompteRenduModelTestCase(BaseComptesRendusTestCase):
         self.assertEqual(str(cr), "https://drive.google.com/test")
 
     def test_compterendu_singleton_pattern(self):
-        """Test que CompteRendu suit le pattern singleton."""
-        # Créer le premier compte rendu
-        cr1 = CompteRendu.objects.create(link="https://example.com/cr1")
+        """Test que CompteRendu suit le pattern singleton via SingletonModel."""
+        # Créer le premier compte rendu via load() (singleton)
+        cr1 = CompteRendu.load()
+        cr1.link = "https://example.com/cr1"
+        cr1.save()
         self.assertEqual(CompteRendu.objects.count(), 1)
 
-        # Créer un second compte rendu (doit remplacer le premier)
-        cr2 = CompteRendu.objects.create(link="https://example.com/cr2")
+        # update_or_create remplace l'instance existante (pas de doublon)
+        cr2, created = CompteRendu.update_or_create(
+            defaults={"link": "https://example.com/cr2"}
+        )
         self.assertEqual(CompteRendu.objects.count(), 1)
-
-        # Vérifier que seul le second existe
-        self.assertFalse(CompteRendu.objects.filter(id=cr1.id).exists())
+        self.assertFalse(created)
+        # Vérifier que l'URL a bien été mise à jour
+        self.assertEqual(CompteRendu.get_solo().link, "https://example.com/cr2")
         self.assertTrue(
             CompteRendu.objects.filter(link="https://example.com/cr2").exists()
         )
@@ -625,9 +628,7 @@ class ComptesRendusAdminTestCase(BaseComptesRendusTestCase):
 
     def test_conseil_admin_configuration(self):
         """Test configuration de l'admin Conseil."""
-        self.assertEqual(
-            self.conseil_admin.list_display, ("date", "hour", "place")
-        )
+        self.assertEqual(self.conseil_admin.list_display, ("date", "hour", "place"))
         self.assertEqual(self.conseil_admin.search_fields, ("place", "date"))
         self.assertEqual(self.conseil_admin.list_filter, ("date", "hour"))
         self.assertEqual(self.conseil_admin.ordering, ("date", "hour"))
@@ -653,7 +654,9 @@ class ComptesRendusAdminTestCase(BaseComptesRendusTestCase):
         )
         DocumentConseil.objects.create(
             conseil=conseil,
-            file=SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf"),
+            file=SimpleUploadedFile(
+                "test.pdf", b"PDF content", content_type="application/pdf"
+            ),
         )
 
         request = Mock()
@@ -725,13 +728,18 @@ class ComptesRendusIntegrationTestCase(BaseComptesRendusTestCase):
 
         self.assertEqual(Conseil.objects.count(), 2)
 
-        # Test pattern singleton CompteRendu
-        cr1 = CompteRendu.objects.create(link="https://example.com/cr1")
-        cr2 = CompteRendu.objects.create(link="https://example.com/cr2")
+        # Test pattern singleton CompteRendu (SingletonModel)
+        cr1 = CompteRendu.load()
+        cr1.link = "https://example.com/cr1"
+        cr1.save()
+        # update_or_create remplace l'instance unique
+        cr2, _ = CompteRendu.update_or_create(
+            defaults={"link": "https://example.com/cr2"}
+        )
 
-        # Seul le second doit exister
+        # Seul le second doit exister (singleton)
         self.assertEqual(CompteRendu.objects.count(), 1)
-        self.assertEqual(CompteRendu.objects.first().link, "https://example.com/cr2")
+        self.assertEqual(CompteRendu.get_solo().link, "https://example.com/cr2")
 
 
 class ComptesRendusEdgeCasesTestCase(BaseComptesRendusTestCase):
@@ -787,7 +795,9 @@ class ComptesRendusEdgeCasesTestCase(BaseComptesRendusTestCase):
         )
         DocumentConseil.objects.create(
             conseil=conseil,
-            file=SimpleUploadedFile("nonexistent.pdf", b"PDF content", content_type="application/pdf"),
+            file=SimpleUploadedFile(
+                "nonexistent.pdf", b"PDF content", content_type="application/pdf"
+            ),
         )
 
         request = Mock()
