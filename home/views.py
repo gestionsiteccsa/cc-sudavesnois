@@ -20,14 +20,6 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
-from home.data.clea_data import (
-    AXES_SECTION,
-    INFO_CARDS,
-    META_DESCRIPTION,
-    PAGE_SUBTITLE,
-    PAGE_TITLE,
-    RESIDENCE_MISSION,
-)
 from home.data.collecte_data import city_data, get_dates_verre, get_jour_ordures
 from journal.models import Journal
 from services.models import Service
@@ -341,21 +333,8 @@ def guide_eco_citoyen(request):
 
 
 def clea(request):
-    """Vue pour la page CLÉA+ (Contrat Local d'Éducation Artistique).
-
-    Le contenu éditorial est injecté depuis home.data.clea_data afin de
-    respecter le principe de responsabilité unique et de faciliter la
-    maintenance et les tests.
-    """
-    context = {
-        "page_title": PAGE_TITLE,
-        "page_subtitle": PAGE_SUBTITLE,
-        "meta_description": META_DESCRIPTION,
-        "residence_mission": RESIDENCE_MISSION,
-        "axes_section": AXES_SECTION,
-        "info_cards": INFO_CARDS,
-    }
-    return render(request, "home/clea.html", context)
+    """Vue pour la page CLÉA (Contrat Local d'Éducation Artistique)."""
+    return render(request, "home/clea.html")
 
 
 def documents_plui(request):

@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+
 from PIL import Image
 
 from .models import CategoriePartenaire, Partenaire
@@ -22,10 +23,7 @@ class CategoriePartenaireModelTestCase(TestCase):
 
     def test_categorie_str_method(self):
         """Test de la méthode __str__ du modèle CategoriePartenaire"""
-        categorie = CategoriePartenaire.objects.create(
-            nom="Tourisme",
-            ordre=1
-        )
+        categorie = CategoriePartenaire.objects.create(nom="Tourisme", ordre=1)
         self.assertEqual(str(categorie), "Tourisme")
 
     def test_categorie_ordering(self):
@@ -56,10 +54,7 @@ class PartenaireModelTestCase(TestCase):
     """Tests pour le modèle Partenaire"""
 
     def setUp(self):
-        self.categorie = CategoriePartenaire.objects.create(
-            nom="Tourisme",
-            ordre=1
-        )
+        self.categorie = CategoriePartenaire.objects.create(nom="Tourisme", ordre=1)
 
     def tearDown(self):
         Partenaire.objects.all().delete()
@@ -70,79 +65,33 @@ class PartenaireModelTestCase(TestCase):
     def test_partenaire_str_method(self):
         """Test de la méthode __str__ du modèle Partenaire"""
         partenaire = Partenaire.objects.create(
-            nom="Avesnois Tourisme",
-            type_partenaire="subvention",
-            description="Office de tourisme"
+            nom="Avesnois Tourisme", description="Office de tourisme"
         )
         self.assertEqual(str(partenaire), "Avesnois Tourisme")
-
-    def test_partenaire_type_choices(self):
-        """Test de la validation des choix de type"""
-        # Type valide
-        partenaire = Partenaire.objects.create(
-            nom="Test",
-            type_partenaire="contribution",
-            description="Test"
-        )
-        self.assertEqual(partenaire.type_partenaire, "contribution")
-
-        # Type invalide ne doit pas être accepté à la validation
-        partenaire_invalide = Partenaire(
-            nom="Test Invalide",
-            type_partenaire="invalide",
-            description="Test"
-        )
-        # La validation doit échouer
-        try:
-            partenaire_invalide.full_clean()
-            self.fail("La validation aurait dû échouer avec un type invalide")
-        except Exception:
-            pass  # C'est le comportement attendu
 
     def test_partenaire_categorie_null(self):
         """Test que la catégorie est optionnelle"""
         partenaire = Partenaire.objects.create(
-            nom="Partenaire sans catégorie",
-            type_partenaire="financement",
-            description="Test"
+            nom="Partenaire sans catégorie", description="Test"
         )
         self.assertIsNone(partenaire.categorie)
 
     def test_partenaire_ordering(self):
         """Test du tri des partenaires"""
         # Créer des partenaires dans le désordre
-        p1 = Partenaire.objects.create(
-            nom="Zebra",
-            type_partenaire="subvention",
-            description="Test",
-            ordre=1
-        )
-        p2 = Partenaire.objects.create(
-            nom="Alpha",
-            type_partenaire="contribution",
-            description="Test",
-            ordre=2
-        )
-        p3 = Partenaire.objects.create(
-            nom="Beta",
-            type_partenaire="contribution",
-            description="Test",
-            ordre=1
-        )
+        p1 = Partenaire.objects.create(nom="Zebra", description="Test", ordre=1)
+        p2 = Partenaire.objects.create(nom="Alpha", description="Test", ordre=2)
+        p3 = Partenaire.objects.create(nom="Beta", description="Test", ordre=1)
 
         partenaires = list(Partenaire.objects.all())
-        # Ordre: type_partenaire, ordre, nom
-        self.assertEqual(partenaires[0], p3)  # contribution, ordre=1
-        self.assertEqual(partenaires[1], p2)  # contribution, ordre=2
-        self.assertEqual(partenaires[2], p1)  # subvention
+        # Ordre: categorie__ordre, ordre, nom
+        self.assertEqual(partenaires[0], p2)  # Alpha
+        self.assertEqual(partenaires[1], p3)  # Beta
+        self.assertEqual(partenaires[2], p1)  # Zebra
 
     def test_partenaire_logo_optional(self):
         """Test que le logo est optionnel"""
-        partenaire = Partenaire.objects.create(
-            nom="Sans logo",
-            type_partenaire="subvention",
-            description="Test"
-        )
+        partenaire = Partenaire.objects.create(nom="Sans logo", description="Test")
         self.assertFalse(partenaire.logo)
         self.assertIsNone(partenaire.get_logo_url())
 
@@ -150,30 +99,20 @@ class PartenaireModelTestCase(TestCase):
         """Test de la validation de l'URL du site web"""
         # URL valide
         partenaire = Partenaire.objects.create(
-            nom="Avec site",
-            type_partenaire="subvention",
-            description="Test",
-            site_web="https://www.example.com"
+            nom="Avec site", description="Test", site_web="https://www.example.com"
         )
         self.assertEqual(partenaire.site_web, "https://www.example.com")
 
         # URL invalide (ne doit pas être acceptée)
         with self.assertRaises(Exception):
             partenaire_invalide = Partenaire(
-                nom="Site invalide",
-                type_partenaire="subvention",
-                description="Test",
-                site_web="pas-une-url"
+                nom="Site invalide", description="Test", site_web="pas-une-url"
             )
             partenaire_invalide.full_clean()
 
     def test_partenaire_default_active(self):
         """Test de la valeur par défaut active=True"""
-        partenaire = Partenaire.objects.create(
-            nom="Test",
-            type_partenaire="subvention",
-            description="Test"
-        )
+        partenaire = Partenaire.objects.create(nom="Test", description="Test")
         self.assertTrue(partenaire.active)
 
     def test_partenaire_get_logo_url_with_logo(self):
@@ -186,10 +125,7 @@ class PartenaireModelTestCase(TestCase):
         )
 
         partenaire = Partenaire.objects.create(
-            nom="Avec logo",
-            type_partenaire="subvention",
-            description="Test",
-            logo=logo_file
+            nom="Avec logo", description="Test", logo=logo_file
         )
 
         self.assertIsNotNone(partenaire.get_logo_url())
@@ -205,10 +141,7 @@ class PartenaireModelTestCase(TestCase):
         )
 
         partenaire = Partenaire.objects.create(
-            nom="Test suppression",
-            type_partenaire="subvention",
-            description="Test",
-            logo=logo_file
+            nom="Test suppression", description="Test", logo=logo_file
         )
 
         logo_path = partenaire.logo.path
@@ -227,10 +160,7 @@ class PartenaireModelTestCase(TestCase):
         )
 
         partenaire = Partenaire.objects.create(
-            nom="Test delete",
-            type_partenaire="subvention",
-            description="Test",
-            logo=logo_file
+            nom="Test delete", description="Test", logo=logo_file
         )
 
         logo_path = partenaire.logo.path
@@ -248,16 +178,14 @@ class CategorieAdminViewsTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.superuser = User.objects.create_superuser(
-            email="admin@example.com",
-            password="password123"
+            email="admin@example.com", password="password123"
         )
 
     def setUp(self):
         self.client = Client()
         self.client.login(email="admin@example.com", password="password123")
         self.categorie = CategoriePartenaire.objects.create(
-            nom="Test Catégorie",
-            ordre=1
+            nom="Test Catégorie", ordre=1
         )
 
     def tearDown(self):
@@ -287,11 +215,9 @@ class CategorieAdminViewsTestCase(TestCase):
     def test_add_categorie_post_valid(self):
         """Test de l'ajout d'une catégorie valide"""
         url = reverse("partenaires:add_categorie")
-        response = self.client.post(url, {
-            "nom": "Nouvelle Catégorie",
-            "ordre": 2,
-            "active": True
-        })
+        response = self.client.post(
+            url, {"nom": "Nouvelle Catégorie", "ordre": 2, "active": True}
+        )
         self.assertEqual(response.status_code, 302)
         self.assertTrue(
             CategoriePartenaire.objects.filter(nom="Nouvelle Catégorie").exists()
@@ -300,10 +226,9 @@ class CategorieAdminViewsTestCase(TestCase):
     def test_add_categorie_post_invalid(self):
         """Test de l'ajout avec données invalides"""
         url = reverse("partenaires:add_categorie")
-        response = self.client.post(url, {
-            "nom": "",  # Nom vide
-            "ordre": "abc"  # Ordre invalide
-        })
+        response = self.client.post(
+            url, {"nom": "", "ordre": "abc"}  # Nom vide  # Ordre invalide
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "partenaires/add_categorie.html")
 
@@ -317,11 +242,9 @@ class CategorieAdminViewsTestCase(TestCase):
     def test_edit_categorie_post_valid(self):
         """Test de la modification d'une catégorie"""
         url = reverse("partenaires:edit_categorie", args=[self.categorie.id])
-        response = self.client.post(url, {
-            "nom": "Catégorie Modifiée",
-            "ordre": 5,
-            "active": True
-        })
+        response = self.client.post(
+            url, {"nom": "Catégorie Modifiée", "ordre": 5, "active": True}
+        )
         self.assertEqual(response.status_code, 302)
 
         self.categorie.refresh_from_db()
@@ -353,26 +276,21 @@ class PartenaireAdminViewsTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.superuser = User.objects.create_superuser(
-            email="admin@example.com",
-            password="password123"
+            email="admin@example.com", password="password123"
         )
 
     def setUp(self):
         self.client = Client()
         self.client.login(email="admin@example.com", password="password123")
 
-        self.categorie = CategoriePartenaire.objects.create(
-            nom="Tourisme",
-            ordre=1
-        )
+        self.categorie = CategoriePartenaire.objects.create(nom="Tourisme", ordre=1)
 
         self.partenaire = Partenaire.objects.create(
             nom="Avesnois Tourisme",
-            type_partenaire="subvention",
             description="Office de tourisme du territoire",
             categorie=self.categorie,
             site_web="https://www.tourisme-avesnois.com",
-            ordre=1
+            ordre=1,
         )
 
         # Créer un fichier image de test
@@ -413,42 +331,42 @@ class PartenaireAdminViewsTestCase(TestCase):
     def test_add_partenaire_post_valid(self):
         """Test de l'ajout d'un partenaire valide"""
         url = reverse("partenaires:add_partenaire")
-        response = self.client.post(url, {
-            "nom": "Nouveau Partenaire",
-            "type_partenaire": "contribution",
-            "description": "Description du partenaire",
-            "site_web": "https://www.nouveau-partenaire.com",
-            "categorie": self.categorie.id,
-            "ordre": 1,
-            "active": True
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            Partenaire.objects.filter(nom="Nouveau Partenaire").exists()
+        response = self.client.post(
+            url,
+            {
+                "nom": "Nouveau Partenaire",
+                "description": "Description du partenaire",
+                "site_web": "https://www.nouveau-partenaire.com",
+                "categorie": self.categorie.id,
+                "ordre": 1,
+                "active": True,
+            },
         )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Partenaire.objects.filter(nom="Nouveau Partenaire").exists())
 
     def test_add_partenaire_post_invalid(self):
         """Test de l'ajout avec données invalides"""
         url = reverse("partenaires:add_partenaire")
-        response = self.client.post(url, {
-            "nom": "",  # Nom vide (requis)
-            "type_partenaire": "",  # Type vide (requis)
-            "description": "Test"
-        })
+        response = self.client.post(
+            url, {"nom": "", "description": "Test"}  # Nom vide (requis)
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "partenaires/add_partenaire.html")
 
     def test_add_partenaire_with_logo(self):
         """Test de l'ajout d'un partenaire avec logo"""
         url = reverse("partenaires:add_partenaire")
-        response = self.client.post(url, {
-            "nom": "Partenaire avec logo",
-            "type_partenaire": "financement",
-            "description": "Test",
-            "logo": self.logo_file,
-            "ordre": 1,
-            "active": True
-        })
+        response = self.client.post(
+            url,
+            {
+                "nom": "Partenaire avec logo",
+                "description": "Test",
+                "logo": self.logo_file,
+                "ordre": 1,
+                "active": True,
+            },
+        )
         self.assertEqual(response.status_code, 302)
 
         partenaire = Partenaire.objects.get(nom="Partenaire avec logo")
@@ -464,20 +382,21 @@ class PartenaireAdminViewsTestCase(TestCase):
     def test_edit_partenaire_post_valid(self):
         """Test de la modification d'un partenaire"""
         url = reverse("partenaires:edit_partenaire", args=[self.partenaire.id])
-        response = self.client.post(url, {
-            "nom": "Partenaire Modifié",
-            "type_partenaire": "contribution",
-            "description": "Nouvelle description",
-            "site_web": "https://www.modifie.com",
-            "categorie": self.categorie.id,
-            "ordre": 5,
-            "active": True
-        })
+        response = self.client.post(
+            url,
+            {
+                "nom": "Partenaire Modifié",
+                "description": "Nouvelle description",
+                "site_web": "https://www.modifie.com",
+                "categorie": self.categorie.id,
+                "ordre": 5,
+                "active": True,
+            },
+        )
         self.assertEqual(response.status_code, 302)
 
         self.partenaire.refresh_from_db()
         self.assertEqual(self.partenaire.nom, "Partenaire Modifié")
-        self.assertEqual(self.partenaire.type_partenaire, "contribution")
 
     def test_delete_partenaire_get_view(self):
         """Test de l'affichage de la page de suppression"""
@@ -491,9 +410,7 @@ class PartenaireAdminViewsTestCase(TestCase):
         url = reverse("partenaires:delete_partenaire", args=[self.partenaire.id])
         response = self.client.post(url, {"confirm": "yes"})
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(
-            Partenaire.objects.filter(id=self.partenaire.id).exists()
-        )
+        self.assertFalse(Partenaire.objects.filter(id=self.partenaire.id).exists())
 
     def test_delete_partenaire_with_logo(self):
         """Test que la suppression supprime aussi le logo"""
@@ -518,9 +435,7 @@ class PartenairePublicViewTestCase(TestCase):
         self.url = reverse("partenaires:partenaires")
 
         # Créer des catégories
-        self.cat_tourisme = CategoriePartenaire.objects.create(
-            nom="Tourisme", ordre=1
-        )
+        self.cat_tourisme = CategoriePartenaire.objects.create(nom="Tourisme", ordre=1)
         self.cat_insertion = CategoriePartenaire.objects.create(
             nom="Insertion", ordre=2
         )
@@ -528,38 +443,32 @@ class PartenairePublicViewTestCase(TestCase):
         # Créer des partenaires de différents types
         self.part_contrib = Partenaire.objects.create(
             nom="SDIS 59",
-            type_partenaire="contribution",
             description="Service Départemental d'Incendie et de Secours",
             site_web="https://www.sdis59.fr",
             ordre=1,
-            active=True
+            active=True,
         )
 
         self.part_finance = Partenaire.objects.create(
             nom="ADU",
-            type_partenaire="financement",
             description="Agence de Développement et d'Urbanisme",
             site_web="https://www.adus.fr",
             categorie=self.cat_tourisme,
             ordre=1,
-            active=True
+            active=True,
         )
 
         self.part_subvention = Partenaire.objects.create(
             nom="Avesnois Tourisme",
-            type_partenaire="subvention",
             description="Office de tourisme",
             site_web="https://www.tourisme-avesnois.com",
             categorie=self.cat_tourisme,
             ordre=1,
-            active=True
+            active=True,
         )
 
         self.part_inactif = Partenaire.objects.create(
-            nom="Partenaire Inactif",
-            type_partenaire="subvention",
-            description="Ne doit pas apparaître",
-            active=False
+            nom="Partenaire Inactif", description="Ne doit pas apparaître", active=False
         )
 
     def tearDown(self):
@@ -606,8 +515,8 @@ class PartenairePublicViewTestCase(TestCase):
         # Vérifier la présence de landmarks principaux
         # Le template hérite de base.html qui contient déjà <main id="main-content">
         self.assertIn('<main id="main-content">', content)
-        self.assertIn('<nav', content)
-        self.assertIn('</nav>', content)
+        self.assertIn("<nav", content)
+        self.assertIn("</nav>", content)
 
     def test_partenaires_accessibility_headings(self):
         """Test de la hiérarchie des titres"""
@@ -615,7 +524,7 @@ class PartenairePublicViewTestCase(TestCase):
         content = response.content.decode()
 
         # Vérifier la présence d'un H1
-        self.assertIn('<h1', content)
+        self.assertIn("<h1", content)
 
     def test_partenaires_accessibility_links(self):
         """Test que les liens ont des textes descriptifs"""
@@ -625,10 +534,10 @@ class PartenairePublicViewTestCase(TestCase):
         # Vérifier que les liens vers les sites externes ont les attributs appropriés
         # Le template utilise target="_blank" et rel="noopener noreferrer" pour les liens externes
         # On vérifie la présence des attributs (avec ou sans encodage HTML)
-        self.assertIn('target=', content)
-        self.assertIn('_blank', content)
-        self.assertIn('rel=', content)
-        self.assertIn('noopener', content)
+        self.assertIn("target=", content)
+        self.assertIn("_blank", content)
+        self.assertIn("rel=", content)
+        self.assertIn("noopener", content)
 
 
 class PartenaireUrlsTestCase(TestCase):
@@ -659,5 +568,5 @@ class PartenaireUrlsTestCase(TestCase):
             url = reverse(url_name)
             self.assertTrue(
                 url.startswith("/adminccsa/"),
-                f"L'URL {url_name} ne commence pas par /adminccsa/"
+                f"L'URL {url_name} ne commence pas par /adminccsa/",
             )

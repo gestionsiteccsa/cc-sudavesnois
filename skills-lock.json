@@ -19,6 +19,7 @@
     "rgaa": {
       "source": "etalab-ia/skills",
       "sourceType": "github",
+      "skillPath": "skills/rgaa/SKILL.md",
       "computedHash": "c609353dfb4c22fbfe049883bb0f7826afb71a1c3b2b2e4095ea75d79363a1b0"
     },
     "sqlite-expert": {

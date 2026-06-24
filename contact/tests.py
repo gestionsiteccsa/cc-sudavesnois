@@ -63,8 +63,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
     def test_email_post_invalid_last_name(self):
         """
@@ -76,8 +75,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
     def test_email_post_invalid_email(self):
         """
@@ -91,8 +89,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
     def test_email_post_invalid_phone(self):
         """
@@ -117,8 +114,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
         # Test avec numéro trop court
         self.mail_data["phone"] = "12345678"
@@ -127,8 +123,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
         # Test avec numéro contenant des lettres et trop court
         self.mail_data["phone"] = "123456789A"
@@ -137,8 +132,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
     def test_email_post_invalid_message(self):
         """
@@ -152,8 +146,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
     def test_email_post_invalid_rgpd(self):
         """
@@ -167,8 +160,7 @@ class ContactFormTestCase(TestCase):
         self.assertTemplateNotUsed(response, "email_html_client.html")
         self.assertTemplateNotUsed(response, "email_text.txt")
         self.assertTemplateNotUsed(response, "email_html.html")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
 
 class ContactEmailModelTestCase(TestCase):

@@ -7,8 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "build:css": "npx tailwindcss -i static/css/styles.css -o static/css/output.css",
-    "watch:css": "npx tailwindcss -i static/css/styles.css -o static/css/output.css --watch"
+    "build:css": "npx tailwindcss -i staticfiles/css/input.css -o static/css/output.css",
+    "watch:css": "npx tailwindcss -i staticfiles/css/input.css -o static/css/output.css --watch"
   },
   "repository": {
     "type": "git",

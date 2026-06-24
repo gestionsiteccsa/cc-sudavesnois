@@ -43,7 +43,7 @@ urlpatterns = [
     # Guide Éco-Citoyen
     path("guide-eco-citoyen/", views.guide_eco_citoyen, name="guide_eco_citoyen"),
     # CLÉA+ (Contrat Local d'Éducation Artistique)
-    path("clea/", views.clea, name="clea"),
+    path("contrat-local-d-education-artistique/", views.clea, name="clea"),
     # Documents PLUi
     path("documents-plui/", views.documents_plui, name="documents_plui"),
     # Modification Simplifiée n°1

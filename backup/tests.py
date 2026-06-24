@@ -38,10 +38,7 @@ class BackupSettingsModelTests(TestCase):
 
     def test_get_settings_returns_existing(self):
         """Test que get_settings retourne les paramètres existants."""
-        BackupSettings.objects.create(
-            pk=1,
-            notification_email="test@example.com"
-        )
+        BackupSettings.objects.create(pk=1, notification_email="test@example.com")
         settings_obj = BackupSettings.get_settings()
         self.assertEqual(settings_obj.notification_email, "test@example.com")
 
@@ -57,21 +54,23 @@ class BackupUtilsTests(TestCase):
     def setUp(self):
         """Créer un dossier temporaire pour les tests."""
         self.temp_dir = tempfile.mkdtemp()
-        self.addCleanup(lambda: os.rmdir(self.temp_dir) if os.path.exists(self.temp_dir) else None)
+        self.addCleanup(
+            lambda: os.rmdir(self.temp_dir) if os.path.exists(self.temp_dir) else None
+        )
 
-    @override_settings(BACKUP_ROOT="/tmp/test_backup")
+    @override_settings(BACKUP_ROOT="C:\\tmp\\test_backup")
     def test_get_backup_dir(self):
         """Test que get_backup_dir retourne le bon chemin."""
         backup_dir = get_backup_dir()
-        self.assertEqual(str(backup_dir), "/tmp/test_backup")
+        self.assertEqual(str(backup_dir), "C:\\tmp\\test_backup")
 
-    @override_settings(BACKUP_ROOT="/tmp/test_backup")
+    @override_settings(BACKUP_ROOT="C:\\tmp\\test_backup")
     def test_create_backup_zip_creates_file(self):
         """Test que create_backup_zip crée bien un fichier ZIP."""
         with tempfile.TemporaryDirectory() as temp_dir:
             backup_path = Path(temp_dir) / "test_backup.zip"
             result = create_backup_zip(backup_path)
-            
+
             self.assertTrue(result.exists())
             self.assertTrue(zipfile.is_zipfile(result))
 
@@ -97,7 +96,7 @@ class BackupUtilsTests(TestCase):
             # Créer des fichiers backup factices
             backup_file = Path(temp_dir) / "backup_20240115_143000.zip"
             backup_file.write_bytes(b"fake content")
-            
+
             with override_settings(BACKUP_ROOT=temp_dir):
                 backups = get_stored_backups()
                 self.assertEqual(len(backups), 1)
@@ -122,10 +121,10 @@ class CleanupOldBackupsTests(TestCase):
 
             with override_settings(BACKUP_ROOT=temp_dir):
                 deleted = cleanup_old_backups(retention_count=4)
-                
+
                 # Vérifier que 2 fichiers ont été supprimés
                 self.assertEqual(len(deleted), 2)
-                
+
                 # Vérifier que 4 fichiers restent
                 remaining = list(Path(temp_dir).glob("backup_*.zip"))
                 self.assertEqual(len(remaining), 4)
@@ -137,37 +136,35 @@ class SendBackupNotificationTests(TestCase):
     def test_send_success_notification(self):
         """Test l'envoi d'une notification de succès."""
         send_backup_notification(
-            success=True,
-            email_to="test@example.com",
-            backup_name="backup_test.zip"
+            success=True, email_to="test@example.com", backup_name="backup_test.zip"
         )
-        
+
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[CCSA] Sauvegarde automatique réussie")
+        self.assertEqual(
+            mail.outbox[0].subject, "[CCSA] Sauvegarde automatique réussie"
+        )
         self.assertIn("test@example.com", mail.outbox[0].to)
         self.assertIn("backup_test.zip", mail.outbox[0].body)
 
     def test_send_failure_notification(self):
         """Test l'envoi d'une notification d'échec."""
         send_backup_notification(
-            success=False,
-            email_to="test@example.com",
-            error_message="Erreur de test"
+            success=False, email_to="test@example.com", error_message="Erreur de test"
         )
-        
+
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[CCSA] ÉCHEC de la sauvegarde automatique")
+        self.assertEqual(
+            mail.outbox[0].subject, "[CCSA] ÉCHEC de la sauvegarde automatique"
+        )
         self.assertIn("test@example.com", mail.outbox[0].to)
         self.assertIn("Erreur de test", mail.outbox[0].body)
 
     def test_no_email_if_empty(self):
         """Test qu'aucun email n'est envoyé si l'adresse est vide."""
         send_backup_notification(
-            success=True,
-            email_to="",
-            backup_name="backup_test.zip"
+            success=True, email_to="", backup_name="backup_test.zip"
         )
-        
+
         self.assertEqual(len(mail.outbox), 0)
 
 
@@ -196,7 +193,7 @@ class BackupViewsTests(TestCase):
             username="testuser",
             email="test@example.com",
             password="testpass123",
-            is_staff=True
+            is_staff=True,
         )
         self.client = Client()
         self.client.login(username="testuser", password="testpass123")
@@ -210,12 +207,12 @@ class BackupViewsTests(TestCase):
     def test_list_backups_view_post_update_settings(self):
         """Test la mise à jour des paramètres via POST."""
         BackupSettings.get_settings()  # Créer les settings par défaut
-        
+
         response = self.client.post(
             reverse("backup:list_backups"),
-            {"update_settings": "1", "notification_email": "new@example.com"}
+            {"update_settings": "1", "notification_email": "new@example.com"},
         )
-        
+
         self.assertEqual(response.status_code, 302)
         settings_obj = BackupSettings.get_settings()
         self.assertEqual(settings_obj.notification_email, "new@example.com")
@@ -225,9 +222,9 @@ class BackupViewsTests(TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             with override_settings(BACKUP_ROOT=temp_dir):
                 response = self.client.get(reverse("backup:create_backup_store"))
-                
+
                 self.assertEqual(response.status_code, 302)
-                
+
                 # Vérifier qu'un fichier backup a été créé
                 backups = list(Path(temp_dir).glob("backup_*.zip"))
                 self.assertEqual(len(backups), 1)
@@ -237,24 +234,30 @@ class BackupViewsTests(TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             backup_file = Path(temp_dir) / "backup_test.zip"
             backup_file.write_bytes(b"fake zip content")
-            
+
             with override_settings(BACKUP_ROOT=temp_dir):
                 response = self.client.get(
-                    reverse("backup:download_backup", kwargs={"filename": "backup_test.zip"})
+                    reverse(
+                        "backup:download_backup", kwargs={"filename": "backup_test.zip"}
+                    )
                 )
-                
+
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response["Content-Type"], "application/zip")
-                self.assertEqual(b"".join(response.streaming_content), b"fake zip content")
+                self.assertEqual(
+                    b"".join(response.streaming_content), b"fake zip content"
+                )
 
     def test_download_backup_not_found(self):
         """Test le téléchargement d'un backup inexistant."""
         with tempfile.TemporaryDirectory() as temp_dir:
             with override_settings(BACKUP_ROOT=temp_dir):
                 response = self.client.get(
-                    reverse("backup:download_backup", kwargs={"filename": "nonexistent.zip"})
+                    reverse(
+                        "backup:download_backup", kwargs={"filename": "nonexistent.zip"}
+                    )
                 )
-                
+
                 self.assertEqual(response.status_code, 404)
 
     def test_delete_backup_view(self):
@@ -262,12 +265,15 @@ class BackupViewsTests(TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             backup_file = Path(temp_dir) / "backup_to_delete.zip"
             backup_file.write_bytes(b"content")
-            
+
             with override_settings(BACKUP_ROOT=temp_dir):
                 response = self.client.get(
-                    reverse("backup:delete_backup", kwargs={"filename": "backup_to_delete.zip"})
+                    reverse(
+                        "backup:delete_backup",
+                        kwargs={"filename": "backup_to_delete.zip"},
+                    )
                 )
-                
+
                 self.assertEqual(response.status_code, 302)
                 self.assertFalse(backup_file.exists())
 
@@ -276,9 +282,11 @@ class BackupViewsTests(TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             with override_settings(BACKUP_ROOT=temp_dir):
                 response = self.client.get(
-                    reverse("backup:delete_backup", kwargs={"filename": "nonexistent.zip"})
+                    reverse(
+                        "backup:delete_backup", kwargs={"filename": "nonexistent.zip"}
+                    )
                 )
-                
+
                 self.assertEqual(response.status_code, 404)
 
     def test_unauthorized_access_redirects(self):
@@ -297,7 +305,7 @@ class BackupViewsNonStaffTests(TestCase):
             username="normaluser",
             email="normal@example.com",
             password="testpass123",
-            is_staff=False
+            is_staff=False,
         )
         self.client = Client()
         self.client.login(username="normaluser", password="testpass123")

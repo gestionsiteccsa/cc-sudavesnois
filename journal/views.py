@@ -11,7 +11,7 @@ from .models import Journal
 
 def journal(request):
     journals = Journal.objects.all().order_by("-number")
-    paginator = Paginator(journals, 9)
+    paginator = Paginator(journals, 3)
     page = request.GET.get("page")
 
     try:

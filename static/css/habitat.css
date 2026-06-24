@@ -103,3 +103,48 @@
 .bg-gray-50:hover h4 {
     color: #3b82f6;
 }
+
+/* Respect de la préférence utilisateur pour la réduction des animations */
+@media (prefers-reduced-motion: reduce) {
+    .bg-gray-50,
+    .bg-primary\/10,
+    .rounded-lg.overflow-hidden,
+    .inline-flex.items-center,
+    .flex.items-start svg,
+    .bg-primary,
+    .bg-green-600,
+    .bg-white,
+    .bg-gray-50 h3,
+    .bg-gray-50 h4 {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .bg-gray-50:hover,
+    .rounded-lg.overflow-hidden:hover,
+    .inline-flex.items-center:hover,
+    .bg-primary:hover,
+    .bg-green-600:hover,
+    .bg-white:hover,
+    .hover\:translate-y-\[-5px\]:hover {
+        transform: none !important;
+    }
+
+    .bg-gray-50:hover .bg-primary\/10,
+    .flex.items-start:hover svg {
+        transform: none !important;
+    }
+}
+
+/* Mode contraste élevé (Windows High Contrast / forced-colors) */
+@media (prefers-contrast: more) {
+    .bg-gray-50,
+    .bg-white,
+    .rounded-lg {
+        border: 1px solid currentColor;
+    }
+
+    a {
+        text-decoration: underline;
+    }
+}

@@ -19,6 +19,18 @@ module.exports = {
     './semestriels/templates/**/*.html',
     './services/templates/**/*.html',
   ],
+  safelist: [
+    'bg-green-700', 'bg-green-800', 'hover:bg-green-800', 'focus-visible:ring-offset-green-800',
+    'bg-yellow-700', 'bg-yellow-800', 'hover:bg-yellow-800', 'focus-visible:ring-offset-yellow-800',
+    'bg-primary', 'hover:bg-primary-dark', 'focus-visible:ring-offset-primary',
+    'bg-green-900/30', 'dark:text-green-200', 'dark:text-green-300',
+    'dark:text-blue-300', 'dark:text-blue-400',
+    'dark:text-amber-300', 'text-amber-700',
+    'text-amber-800', 'dark:text-amber-400',
+    'text-green-800', 'text-green-900',
+    'focus-visible:outline-none', 'focus-visible:ring-2', 'focus-visible:ring-white',
+    'min-h-[44px]', 'min-w-[44px]',
+  ],
   theme: {
     extend: {
       colors: {
