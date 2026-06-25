@@ -330,28 +330,22 @@ git pull origin main
 # 3. Mettre à jour les dépendances Python
 pip install -r requirements.txt --upgrade
 
-# 4. Mettre à jour les dépendances Node.js (si package.json a changé)
-npm install
-
-# 5. Appliquer les migrations de la base de données
+# 4. Appliquer les migrations de la base de données
 #    (makemigrations n'est nécessaire que si de nouveaux modèles ont été ajoutés
 #     par les devs ; en prod on applique juste les migrations existantes)
 python manage.py migrate
 
-# 6. Reconstruire le CSS Tailwind minifié pour la production
-npm run build:css:prod
-
-# 7. Collecter les fichiers statiques (CSS, JS, images, fonts)
+# 5. Collecter les fichiers statiques (CSS, JS, images, fonts)
 python manage.py collectstatic --noinput
 
-# 8. Reconstruire l'index de recherche full-text (si l'app search a été modifiée)
+# 6. Reconstruire l'index de recherche full-text (si l'app search a été modifiée)
 python manage.py buildwatson
 
-# 9. Redémarrer les services applicatifs
+# 7. Redémarrer les services applicatifs
 sudo systemctl restart gunicorn      # ou supervisor, pm2, etc.
 sudo systemctl restart nginx         # si la conf Nginx a changé
 
-# 10. Vérifier le bon fonctionnement
+# 8. Vérifier le bon fonctionnement
 sudo systemctl status gunicorn
 tail -n 50 /var/log/gunicorn/error.log
 curl -I https://www.cc-sudavesnois.fr  # doit retourner 200 OK
@@ -361,7 +355,35 @@ curl -I https://www.cc-sudavesnois.fr  # doit retourner 200 OK
 > - Toujours faire la sauvegarde **avant** `migrate` (étape 1).
 > - Exécuter la procédure pendant une fenêtre de maintenance à faible trafic.
 > - Vérifier les logs après redémarrage pour s'assurer qu'il n'y a pas d'erreur.
-> - En cas de rollback : `git checkout <commit_precedent>` puis rejouer les étapes 3 à 9.
+> - En cas de rollback : `git checkout <commit_precedent>` puis rejouer les étapes 3 à 7.
+
+#### Build du CSS Tailwind (à faire **en local**, pas sur le serveur)
+
+Le fichier `static/css/output.min.css` est versionné dans le dépôt. Le serveur n'a donc **pas besoin de Node.js/npm** : un simple `git pull` le récupère.
+
+À exécuter **uniquement sur votre poste de développement** quand vous modifiez des templates HTML ou des classes Tailwind :
+
+```bash
+# En développement (regénération auto à chaque modification)
+npm run watch:css
+
+# Avant de pousser en production
+npm run build:css:prod
+git add static/css/output.css static/css/output.min.css
+git commit -m "build(css): regenerer output.min.css"
+git push origin main
+```
+
+##### Alternative si vous ne pouvez pas builder en local
+
+Si vous n'avez accès ni à Node.js, ni à un poste de dev, deux options :
+
+1. **GitHub Actions / CI** : ajouter un workflow qui exécute `npm run build:css:prod` à chaque push sur `main` et commit le fichier `output.min.css` automatiquement.
+2. **Tailwind Play CDN** (déconseillé en prod) : remplacer la balise `link` dans `base.html` par :
+   ```html
+   <script src="https://cdn.tailwindcss.com"></script>
+   ```
+   ⚠️ ~300 Ko, non purgeable, pas de JIT, à n'utiliser qu'en dernier recours.
 
 ---
 
