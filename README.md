@@ -119,8 +119,9 @@ cp .env.exemple .env
 # 5. Appliquer les migrations
 python manage.py migrate
 
-# 6. Compiler le CSS Tailwind
-npx tailwindcss -i static/css/styles.css -o static/css/output.css --watch
+# 6. Installer les dépendances Node.js (Tailwind CSS) et compiler en mode watch
+npm install
+npm run watch:css
 
 # 7. Lancer le serveur de développement
 python manage.py runserver
@@ -174,6 +175,20 @@ python manage.py buildwatson
 
 # Créer une sauvegarde
 python manage.py create_backup
+```
+
+### Build CSS (Tailwind)
+
+```bash
+# Mode développement — regénère static/css/output.css à chaque modification
+npm run watch:css
+
+# Build standard — regénère static/css/output.css (non minifié)
+npm run build:css
+
+# Build production — regénère static/css/output.min.css (minifié, ~76 Ko)
+# À exécuter avant `collectstatic` lors d'un déploiement
+npm run build:css:prod
 ```
 
 ### Pré-commit hooks
@@ -289,9 +304,10 @@ Utilisateur → Nginx → Gunicorn → Django → PostgreSQL
 
 1. Configurer PostgreSQL et les variables d'environnement
 2. Installer les dépendances et appliquer les migrations
-3. Collecter les fichiers statiques : `python manage.py collectstatic`
-4. Configurer Nginx/Apache en proxy inverse
-5. Activer HTTPS (Let's Encrypt)
+3. Générer le CSS Tailwind minifié pour la production : `npm install && npm run build:css:prod`
+4. Collecter les fichiers statiques : `python manage.py collectstatic`
+5. Configurer Nginx/Apache en proxy inverse
+6. Activer HTTPS (Let's Encrypt)
 
 ---
 
