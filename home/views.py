@@ -12,7 +12,7 @@ from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 
-from app.utils import get_client_ip, hash_ip, normalize_filename
+from app.utils import get_client_ip, hash_ip, normalize_filename, rate_limit
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
@@ -65,24 +65,21 @@ def home(request):
     if request.method == "POST":
         # Rate limiting simple: 5 requêtes par minute par adresse IP
         if not getattr(settings, "TESTING", False):
-            client_ip = get_client_ip(request)
-            rate_key = f"contact_rate:{client_ip}"
-            try:
-                # Initialise le compteur avec expiration de 60s si absent
-                created = cache.add(rate_key, 1, timeout=60)
-                if not created:
-                    current = cache.incr(rate_key)
-                    if current > 5:
-                        logger.warning(
-                            "Rate limit contact depasse pour IP=%s hash=%s",
-                            client_ip,
-                            hash_ip(client_ip),
-                        )
-                        # Trop de tentatives: on bloque discrètement
-                        return redirect("home")
-            except Exception:
-                # En cas de problème de cache, on n'empêche pas la soumission
-                pass
+            allowed, current, limit = rate_limit(
+                request,
+                action="contact_form",
+                max_calls=5,
+                window=60,
+            )
+            if not allowed:
+                client_ip = get_client_ip(request)
+                logger.warning(
+                    "Rate limit contact depasse: IP=%s hash=%s current=%d",
+                    client_ip,
+                    hash_ip(client_ip),
+                    current,
+                )
+                return redirect("home")
         contact_form = ContactForm(request.POST)
         if contact_form.is_valid():
             # Toujours envoyer à contact@cc-sudavesnois.fr
@@ -492,27 +489,25 @@ def telecharger_calendrier_verre(request):
     )
 
     # Rate limiting: max 10 requêtes par minute par IP
-    client_ip = get_client_ip(request)
-    rate_key = f"pdf_download:{client_ip}"
-    try:
-        created = cache.add(rate_key, 1, timeout=60)
-        if not created:
-            current = cache.incr(rate_key)
-            if current > 10:
-                logger.warning(
-                    "Rate limit PDF depasse pour IP=%s hash=%s",
-                    client_ip,
-                    hash_ip(client_ip),
-                )
-                return HttpResponse(
-                    "Trop de requetes. Veuillez reessayer dans une minute.".encode(
-                        "utf-8"
-                    ),
-                    status=429,
-                    content_type="text/plain",
-                )
-    except Exception:
-        pass
+    allowed, current, limit = rate_limit(
+        request,
+        action="pdf_download",
+        max_calls=10,
+        window=60,
+    )
+    if not allowed:
+        client_ip = get_client_ip(request)
+        logger.warning(
+            "Rate limit PDF depasse: IP=%s hash=%s current=%d",
+            client_ip,
+            hash_ip(client_ip),
+            current,
+        )
+        return HttpResponse(
+            "Trop de requetes. Veuillez reessayer dans une minute.".encode("utf-8"),
+            status=429,
+            content_type="text/plain",
+        )
 
     commune = request.GET.get("commune", "")
     rue = request.GET.get("rue", "")

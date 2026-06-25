@@ -200,3 +200,47 @@ def normalize_filename(text, max_length=100):
     cleaned = re.sub(r"[^A-Za-z0-9_-]+", "-", text).strip("-").lower()
     cleaned = cleaned[:max_length] or f"file_{int(time.time())}"
     return cleaned
+
+
+def rate_limit(request, action, max_calls=5, window=60, key_prefix="rl"):
+    """
+    Rate limit simple et partageable entre vues.
+
+    Stratégie : ``cache.add`` (atomique) pour initialiser le compteur,
+    puis ``cache.incr`` pour incrémenter. Pas de lock distribué, mais
+    suffisant pour un hébergement mutualisé mono-process (LocMem).
+
+    Args:
+        request: requête Django.
+        action: identifiant logique (ex: ``"contact_form"``, ``"pdf_dl"``).
+        max_calls: nombre d'appels autorisés dans la fenêtre.
+        window: fenêtre en secondes.
+        key_prefix: préfixe de la clé de cache.
+
+    Returns:
+        tuple ``(allowed: bool, current: int, limit: int)``.
+    """
+    from django.core.cache import cache
+
+    client_ip = get_client_ip(request)
+    rate_key = f"{key_prefix}:{action}:{client_ip}"
+    current = 0
+    try:
+        created = cache.add(rate_key, 1, timeout=window)
+        if created:
+            current = 1
+        else:
+            try:
+                current = cache.incr(rate_key)
+            except ValueError:
+                # La clé a expiré entre add et incr
+                cache.set(rate_key, 1, timeout=window)
+                current = 1
+    except Exception as e:
+        # En cas de problème cache, on n'empêche pas la requête (fail-open)
+        logger.warning("rate_limit: cache indisponible pour %s: %s", action, e)
+        return True, 0, max_calls
+
+    if current > max_calls:
+        return False, current, max_calls
+    return True, current, max_calls
