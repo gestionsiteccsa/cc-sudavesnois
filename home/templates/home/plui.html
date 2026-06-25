@@ -107,102 +107,124 @@
 
                     <!-- Formulaire complet -->
                     <div class="bg-primary/5 p-6 rounded-lg">
-                        <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Formulaire de demande de modification</h4>
-                        <form class="space-y-4" method="post" action="{% url 'plui' %}">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Formulaire de demande de modification</h3>
+                        <form class="space-y-4" method="post" action="{% url 'plui' %}" novalidate>
                             {% csrf_token %}
 
+                            {% if form.non_field_errors %}
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-md" role="alert">
+                                {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
                             <!-- Section DEMANDEUR -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
-                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDEUR</h5>
+                            <fieldset class="bg-white dark:bg-gray-800 p-4 rounded-md">
+                                <legend class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">Demandeur</legend>
                                 <div class="space-y-3">
                                     <div>
-                                        {{ form.nom_prenom.label_tag }}
+                                        <label for="{{ form.nom_prenom.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ form.nom_prenom.label }}{% if form.nom_prenom.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                        </label>
                                         {{ form.nom_prenom }}
                                         {% if form.nom_prenom.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.nom_prenom.errors %}{{ error }}{% endfor %}
+                                            <div id="{{ form.nom_prenom.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                                {% for error in form.nom_prenom.errors %}<p>{{ error }}</p>{% endfor %}
                                             </div>
                                         {% endif %}
                                     </div>
                                     <div>
-                                        {{ form.adresse.label_tag }}
+                                        <label for="{{ form.adresse.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ form.adresse.label }}{% if form.adresse.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                        </label>
                                         {{ form.adresse }}
                                         {% if form.adresse.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.adresse.errors %}{{ error }}{% endfor %}
+                                            <div id="{{ form.adresse.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                                {% for error in form.adresse.errors %}<p>{{ error }}</p>{% endfor %}
                                             </div>
                                         {% endif %}
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <div>
-                                            {{ form.email.label_tag }}
+                                            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                {{ form.email.label }}{% if form.email.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                            </label>
                                             {{ form.email }}
                                             {% if form.email.errors %}
-                                                <div class="text-red-500 text-sm mt-1">
-                                                    {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                                <div id="{{ form.email.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                                    {% for error in form.email.errors %}<p>{{ error }}</p>{% endfor %}
                                                 </div>
                                             {% endif %}
                                         </div>
                                         <div>
-                                            {{ form.telephone.label_tag }}
+                                            <label for="{{ form.telephone.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                {{ form.telephone.label }}{% if form.telephone.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                            </label>
                                             {{ form.telephone }}
                                             {% if form.telephone.errors %}
-                                                <div class="text-red-500 text-sm mt-1">
-                                                    {% for error in form.telephone.errors %}{{ error }}{% endfor %}
+                                                <div id="{{ form.telephone.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                                    {% for error in form.telephone.errors %}<p>{{ error }}</p>{% endfor %}
                                                 </div>
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </fieldset>
 
                             <!-- Section PARCELLES CADASTRALES -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
-                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">N° DE(S) PARCELLE(S) CADASTRALE(S) CONCERNEE(S)</h5>
+                            <fieldset class="bg-white dark:bg-gray-800 p-4 rounded-md">
+                                <legend class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">Numero(s) de parcelle(s) cadastrale(s) concernee(s)</legend>
                                 <div class="space-y-3">
                                     <div>
-                                        {{ form.parcelles.label_tag }}
+                                        <label for="{{ form.parcelles.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ form.parcelles.label }}{% if form.parcelles.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                        </label>
                                         {{ form.parcelles }}
                                         {% if form.parcelles.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.parcelles.errors %}{{ error }}{% endfor %}
+                                            <div id="{{ form.parcelles.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                                {% for error in form.parcelles.errors %}<p>{{ error }}</p>{% endfor %}
                                             </div>
                                         {% endif %}
                                     </div>
                                     <div>
-                                        {{ form.commune.label_tag }}
+                                        <label for="{{ form.commune.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ form.commune.label }}{% if form.commune.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                        </label>
                                         {{ form.commune }}
                                         {% if form.commune.errors %}
-                                            <div class="text-red-500 text-sm mt-1">
-                                                {% for error in form.commune.errors %}{{ error }}{% endfor %}
+                                            <div id="{{ form.commune.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                                {% for error in form.commune.errors %}<p>{{ error }}</p>{% endfor %}
                                             </div>
                                         {% endif %}
                                     </div>
                                 </div>
-                            </div>
+                            </fieldset>
 
                             <!-- Section DEMANDE -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-md">
-                                <h5 class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">DEMANDE</h5>
+                            <fieldset class="bg-white dark:bg-gray-800 p-4 rounded-md">
+                                <legend class="font-semibold text-gray-800 dark:text-white mb-3 uppercase text-sm">Demande</legend>
                                 <div>
-                                    {{ form.demande.label_tag }}
+                                    <label for="{{ form.demande.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        {{ form.demande.label }}{% if form.demande.field.required %} <span class="text-red-500" aria-hidden="true">*</span><span class="sr-only">obligatoire</span>{% endif %}
+                                    </label>
                                     {{ form.demande }}
                                     {% if form.demande.errors %}
-                                        <div class="text-red-500 text-sm mt-1">
-                                            {% for error in form.demande.errors %}{{ error }}{% endfor %}
+                                        <div id="{{ form.demande.id_for_label }}-error" class="text-red-600 dark:text-red-400 text-sm mt-1" role="alert">
+                                            {% for error in form.demande.errors %}<p>{{ error }}</p>{% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
-                            </div>
+                            </fieldset>
 
                             <!-- Bouton de soumission -->
                             <div class="pt-4">
                                 <button type="submit"
-                                        class="w-full bg-primary text-white font-medium py-3 px-6 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary">
+                                        class="w-full bg-primary text-white font-medium py-3 px-6 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary min-h-[44px]">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"  class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                                     </svg>
-                                    Envoyer la demande
+                                    Envoyer la demande de modification
                                 </button>
                             </div>
                         </form>
