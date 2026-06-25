@@ -1,27 +1,42 @@
+import re
+
 from django import forms
 from django.core.exceptions import ValidationError
-import re
+
+
+# Regex téléphone: 10 chiffres FR, espaces/tirets/points/parentheses/+ tolérés
+TELEPHONE_REGEX = re.compile(r"^[\d\s\-().+]+$")
+TELEPHONE_DIGITS_MIN = 8
+TELEPHONE_DIGITS_MAX = 15
+
+
+def _get_communes_choices():
+    """Construit dynamiquement la liste des communes depuis ``collecte_data``."""
+    try:
+        from .data.collecte_data import get_available_cities
+
+        cities = get_available_cities()
+    except Exception:
+        # Fallback en cas d'erreur d'import
+        cities = [
+            "Anor",
+            "Baives",
+            "Eppe-Sauvage",
+            "Féron",
+            "Fourmies",
+            "Glageon",
+            "Moustier-en-Fagne",
+            "Ohain",
+            "Trelon",
+            "Wallers-en-Fagne",
+            "Wignehies",
+            "Willies",
+        ]
+    return [("", "Sélectionnez une commune")] + [(c, c) for c in cities]
 
 
 class PLUiModificationForm(forms.Form):
     """Formulaire pour les demandes de modification PLUi."""
-
-    # Liste des communes de la Communauté de Communes Sud-Avesnois
-    COMMUNES_CHOICES = [
-        ("", "Sélectionnez une commune"),
-        ("Anor", "Anor"),
-        ("Baives", "Baives"),
-        ("Eppe-Sauvage", "Eppe-Sauvage"),
-        ("Féron", "Féron"),
-        ("Fourmies", "Fourmies"),
-        ("Glageon", "Glageon"),
-        ("Moustier-en-Fagne", "Moustier-en-Fagne"),
-        ("Ohain", "Ohain"),
-        ("Trelon", "Trelon"),
-        ("Wallers-en-Fagne", "Wallers-en-Fagne"),
-        ("Wignehies", "Wignehies"),
-        ("Willies", "Willies"),
-    ]
 
     # Classes CSS communes pour éviter la duplication
     INPUT_CSS_CLASS = (
@@ -37,7 +52,7 @@ class PLUiModificationForm(forms.Form):
             attrs={
                 "class": INPUT_CSS_CLASS,
                 "placeholder": "Votre nom et prénom",
-                "required": True,
+                "autocomplete": "name",
             }
         ),
         error_messages={
@@ -54,7 +69,7 @@ class PLUiModificationForm(forms.Form):
                 "class": INPUT_CSS_CLASS,
                 "placeholder": "Votre adresse complète (rue, code postal, ville)",
                 "rows": 3,
-                "required": True,
+                "autocomplete": "street-address",
             }
         ),
         error_messages={
@@ -69,7 +84,7 @@ class PLUiModificationForm(forms.Form):
             attrs={
                 "class": INPUT_CSS_CLASS,
                 "placeholder": "votre.email@exemple.com",
-                "required": True,
+                "autocomplete": "email",
             }
         ),
         error_messages={
@@ -84,8 +99,8 @@ class PLUiModificationForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": INPUT_CSS_CLASS,
-                "placeholder": "Votre numéro de téléphone",
-                "required": True,
+                "placeholder": "01 23 45 67 89",
+                "autocomplete": "tel",
             }
         ),
         error_messages={
@@ -101,7 +116,6 @@ class PLUiModificationForm(forms.Form):
             attrs={
                 "class": INPUT_CSS_CLASS,
                 "placeholder": "Ex: 123, 124, 125",
-                "required": True,
             }
         ),
         error_messages={
@@ -112,12 +126,11 @@ class PLUiModificationForm(forms.Form):
     )
 
     commune = forms.ChoiceField(
-        choices=COMMUNES_CHOICES,
+        choices=_get_communes_choices,
         label="Commune",
         widget=forms.Select(
             attrs={
                 "class": INPUT_CSS_CLASS,
-                "required": True,
             }
         ),
         error_messages={
@@ -132,10 +145,10 @@ class PLUiModificationForm(forms.Form):
         widget=forms.Textarea(
             attrs={
                 "class": INPUT_CSS_CLASS,
-                "placeholder": "Décrivez précisément votre demande de modification "
-                "du PLUi...",
+                "placeholder": (
+                    "Décrivez précisément votre demande de modification du PLUi..."
+                ),
                 "rows": 6,
-                "required": True,
             }
         ),
         error_messages={
@@ -144,30 +157,40 @@ class PLUiModificationForm(forms.Form):
         },
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Appliquer les classes CSS et les attributs ARIA à tous les champs
+        for name, field in self.fields.items():
+            css_class = field.widget.attrs.get("class", "")
+            if css_class and INPUT_CSS_CLASS not in css_class:
+                field.widget.attrs["class"] = f"{css_class} {INPUT_CSS_CLASS}".strip()
+            # Attribut aria-required implicite via required=True
+            if field.required:
+                field.widget.attrs.setdefault("aria-required", "true")
+
     def clean_telephone(self):
-        """Validation du numéro de téléphone."""
+        """Validation du numéro de téléphone: 8 à 15 chiffres après nettoyage."""
         telephone = self.cleaned_data.get("telephone")
         if telephone:
-            # Nettoyer le numéro (supprimer espaces, tirets, points)
-            clean_phone = re.sub(r"[\s\-\.]", "", telephone)
-            # Vérifier que c'est un numéro valide (chiffres, +, (), espaces)
-            if not re.match(r"^[\d\+\s\(\)]+$", clean_phone):
-                raise ValidationError("Veuillez saisir un numéro de téléphone valide.")
+            clean_phone = re.sub(r"[\s\-().+]", "", telephone)
+            if not TELEPHONE_REGEX.match(telephone):
+                raise ValidationError(
+                    "Le numéro de téléphone contient des caractères non autorisés."
+                )
+            digits = sum(c.isdigit() for c in clean_phone)
+            if digits < TELEPHONE_DIGITS_MIN or digits > TELEPHONE_DIGITS_MAX:
+                raise ValidationError(
+                    f"Le numéro de téléphone doit contenir entre "
+                    f"{TELEPHONE_DIGITS_MIN} et {TELEPHONE_DIGITS_MAX} chiffres."
+                )
         return telephone
 
-    def clean_parcelles(self):
-        """Validation des numéros de parcelles."""
-        parcelles = self.cleaned_data.get("parcelles")
-        return parcelles
-
     def clean_demande(self):
-        """Validation de la demande."""
+        """Validation de la demande: longueur minimale 10 caractères."""
         demande = self.cleaned_data.get("demande")
-        if demande:
-            # Vérifier la longueur minimale
-            if len(demande.strip()) < 10:
-                raise ValidationError(
-                    "La description de votre demande doit contenir au moins "
-                    "10 caractères."
-                )
+        if demande and len(demande.strip()) < 10:
+            raise ValidationError(
+                "La description de votre demande doit contenir au moins "
+                "10 caractères (exemple: 'Modifier le zonage')."
+            )
         return demande
