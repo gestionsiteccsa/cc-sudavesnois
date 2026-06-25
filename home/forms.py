@@ -162,8 +162,10 @@ class PLUiModificationForm(forms.Form):
         # Appliquer les classes CSS et les attributs ARIA à tous les champs
         for name, field in self.fields.items():
             css_class = field.widget.attrs.get("class", "")
-            if css_class and INPUT_CSS_CLASS not in css_class:
-                field.widget.attrs["class"] = f"{css_class} {INPUT_CSS_CLASS}".strip()
+            if css_class and self.INPUT_CSS_CLASS not in css_class:
+                field.widget.attrs["class"] = (
+                    f"{css_class} {self.INPUT_CSS_CLASS}"
+                ).strip()
             # Attribut aria-required implicite via required=True
             if field.required:
                 field.widget.attrs.setdefault("aria-required", "true")

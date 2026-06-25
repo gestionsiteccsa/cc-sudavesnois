@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase, override_settings
+from django.test import Client, SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 
 from conseil_communautaire.models import ConseilVille
@@ -14,6 +14,7 @@ from contact.models import ContactEmail
 from journal.models import Journal
 from services.models import Service
 
+from .forms import PLUiModificationForm
 from .sitemaps import CommunesSitemap, JournalSitemap, StaticViewSitemap
 from .views import is_staff_or_superuser
 
@@ -620,9 +621,10 @@ class EdgeCasesTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_home_view_with_empty_contact_email_list(self):
-        """Test de la vue home avec une liste d'emails de contact vide mais existante"""
-        # Créer un email de contact inactif - cela va provoquer l'erreur IndexError
+    def test_home_view_with_only_inactive_contact_emails(self):
+        """Avec uniquement des ContactEmail inactifs, la liste de destinataires
+        doit toujours contenir l'adresse par defaut ``contact@cc-sudavesnois.fr``
+        (pas d'IndexError ni de perte de message)."""
         ContactEmail.objects.create(email="inactive@ccsa.fr", is_active=False)
 
         form_data = {
@@ -631,12 +633,14 @@ class EdgeCasesTestCase(TestCase):
             "email": "jean.dupont@example.com",
             "phone": "0123456789",
             "message": "Ceci est un message de test",
-            "rgpd": True,  # Champ RGPD requis
+            "rgpd": True,
         }
 
-        # Ce test devrait générer une erreur dans la vue car ccsa_contact[0] sur une liste vide
-        with self.assertRaises(IndexError):
-            response = self.client.post(reverse("home"), form_data)
+        # Plus d'IndexError : le code utilise l'adresse par defaut
+        # et ignore les inactifs.
+        response = self.client.post(reverse("home"), form_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("home"))
 
     def test_home_view_nb_habitants_calculation(self):
         """Test du calcul du nombre d'habitants dans la vue home"""
@@ -734,3 +738,81 @@ class EdgeCasesTestCase(TestCase):
         # Nettoyer les fichiers de test
         if os.path.exists("test_media_home"):
             shutil.rmtree("test_media_home")
+
+
+class PLUiModificationFormTestCase(SimpleTestCase):
+    """Tests unitaires du formulaire PLUiModificationForm."""
+
+    def _valid_data(self, **overrides):
+        data = {
+            "nom_prenom": "Jean Dupont",
+            "adresse": "1 rue de la Mairie, 59610 Fourmies",
+            "email": "jean.dupont@example.com",
+            "telephone": "03 27 12 34 56",
+            "parcelles": "123, 124",
+            "commune": "Fourmies",
+            "demande": "Demande de modification du zonage de la parcelle 123.",
+        }
+        data.update(overrides)
+        return data
+
+    def test_valid_form(self):
+        form = PLUiModificationForm(self._valid_data())
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_missing_required_field(self):
+        form = PLUiModificationForm(self._valid_data(nom_prenom=""))
+        self.assertFalse(form.is_valid())
+        self.assertIn("nom_prenom", form.errors)
+
+    def test_invalid_email(self):
+        form = PLUiModificationForm(self._valid_data(email="not-an-email"))
+        self.assertFalse(form.is_valid())
+        self.assertIn("email", form.errors)
+
+    def test_telephone_too_short(self):
+        form = PLUiModificationForm(self._valid_data(telephone="12345"))
+        self.assertFalse(form.is_valid())
+        self.assertIn("telephone", form.errors)
+
+    def test_telephone_with_authorized_chars(self):
+        form = PLUiModificationForm(self._valid_data(telephone="+33 3 27 12 34 56"))
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_telephone_with_unauthorized_chars(self):
+        form = PLUiModificationForm(self._valid_data(telephone="abc;def"))
+        self.assertFalse(form.is_valid())
+        self.assertIn("telephone", form.errors)
+
+    def test_demande_too_short(self):
+        form = PLUiModificationForm(self._valid_data(demande="court"))
+        self.assertFalse(form.is_valid())
+        self.assertIn("demande", form.errors)
+
+    def test_commune_invalid_choice(self):
+        form = PLUiModificationForm(self._valid_data(commune="Atlantis"))
+        self.assertFalse(form.is_valid())
+        self.assertIn("commune", form.errors)
+
+    def test_communes_loaded_dynamically(self):
+        import unicodedata
+
+        form = PLUiModificationForm()
+        codes = [c[0] for c in form.fields["commune"].choices if c[0]]
+        self.assertIn("Fourmies", codes)
+        # Les cles dans city_data peuvent avoir des accents (ex: Trélon)
+        normalized = {
+            unicodedata.normalize("NFKD", c).encode("ascii", "ignore").decode() for c in codes
+        }
+        self.assertIn("Trelon", normalized)
+        self.assertGreater(len(codes), 5)
+
+    def test_aria_required_set(self):
+        form = PLUiModificationForm()
+        for name, field in form.fields.items():
+            if field.required:
+                self.assertEqual(
+                    field.widget.attrs.get("aria-required"),
+                    "true",
+                    f"Champ {name} sans aria-required",
+                )
