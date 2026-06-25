@@ -1,0 +1,85 @@
+name: Build CSS Tailwind
+
+description: Régénère static/css/output.min.css et commit le résultat à chaque push sur main
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'templates/**'
+      - 'home/templates/**'
+      - 'accounts/templates/**'
+      - 'backup/templates/**'
+      - 'bureau_communautaire/templates/**'
+      - 'commissions/templates/**'
+      - 'communes_membres/templates/**'
+      - 'competences/templates/**'
+      - 'comptes_rendus/templates/**'
+      - 'conseil_communautaire/templates/**'
+      - 'contact/templates/**'
+      - 'journal/templates/**'
+      - 'linktree/templates/**'
+      - 'partenaires/templates/**'
+      - 'rapports_activite/templates/**'
+      - 'semestriels/templates/**'
+      - 'services/templates/**'
+      - 'staticfiles/**'
+      - 'tailwind.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-css.yml'
+    paths-ignore:
+      - 'static/css/output.css'
+      - 'static/css/output.min.css'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-css:
+    name: Build & commit output.min.css
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Installer les dépendances npm
+        run: npm ci
+
+      - name: Régénérer le CSS Tailwind
+        run: |
+          npm run build:css
+          npm run build:css:prod
+
+      - name: Vérifier les modifications
+        id: check
+        run: |
+          if git diff --quiet --exit-code static/css/output.min.css; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Aucune modification du CSS minifié, rien à committer."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Le CSS minifié a été mis à jour."
+          fi
+
+      - name: Committer le CSS régénéré
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add static/css/output.min.css static/css/output.css
+          git commit -m "build(css): regen output.min.css (auto)"
+          git pull --rebase origin main
+          git push origin main

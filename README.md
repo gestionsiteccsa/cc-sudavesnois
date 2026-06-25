@@ -376,14 +376,19 @@ git push origin main
 
 ##### Alternative si vous ne pouvez pas builder en local
 
-Si vous n'avez accès ni à Node.js, ni à un poste de dev, deux options :
+Si vous n'avez accès ni à Node.js, ni à un poste de dev, le workflow GitHub Actions `.github/workflows/build-css.yml` s'en charge automatiquement :
 
-1. **GitHub Actions / CI** : ajouter un workflow qui exécute `npm run build:css:prod` à chaque push sur `main` et commit le fichier `output.min.css` automatiquement.
-2. **Tailwind Play CDN** (déconseillé en prod) : remplacer la balise `link` dans `base.html` par :
-   ```html
-   <script src="https://cdn.tailwindcss.com"></script>
-   ```
-   ⚠️ ~300 Ko, non purgeable, pas de JIT, à n'utiliser qu'en dernier recours.
+- **Déclencheur** : push sur `main` modifiant un template HTML, `staticfiles/**`, `tailwind.config.js` ou `package.json`.
+- **Action** : installe Node.js 20, lance `npm ci`, exécute `npm run build:css` et `npm run build:css:prod`, puis commit `static/css/output.min.css` directement sur la branche (avec le message `build(css): regen output.min.css (auto)`).
+- **Anti-boucle** : les modifications de `static/css/output.css` et `static/css/output.min.css` n'ont aucun effet sur les classes HTML et n'ont pas besoin d'être buildées à nouveau. Le workflow utilise `paths-ignore` pour ne pas se redéclencher sur ses propres commits.
+
+Le workflow peut aussi être lancé manuellement depuis l'onglet **Actions** du dépôt GitHub via le bouton "Run workflow".
+
+> En dernier recours uniquement (non recommandé en prod), il est possible d'utiliser **Tailwind Play CDN** en remplaçant la balise `link` dans `base.html` par :
+> ```html
+> <script src="https://cdn.tailwindcss.com"></script>
+> ```
+> ⚠️ ~300 Ko, non purgeable, pas de JIT, à n'utiliser qu'en dernier recours.
 
 ---
 
