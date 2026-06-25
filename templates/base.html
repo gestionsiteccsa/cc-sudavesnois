@@ -34,6 +34,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <!-- icone -->
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
 
+    <!-- Preload image popup Jeu de l'oie (LCP) -->
+    <link rel="preload" as="image" href="{% static 'img/ctg/Jeudeloie.webp' %}" fetchpriority="high">
+
     <title>{% block title %}Accueil{% endblock %} | Communauté de Communes Sud-Avesnois</title>
 
     <!-- Tailwind CSS -->
