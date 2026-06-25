@@ -27,18 +27,6 @@ from services.models import Service
 logger = logging.getLogger(__name__)
 
 
-def is_staff_or_superuser(user):
-    """Vérifier si l'utilisateur est staff ou superuser.
-
-    Args:
-        user: L'utilisateur à vérifier.
-
-    Returns:
-        bool: True si l'utilisateur est staff ou superuser.
-    """
-    return user.is_staff or user.is_superuser
-
-
 @cache_page(300)
 def home(request):
     # Donnée requises pour la page d'accueil

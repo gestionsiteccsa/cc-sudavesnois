@@ -16,7 +16,6 @@ from services.models import Service
 
 from .forms import PLUiModificationForm
 from .sitemaps import CommunesSitemap, JournalSitemap, StaticViewSitemap
-from .views import is_staff_or_superuser
 
 User = get_user_model()
 
@@ -125,7 +124,7 @@ class HomeStaticViewsTestCase(TestCase):
 
 
 class UtilityFunctionsTestCase(TestCase):
-    """Tests pour les fonctions utilitaires"""
+    """Tests pour les fonctions utilitaires (Django User standard)."""
 
     def setUp(self):
         self.normal_user = User.objects.create_user(
@@ -138,17 +137,14 @@ class UtilityFunctionsTestCase(TestCase):
             email="admin@example.com", password="password123"
         )
 
-    def test_is_staff_or_superuser_normal_user(self):
-        """Test avec un utilisateur normal"""
-        self.assertFalse(is_staff_or_superuser(self.normal_user))
-
-    def test_is_staff_or_superuser_staff_user(self):
-        """Test avec un utilisateur staff"""
-        self.assertTrue(is_staff_or_superuser(self.staff_user))
-
-    def test_is_staff_or_superuser_superuser(self):
-        """Test avec un superutilisateur"""
-        self.assertTrue(is_staff_or_superuser(self.superuser))
+    def test_user_is_staff_flags(self):
+        """Vérifie les flags is_staff et is_superuser sur les modèles Django."""
+        self.assertFalse(self.normal_user.is_staff)
+        self.assertFalse(self.normal_user.is_superuser)
+        self.assertTrue(self.staff_user.is_staff)
+        self.assertFalse(self.staff_user.is_superuser)
+        self.assertTrue(self.superuser.is_staff)
+        self.assertTrue(self.superuser.is_superuser)
 
 
 @override_settings(
@@ -207,8 +203,10 @@ class HomeViewTestCase(TestCase):
         self.assertTemplateUsed(response, "home/index.html")
         self.assertIsNone(response.context["services"])
         self.assertIsNone(response.context["communes"])
-        self.assertIsNone(response.context["nb_communes"])
-        self.assertIsNone(response.context["nb_habitants"])
+        # nb_communes/nb_habitants: 0 quand aucun enregistrement
+        # (vs None quand la liste est intentionnellement vide)
+        self.assertEqual(response.context["nb_communes"], 0)
+        self.assertEqual(response.context["nb_habitants"], 0)
 
     def test_home_view_get_with_data(self):
         """Test de la vue d'accueil GET avec des données"""
@@ -246,7 +244,10 @@ class HomeViewTestCase(TestCase):
         self.assertIn("CONTACT - CCSA", email_ccsa.subject)
         self.assertIn("Jean", email_ccsa.subject)
         self.assertIn("Dupont", email_ccsa.subject)
-        self.assertEqual(email_ccsa.from_email, "jean.dupont@example.com")
+        # From = DEFAULT_FROM_EMAIL (securite SPF/DKIM)
+        self.assertEqual(email_ccsa.from_email, "nepasrepondre@cc-sudavesnois.fr")
+        # Reply-To = email du visiteur (pour reponse)
+        self.assertIn("jean.dupont@example.com", email_ccsa.reply_to)
         self.assertIn("contact@ccsa.fr", email_ccsa.to)
 
         # Vérifier le deuxième email (confirmation client)
@@ -254,7 +255,8 @@ class HomeViewTestCase(TestCase):
         self.assertIn("CONFIRMATION DE CONTACT - CCSA", email_client.subject)
         self.assertIn("Jean", email_client.subject)
         self.assertIn("Dupont", email_client.subject)
-        self.assertEqual(email_client.from_email, "contact@ccsa.fr")
+        # Confirmation envoyee depuis nepasrepondre@cc-sudavesnois.fr
+        self.assertIn("nepasrepondre@cc-sudavesnois.fr", email_client.from_email)
         self.assertIn("jean.dupont@example.com", email_client.to)
 
     @override_settings(TESTING=False)
@@ -335,7 +337,11 @@ class HomeViewTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 12)
 
     def test_home_view_post_valid_form_without_contact_email(self):
-        """Test du formulaire de contact valide sans email de contact actif"""
+        """Test du formulaire de contact valide sans email de contact actif.
+
+        L'adresse par defaut ``contact@cc-sudavesnois.fr`` doit etre
+        utilisee meme si la table ``ContactEmail`` est vide.
+        """
         # Supprimer les emails de contact
         ContactEmail.objects.all().delete()
 
@@ -348,19 +354,16 @@ class HomeViewTestCase(TestCase):
             "rgpd": True,  # Champ RGPD requis
         }
 
-        with patch("builtins.print") as mock_print:
-            response = self.client.post(reverse("home"), form_data)
-            self.assertEqual(response.status_code, 302)
-            self.assertRedirects(response, reverse("home"))
+        response = self.client.post(reverse("home"), form_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("home"))
 
-            # Vérifier que le message d'erreur a été affiché
-            mock_print.assert_called_with("Aucun contact CCSA défini")
-
-            # Vérifier qu'aucun email n'a été envoyé
-            self.assertEqual(len(mail.outbox), 0)
+        # 2 emails envoyes (CCSA + confirmation) avec l'adresse par defaut
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn("contact@cc-sudavesnois.fr", mail.outbox[0].to)
 
     def test_home_view_post_invalid_form(self):
-        """Test du formulaire de contact invalide"""
+        """Test du formulaire de contact invalide: 200 + erreurs, pas 302."""
         form_data = {
             "first_name": "",  # Champ requis vide
             "last_name": "Dupont",
@@ -369,16 +372,15 @@ class HomeViewTestCase(TestCase):
             "message": "Ceci est un message de test",
         }
 
-        with patch("builtins.print") as mock_print:
-            response = self.client.post(reverse("home"), form_data)
-            self.assertEqual(response.status_code, 302)
-            self.assertRedirects(response, reverse("home"))
+        response = self.client.post(reverse("home"), form_data)
+        # Comportement RGAA-friendly: on re-rend la page avec les erreurs
+        # au lieu d'un redirect POST-redirect-GET silencieux.
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "home/index.html")
+        self.assertTrue(response.context["form_has_errors"])
 
-            # Vérifier que les erreurs ont été affichées
-            mock_print.assert_called()
-
-            # Vérifier qu'aucun email n'a été envoyé
-            self.assertEqual(len(mail.outbox), 0)
+        # Vérifier qu'aucun email n'a été envoyé
+        self.assertEqual(len(mail.outbox), 0)
 
 
 @override_settings(MEDIA_ROOT="test_media_home")
@@ -387,6 +389,8 @@ class PresentationViewTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        # @cache_page: on nettoie le cache pour eviter les interferences
+        cache.clear()
 
     def test_presentation_view_without_data(self):
         """Test de la vue présentation sans données"""
@@ -558,20 +562,18 @@ class SitemapTestCase(TestCase):
         self.assertEqual(location, expected_url)
 
     def test_journal_sitemap(self):
-        """Test du sitemap du journal"""
+        """Test du sitemap du journal (liste de noms d'URL)."""
         sitemap = JournalSitemap()
 
         # Vérifier les propriétés
         self.assertEqual(sitemap.priority, 0.6)
         self.assertEqual(sitemap.changefreq, "monthly")
 
-        # Vérifier les items
+        # Items contient un seul nom d'URL
         items = list(sitemap.items())
-        self.assertIn(self.journal, items)
-
-        # Vérifier lastmod
-        lastmod = sitemap.lastmod(self.journal)
-        self.assertEqual(lastmod, self.journal.release_date)
+        self.assertEqual(items, ["journal:journal"])
+        location = sitemap.location("journal:journal")
+        self.assertEqual(location, reverse("journal:journal"))
 
         # Note: Le test de location est commenté car l'URL 'journal_detail' n'existe pas
         # dans les URLs actuelles de l'application journal
