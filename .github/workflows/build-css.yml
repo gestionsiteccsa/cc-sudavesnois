@@ -33,6 +33,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-css
+  cancel-in-progress: false
+
 jobs:
   build-css:
     name: Build & commit output.min.css
@@ -43,13 +47,12 @@ jobs:
       - name: Checkout du dépôt
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Installer les dépendances npm
@@ -60,23 +63,13 @@ jobs:
           npm run build:css
           npm run build:css:prod
 
-      - name: Vérifier les modifications
-        id: check
-        run: |
-          if git diff --quiet --exit-code static/css/output.min.css; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Aucune modification du CSS minifié, rien à committer."
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Le CSS minifié a été mis à jour."
-          fi
-
       - name: Committer le CSS régénéré
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add static/css/output.min.css static/css/output.css
-          git commit -m "build(css): regen output.min.css (auto)"
-          git pull --rebase origin main
-          git push origin main
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "build(css): regen output.min.css (auto)"
+          file_pattern: static/css/output.min.css static/css/output.css
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+          skip_dirty_check: false
+          push_options: '--force-with-lease'
