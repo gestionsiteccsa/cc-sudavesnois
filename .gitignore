@@ -5,7 +5,9 @@
 __pycache__/
 db.sqlite3
 media/
-staticfiles/
+# staticfiles/ — versionné pour permettre le déploiement sur serveur mutualisé
+# (contient staticfiles.json + fichiers statiques hachés générés par collectstatic)
+# Voir app/settings.py (WHITENOISE_MAX_AGE) et README.md section "Mise à jour en production".
 
 # Environnements virtuels
 venv/

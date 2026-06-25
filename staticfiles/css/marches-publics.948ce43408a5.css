@@ -1,0 +1,53 @@
+/* Styles spécifiques pour la page des marchés publics */
+
+/* Animation pour les cartes */
+.bg-gray-50 {
+    transition: all 0.3s ease;
+}
+
+/* Style pour les icônes */
+.bg-primary\/10 {
+    transition: all 0.3s ease;
+}
+
+.bg-gray-50:hover .bg-primary\/10 {
+    background-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.1);
+}
+
+/* Style pour les titres des cartes */
+.bg-gray-50 h3 {
+    transition: color 0.3s ease;
+}
+
+.bg-gray-50:hover h3 {
+    color: #3b82f6;
+}
+
+/* Style pour les étapes numérotées */
+.flex-shrink-0.h-8.w-8 {
+    transition: all 0.3s ease;
+}
+
+.flex:hover .flex-shrink-0.h-8.w-8 {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+/* Style pour le bouton principal */
+.inline-flex.items-center {
+    transition: all 0.3s ease;
+}
+
+.inline-flex.items-center:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ml-14 {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+}

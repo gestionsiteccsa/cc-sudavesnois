@@ -152,7 +152,34 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Configuration WhiteNoise pour servir les fichiers statiques en production
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# (Django 6.0+ : STORAGES remplace STATICFILES_STORAGE)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Cache long terme (1 an) pour les fichiers statiques collectés.
+# Sans danger car `collectstatic` renomme chaque fichier avec un hash
+# dérivé de son contenu : un changement de contenu => une nouvelle URL
+# => le navigateur retélécharge automatiquement la nouvelle version.
+WHITENOISE_MAX_AGE = 31536000  # 1 an en secondes
+
+# Active l'en-tête "immutable" sur tous les fichiers servis : le navigateur
+# ne lance même pas de requête de revalidation (If-Modified-Since) pendant
+# toute la durée du cache.
+def _whitenoise_all_files_immutable(path, url):  # noqa: ARG001
+    return True
+
+
+WHITENOISE_IMMUTABLE_FILE_TEST = _whitenoise_all_files_immutable
+
+# Ne conserve dans staticfiles/ que les fichiers hachés (économise de l'espace
+# en supprimant les originaux non-référencés ; le manifest fait le mapping).
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # Force Django à servir les fichiers statiques même en production
 STATICFILES_FINDERS = [

@@ -306,9 +306,11 @@ Utilisateur → Nginx → Gunicorn → Django → PostgreSQL
 1. Configurer PostgreSQL et les variables d'environnement
 2. Installer les dépendances et appliquer les migrations
 3. Générer le CSS Tailwind minifié pour la production : `npm install && npm run build:css:prod`
-4. Collecter les fichiers statiques : `python manage.py collectstatic`
+4. Collecter les fichiers statiques : `python manage.py collectstatic --noinput`
 5. Configurer Nginx/Apache en proxy inverse
 6. Activer HTTPS (Let's Encrypt)
+
+> **Cache statique** : WhiteNoise est configuré pour servir les fichiers avec un cache de **1 an + header `immutable`** (cf. `app/settings.py > WHITENOISE_MAX_AGE` et `WHITENOISE_IMMUTABLE_FILE_TEST`). Les fichiers collectés sont automatiquement renommés avec un hash de contenu (`output.min.38a16c852cb5.css`) — tout changement de contenu génère une nouvelle URL, ce qui force le navigateur à re-télécharger sans intervention manuelle.
 
 ### Mise à jour en production
 
