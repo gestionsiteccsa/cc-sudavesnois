@@ -28,9 +28,6 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build-css.yml'
-    paths-ignore:
-      - 'static/css/output.css'
-      - 'static/css/output.min.css'
   workflow_dispatch:
 
 permissions:
