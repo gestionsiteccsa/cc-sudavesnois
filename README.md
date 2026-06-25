@@ -378,7 +378,7 @@ git push origin main
 
 Si vous n'avez accès ni à Node.js, ni à un poste de dev, le workflow GitHub Actions `.github/workflows/build-css.yml` s'en charge automatiquement :
 
-- **Déclencheur** : push sur `main` modifiant un template HTML, `staticfiles/**`, `tailwind.config.js` ou `package.json`.
+- **Déclencheur** : push sur `main` modifiant un template HTML, `static/css/input.css`, `tailwind.config.js` ou `package.json`.
 - **Action** : installe Node.js 20, lance `npm ci`, exécute `npm run build:css` et `npm run build:css:prod`, puis commit `static/css/output.min.css` directement sur la branche (avec le message `build(css): regen output.min.css (auto)`).
 - **Anti-boucle** : les modifications de `static/css/output.css` et `static/css/output.min.css` n'ont aucun effet sur les classes HTML et n'ont pas besoin d'être buildées à nouveau. Le workflow utilise `paths-ignore` pour ne pas se redéclencher sur ses propres commits.
 

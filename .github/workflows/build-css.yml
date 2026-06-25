@@ -23,7 +23,7 @@ on:
       - 'rapports_activite/templates/**'
       - 'semestriels/templates/**'
       - 'services/templates/**'
-      - 'staticfiles/**'
+      - 'static/css/input.css'
       - 'tailwind.config.js'
       - 'package.json'
       - 'package-lock.json'
