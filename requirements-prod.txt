@@ -1,0 +1,50 @@
+# Requirements minimaux pour la production (hébergement mutualisé)
+# -----------------------------------------------------------
+# Ce fichier liste les dépendances strictement nécessaires au
+# fonctionnement du site en production. Il est plus léger que
+# `requirements.txt` qui inclut des outils de dev/test inutiles
+# en prod (ex: pygame, Flask, web3, O365...).
+#
+# Audit de sécurité 2026-01 (extrait) :
+# - cryptography 41.0.5  -> CVE-2024-26130 (>= 43.0.1 requis)
+# - aiohttp     3.8.4   -> CVE-2024-23334 (>= 3.9.2 requis)
+# - lxml        5.2.1   -> >= 5.3.0 (plusieurs CVE XSS/SSRF)
+# - requests    2.32.3  -> >= 2.32.4 (CVE-2024-35195)
+# - Django      5.1.7   -> mettre à jour 5.2 LTS ou 6.0
+# - urllib3     <2.0    -> >= 2.0 (CVE-2023-43804)
+#
+# Installation :
+#   pip install -r requirements-prod.txt
+#   pip install --upgrade cryptography aiohttp lxml requests
+#
+# Vérification de sécurité :
+#   pip install pip-audit
+#   pip-audit -r requirements-prod.txt
+
+# --- Core ---
+Django>=5.2,<7.0
+django-environ>=0.13
+django-csp>=4.0
+django-widget-tweaks>=1.5
+django-watson>=1.6
+
+# --- Sécurité / crypto ---
+cryptography>=43.0.1
+bleach>=6.2
+
+# --- HTTP / email ---
+requests>=2.32.4
+urllib3>=2.2
+
+# --- Génération PDF (calendrier de collecte) ---
+reportlab>=4.2
+
+# --- Production server ---
+gunicorn>=22.0
+whitenoise>=6.7
+
+# --- WSGI / static files (selon hébergeur) ---
+# Souvent fournis par l'hébergeur ; à décommenter si besoin :
+# psycopg[binary]>=3.2      # si PostgreSQL
+# django-redis>=5.4          # si cache Redis (non utilisé en mutu)
+# sentry-sdk>=2.0            # si Sentry activé

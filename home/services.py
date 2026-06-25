@@ -4,13 +4,17 @@ Services pour la gestion des emails et autres fonctionnalités métier.
 
 import logging
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any, Dict, List, Optional, Union
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
+
+# Destinataires par défaut (surchargeables via settings/env)
+DEFAULT_PLUI_TO_EMAILS = ["contact@cc-sudavesnois.fr"]
+DEFAULT_PLUI_BCC_EMAILS: List[str] = []  # à définir en settings/env si besoin
 
 
 class EmailService:
@@ -19,34 +23,33 @@ class EmailService:
     @staticmethod
     def send_plui_modification_request(
         form_data: Dict[str, Any],
-        to_emails=None,
-        bcc_emails=None,
+        to_emails: Optional[Union[str, List[str]]] = None,
+        bcc_emails: Optional[Union[str, List[str]]] = None,
     ) -> bool:
         """
         Envoie un email de demande de modification PLUi.
 
         Args:
-            form_data: Données du formulaire
-            to_emails: Liste des emails en destinataires principaux
-            bcc_emails: Liste des emails en copie cachée (CCI)
+            form_data: Données du formulaire (dict cleaned_data).
+            to_emails: Liste des destinataires principaux (str ou list).
+                Défaut : ``settings.PLUI_TO_EMAILS`` ou ``DEFAULT_PLUI_TO_EMAILS``.
+            bcc_emails: Liste des copies cachées (str ou list).
+                Défaut : ``settings.PLUI_BCC_EMAILS`` ou ``DEFAULT_PLUI_BCC_EMAILS``.
 
         Returns:
-            bool: True si l'envoi a réussi, False sinon
+            True si l'envoi a réussi, False sinon.
         """
         if to_emails is None:
-            to_emails = [
-                "contact@cc-sudavesnois.fr",
-            ]
+            to_emails = getattr(settings, "PLUI_TO_EMAILS", DEFAULT_PLUI_TO_EMAILS)
         elif isinstance(to_emails, str):
             to_emails = [to_emails]
 
         if bcc_emails is None:
-            bcc_emails = ["j.brechoire@cc-sudavesnois.fr"]
+            bcc_emails = getattr(settings, "PLUI_BCC_EMAILS", DEFAULT_PLUI_BCC_EMAILS)
         elif isinstance(bcc_emails, str):
             bcc_emails = [bcc_emails]
 
         try:
-            # Préparation du contexte
             context = {
                 "nom_prenom": form_data.get("nom_prenom", ""),
                 "adresse": form_data.get("adresse", ""),
@@ -58,21 +61,21 @@ class EmailService:
                 "date_demande": datetime.now().strftime("%d/%m/%Y à %H:%M"),
             }
 
-            # Rendu du template HTML
             html_content = render_to_string("home/email_plui_demande.html", context)
-
-            # Contenu texte de l'email
             text_content = EmailService._generate_text_content(context)
 
-            # Création et envoi de l'email
             subject = (
                 f"Demande de modification PLUi - "
                 f"{context['nom_prenom']} ({context['commune']})"
             )
             from_email = settings.DEFAULT_FROM_EMAIL
-            reply_to = [context["email"]]
+            reply_to = [context["email"]] if context["email"] else None
             msg = EmailMultiAlternatives(
-                subject, text_content, from_email, to_emails, bcc=bcc_emails,
+                subject,
+                text_content,
+                from_email,
+                to_emails,
+                bcc=bcc_emails,
                 reply_to=reply_to,
             )
             msg.attach_alternative(html_content, "text/html")
@@ -82,16 +85,18 @@ class EmailService:
                 "Email PLUi envoyé avec succès pour %s (%s) vers %s (cci: %s)",
                 context["nom_prenom"],
                 context["commune"],
-                ", ".join(to_emails),
-                ", ".join(bcc_emails),
+                ", ".join(to_emails) if to_emails else "(aucun)",
+                ", ".join(bcc_emails) if bcc_emails else "(aucun)",
             )
             return True
 
-        except (OSError, ValueError, RuntimeError) as e:
+        except Exception as e:
+            # Catch large: smtplib/SMTPException, socket.gaierror, ConnectionError...
             logger.error(
                 "Erreur lors de l'envoi de l'email PLUi pour %s: %s",
                 form_data.get("nom_prenom", "N/A"),
-                str(e),
+                e,
+                exc_info=True,
             )
             return False
 
@@ -121,46 +126,3 @@ de la Communauté de Communes Sud-Avesnois.
 Merci de traiter cette demande dans les plus brefs délais.
         """
 
-
-class PLUiService:
-    """Service pour la gestion des demandes PLUi."""
-
-    @staticmethod
-    def validate_form_data(form_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Valide les données du formulaire PLUi.
-
-        Args:
-            form_data: Données du formulaire
-
-        Returns:
-            Dict contenant les erreurs de validation
-        """
-        errors = {}
-
-        # Validation des champs obligatoires
-        required_fields = [
-            "nom_prenom",
-            "adresse",
-            "email",
-            "telephone",
-            "parcelles",
-            "commune",
-            "demande",
-        ]
-
-        for field in required_fields:
-            if not form_data.get(field, "").strip():
-                errors[field] = f"Le champ {field} est obligatoire."
-
-        # Validation spécifique de l'email
-        email = form_data.get("email", "")
-        if email and "@" not in email:
-            errors["email"] = "Veuillez saisir une adresse email valide."
-
-        # Validation de la longueur de la demande
-        demande = form_data.get("demande", "")
-        if demande and len(demande.strip()) < 10:
-            errors["demande"] = "La description doit contenir au moins 10 caractères."
-
-        return errors

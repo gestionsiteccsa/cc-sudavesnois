@@ -1,5 +1,11 @@
 """Données de collecte des déchets pour génération PDF."""
 
+import datetime
+import logging
+from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
 # Structure des données de collecte
 city_data = {
     "Anor": {
@@ -311,65 +317,107 @@ city_data = {
 def get_dates_verre(commune, jour=None):
     """
     Récupère les dates de collecte du verre pour une commune.
-    
+
     Args:
         commune: Nom de la commune
         jour: Jour de collecte (optionnel, pour Fourmies/Trélon)
-    
+
     Returns:
-        Liste des dates ou None si pas trouvé
+        Liste des dates (triees) ou None si pas trouvé.
     """
     if commune not in city_data:
         return None
-    
+
     verre_data = city_data[commune].get("verre", {})
-    
-    # Si c'est un dictionnaire avec un seul jour
-    if "dates" in verre_data:
-        return verre_data["dates"]
-    
-    # Si c'est un dictionnaire avec plusieurs jours (Fourmies/Trélon)
-    if jour and jour.lower() in verre_data:
-        return verre_data[jour.lower()]
-    
-    # Si pas de jour spécifié mais qu'il y a un jour par défaut
-    if "jour" in verre_data and verre_data["jour"] in verre_data:
-        return verre_data[verre_data["jour"]]
-    
+
+    # Cas Fourmies/Trélon: dict indexé par jour
+    if jour and isinstance(verre_data, dict) and jour.lower() in verre_data:
+        return _sort_and_validate_dates(verre_data[jour.lower()])
+
+    # Cas "jour" + "dates" pour les communes mono-jour
+    if isinstance(verre_data, dict) and "dates" in verre_data:
+        return _sort_and_validate_dates(verre_data["dates"])
+
+    # Fallback: jour par defaut
+    if isinstance(verre_data, dict) and "jour" in verre_data and verre_data["jour"] in verre_data:
+        return _sort_and_validate_dates(verre_data[verre_data["jour"]])
+
     return None
 
 
 def get_jour_ordures(commune, rue=None):
     """
     Récupère le jour de collecte des ordures.
-    
+
     Args:
         commune: Nom de la commune
         rue: Nom de la rue (optionnel, pour Fourmies/Trélon)
-    
+
     Returns:
-        Tuple (jour, rue) ou (None, None) si pas trouvé
+        Tuple (jour, rue) ou (None, None) si pas trouvé.
     """
     if commune not in city_data:
         return None, None
-    
+
     ordures_data = city_data[commune].get("ordures", {})
-    
-    # Si c'est un string (jour unique pour toute la commune)
+
     if isinstance(ordures_data, str):
         return ordures_data, None
-    
-    # Si c'est un dict avec des rues (Fourmies/Trélon)
+
     if rue:
         rue_lower = rue.lower()
         for jour, rues in ordures_data.items():
             for r in rues:
                 if r.lower() == rue_lower:
                     return jour, r
-    
+
     return None, None
 
 
 def get_available_cities():
-    """Retourne la liste des communes disponibles."""
+    """Retourne la liste des communes disponibles (triees)."""
     return sorted(city_data.keys())
+
+
+def _sort_and_validate_dates(dates: List[str]) -> List[str]:
+    """
+    Trie et valide les dates ISO (YYYY-MM-DD).
+    Les dates invalides sont journalisees et exclues.
+    """
+    valid = []
+    for d in dates:
+        try:
+            datetime.datetime.strptime(d, "%Y-%m-%d")
+            valid.append(d)
+        except (ValueError, TypeError):
+            logger.warning("Date invalide dans collecte_data: %r", d)
+    valid.sort()
+    return valid
+
+
+def validate_city_data() -> List[str]:
+    """
+    Valide la structure complete de ``city_data``.
+    Retourne la liste des anomalies (vide = OK).
+    """
+    anomalies: List[str] = []
+    for commune, data in city_data.items():
+        if "verre" not in data:
+            anomalies.append(f"{commune}: clé 'verre' manquante")
+            continue
+        verre = data["verre"]
+        if isinstance(verre, dict):
+            if "dates" in verre:
+                _sort_and_validate_dates(verre["dates"])
+            elif "jour" in verre:
+                if verre["jour"] not in verre:
+                    anomalies.append(
+                        f"{commune}: 'jour'={verre['jour']!r} absent du dict verre"
+                    )
+            else:
+                for j in list(verre.keys()):
+                    if not isinstance(verre[j], list):
+                        anomalies.append(
+                            f"{commune}: verre[{j!r}] n'est pas une liste"
+                        )
+    return anomalies
