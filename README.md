@@ -25,6 +25,7 @@
 - [Tests](#tests)
 - [Accessibilité](#accessibilité)
 - [Déploiement](#déploiement)
+- [Mise à jour en production](#mise-à-jour-en-production)
 - [Documentation](#documentation)
 - [Contribuer](#contribuer)
 
@@ -308,6 +309,59 @@ Utilisateur → Nginx → Gunicorn → Django → PostgreSQL
 4. Collecter les fichiers statiques : `python manage.py collectstatic`
 5. Configurer Nginx/Apache en proxy inverse
 6. Activer HTTPS (Let's Encrypt)
+
+### Mise à jour en production
+
+Procédure à exécuter **sur le serveur** (dans l'ordre) après chaque déploiement de code :
+
+```bash
+# 0. Se placer dans le répertoire du projet et activer l'environnement virtuel
+cd /var/www/cc-sudavesnois   # adapter le chemin
+source .venv/bin/activate    # Linux — ou .venv\Scripts\activate sur Windows
+
+# 1. Sauvegarder la base de données AVANT toute migration
+python manage.py create_backup
+# Ou via PostgreSQL directement :
+# pg_dump -U <user> -h <host> <dbname> > backups/pre_update_$(date +%Y%m%d_%H%M%S).sql
+
+# 2. Récupérer les dernières modifications
+git pull origin main
+
+# 3. Mettre à jour les dépendances Python
+pip install -r requirements.txt --upgrade
+
+# 4. Mettre à jour les dépendances Node.js (si package.json a changé)
+npm install
+
+# 5. Appliquer les migrations de la base de données
+#    (makemigrations n'est nécessaire que si de nouveaux modèles ont été ajoutés
+#     par les devs ; en prod on applique juste les migrations existantes)
+python manage.py migrate
+
+# 6. Reconstruire le CSS Tailwind minifié pour la production
+npm run build:css:prod
+
+# 7. Collecter les fichiers statiques (CSS, JS, images, fonts)
+python manage.py collectstatic --noinput
+
+# 8. Reconstruire l'index de recherche full-text (si l'app search a été modifiée)
+python manage.py buildwatson
+
+# 9. Redémarrer les services applicatifs
+sudo systemctl restart gunicorn      # ou supervisor, pm2, etc.
+sudo systemctl restart nginx         # si la conf Nginx a changé
+
+# 10. Vérifier le bon fonctionnement
+sudo systemctl status gunicorn
+tail -n 50 /var/log/gunicorn/error.log
+curl -I https://www.cc-sudavesnois.fr  # doit retourner 200 OK
+```
+
+> **Bonnes pratiques**
+> - Toujours faire la sauvegarde **avant** `migrate` (étape 1).
+> - Exécuter la procédure pendant une fenêtre de maintenance à faible trafic.
+> - Vérifier les logs après redémarrage pour s'assurer qu'il n'y a pas d'erreur.
+> - En cas de rollback : `git checkout <commit_precedent>` puis rejouer les étapes 3 à 9.
 
 ---
 
