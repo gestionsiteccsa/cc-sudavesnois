@@ -50,28 +50,76 @@
         </div>
     </section>
 
-    <!-- Appel à candidature -->
-    <section class="py-12 bg-gray-50 dark:bg-gray-800" aria-labelledby="clea-candidature-heading">
+    <!-- Appels à candidatures -->
+    <section class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900" aria-labelledby="clea-candidature-heading">
         <div class="container mx-auto px-4 md:px-6">
-            <div class="max-w-5xl mx-auto">
-                <h2 id="clea-candidature-heading" class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">
-                    Appel à candidature
+            <div class="max-w-6xl mx-auto">
+                <h2 id="clea-candidature-heading" class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-10">
+                    Appels à candidatures
                 </h2>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="{% static 'pdf/CLEA/Appel à candidatures - CLEA Sud-Avesnois - 2026-2027 - danse et expression corporelle - Un pas de côté pour faire bouger les lignes.pdf' %}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary" aria-label="Consulter l'appel à candidature Résidence d'artiste (PDF, nouvelle fenêtre)">
-                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        Résidence d'artiste
-                    </a>
-                    <a href="{% static 'pdf/CLEA/Appel à candidatures EMILE - CLEA Sud-Avesnois - 2026-2027 - Un pas de côté pour faire bouger les lignes.pdf' %}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] bg-primary text-white font-medium px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-primary" aria-label="Consulter l'appel à candidature Résidence journalistique (PDF, nouvelle fenêtre)">
-                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        Résidence journalistique
-                    </a>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <!-- Résidence d'artiste -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md overflow-hidden flex flex-col border-t-4 border-primary">
+                        <div class="p-6 md:p-8 flex flex-col flex-grow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-2.5 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Danse & mouvement</span>
+                            </div>
+                            <p id="clea-pdf-artiste-desc" class="text-gray-700 dark:text-gray-200 text-lg leading-relaxed mb-6 flex-grow">
+                                Pour une résidence-mission en direction des artistes et collectifs du mouvement, de la danse et de l'expression corporelle
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <a href="{% static 'pdf/CLEA/appel-candidatures-danse-2026-2027.pdf' %}" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center min-h-[44px] bg-primary text-white font-medium px-4 py-2.5 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-700" aria-label="Consulter l'appel à candidatures Résidence d'artiste (PDF, nouvelle fenêtre)" aria-describedby="clea-pdf-artiste-desc">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Consulter
+                                </a>
+                                <a href="{% static 'pdf/CLEA/appel-candidatures-danse-2026-2027.pdf' %}" download class="flex-1 inline-flex items-center justify-center min-h-[44px] bg-white dark:bg-gray-600 text-primary dark:text-blue-300 font-medium px-4 py-2.5 rounded-md border-2 border-primary dark:border-blue-400 hover:bg-primary/5 dark:hover:bg-gray-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-700" aria-label="Télécharger l'appel à candidatures Résidence d'artiste (PDF)" aria-describedby="clea-pdf-artiste-desc">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    Télécharger
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Résidence journalistique -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md overflow-hidden flex flex-col border-t-4 border-primary">
+                        <div class="p-6 md:p-8 flex flex-col flex-grow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="bg-primary/10 dark:bg-primary/20 p-2.5 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-6 w-6 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Éducation aux médias</span>
+                            </div>
+                            <p id="clea-pdf-journalistique-desc" class="text-gray-700 dark:text-gray-200 text-lg leading-relaxed mb-6 flex-grow">
+                                Pour une résidence-mission d'éducation aux médias, à l'information et la liberté d'expression en direction des journalistes
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <a href="{% static 'pdf/CLEA/appel-candidatures-emile-2026-2027.pdf' %}" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center min-h-[44px] bg-primary text-white font-medium px-4 py-2.5 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-700" aria-label="Consulter l'appel à candidatures Résidence journalistique (PDF, nouvelle fenêtre)" aria-describedby="clea-pdf-journalistique-desc">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Consulter
+                                </a>
+                                <a href="{% static 'pdf/CLEA/appel-candidatures-emile-2026-2027.pdf' %}" download class="flex-1 inline-flex items-center justify-center min-h-[44px] bg-white dark:bg-gray-600 text-primary dark:text-blue-300 font-medium px-4 py-2.5 rounded-md border-2 border-primary dark:border-blue-400 hover:bg-primary/5 dark:hover:bg-gray-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-700" aria-label="Télécharger l'appel à candidatures Résidence journalistique (PDF)" aria-describedby="clea-pdf-journalistique-desc">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    Télécharger
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
