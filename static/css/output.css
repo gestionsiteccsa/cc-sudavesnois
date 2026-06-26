@@ -1369,6 +1369,10 @@ video {
   flex-shrink: 0;
 }
 
+.shrink-0 {
+  flex-shrink: 0;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
@@ -2331,6 +2335,10 @@ video {
   --tw-bg-opacity: 0.7;
 }
 
+.bg-gradient-to-b {
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+
 .bg-gradient-to-br {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
@@ -2441,6 +2449,10 @@ video {
   --tw-gradient-to: rgb(122 159 10 / 0.05) var(--tw-gradient-to-position);
 }
 
+.to-white {
+  --tw-gradient-to: #fff var(--tw-gradient-to-position);
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -2474,6 +2486,10 @@ video {
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.p-2\.5 {
+  padding: 0.625rem;
 }
 
 .p-3 {
@@ -3874,6 +3890,10 @@ video {
   --tw-ring-offset-color: #005a9e;
 }
 
+.focus\:ring-offset-white:focus {
+  --tw-ring-offset-color: #fff;
+}
+
 .focus-visible\:outline-none:focus-visible {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -4407,6 +4427,12 @@ video {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
+.dark\:from-gray-800:is(.dark *) {
+  --tw-gradient-from: #1f2937 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(31 41 55 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
 .dark\:from-primary\/20:is(.dark *) {
   --tw-gradient-from: rgb(0 90 158 / 0.2) var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(0 90 158 / 0) var(--tw-gradient-to-position);
@@ -4429,6 +4455,10 @@ video {
 
 .dark\:to-gray-700\/50:is(.dark *) {
   --tw-gradient-to: rgb(55 65 81 / 0.5) var(--tw-gradient-to-position);
+}
+
+.dark\:to-gray-900:is(.dark *) {
+  --tw-gradient-to: #111827 var(--tw-gradient-to-position);
 }
 
 .dark\:to-primary\/10:is(.dark *) {
@@ -4836,6 +4866,10 @@ video {
 .dark\:hover\:text-white:hover:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.dark\:focus\:ring-offset-gray-700:focus:is(.dark *) {
+  --tw-ring-offset-color: #374151;
 }
 
 .dark\:focus\:ring-offset-gray-800:focus:is(.dark *) {
