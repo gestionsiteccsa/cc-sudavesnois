@@ -99,6 +99,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _("utilisateur")
         verbose_name_plural = _("utilisateurs")
+        indexes = [
+            models.Index(
+                fields=["-is_superuser", "-is_staff", "username"],
+                name="user_admin_list_idx",
+            ),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["username"],
+                condition=~models.Q(username=""),
+                name="unique_nonempty_username",
+            ),
+        ]
 
     def __str__(self):
         return self.email

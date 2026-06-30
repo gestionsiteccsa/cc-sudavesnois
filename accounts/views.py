@@ -1,21 +1,45 @@
 import hashlib
 import logging
+import smtplib
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.cache import cache
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 
+from .forms import (
+    AdminUserCreationForm,
+    CustomAuthenticationForm,
+    CustomPasswordResetForm,
+    CustomUserChangeForm,
+    CustomUserCreationForm,
+)
+from .models import CustomUser
+
 logger = logging.getLogger(__name__)
+audit_logger = logging.getLogger("accounts.audit")
+
+User = get_user_model()
+
+
+class UserAction:
+    """Actions d'administration disponibles sur un utilisateur."""
+
+    ACTIVATE = "activate"
+    DEACTIVATE = "deactivate"
+    DELETE = "delete"
+    _ALL = {ACTIVATE, DEACTIVATE, DELETE}
 
 
 def _rate_limit_key(prefix, value):
@@ -28,23 +52,27 @@ def _rate_limit_key(prefix, value):
     return f"{prefix}:{digest}"
 
 
-from .forms import (
-    CustomAuthenticationForm,
-    CustomPasswordResetForm,
-    CustomUserChangeForm,
-    CustomUserCreationForm,
-)
-from .models import CustomUser
-
-
 def est_moderateur(user):
     """
     Renvoie True si l'utilisateur est un modérateur ou un superutilisateur,
     sinon False.
     """
-    if user.groups.filter(name="moderator").exists() or user.is_superuser:
-        return True
-    return False
+    return user.groups.filter(name="moderator").exists() or user.is_superuser
+
+
+def _apply_session_expiry(request, remember_me: str | None) -> None:
+    """
+    Configure l'expiration de la session en fonction de la case
+    « Se souvenir de moi ».
+
+    - Case cochée : la session dure ``settings.SESSION_COOKIE_AGE``
+      secondes (30 jours) et est glissante (``SESSION_SAVE_EVERY_REQUEST``).
+    - Case non cochée : la session expire à la fermeture du navigateur.
+    """
+    if remember_me:
+        request.session.set_expiry(settings.SESSION_COOKIE_AGE)
+    else:
+        request.session.set_expiry(0)
 
 
 def register_view(request):
@@ -64,7 +92,7 @@ def register_view(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
             # Le premier utilisateur devient automatiquement superadmin
             user.is_staff = True
             user.is_superuser = True
@@ -164,6 +192,7 @@ def login_view(request):
                         pass
 
                 login(request, user)
+                _apply_session_expiry(request, request.POST.get("remember_me"))
                 logger.info(f"Connexion réussie pour l'utilisateur {email}")
                 messages.success(request, _("Vous êtes maintenant connecté."))
                 return redirect("accounts:profile")
@@ -358,66 +387,193 @@ def admin_dashboard(request):
     return render(request, "accounts/admin.html", context)
 
 
+USER_LIST_PAGE_SIZE = 25
+
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def admin_user_list(request):
-    """Vue de liste des utilisateurs pour l'administrateur"""
+    """
+    Vue de liste des utilisateurs pour l'administrateur.
+
+    - GET : affiche la liste paginée (recherche par email ou username).
+    - POST : applique une action d'administration (activate/deactivate/delete).
+      L'action est validée strictement ; toute valeur inconnue est rejetée
+      avec un message d'erreur explicite.
+    """
     if request.method == "POST":
         user_id = request.POST.get("user_id")
         action = request.POST.get("action")
 
         if user_id and action:
-            user = get_object_or_404(CustomUser, id=user_id)
-
-            # Empêcher la modification des superadmins par d'autres superadmins
-            if user.is_superuser and user != request.user:
+            if action not in UserAction._ALL:
+                logger.warning(
+                    "Action admin inconnue reçue: %r (user_id=%s, request_user=%s)",
+                    action,
+                    user_id,
+                    request.user.pk,
+                )
                 messages.error(
-                    request,
-                    _("Vous ne pouvez pas modifier un autre " "superadministrateur."),
+                    request, _("Action inconnue. Aucun changement n'a été effectué.")
                 )
                 return redirect("accounts:admin_user_list")
 
-            if action == "activate":
+            user = get_object_or_404(CustomUser, id=user_id)
+
+            # Un superadmin ne peut pas modifier un autre superadmin
+            if user.is_superuser and user != request.user:
+                messages.error(
+                    request,
+                    _("Vous ne pouvez pas modifier un autre superadministrateur."),
+                )
+                return redirect("accounts:admin_user_list")
+
+            # Empêcher un administrateur de s'auto-verrouiller
+            if user == request.user and action in {
+                UserAction.DEACTIVATE,
+                UserAction.DELETE,
+            }:
+                messages.error(
+                    request,
+                    _(
+                        "Vous ne pouvez pas désactiver ou supprimer votre "
+                        "propre compte."
+                    ),
+                )
+                return redirect("accounts:admin_user_list")
+
+            if action == UserAction.ACTIVATE:
                 user.is_active = True
-                user.save()
-                messages.success(
-                    request, _(f"L'utilisateur {user.username} a été activé.")
+                user.save(update_fields=["is_active"])
+                audit_logger.info(
+                    "user_activated target_user_id=%s by_user_id=%s target_email=%s",
+                    user.pk,
+                    request.user.pk,
+                    user.email,
                 )
-            elif action == "deactivate":
+                messages.success(
+                    request,
+                    _("L'utilisateur %(username)s a été activé.")
+                    % {"username": user.username or user.email},
+                )
+            elif action == UserAction.DEACTIVATE:
                 user.is_active = False
-                user.save()
-                messages.success(
-                    request, _(f"L'utilisateur {user.username} a été désactivé.")
+                user.save(update_fields=["is_active"])
+                audit_logger.info(
+                    "user_deactivated target_user_id=%s by_user_id=%s target_email=%s",
+                    user.pk,
+                    request.user.pk,
+                    user.email,
                 )
-            elif action == "delete" and user != request.user:
+                messages.success(
+                    request,
+                    _("L'utilisateur %(username)s a été désactivé.")
+                    % {"username": user.username or user.email},
+                )
+            elif action == UserAction.DELETE:
                 username = user.username
+                target_email = user.email
+                target_pk = user.pk
                 user.delete()
-                messages.success(
-                    request, _(f"L'utilisateur {username} a été supprimé.")
+                audit_logger.warning(
+                    "user_deleted target_user_id=%s by_user_id=%s target_email=%s",
+                    target_pk,
+                    request.user.pk,
+                    target_email,
                 )
+                messages.success(
+                    request,
+                    _("L'utilisateur %(username)s a été supprimé.")
+                    % {"username": username or target_email},
+                )
+        return redirect("accounts:admin_user_list")
 
-    users = CustomUser.objects.all().order_by("-is_superuser", "-is_staff", "username")
+    queryset = CustomUser.objects.all()
+    search = request.GET.get("q", "").strip()
+    if search:
+        queryset = queryset.filter(
+            Q(email__icontains=search) | Q(username__icontains=search)
+        )
+    queryset = queryset.order_by("-is_superuser", "-is_staff", "username")
 
-    return render(request, "accounts/admin_user_list.html", {"users": users})
+    paginator = Paginator(queryset, USER_LIST_PAGE_SIZE)
+    page = paginator.get_page(request.GET.get("page"))
+
+    return render(
+        request,
+        "accounts/admin_user_list.html",
+        {"page": page, "search": search},
+    )
 
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def admin_create_user(request):
-    """Vue de création d'utilisateur pour l'administrateur"""
+    """
+    Vue de création d'utilisateur pour l'administrateur.
+
+    Utilise :class:`AdminUserCreationForm` qui gère la génération d'un mot de
+    passe temporaire sécurisé (CSPRNG) et expose ``form.generated_password``
+    en cas de génération automatique.
+    """
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = AdminUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            if form.cleaned_data.get("is_staff"):
-                user.is_staff = True
-                user.save()
+            generated_password = form.generated_password
 
-            messages.success(
-                request, _(f"L'utilisateur {user.username} a été créé avec succès.")
-            )
+            if generated_password:
+                _send_welcome_email(user, generated_password, request)
+
+            if generated_password:
+                messages.success(
+                    request,
+                    _(
+                        "L'utilisateur %(username)s a été créé avec succès. "
+                        "Mot de passe temporaire : %(password)s"
+                    )
+                    % {
+                        "username": user.username or user.email,
+                        "password": generated_password,
+                    },
+                )
+            else:
+                messages.success(
+                    request,
+                    _("L'utilisateur %(username)s a été créé avec succès.")
+                    % {"username": user.username or user.email},
+                )
             return redirect("accounts:admin_user_list")
     else:
-        form = CustomUserCreationForm()
+        form = AdminUserCreationForm()
 
     return render(request, "accounts/admin_create_user.html", {"form": form})
+
+
+def _send_welcome_email(user, password: str, request) -> bool:
+    """
+    Envoie un email de bienvenue avec le mot de passe temporaire.
+
+    Échoue silencieusement en cas d'erreur SMTP pour ne pas bloquer la
+    création du compte ; l'erreur est journalisée pour audit.
+    """
+    subject = _("Votre compte CCSA a été créé")
+    context = {
+        "user": user,
+        "password": password,
+        "domain": request.get_host(),
+        "protocol": request.scheme,
+    }
+    try:
+        message = render_to_string("accounts/welcome_email.txt", context)
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+        return True
+    except (smtplib.SMTPException, OSError) as exc:
+        logger.error("Échec d'envoi de l'email de bienvenue à %s: %s", user.email, exc)
+        return False

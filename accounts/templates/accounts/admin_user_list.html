@@ -11,7 +11,7 @@
     <span class="text-primary font-semibold">Utilisateurs</span>
   </nav>
   <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
-    <svg class="w-5 aria-hidden="true" focusable="false"  h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Admin
   </a>
 </div>
@@ -24,7 +24,7 @@
                     Créer un utilisateur
                 </a>
             </div>
-            
+
             {% if messages %}
             <div class="mb-6">
                 {% for message in messages %}
@@ -34,7 +34,22 @@
                 {% endfor %}
             </div>
             {% endif %}
-            
+
+            <form method="get" class="mb-6 flex gap-2" role="search">
+                <label for="user-search" class="sr-only">Rechercher un utilisateur</label>
+                <input type="search" id="user-search" name="q" value="{{ search|default:'' }}"
+                       placeholder="Rechercher par email ou nom d'utilisateur..."
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">
+                    Rechercher
+                </button>
+                {% if search %}
+                <a href="{% url 'accounts:admin_user_list' %}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Réinitialiser
+                </a>
+                {% endif %}
+            </form>
+
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -52,28 +67,24 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-600 uppercase tracking-wider">
                                     Dernière connexion
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-600 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-600 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                            {% for user in users %}
+                            {% for user in page %}
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
-                                                {{ user.username }}
-                                            </div>
-                                        </div>
+                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                                        {{ user.username|default:"—" }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-600 dark:text-gray-600">{{ user.email }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                     {% if user.is_superuser %}bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
                                     {% elif user.is_staff %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
                                     {% else %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% endif %}">
@@ -94,7 +105,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    {% if user.is_superuser and not request.user == user %}
+                                    {% if user.is_superuser and user != request.user %}
                                         <span class="text-gray-600 dark:text-gray-600">Protégé</span>
                                     {% else %}
                                         <form method="post" action="{% url 'accounts:admin_user_list' %}" class="inline">
@@ -109,8 +120,8 @@
                                                     Activer
                                                 </button>
                                             {% endif %}
-                                            
-                                            {% if not user == request.user %}
+
+                                            {% if user != request.user %}
                                                 <button type="submit" name="action" value="delete" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
                                                     Supprimer
                                                 </button>
@@ -122,7 +133,7 @@
                             {% empty %}
                             <tr>
                                 <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-600">
-                                    Aucun utilisateur trouvé
+                                    {% if search %}Aucun utilisateur ne correspond à « {{ search }} ».{% else %}Aucun utilisateur trouvé.{% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
@@ -130,6 +141,29 @@
                     </table>
                 </div>
             </div>
+
+            {% if page.has_other_pages %}
+            <nav class="mt-6 flex items-center justify-between" aria-label="Pagination">
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    Page {{ page.number }} sur {{ page.paginator.num_pages }}
+                    ({{ page.paginator.count }} utilisateur{{ page.paginator.count|pluralize }})
+                </div>
+                <div class="flex gap-2">
+                    {% if page.has_previous %}
+                    <a href="?{% if search %}q={{ search }}&{% endif %}page={{ page.previous_page_number }}"
+                       class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+                        Précédent
+                    </a>
+                    {% endif %}
+                    {% if page.has_next %}
+                    <a href="?{% if search %}q={{ search }}&{% endif %}page={{ page.next_page_number }}"
+                       class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+                        Suivant
+                    </a>
+                    {% endif %}
+                </div>
+            </nav>
+            {% endif %}
         </div>
     </div>
 </div>

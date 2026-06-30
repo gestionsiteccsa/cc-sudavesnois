@@ -1,0 +1,17 @@
+{% load i18n %}{% autoescape off %}
+{% trans "Bonjour" %} {{ user.username|default:user.email }},
+
+{% blocktrans with username=user.username|default:user.email %}
+Un compte vient d'être créé pour vous sur la plateforme CCSA ({{ protocol }}://{{ domain }}).
+{% endblocktrans %}
+
+{% trans "Identifiant" %}: {{ user.email }}
+{% trans "Mot de passe temporaire" %}: {{ password }}
+
+{% trans "Pour vous connecter, rendez-vous sur" %} {{ protocol }}://{{ domain }}{% url "accounts:login" %}.
+
+{% trans "Nous vous recommandons de changer ce mot de passe dès votre première connexion."}
+
+{% trans "Cordialement," %}
+{% trans "L'équipe CCSA" %}
+{% endautoescape %}
