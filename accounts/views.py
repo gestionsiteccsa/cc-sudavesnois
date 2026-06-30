@@ -18,6 +18,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 
+from contact.models import ContactEmail
+
 from .forms import (
     AdminUserCreationForm,
     CustomAuthenticationForm,
@@ -351,18 +353,26 @@ def password_reset_complete_view(request):
     return render(request, "accounts/password_reset_complete.html")
 
 
-@login_required
-@user_passes_test(lambda u: est_moderateur(u))
-def admin_dashboard(request):
-    """Vue dashboard admin qui regroupe tous les liens CRUD, réservé au superadmin."""
+DASHBOARD_STATS_CACHE_KEY = "admin_dashboard_stats"
+DASHBOARD_STATS_CACHE_TTL = 60  # secondes
+
+
+def _compute_dashboard_stats():
+    """
+    Calcule les statistiques du dashboard en effectuant un COUNT par modèle.
+
+    Les requetes ``COUNT(*)`` sont optimisees par Django (elles utilisent
+    l'index sur la cle primaire). Le resultat est mis en cache court terme
+    pour eviter de multiplier les COUNT a chaque hit de la page d'accueil
+    admin (la page est rafraichie frequemment par les moderateurs).
+    """
     from bureau_communautaire.models import Document, Elus
     from commissions.models import Commission
     from conseil_communautaire.models import ConseilMembre, ConseilVille
     from journal.models import Journal
     from services.models import Service
 
-    # Statistiques
-    stats = {
+    return {
         "journals": Journal.objects.count(),
         "elus": Elus.objects.count(),
         "services": Service.objects.count(),
@@ -370,7 +380,22 @@ def admin_dashboard(request):
         "commissions": Commission.objects.count(),
         "villes": ConseilVille.objects.count(),
         "documents": Document.objects.count(),
+        "contacts": ContactEmail.objects.count(),
     }
+
+
+@login_required
+@user_passes_test(lambda u: est_moderateur(u))
+def admin_dashboard(request):
+    """Vue dashboard admin qui regroupe tous les liens CRUD, réservé au superadmin."""
+    from journal.models import Journal
+
+    # Les stats de base sont mises en cache (60s) ; le compteur users,
+    # qui depend de l'utilisateur courant, est calcule separement.
+    stats = cache.get(DASHBOARD_STATS_CACHE_KEY)
+    if stats is None:
+        stats = _compute_dashboard_stats()
+        cache.set(DASHBOARD_STATS_CACHE_KEY, stats, DASHBOARD_STATS_CACHE_TTL)
 
     # Statistiques admin (superuser uniquement)
     if request.user.is_superuser:

@@ -131,6 +131,10 @@
     {% block styles %}{% endblock %}
 </head>
 <body class="h-full min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Lien d'évitement (accessibilité WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+        Aller au contenu principal
+    </a>
     <!-- Mobile sidebar overlay -->
     <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/50 z-40 lg:hidden" onclick="toggleSidebar()"></div>
 
@@ -155,7 +159,7 @@
 
                         <!-- Breadcrumb -->
                         <nav class="hidden sm:flex items-center text-sm" aria-label="Fil d'Ariane">
-                            <a href="{% url 'home' %}" class="text-gray-600 dark:text-gray-600 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                            <a href="{% url 'home' %}" class="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
                                 <svg class="w-5 h-5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                                 </svg>
@@ -198,7 +202,7 @@
             </header>
 
             <!-- Main content -->
-            <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+            <main id="main-content" tabindex="-1" class="flex-1 overflow-y-auto p-4 lg:p-8 focus:outline-none">
                 <div class="max-w-7xl mx-auto">
                     {% block content %}{% endblock %}
                 </div>
@@ -226,12 +230,16 @@
             document.documentElement.classList.add('dark');
         }
 
-        // Nav sections toggle
+        // Nav sections toggle (avec mise à jour ARIA)
         function toggleNavSection(sectionId) {
             const section = document.getElementById(sectionId);
             const content = section.querySelector('.nav-section-content');
-            section.classList.toggle('open');
-            content.classList.toggle('open');
+            const button = section.querySelector('.nav-section-header');
+            const isOpen = section.classList.toggle('open');
+            content.classList.toggle('open', isOpen);
+            if (button) {
+                button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
         }
 
         // Close sidebar on escape key
@@ -246,6 +254,7 @@
             }
         });
     </script>
+    <script src="{% load static %}{% static 'js/admin_sidebar.js' %}" defer></script>
     {% block javascript %}{% endblock %}
 </body>
 </html>

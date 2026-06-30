@@ -8,7 +8,7 @@
         </div>
         <div>
             <span class="font-bold text-gray-900 dark:text-white text-lg">CCSA</span>
-            <span class="block text-xs text-gray-600 dark:text-gray-600">Administration</span>
+            <span class="block text-xs text-gray-500 dark:text-gray-400">Administration</span>
         </div>
     </a>
 </div>
@@ -21,19 +21,42 @@
         </div>
         <div class="min-w-0 flex-1">
             <div class="font-semibold text-gray-900 dark:text-white truncate">{{ user.username }}</div>
-            <div class="text-xs text-gray-600 dark:text-gray-600 truncate">{{ user.email }}</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user.email }}</div>
         </div>
+    </div>
+</div>
+
+<!-- Filtre de recherche des modules -->
+<div class="p-3 border-b border-gray-200 dark:border-gray-700">
+    <label for="sidebar-filter" class="sr-only">Filtrer les modules</label>
+    <div class="relative">
+        <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 pointer-events-none" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="search" id="sidebar-filter" placeholder="Filtrer les modules…"
+               class="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-200"
+               aria-label="Filtrer les modules" aria-controls="sidebar-nav-list">
     </div>
 </div>
 
 <!-- Navigation -->
 <nav class="flex-1 overflow-y-auto sidebar-scroll p-3" aria-label="Navigation principale">
-    <div class="space-y-1">
+    <div id="sidebar-nav-list" class="space-y-1">
+
+        <!-- Tableau de bord (accueil) -->
+        <a href="{% url 'accounts:admin_dashboard' %}" data-url-name="{% url 'accounts:admin_dashboard' %}" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                <svg class="w-4.5 h-4.5 text-primary-600 dark:text-primary-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+            </div>
+            <span class="font-medium text-sm">Tableau de bord</span>
+        </a>
 
         {% if user.is_superuser %}
         <!-- Utilisateurs -->
         <div id="nav-users" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-users')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-users')" aria-expanded="false" aria-controls="nav-users-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -42,17 +65,17 @@
                     </div>
                     <span class="font-medium text-sm">Utilisateurs</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
-            <div class="nav-section-content">
+            <div id="nav-users-content" class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'accounts:admin_user_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'accounts:admin_user_list' %}" data-url-name="{% url 'accounts:admin_user_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des utilisateurs
                     </a>
-                    <a href="{% url 'accounts:admin_create_user' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'accounts:admin_create_user' %}" data-url-name="{% url 'accounts:admin_create_user' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un utilisateur
                     </a>
@@ -63,7 +86,7 @@
 
         <!-- Services -->
         <div id="nav-services" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-services')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-services')" aria-expanded="false" aria-controls="nav-services-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-purple-600 dark:text-purple-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,17 +95,17 @@
                     </div>
                     <span class="font-medium text-sm">Services</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'services:admin_services_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'services:admin_services_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des services
                     </a>
-                    <a href="{% url 'services:add_service' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'services:add_service' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un service
                     </a>
@@ -92,7 +115,7 @@
 
         <!-- Bureau -->
         <div id="nav-bureau" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-bureau')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-bureau')" aria-expanded="false" aria-controls="nav-bureau-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-amber-600 dark:text-amber-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,21 +124,21 @@
                     </div>
                     <span class="font-medium text-sm">Bureau</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'bureau-communautaire:admin_elus_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des élus
                     </a>
-                    <a href="{% url 'bureau-communautaire:admin_elu_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'bureau-communautaire:admin_elu_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un élu
                     </a>
-                    <a href="{% url 'bureau-communautaire:admin_page_status' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'bureau-communautaire:admin_page_status' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         Statut de la page
                     </a>
@@ -125,7 +148,7 @@
 
         <!-- Villes -->
         <div id="nav-villes" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-villes')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-villes')" aria-expanded="false" aria-controls="nav-villes-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,17 +157,17 @@
                     </div>
                     <span class="font-medium text-sm">Villes</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'conseil_communautaire:admin_list_cities' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'conseil_communautaire:admin_list_cities' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des villes
                     </a>
-                    <a href="{% url 'conseil_communautaire:admin_add_city' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'conseil_communautaire:admin_add_city' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter une ville
                     </a>
@@ -154,7 +177,7 @@
 
         <!-- Membres -->
         <div id="nav-membres" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-membres')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-membres')" aria-expanded="false" aria-controls="nav-membres-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-yellow-600 dark:text-yellow-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,17 +186,17 @@
                     </div>
                     <span class="font-medium text-sm">Membres</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'conseil_communautaire:admin_membres_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'conseil_communautaire:admin_membres_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des membres
                     </a>
-                    <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'conseil_communautaire:admin_member_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un membre
                     </a>
@@ -183,7 +206,7 @@
 
         <!-- Actes locaux -->
         <div id="nav-actes" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-actes')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-actes')" aria-expanded="false" aria-controls="nav-actes-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-rose-600 dark:text-rose-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,17 +215,17 @@
                     </div>
                     <span class="font-medium text-sm">Actes locaux</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'communes-membres:admin_acte_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'communes-membres:admin_acte_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des actes
                     </a>
-                    <a href="{% url 'communes-membres:admin_acte_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'communes-membres:admin_acte_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un acte
                     </a>
@@ -212,7 +235,7 @@
 
         <!-- Commissions -->
         <div id="nav-commissions" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-commissions')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-commissions')" aria-expanded="false" aria-controls="nav-commissions-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,25 +244,25 @@
                     </div>
                     <span class="font-medium text-sm">Commissions</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'commissions:admin_list_commissions' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'commissions:admin_list_commissions' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des commissions
                     </a>
-                    <a href="{% url 'commissions:admin_add_commission' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'commissions:admin_add_commission' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter une commission
                     </a>
-                    <a href="{% url 'commissions:admin_competences' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'commissions:admin_competences' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Compétences des commissions
                     </a>
-                    <a href="{% url 'commissions:admin_page_status' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'commissions:admin_page_status' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         Statut de la page
                     </a>
@@ -249,7 +272,7 @@
 
         <!-- Competences -->
         <div id="nav-competences" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-competences')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-competences')" aria-expanded="false" aria-controls="nav-competences-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,17 +281,17 @@
                     </div>
                     <span class="font-medium text-sm">Competences</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'competences:admin_competences_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'competences:admin_competences_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des competences
                     </a>
-                    <a href="{% url 'competences:add_competence' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'competences:add_competence' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter une competence
                     </a>
@@ -278,7 +301,7 @@
 
         <!-- Journaux -->
         <div id="nav-journaux" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-journaux')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-journaux')" aria-expanded="false" aria-controls="nav-journaux-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-orange-600 dark:text-orange-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,17 +310,17 @@
                     </div>
                     <span class="font-medium text-sm">Journaux</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'journal:admin_journaux_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'journal:admin_journaux_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des journaux
                     </a>
-                    <a href="{% url 'journal:add_journal' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'journal:add_journal' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un journal
                     </a>
@@ -307,7 +330,7 @@
 
         <!-- Comptes rendus -->
         <div id="nav-cr" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-cr')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-cr')" aria-expanded="false" aria-controls="nav-cr-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-cyan-600 dark:text-cyan-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,17 +339,17 @@
                     </div>
                     <span class="font-medium text-sm">Conseils Communautaires</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'comptes_rendus:admin_cr_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'comptes_rendus:admin_cr_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des conseils
                     </a>
-                    <a href="{% url 'comptes_rendus:add_conseil' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'comptes_rendus:add_conseil' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Programmer un conseil
                     </a>
@@ -336,7 +359,7 @@
 
         <!-- Semestriels -->
         <div id="nav-semestriels" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-semestriels')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-semestriels')" aria-expanded="false" aria-controls="nav-semestriels-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-pink-600 dark:text-pink-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -345,13 +368,13 @@
                     </div>
                     <span class="font-medium text-sm">Semestriels</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'semestriels:list_content' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'semestriels:list_content' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des semestriels
                     </a>
@@ -361,7 +384,7 @@
 
         <!-- Rapports d'activite -->
         <div id="nav-rapports" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-rapports')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-rapports')" aria-expanded="false" aria-controls="nav-rapports-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-lime-100 dark:bg-lime-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-lime-600 dark:text-lime-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,17 +393,17 @@
                     </div>
                     <span class="font-medium text-sm">Rapports d'activite</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'rapports_activite:gestion_rapports_activite' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'rapports_activite:gestion_rapports_activite' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des rapports
                     </a>
-                    <a href="{% url 'rapports_activite:add_rapport_activite' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'rapports_activite:add_rapport_activite' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un rapport
                     </a>
@@ -390,7 +413,7 @@
 
         <!-- LinkTree -->
         <div id="nav-linktree" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-linktree')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-linktree')" aria-expanded="false" aria-controls="nav-linktree-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-violet-600 dark:text-violet-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -399,21 +422,21 @@
                     </div>
                     <span class="font-medium text-sm">Liens (LinkTree)</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'linktree:admin_liens_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'linktree:admin_liens_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des liens
                     </a>
-                    <a href="{% url 'linktree:admin_lien_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'linktree:admin_lien_add' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un lien
                     </a>
-                    <a href="/nos-liens/" target="_blank" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="/nos-liens/" target="_blank" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         Voir la page
                     </a>
@@ -423,7 +446,7 @@
 
         <!-- Partenaires -->
         <div id="nav-partenaires" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-partenaires')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-partenaires')" aria-expanded="false" aria-controls="nav-partenaires-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -432,25 +455,25 @@
                     </div>
                     <span class="font-medium text-sm">Partenaires</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'partenaires:admin_partenaires_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'partenaires:admin_partenaires_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des partenaires
                     </a>
-                    <a href="{% url 'partenaires:add_partenaire' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'partenaires:add_partenaire' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un partenaire
                     </a>
-                    <a href="{% url 'partenaires:admin_categories_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'partenaires:admin_categories_list' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                         Catégories
                     </a>
-                    <a href="{% url 'partenaires:partenaires' %}" target="_blank" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'partenaires:partenaires' %}" target="_blank" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         Voir la page
                     </a>
@@ -460,7 +483,7 @@
 
         <!-- Contact -->
         <div id="nav-contact" class="nav-section">
-            <button type="button" onclick="toggleNavSection('nav-contact')" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <button type="button" onclick="toggleNavSection('nav-contact')" aria-expanded="false" aria-controls="nav-contact-content" class="nav-section-header w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
                         <svg class="w-4.5 h-4.5 text-sky-600 dark:text-sky-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,17 +492,17 @@
                     </div>
                     <span class="font-medium text-sm">Contact</span>
                 </div>
-                <svg class="chevron-icon w-4 h-4 text-gray-600" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="chevron-icon w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
             <div class="nav-section-content">
                 <div class="ml-11 mt-1 space-y-0.5">
-                    <a href="{% url 'contact:list_contacts' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'contact:list_contacts' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         Liste des contacts
                     </a>
-                    <a href="{% url 'contact:add_contact' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-700">
+                    <a href="{% url 'contact:add_contact' %}" class="nav-link flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         Ajouter un contact
                     </a>
@@ -508,7 +531,7 @@
 
 <!-- Footer actions -->
 <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-    <a href="{% url 'home' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors mb-2">
+    <a href="{% url 'home' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors mb-2">
         <svg class="w-5 h-5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
         </svg>
