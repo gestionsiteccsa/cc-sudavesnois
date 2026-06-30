@@ -4,7 +4,6 @@ from xml.sax.saxutils import escape as xml_escape
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count, Sum
 from django.http import HttpResponse
@@ -16,13 +15,8 @@ from app.utils import get_client_ip, hash_ip, normalize_filename, rate_limit
 from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
-from home.data.collecte_data import (
-    city_data,
-    get_dates_verre,
-    get_jour_ordures,
-)
+from home.data.collecte_data import city_data, get_dates_verre, get_jour_ordures
 from journal.models import Journal
-from services.models import Service
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +24,6 @@ logger = logging.getLogger(__name__)
 @cache_page(300)
 def home(request):
     # Donnée requises pour la page d'accueil
-
-    # Optimisé : récupération unique des services
-    services = list(Service.objects.order_by("title"))
-    services = services if services else None
 
     # Optimisé : 1 aggregate pour les stats + 1 liste pour l'affichage
     communes_stats = ConseilVille.objects.aggregate(
@@ -163,7 +153,6 @@ def home(request):
             # Formulaire invalide : re-rendre la page avec les erreurs
             logger.warning(f"Formulaire de contact invalide: {contact_form.errors}")
             context = {
-                "services": services,
                 "communes": communes,
                 "contact_form": contact_form,
                 "nb_communes": nb_communes,
@@ -176,7 +165,6 @@ def home(request):
         contact_form = ContactForm()
 
     context = {
-        "services": services,
         "communes": communes,
         "contact_form": contact_form,
         "nb_communes": nb_communes,
@@ -593,7 +581,6 @@ def telecharger_calendrier_verre(request):
     # Paragraph reportlab (qui interprète le XML).
     safe_commune_escaped = xml_escape(commune)
     safe_rue_escaped = xml_escape(rue_trouvee) if rue_trouvee else ""
-    safe_jour_ordures_escaped = xml_escape(jour_ordures) if jour_ordures else ""
 
     # Titre
     elements.append(
@@ -606,9 +593,7 @@ def telecharger_calendrier_verre(request):
 
     # Informations de la rue
     if rue_trouvee:
-        elements.append(
-            Paragraph(f"<b>Rue :</b> {safe_rue_escaped}", subtitle_style)
-        )
+        elements.append(Paragraph(f"<b>Rue :</b> {safe_rue_escaped}", subtitle_style))
 
     # Jour de collecte du verre
     verre_info = city_data[commune]["verre"]

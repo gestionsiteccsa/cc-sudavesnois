@@ -168,6 +168,7 @@ STORAGES = {
 # => le navigateur retélécharge automatiquement la nouvelle version.
 WHITENOISE_MAX_AGE = 31536000  # 1 an en secondes
 
+
 # Active l'en-tête "immutable" sur tous les fichiers servis : le navigateur
 # ne lance même pas de requête de revalidation (If-Modified-Since) pendant
 # toute la durée du cache.
@@ -191,8 +192,21 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 60 * 1024 * 1024  # 60 Mo
 
-# Sessions en cache pour les performances
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Sessions persistantes en base de données.
+# Choix ``backends.db`` plutôt que ``backends.cache`` car l'hébergement
+# mutualisé (o2switch) ne fournit ni Redis ni memcached. Le cache LRU
+# par processus (``LocMemCache``) ne partage pas les sessions entre
+# workers, ce qui provoque des déconnexions aléatoires.
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+# Durée de session : 30 jours par défaut, étendue par ``set_expiry`` dans
+# la vue de connexion lorsque la case « Se souvenir de moi » est cochée.
+SESSION_COOKIE_AGE = 30 * 24 * 60 * 60  # 30 jours
+
+# Session glissante : l'expiration est repoussée à chaque requête tant
+# que l'utilisateur reste actif. Sans ce flag, un utilisateur actif
+# serait déconnecté au bout de 30 jours sans nouvelle connexion.
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Configuration des backups
 BACKUP_ROOT = env("BACKUP_ROOT", default=os.path.join(BASE_DIR, "backups"))
