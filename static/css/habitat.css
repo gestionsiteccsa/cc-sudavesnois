@@ -11,7 +11,7 @@
 }
 
 .bg-gray-50:hover .bg-primary\/10 {
-    background-color: rgba(59, 130, 246, 0.2);
+    background-color: rgba(0, 90, 158, 0.2);
     transform: scale(1.1);
 }
 
@@ -21,7 +21,7 @@
 }
 
 .bg-gray-50:hover h3 {
-    color: #3b82f6;
+    color: #005a9e;
 }
 
 /* Style pour l'image principale */
@@ -51,7 +51,7 @@
 
 .flex.items-start:hover svg {
     transform: scale(1.2);
-    color: #3b82f6;
+    color: #005a9e;
 }
 
 /* Responsive adjustments */
@@ -78,7 +78,7 @@
 /* Style pour les boutons de contact */
 .bg-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(0, 90, 158, 0.3);
 }
 
 .bg-green-600:hover {
@@ -101,7 +101,7 @@
 }
 
 .bg-gray-50:hover h4 {
-    color: #3b82f6;
+    color: #005a9e;
 }
 
 /* Respect de la préférence utilisateur pour la réduction des animations */
