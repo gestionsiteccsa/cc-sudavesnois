@@ -1,10 +1,11 @@
 import logging
 import os
 
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from app.utils import secure_file_removal
 from conseil_communautaire.models import Commission
@@ -27,17 +28,22 @@ def elus(request):
             {"maintenance_message": maintenance_message},
         )
 
-    # Récupérer les élus avec select_related pour city et prefetch_related pour linked_commission + competences
+    # Récupérer les élus avec select_related (city) et prefetch_related
+    # (linked_commission + competences).
     commission_prefetch = Prefetch(
         "linked_commission",
         queryset=Commission.objects.prefetch_related("competences"),
     )
-    elus_qs = Elus.objects.select_related("city").prefetch_related(commission_prefetch)
+    elus_qs = (
+        Elus.objects.select_related("city")
+        .prefetch_related(commission_prefetch)
+        .order_by("rank", "last_name", "first_name")
+    )
 
-    vice_presidents = list(elus_qs.filter(role="Vice-Président"))
+    vice_presidents = list(elus_qs.filter(role=Elus.Role.VICE_PRESIDENT))
     elus = vice_presidents if vice_presidents else None
 
-    president = elus_qs.filter(role="Président").first()
+    president = elus_qs.filter(role=Elus.Role.PRESIDENT).first()
 
     # Récupérer les documents
     documents_raw = list(Document.objects.all())
@@ -65,13 +71,17 @@ def elus(request):
 
 
 @permission_required("bureau_communautaire.view_elus")
+@transaction.atomic
 def add_elu(request):
     """Ajoute un élu à la base de données."""
     if request.method == "POST":
         elu_form = ElusForm(request.POST, request.FILES)
         if elu_form.is_valid():
-            elu_form.save()
-            logger.info("Élu ajouté avec succès")
+            elu = elu_form.save()
+            logger.info("Élu ajouté avec succès (id=%s)", elu.pk)
+            messages.success(
+                request, f"L'élu {elu.first_name} {elu.last_name} a été ajouté."
+            )
             return redirect("bureau-communautaire:admin_elus_list")
     else:
         elu_form = ElusForm()
@@ -102,13 +112,38 @@ def list_elus(request):
 
 
 @permission_required("bureau_communautaire.change_elus")
-def update_elu(request, id):
+@transaction.atomic
+def update_elu(request, elu_id):
     """Met à jour les informations d'un élu."""
-    elu = get_object_or_404(Elus, id=id)
+    elu = get_object_or_404(Elus, id=elu_id)
     if request.method == "POST":
+        # Capturer l'ancienne photo AVANT la validation du formulaire,
+        # car construct_instance() modifie elu.picture dès is_valid().
+        old_picture_name = elu.picture.name if elu.picture else None
+        old_picture_path = elu.picture.path if elu.picture else None
         elu_form = ElusForm(request.POST, request.FILES, instance=elu)
         if elu_form.is_valid():
-            elu_form.save()
+            updated_elu = elu_form.save()
+            new_picture_name = updated_elu.picture.name if updated_elu.picture else None
+            if old_picture_name and old_picture_name != new_picture_name:
+                from django.core.files.storage import default_storage
+
+                class _OldFile:
+                    def __init__(self, name, path):
+                        self.name = name
+                        self.path = path
+                        self.storage = default_storage
+
+                old_file = _OldFile(old_picture_name, old_picture_path)
+                transaction.on_commit(lambda f=old_file: secure_file_removal(f))
+            logger.info("Élu mis à jour (id=%s)", updated_elu.pk)
+            messages.success(
+                request,
+                (
+                    f"L'élu {updated_elu.first_name} "
+                    f"{updated_elu.last_name} a été mis à jour."
+                ),
+            )
             return redirect("bureau-communautaire:admin_elus_list")
     else:
         elu_form = ElusForm(instance=elu)
@@ -121,15 +156,25 @@ def update_elu(request, id):
 
 @permission_required("bureau_communautaire.delete_elus")
 @transaction.atomic
-def delete_elu(request, id):
+def delete_elu(request, elu_id):
     """Supprime un élu de la base de données."""
-    elu = get_object_or_404(Elus, id=id)
+    elu = get_object_or_404(Elus, id=elu_id)
     if request.method == "POST":
-        picture = elu.picture
+        picture_name = elu.picture.name if elu.picture else None
+        picture_path = elu.picture.path if elu.picture else None
         elu.delete()
         # Suppression effective du fichier après commit (rollback-safe)
-        if picture:
-            transaction.on_commit(lambda p=picture: secure_file_removal(p))
+        if picture_name:
+            from django.core.files.storage import default_storage
+
+            class _OldFile:
+                def __init__(self, name, path):
+                    self.name = name
+                    self.path = path
+                    self.storage = default_storage
+
+            old_file = _OldFile(picture_name, picture_path)
+            transaction.on_commit(lambda f=old_file: secure_file_removal(f))
         return redirect("bureau-communautaire:admin_elus_list")
     return render(request, "bureau_communautaire/admin_elu_delete.html", {"elu": elu})
 

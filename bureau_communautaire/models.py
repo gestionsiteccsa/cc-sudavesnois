@@ -1,6 +1,7 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
+from app.validators import validate_image_mime
 from conseil_communautaire.models import Commission, ConseilVille
 from journal.models import validate_taille_fichier
 
@@ -30,6 +31,7 @@ class Elus(models.Model):
         verbose_name="Photo de l'élu",
         validators=[
             validate_taille_fichier,
+            validate_image_mime,
             FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg", "webp"]),
         ],
     )
@@ -39,9 +41,13 @@ class Elus(models.Model):
         Commission, blank=True, related_name="elus"
     )
 
+    class Meta:
+        ordering = ["role", "rank", "last_name", "first_name"]
+        verbose_name = "Élu"
+        verbose_name_plural = "Élus"
+
     def __str__(self):
-        return f"{self.first_name} {self.last_name} {self.rank} {self.role} \
-            {self.function} {self.city} {self.profession}"
+        return f"{self.first_name} {self.last_name} ({self.role})"
 
 
 class Document(models.Model):

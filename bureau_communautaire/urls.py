@@ -11,9 +11,15 @@ urlpatterns = [
     # Pages d'administration
     path("adminccsa/ajouter-elu/", views.add_elu, name="admin_elu_add"),
     path("adminccsa/liste-elus/", views.list_elus, name="admin_elus_list"),
-    path("adminccsa/modifier-elu/<int:id>/", views.update_elu, name="admin_elu_update"),
     path(
-        "adminccsa/supprimer-elu/<int:id>/", views.delete_elu, name="admin_elu_delete"
+        "adminccsa/modifier-elu/<int:elu_id>/",
+        views.update_elu,
+        name="admin_elu_update",
+    ),
+    path(
+        "adminccsa/supprimer-elu/<int:elu_id>/",
+        views.delete_elu,
+        name="admin_elu_delete",
     ),
     path("adminccsa/ajouter-document/", views.add_document, name="admin_document_add"),
     path(
