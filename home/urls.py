@@ -52,6 +52,12 @@ urlpatterns = [
         views.modification_simplifiee_1,
         name="modification_simplifiee_1",
     ),
+    # Administration PLUi
+    path(
+        "adminccsa/plui/",
+        views.admin_plui_settings,
+        name="admin_plui_settings",
+    ),
     # Développement économique
     path("developpement-economique/", views.dev_eco, name="dev_eco"),
     # Kit de logos CCSA

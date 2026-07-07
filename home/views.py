@@ -4,9 +4,10 @@ from xml.sax.saxutils import escape as xml_escape
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count, Sum
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -16,6 +17,7 @@ from conseil_communautaire.models import ConseilVille
 from contact.forms import ContactForm
 from contact.models import ContactEmail
 from home.data.collecte_data import city_data, get_dates_verre, get_jour_ordures
+from home.models import PLUISettings
 from journal.models import Journal
 
 logger = logging.getLogger(__name__)
@@ -251,10 +253,15 @@ def contrat_local_sante(request):
 
 def plui(request):
     """Vue pour la page PLUi et le formulaire de modification."""
-    return _handle_plui_form(request, "plui", "home/plui.html")
+    return _handle_plui_form(
+        request,
+        "plui",
+        "home/plui.html",
+        extra_context={"plui_settings": PLUISettings.get_solo()},
+    )
 
 
-def _handle_plui_form(request, success_url_name, template_name):
+def _handle_plui_form(request, success_url_name, template_name, extra_context=None):
     """
     Helper mutualisé pour les vues ``plui`` et ``documents_plui``.
 
@@ -262,6 +269,7 @@ def _handle_plui_form(request, success_url_name, template_name):
         request: requête Django.
         success_url_name: nom de l'URL de redirection en cas de succès/échec.
         template_name: chemin du template à rendre.
+        extra_context: dict optionnel ajouté au contexte du template.
 
     Returns:
         HttpResponse (redirect ou render).
@@ -307,6 +315,8 @@ def _handle_plui_form(request, success_url_name, template_name):
         form = PLUiModificationForm()
 
     context = {"form": form}
+    if extra_context:
+        context.update(extra_context)
     return render(request, template_name, context)
 
 
@@ -373,10 +383,37 @@ def documents_plui(request):
     return _handle_plui_form(request, "documents_plui", "home/documents-plui.html")
 
 
-@cache_page(60 * 15)
 def modification_simplifiee_1(request):
     """Vue pour la page Modification Simplifiée n°1 du PLUi."""
+    settings = PLUISettings.get_solo()
+    if not settings or not settings.modification_simplifiee_1_visible:
+        raise Http404("Page non disponible")
     return render(request, "home/modification-simplifiee-1.html")
+
+
+@staff_member_required
+def admin_plui_settings(request):
+    """Vue d'administration des paramètres de visibilité PLUi."""
+    from .forms import PLUISettingsForm
+
+    settings = PLUISettings.load()
+    if request.method == "POST":
+        form = PLUISettingsForm(request.POST, instance=settings)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Paramètres PLUi mis à jour avec succès.",
+            )
+            return redirect("admin_plui_settings")
+    else:
+        form = PLUISettingsForm(instance=settings)
+
+    return render(
+        request,
+        "home/admin_plui_settings.html",
+        {"form": form, "plui_settings": settings},
+    )
 
 
 def test_email(request):

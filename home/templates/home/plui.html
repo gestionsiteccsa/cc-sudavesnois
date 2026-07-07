@@ -49,7 +49,7 @@
                 </div>
 
                 <!-- Cartes cliquables avec Tailwind CSS -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                <div class="grid grid-cols-1 gap-8 mb-10{% if plui_settings and plui_settings.modification_simplifiee_1_visible %} md:grid-cols-2{% endif %}">
                     <!-- Pièces signées -->
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
                         <div class="overflow-hidden">
@@ -60,6 +60,7 @@
                             <p class="text-center">Retrouvez les documents signés ainsi que le lien Géoportail</p>
                         </a>
                     </div>
+                    {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}
                     <!-- Modification Simplifiée n°1 -->
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 overflow-hidden transition-all duration-300 hover:shadow-lg">
                         <div class="overflow-hidden">
@@ -70,6 +71,7 @@
                             <p class="text-center">Mise à disposition du public : du 1er juin au 1er juillet 2026</p>
                         </a>
                     </div>
+                    {% endif %}
                 </div>
 
                 <!-- Informations complémentaires -->

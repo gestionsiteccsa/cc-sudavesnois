@@ -15,6 +15,7 @@ from journal.models import Journal
 from services.models import Service
 
 from .forms import PLUiModificationForm
+from .models import PLUISettings
 from .sitemaps import CommunesSitemap, JournalSitemap, StaticViewSitemap
 
 User = get_user_model()
@@ -804,7 +805,8 @@ class PLUiModificationFormTestCase(SimpleTestCase):
         self.assertIn("Fourmies", codes)
         # Les cles dans city_data peuvent avoir des accents (ex: Trélon)
         normalized = {
-            unicodedata.normalize("NFKD", c).encode("ascii", "ignore").decode() for c in codes
+            unicodedata.normalize("NFKD", c).encode("ascii", "ignore").decode()
+            for c in codes
         }
         self.assertIn("Trelon", normalized)
         self.assertGreater(len(codes), 5)
@@ -818,3 +820,113 @@ class PLUiModificationFormTestCase(SimpleTestCase):
                     "true",
                     f"Champ {name} sans aria-required",
                 )
+
+
+class PLUISettingsTestCase(TestCase):
+    """Tests pour les paramètres de visibilité PLUi."""
+
+    def setUp(self):
+        self.client = Client()
+        PLUISettings.clear()
+
+    def test_pluisettings_model_creates_singleton(self):
+        settings1 = PLUISettings.load()
+        settings2 = PLUISettings.load()
+        self.assertEqual(settings1.pk, 1)
+        self.assertEqual(settings2.pk, 1)
+        self.assertEqual(settings1.pk, settings2.pk)
+
+    def test_pluisettings_default_visibility_false(self):
+        settings = PLUISettings.load()
+        self.assertFalse(settings.modification_simplifiee_1_visible)
+
+    def test_modification_simplifiee_1_returns_404_by_default(self):
+        response = self.client.get(reverse("modification_simplifiee_1"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_modification_simplifiee_1_returns_200_when_enabled(self):
+        PLUISettings.update_or_create(
+            defaults={"modification_simplifiee_1_visible": True}
+        )
+        response = self.client.get(reverse("modification_simplifiee_1"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "home/modification-simplifiee-1.html")
+
+    def test_plui_page_includes_pluisettings_in_context(self):
+        response = self.client.get(reverse("plui"))
+        self.assertIn("plui_settings", response.context)
+
+    def test_plui_card_hidden_when_visibility_false(self):
+        PLUISettings.update_or_create(
+            defaults={"modification_simplifiee_1_visible": False}
+        )
+        response = self.client.get(reverse("plui"))
+        self.assertNotContains(response, "Modification Simplifiée n°1")
+
+    def test_plui_card_visible_when_visibility_true(self):
+        PLUISettings.update_or_create(
+            defaults={"modification_simplifiee_1_visible": True}
+        )
+        response = self.client.get(reverse("plui"))
+        self.assertContains(response, "Modification Simplifiée n°1")
+
+
+class AdminPLUISettingsTestCase(TestCase):
+    """Tests pour la page d'administration PLUi."""
+
+    def setUp(self):
+        User = get_user_model()
+        self.staff_user = User.objects.create_user(
+            email="staff@example.com",
+            password="password123",
+            is_staff=True,
+        )
+        self.normal_user = User.objects.create_user(
+            email="user@example.com",
+            password="password123",
+        )
+        PLUISettings.clear()
+
+    def test_admin_page_redirects_anonymous(self):
+        response = self.client.get(reverse("admin_plui_settings"))
+        self.assertEqual(response.status_code, 302)
+
+    def test_admin_page_redirects_non_staff(self):
+        self.client.login(email="user@example.com", password="password123")
+        response = self.client.get(reverse("admin_plui_settings"))
+        self.assertEqual(response.status_code, 302)
+
+    def test_admin_page_accessible_by_staff(self):
+        self.client.login(email="staff@example.com", password="password123")
+        response = self.client.get(reverse("admin_plui_settings"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "home/admin_plui_settings.html")
+
+    def test_admin_page_contains_form(self):
+        self.client.login(email="staff@example.com", password="password123")
+        response = self.client.get(reverse("admin_plui_settings"))
+        self.assertContains(response, "modification_simplifiee_1_visible")
+        self.assertContains(response, "Enregistrer")
+
+    def test_admin_page_updates_settings(self):
+        self.client.login(email="staff@example.com", password="password123")
+        response = self.client.post(
+            reverse("admin_plui_settings"),
+            {"modification_simplifiee_1_visible": True},
+        )
+        self.assertEqual(response.status_code, 302)
+        settings = PLUISettings.load()
+        self.assertTrue(settings.modification_simplifiee_1_visible)
+
+    def test_admin_page_disables_settings(self):
+        PLUISettings.update_or_create(
+            defaults={"modification_simplifiee_1_visible": True}
+        )
+        self.client.login(email="staff@example.com", password="password123")
+        response = self.client.post(
+            reverse("admin_plui_settings"),
+            {"modification_simplifiee_1_visible": False},
+        )
+        self.assertEqual(response.status_code, 302)
+        settings = PLUISettings.load()
+        self.assertFalse(settings.modification_simplifiee_1_visible)

@@ -1,0 +1,169 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Paramètres PLUi{% endblock %}
+{% block breadcrumb %}PLUi{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Paramètres PLUi</h1>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Gérez la visibilité et l'accès aux sections de la page
+                    <a href="{% url 'plui' %}" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 font-medium">PLUi</a>
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+                {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}
+                    bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300
+                {% else %}
+                    bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400
+                {% endif %}">
+                <span class="w-2 h-2 rounded-full {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}bg-green-500{% else %}bg-gray-400 dark:bg-gray-500{% endif %}"></span>
+                MS1
+                {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}
+                    Visible
+                {% else %}
+                    Masquée
+                {% endif %}
+            </span>
+            <a href="{% url 'plui' %}" target="_blank"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+                Voir la page
+            </a>
+        </div>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/50">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Visibilité des sections</h2>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center justify-between p-4 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-gray-200 dark:hover:border-gray-600 transition-colors">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <label for="{{ form.modification_simplifiee_1_visible.id_for_label }}"
+                                   class="text-sm font-semibold text-gray-900 dark:text-white cursor-pointer">
+                                Modification Simplifiée n°1
+                            </label>
+                            <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                                Afficher la carte et la page dédiée sur le site public
+                            </p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 ml-4" aria-label="Basculer la visibilité de la Modification Simplifiée n°1">
+                        {{ form.modification_simplifiee_1_visible }}
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="p-6">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Impact de ce paramètre</h3>
+                        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                            <li class="flex items-start gap-2.5">
+                                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                                <span>
+                                    La carte
+                                    <strong class="text-gray-900 dark:text-white font-medium">Modification Simplifiée n°1</strong>
+                                    est
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium
+                                        {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}
+                                            bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300
+                                        {% else %}
+                                            bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400
+                                        {% endif %}">
+                                        {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}visible{% else %}masquée{% endif %}
+                                    </span>
+                                    sur la page <a href="{% url 'plui' %}" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 underline">/plui/</a>
+                                </span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                                <span>
+                                    L'URL
+                                    <code class="inline-flex text-xs font-mono bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 rounded">/modification-simplifiee-1/</code>
+                                    est
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium
+                                        {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}
+                                            bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300
+                                        {% else %}
+                                            bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300
+                                        {% endif %}">
+                                        {% if plui_settings and plui_settings.modification_simplifiee_1_visible %}accessible (200){% else %}bloquée (404){% endif %}
+                                    </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
+                <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Les modifications sont appliquées immédiatement.
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{% url 'plui' %}" target="_blank"
+                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <svg class="w-4 h-4 mr-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                    Aperçu
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 shadow-sm">
+                    <svg class="w-4 h-4 mr-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

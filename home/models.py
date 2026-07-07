@@ -2,6 +2,28 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from app.models import SingletonModel
+
+
+class PLUISettings(SingletonModel):
+    """Paramètres de visibilité des sections PLUi."""
+
+    modification_simplifiee_1_visible = models.BooleanField(
+        default=False,
+        verbose_name="Modification Simplifiée n°1 visible",
+        help_text=(
+            "Cochez pour rendre la page accessible et afficher "
+            "sa carte sur la page PLUi."
+        ),
+    )
+
+    class Meta:
+        verbose_name = "Paramètres PLUi"
+        verbose_name_plural = "Paramètres PLUi"
+
+    def __str__(self):
+        return "Paramètres PLUi"
+
 
 class StaticPage(models.Model):
     """Pages statiques indexables pour la recherche et le sitemap."""
@@ -24,9 +46,7 @@ class StaticPage(models.Model):
         verbose_name="Publié",
         help_text="Dépublier exclut la page du sitemap et de la recherche.",
     )
-    created_at = models.DateTimeField(
-        default=timezone.now, verbose_name="Créé le"
-    )
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Créé le")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Modifié le")
 
     class Meta:
@@ -34,9 +54,7 @@ class StaticPage(models.Model):
         verbose_name = "Page statique"
         verbose_name_plural = "Pages statiques"
         constraints = [
-            models.UniqueConstraint(
-                fields=["url"], name="home_staticpage_url_unique"
-            ),
+            models.UniqueConstraint(fields=["url"], name="home_staticpage_url_unique"),
         ]
         indexes = [
             models.Index(fields=["is_published", "title"]),

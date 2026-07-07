@@ -3,6 +3,7 @@ import re
 from django import forms
 from django.core.exceptions import ValidationError
 
+from .models import PLUISettings
 
 # Regex téléphone: 10 chiffres FR, espaces/tirets/points/parentheses/+ tolérés
 TELEPHONE_REGEX = re.compile(r"^[\d\s\-().+]+$")
@@ -196,3 +197,28 @@ class PLUiModificationForm(forms.Form):
                 "10 caractères (exemple: 'Modifier le zonage')."
             )
         return demande
+
+
+class PLUISettingsForm(forms.ModelForm):
+    """Formulaire pour les paramètres de visibilité PLUi."""
+
+    class Meta:
+        model = PLUISettings
+        fields = ["modification_simplifiee_1_visible"]
+        labels = {
+            "modification_simplifiee_1_visible": "Modification Simplifiée n°1",
+        }
+        help_texts = {
+            "modification_simplifiee_1_visible": (
+                "Cochez pour rendre la page accessible et afficher sa carte "
+                "sur la page PLUi."
+            ),
+        }
+        widgets = {
+            "modification_simplifiee_1_visible": forms.CheckboxInput(
+                attrs={
+                    "class": "peer sr-only",
+                    "role": "switch",
+                }
+            ),
+        }
