@@ -1,12 +1,25 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
 
 from app.utils import secure_file_removal
 from conseil_communautaire.models import ConseilVille
 
 from .forms import ActesLocForm
 from .models import ActeLocal
+from .services import CommuneListingService
+
+
+@cache_page(300)
+def communes_list(request):
+    """Affiche la page publique listant les communes membres sous forme de cards.
+
+    La logique métier est déléguée à ``CommuneListingService`` (SOLID - SRP).
+    Le cache HTTP de 5 minutes évite de reconstruire la page à chaque hit.
+    """
+    context = CommuneListingService.get_listing_context()
+    return render(request, "communes_membres/communes_list.html", context)
 
 
 def commune(request, slug):
