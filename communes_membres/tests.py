@@ -22,6 +22,7 @@ from django.urls import reverse
 from communes_membres.admin import CustomCommuneMAdmin
 from communes_membres.forms import ActesLocForm
 from communes_membres.models import ActeLocal
+from communes_membres.services import CommuneListingService
 from conseil_communautaire.models import ConseilVille
 
 User = get_user_model()
@@ -1078,3 +1079,282 @@ class CommunesMembresEdgeCasesTestCase(BaseCommunesMembresTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["commune"], commune_special)
+
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class CommunesListViewTestCase(BaseCommunesMembresTestCase):
+    """Tests pour la vue publique listant les communes membres sous forme de cards.
+
+    TDD : ces tests sont écrits AVANT l'implémentation de la vue et du service.
+    Ils doivent échouer tant que la vue ``communes_list`` n'existe pas et que
+    ``CommuneListingService`` n'est pas créé.
+    """
+
+    def setUp(self):
+        """Préparation : 3 communes de test avec images."""
+        from django.core.cache import cache
+
+        cache.clear()  # Reset cache entre tests (le service utilise le cache)
+        self.client = Client()
+
+        self.commune_a = ConseilVille.objects.create(
+            city_name="Anor",
+            mayor_sex="M",
+            mayor_first_name="Jean",
+            mayor_last_name="Dupont",
+            address="Place de la Mairie",
+            postal_code="59186",
+            phone_number="0359600000",
+            website="http://www.anor.fr",
+            slogan="Ville d'histoire",
+            nb_habitants=3200,
+            image=TEST_IMAGE,
+        )
+        self.commune_b = ConseilVille.objects.create(
+            city_name="Baives",
+            mayor_sex="M",
+            mayor_first_name="Pierre",
+            mayor_last_name="Martin",
+            address="Rue Principale",
+            postal_code="59132",
+            phone_number="0359600001",
+            website="http://www.baives.fr",
+            slogan=None,
+            nb_habitants=180,
+            image=TEST_IMAGE,
+        )
+        self.commune_c = ConseilVille.objects.create(
+            city_name="Fourmies",
+            mayor_sex="M",
+            mayor_first_name="Alain",
+            mayor_last_name="Durand",
+            address="Rue de l'Hôtel de Ville",
+            postal_code="59610",
+            phone_number="0359600002",
+            website="http://www.fourmies.fr",
+            slogan="Pôle urbain du Sud-Avesnois",
+            nb_habitants=12000,
+            image=TEST_IMAGE,
+        )
+
+    def test_list_view_status_200(self):
+        """La page de liste renvoie HTTP 200."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_view_uses_correct_template(self):
+        """La vue utilise le template ``communes_list.html``."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertTemplateUsed(response, "communes_membres/communes_list.html")
+
+    def test_list_view_context_contains_communes(self):
+        """Le contexte expose la liste des communes triées alphabétiquement."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertIn("communes", response.context)
+        communes = list(response.context["communes"])
+        self.assertEqual(
+            [c.city_name for c in communes],
+            ["Anor", "Baives", "Fourmies"],
+        )
+
+    def test_list_view_context_contains_total(self):
+        """Le contexte expose le nombre total de communes."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertEqual(response.context["total"], 3)
+
+    def test_list_view_uses_only_one_query(self):
+        """La vue ne déclenche pas de N+1 (2 requêtes max : 1 vue + 1 context_processor).
+
+        La 2ᵉ requête provient de ``app.context_processors.get_cities`` qui est
+        appelé sur **chaque** page du site pour alimenter le menu des communes.
+        C'est un comportement existant, indépendant de notre vue.
+        """
+        with self.assertNumQueries(2):
+            self.client.get(reverse("communes-membres:list"))
+
+    def test_list_view_accessible_to_anonymous(self):
+        """La page est publique : accessible sans authentification."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_view_contains_all_commune_names(self):
+        """Chaque nom de commune apparaît dans le HTML rendu."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, "Anor")
+        self.assertContains(response, "Baives")
+        self.assertContains(response, "Fourmies")
+
+    def test_list_view_contains_descriptive_alt_on_images(self):
+        """Chaque image de card possède un attribut ``alt`` descriptif."""
+        response = self.client.get(reverse("communes-membres:list"))
+        for city in ["Anor", "Baives", "Fourmies"]:
+            self.assertContains(
+                response,
+                f'alt="Vue de la commune de {city}"',
+            )
+
+    def test_list_view_contains_aria_labelledby(self):
+        """Chaque card est liée à son titre via ``aria-labelledby``."""
+        response = self.client.get(reverse("communes-membres:list"))
+        for city in ["anor", "baives", "fourmies"]:
+            self.assertContains(
+                response,
+                f'aria-labelledby="commune-{city}"',
+            )
+
+    def test_list_view_contains_h2_heading_per_card(self):
+        """Chaque card possède un titre de niveau 2 (sémantique liste cards)."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, '<h2 id="commune-anor"', html=True)
+        self.assertContains(response, '<h2 id="commune-baives"', html=True)
+        self.assertContains(response, '<h2 id="commune-fourmies"', html=True)
+
+    def test_list_view_contains_semantic_ul_list(self):
+        """La liste des cards est dans un ``<ul role="list">`` sémantique."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, '<ul role="list"')
+
+    def test_list_view_contains_link_to_detail(self):
+        """Chaque card renvoie vers la fiche détail de la commune."""
+        response = self.client.get(reverse("communes-membres:list"))
+        for slug in ["anor", "baives", "fourmies"]:
+            detail_url = reverse("communes-membres:commune", args=[slug])
+            self.assertContains(response, detail_url)
+
+    def test_list_view_empty_state_does_not_crash(self):
+        """Une liste vide affiche un message ``role="status"`` sans crash."""
+        ConseilVille.objects.all().delete()
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'role="status"')
+        self.assertEqual(response.context["total"], 0)
+
+    def test_list_view_contains_slogan_or_fallback(self):
+        """Le slogan de la commune OU le fallback apparaît dans chaque card.
+
+        Note : les apostrophes sont HTML-escapées par Django (``'`` → ``&#x27;``),
+        c'est pourquoi on cherche les fragments sans apostrophe.
+        """
+        response = self.client.get(reverse("communes-membres:list"))
+        # commune_a a un slogan explicite (contient "histoire")
+        self.assertContains(response, "histoire")
+        # commune_b n'a pas de slogan : le fallback est utilisé
+        self.assertContains(response, "Commune membre")
+        # commune_c a un slogan explicite
+        self.assertContains(response, "Pôle urbain")
+
+    def test_list_view_contains_inhabitants_count(self):
+        """Le badge affiche le nombre d'habitants de chaque commune (format français)."""
+        response = self.client.get(reverse("communes-membres:list"))
+        # commune_a : 3 200 hab. (espace fine U+202F comme séparateur)
+        self.assertContains(response, "3 200")
+        # commune_b : 180 hab.
+        self.assertContains(response, "180")
+        # commune_c : 12 000 hab.
+        self.assertContains(response, "12 000")
+        # Le suffixe "hab." doit être présent
+        self.assertContains(response, "hab.")
+        # L'aria-label descriptif est présent (apostrophe brute, pas échappée dans un attr double-quoted)
+        self.assertContains(response, 'aria-label="Nombre d\'habitants : 3200"')
+        self.assertContains(response, 'aria-label="Nombre d\'habitants : 180"')
+        self.assertContains(response, 'aria-label="Nombre d\'habitants : 12000"')
+
+    def test_list_view_uses_lazy_loading(self):
+        """Les images sont en ``loading="lazy"`` (perf + RGAA 8.1)."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, 'loading="lazy"')
+
+    def test_list_view_uses_paired_dimensions(self):
+        """Les images ont ``width``/``height`` (CLS - Core Web Vitals)."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, 'width="400"')
+        self.assertContains(response, 'height="225"')
+
+    def test_list_view_url_named(self):
+        """La route ``communes-membres:list`` est résolvable."""
+        url = reverse("communes-membres:list")
+        self.assertEqual(url, "/communes-membres/")
+
+    def test_list_view_h1_present(self):
+        """La page contient un H1 unique et pertinent."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, "<h1")
+
+    def test_list_view_dark_mode_classes(self):
+        """Les cards ont des classes ``dark:`` pour le mode sombre."""
+        response = self.client.get(reverse("communes-membres:list"))
+        self.assertContains(response, "dark:")
+
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class CommuneListingServiceTestCase(BaseCommunesMembresTestCase):
+    """Tests unitaires du service SOLID ``CommuneListingService``."""
+
+    def setUp(self):
+        from django.core.cache import cache
+
+        cache.clear()
+        self.commune_a = ConseilVille.objects.create(
+            city_name="Anor",
+            mayor_sex="M",
+            mayor_first_name="Jean",
+            mayor_last_name="Dupont",
+            address="Place de la Mairie",
+            postal_code="59186",
+            phone_number="0359600000",
+            slogan="Ville d'histoire",
+            nb_habitants=3200,
+            image=TEST_IMAGE,
+        )
+        # Commune SANS slogan pour tester le fallback
+        self.commune_b = ConseilVille.objects.create(
+            city_name="Baives",
+            mayor_sex="M",
+            mayor_first_name="Pierre",
+            mayor_last_name="Martin",
+            address="Rue Principale",
+            postal_code="59132",
+            phone_number="0359600001",
+            slogan=None,
+            nb_habitants=180,
+        )
+
+    def test_service_returns_communes_alphabetical(self):
+        """Le service retourne les communes triées par nom."""
+        communes = list(CommuneListingService.get_communes_for_listing())
+        self.assertEqual([c.city_name for c in communes], ["Anor", "Baives"])
+
+    def test_service_uses_only_necessary_fields(self):
+        """Le service ne charge que les colonnes utiles (perf)."""
+        with self.assertNumQueries(1):
+            list(CommuneListingService.get_communes_for_listing())
+
+    def test_get_placeholder_image_url_returns_string(self):
+        """Le service expose une URL placeholder non vide."""
+        url = CommuneListingService.get_placeholder_image_url()
+        self.assertIsInstance(url, str)
+        self.assertGreater(len(url), 0)
+
+    def test_get_card_context_returns_full_dict(self):
+        """Le contexte d'une card contient tous les champs attendus."""
+        ctx = CommuneListingService.get_card_context(self.commune_a)
+        for key in (
+            "commune",
+            "title",
+            "image_url",
+            "alt_text",
+            "slogan",
+            "detail_url",
+            "heading_id",
+            "nb_habitants",
+        ):
+            self.assertIn(key, ctx)
+        self.assertEqual(ctx["heading_id"], "commune-anor")
+        self.assertEqual(ctx["alt_text"], "Vue de la commune de Anor")
+        self.assertIn("Ville d'histoire", ctx["slogan"])
+        self.assertEqual(ctx["nb_habitants"], 3200)
+
+    def test_get_card_context_slogan_fallback(self):
+        """Si la commune n'a pas de slogan, le service applique un fallback."""
+        ctx = CommuneListingService.get_card_context(self.commune_b)
+        self.assertIn("Commune membre", ctx["slogan"])

@@ -1,0 +1,153 @@
+/* ==========================================================================
+   communes-list.css
+   Styles dédiés à la page publique /communes-membres/
+   - Card cliquable avec zone tactile large
+   - Respect des préférences utilisateur (reduced motion, high contrast, dark)
+   - Conforme RGAA 4.1.2 / WCAG 2.2 AA
+   ========================================================================== */
+
+/* ---------- Card racine ---------- */
+.commune-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    /* Garantit que le focus visible est bien sur l'élément <article> */
+    isolation: isolate;
+}
+
+.commune-card-item {
+    display: flex;
+}
+
+/* ---------- Overlay cliquable transparent (toute la card) ----------
+   L'overlay couvre toute la card pour offrir une zone cliquable large (44x44 min)
+   tandis que le lien textuel "Découvrir la commune" reste accessible au clavier.
+   tabindex="-1" + aria-hidden=true pour ne pas dupliquer le focus.
+*/
+.commune-card__overlay {
+    background: transparent;
+    text-indent: -9999px;
+    overflow: hidden;
+    z-index: 0;
+}
+
+/* Le lien textuel doit être au-dessus de l'overlay pour rester focusable/activable */
+.commune-card__link {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- Media (image) ---------- */
+.commune-card__media {
+    background-color: #f3f4f6; /* gray-100 */
+}
+
+.commune-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---------- Hover/focus visuel ----------
+   On désactive l'effet de translation/scale pour les utilisateurs
+   ayant activé reduced motion (respect de la préférence système).
+*/
+@media (prefers-reduced-motion: no-preference) {
+    .commune-card:hover {
+        transform: translateY(-4px);
+    }
+    .commune-card:hover .commune-card__image {
+        transform: scale(1.05);
+    }
+}
+
+/* ---------- Focus visible accessible (WCAG 2.4.7) ---------- */
+.commune-card:focus-within {
+    outline: none;
+}
+
+/* Le lien textuel garde son propre focus ring accessible */
+.commune-card__link:focus {
+    outline: 2px solid #006ab3;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ---------- Mode contraste élevé (compatibilité avec le toggle a11y) ---------- */
+.high-contrast .commune-card {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+}
+
+.high-contrast .commune-card__title,
+.high-contrast .commune-card__slogan {
+    color: #fff !important;
+}
+
+.high-contrast .commune-card__badge {
+    background-color: #ffff00 !important;
+    color: #000 !important;
+}
+
+.high-contrast .commune-card__link {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+}
+
+/* ---------- Mode sombre (déjà géré par Tailwind dark:) ---------- */
+.dark .commune-card {
+    background-color: #1f2937; /* gray-800 */
+}
+
+.dark .commune-card__media {
+    background-color: #374151; /* gray-700 */
+}
+
+/* ---------- Responsive : 1 col mobile, 2 tablette, 3-4 desktop ----------
+   Les breakpoints sont définis par Tailwind dans le template.
+   On ajuste ici la hauteur minimale de l'image sur petits écrans.
+*/
+@media (max-width: 640px) {
+    .commune-card__media {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+/* ---------- Animations : respect strict de prefers-reduced-motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .commune-card,
+    .commune-card__image,
+    .commune-card__link svg {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .commune-card:hover {
+        transform: none !important;
+    }
+
+    .commune-card:hover .commune-card__image {
+        transform: none !important;
+    }
+
+    .commune-card__link:hover svg {
+        transform: none !important;
+    }
+}
+
+/* ---------- Impression (RGAA 11.9) ---------- */
+@media print {
+    .commune-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+
+    .commune-card__overlay,
+    .commune-card__link svg {
+        display: none;
+    }
+}

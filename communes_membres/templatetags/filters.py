@@ -4,6 +4,20 @@ register = template.Library()
 
 
 @register.filter
+def french_number(value):
+    """
+    Formate un nombre avec des espaces fines comme séparateur de milliers.
+    Ex : 3200 -> '3 200', 12000 -> '12 000'
+    """
+    if value is None:
+        return ""
+    try:
+        return f"{int(value):,}".replace(",", "\u202f")
+    except (ValueError, TypeError):
+        return str(value)
+
+
+@register.filter
 def format_phone_number(phone_number):
     """
     Formate un numéro de téléphone au format français.

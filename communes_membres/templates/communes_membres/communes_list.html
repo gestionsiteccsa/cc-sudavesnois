@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filters %}
+
+{% block title %}Les communes membres - Communauté de Communes Sud-Avesnois{% endblock %}
+
+{% block meta_description %}Découvrez les communes membres de la Communauté de Communes Sud-Avesnois : cartes, informations, contacts et services de proximité.{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/communes-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Bannière -->
+<section class="relative bg-gradient-to-r from-primary to-primary/80 py-12 md:py-16" aria-labelledby="page-title">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 id="page-title" class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Les communes membres</h1>
+            <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
+                Découvrez les {{ total }} communes qui composent la Communauté de Communes Sud-Avesnois.
+            </p>
+        </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-6 bg-white dark:bg-gray-900" style="clip-path: polygon(0 100%, 100% 100%, 0 0);" aria-hidden="true"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-6 bg-white dark:bg-gray-900 opacity-30" style="clip-path: polygon(100% 100%, 100% 0, 0 100%);" aria-hidden="true"></div>
+</section>
+
+<!-- Grille des communes -->
+<section class="py-10 md:py-16 bg-white dark:bg-gray-900" aria-label="Liste des communes membres">
+    <div class="container mx-auto px-4 md:px-6">
+        {% if cards %}
+        <ul role="list" class="communes-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for card in cards %}
+            <li class="commune-card-item">
+                <article class="commune-card group relative bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+                         aria-labelledby="{{ card.heading_id }}">
+
+                    <!-- Image (ratio 16:9 stable pour éviter CLS) -->
+                    <figure class="commune-card__media relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-700">
+                        <img src="{{ card.image_url }}"
+                             alt="{{ card.alt_text }}"
+                             loading="lazy"
+                             decoding="async"
+                             width="400"
+                             height="225"
+                             class="commune-card__image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </figure>
+
+                    <!-- Contenu texte -->
+                    <div class="commune-card__body p-5">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h2 id="{{ card.heading_id }}" class="commune-card__title text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">
+                                {{ card.title }}
+                            </h2>
+                            <span class="commune-card__badge shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary dark:bg-green-900 dark:text-green-300"
+                                  aria-label="Nombre d'habitants : {{ card.nb_habitants }}">
+                                {{ card.nb_habitants|french_number }}&nbsp;hab.
+                            </span>
+                        </div>
+
+                        <p class="commune-card__slogan text-sm text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                            {{ card.slogan }}
+                        </p>
+
+                        <a href="{{ card.detail_url }}"
+                           class="commune-card__link inline-flex items-center text-sm font-semibold text-primary dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                           aria-describedby="{{ card.heading_id }}">
+                            Découvrir la commune
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Lien absolu couvrant toute la card (zone cliquable large) -->
+                    <a href="{{ card.detail_url }}"
+                       class="commune-card__overlay absolute inset-0 z-0"
+                       tabindex="-1"
+                       aria-hidden="true"
+                       focusable="false"></a>
+                </article>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <!-- État vide accessible -->
+        <div class="text-center py-16" role="status" aria-live="polite">
+            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Aucune commune disponible</h2>
+            <p class="text-gray-500 dark:text-gray-400">La liste des communes est momentanément vide. Veuillez réessayer ultérieurement.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

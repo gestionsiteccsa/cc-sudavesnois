@@ -24,19 +24,21 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
-                            {% if cities %}
-                            <ul id="submenu-communes" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
-                                {% for commune in cities %}
+                            <ul id="submenu-communes" class="submenu-level-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
                                 <li>
-                                    <a href="{% url 'communes-membres:commune' commune.slug %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">{{commune.city_name}}</a>
+                                    <a href="{% url 'communes-membres:list' %}" class="block px-4 py-3 font-semibold text-primary dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="Voir toutes les communes membres">
+                                        Voir toutes les communes
+                                    </a>
                                 </li>
-                                {% endfor %}
+                                {% if cities %}
+                                    <li class="border-t border-gray-100 dark:border-gray-700" role="separator" aria-hidden="true"></li>
+                                    {% for commune in cities %}
+                                    <li>
+                                        <a href="{% url 'communes-membres:commune' commune.slug %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">{{commune.city_name}}</a>
+                                    </li>
+                                    {% endfor %}
+                                {% endif %}
                             </ul>
-                            {% else %}
-                            <ul id="submenu-communes" class="submenu-level-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg hidden opacity-0 transition-all duration-300 z-10" aria-hidden="true">
-                                <li><p class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Indisponible.</p></li>
-                            </ul>
-                            {% endif %}
                         </li>
                         <li><a href="{% url 'journal:journal' %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mon mag</a></li>
                         <li><a href="{% url 'guide_eco_citoyen' %}" class="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">Mon Guide éco-citoyen</a></li>
@@ -303,17 +305,19 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            {% if cities %}
                             <ul id="submenu-communes-mobile" class="pl-4 hidden">
-                                {% for commune in cities %}
-                                <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">{{commune.city_name}}</a></li>
-                                {% endfor %}
+                                <li>
+                                    <a href="{% url 'communes-membres:list' %}" class="block py-3 font-semibold text-primary dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" aria-label="Voir toutes les communes membres">
+                                        Voir toutes les communes
+                                    </a>
+                                </li>
+                                {% if cities %}
+                                    <li class="border-t border-gray-100 dark:border-gray-700" role="separator" aria-hidden="true"></li>
+                                    {% for commune in cities %}
+                                    <li><a href="{% url 'communes-membres:commune' commune.slug %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">{{commune.city_name}}</a></li>
+                                    {% endfor %}
+                                {% endif %}
                             </ul>
-                            {% else %}
-                            <ul id="submenu-communes-mobile" class="pl-4 hidden">
-                                <li><p class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Indisponible.</p></li>
-                            </ul>
-                            {% endif %}
                         </li>
                         <li><a href="{% url 'journal:journal' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon mag</a></li>
                         <li><a href="{% url 'guide_eco_citoyen' %}" class="block py-3 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-secondary transition-colors duration-300">Mon Guide éco-citoyen</a></li>
