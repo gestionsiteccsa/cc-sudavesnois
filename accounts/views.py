@@ -2,6 +2,9 @@ import hashlib
 import logging
 import smtplib
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+import requests
 
 from django.conf import settings
 from django.contrib import messages
@@ -583,16 +586,21 @@ def admin_create_user(request):
 @login_required
 @user_passes_test(lambda u: est_moderateur(u))
 def check_pages(request):
-    """Vérifie le statut de toutes les pages du site avec cache 5 min."""
-    from django.test import Client
-
+    """Vérifie le statut HTTP de toutes les pages du site avec cache 5 min."""
     cached = cache.get(CHECK_PAGES_CACHE_KEY)
     if cached and request.GET.get("refresh") != "1":
         return render(request, "accounts/admin_check_pages.html", cached)
 
+    base_url = request.build_absolute_uri("/").rstrip("/")
     pages = _get_pages_to_check()
-    client = Client(HTTP_HOST=request.get_host())
-    results = [_check_page(client, path, name) for name, path in pages]
+    results = []
+
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = {}
+        for name, path in pages:
+            futures[executor.submit(_check_page, base_url, path, name)] = (name, path)
+        for future in as_completed(futures):
+            results.append(future.result())
 
     results.sort(key=lambda r: r["path"])
 
@@ -687,11 +695,12 @@ def _get_pages_to_check():
     return pages
 
 
-def _check_page(client, path, name):
-    """Vérifie statut HTTP d'une page via le client de test Django."""
+def _check_page(base_url, path, name):
+    """Vérifie statut HTTP et temps de réponse d'une page."""
+    url = f"{base_url}{path}"
     start = time.time()
     try:
-        resp = client.get(path, secure=True)
+        resp = requests.get(url, timeout=8)
         elapsed = round(time.time() - start, 2)
         code = resp.status_code
 
@@ -709,6 +718,39 @@ def _check_page(client, path, name):
             "status": status,
             "response_time": elapsed,
             "error": None,
+        }
+    except requests.exceptions.SSLError:
+        elapsed = round(time.time() - start, 2)
+        try:
+            resp = requests.get(url, timeout=8, verify=False)
+            elapsed = round(time.time() - start, 2)
+            code = resp.status_code
+            return {
+                "name": name,
+                "path": path,
+                "status_code": code,
+                "status": "error" if code >= 400 else "warning",
+                "response_time": elapsed,
+                "error": None,
+            }
+        except Exception as e2:
+            return {
+                "name": name,
+                "path": path,
+                "status_code": None,
+                "status": "error",
+                "response_time": round(time.time() - start, 2),
+                "error": str(e2),
+            }
+    except requests.exceptions.RequestException as e:
+        elapsed = round(time.time() - start, 2)
+        return {
+            "name": name,
+            "path": path,
+            "status_code": None,
+            "status": "error",
+            "response_time": elapsed,
+            "error": str(e),
         }
     except Exception as e:
         elapsed = round(time.time() - start, 2)
