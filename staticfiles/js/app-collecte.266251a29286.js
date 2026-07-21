@@ -522,7 +522,7 @@ const cityData = {
                 "rue victor delloue",
                 "Vieux Chemin de Wignehies",
                 "Vieux Chemin de Fourmies",
-            ],
+            ],  
         },
         "verre": {
             "lundi": [
@@ -602,7 +602,7 @@ const cityData = {
                 "2027-10-06",
                 "2027-11-03",
                 "2027-12-08"
-            ],
+            ],  
             "jeudi": [
                 "2026-01-08",
                 "2026-02-05",
@@ -696,12 +696,12 @@ const cityData = {
             ],
             "jeudi": [
                 "rue Roger salengro",
-                "rue du Canada",
+                "rue du Canada", 
                 "Rue chartiaux", "rue augustin dimanche",
-                "chemin des jardins",
+                "chemin des jardins", 
                 "rue des haies",
                 "chemin des haies",
-                "impasse des jardins",
+                "impasse des jardins", 
                 "impasse les carmes"
             ],
         },
@@ -731,7 +731,7 @@ const cityData = {
                 "2027-10-13",
                 "2027-11-10",
                 "2027-12-15"
-            ],
+            ],  
             "jeudi": [
                 "2026-01-15",
                 "2026-02-12",
@@ -858,7 +858,7 @@ window.handleCityChange = function handleCityChange() {
       </div>
     </div>
 `;
-
+        
         // Ajouter les informations de collecte du verre si disponibles
         if (cityData[city].verre) {
             const jourVerre = cityData[city].verre.jour || jourCollecte;
@@ -882,7 +882,7 @@ window.handleCityChange = function handleCityChange() {
         resultDiv.innerHTML = message;
         resultDiv.className = '';
         resultDiv.style.display = 'block';
-    }
+    } 
     // Si la ville a des rues spécifiques (Fourmies)
     else {
         searchSection.style.display = 'block';
@@ -891,25 +891,25 @@ window.handleCityChange = function handleCityChange() {
 
 function formatDatesVerre(verreInfo, jour) {
     if (!verreInfo) return '';
-
+    
     const currentDate = new Date();
     let datesToUse;
-
+    
     // Pour les villes avec un seul jour de collecte
     if (verreInfo.dates && Array.isArray(verreInfo.dates)) {
         datesToUse = verreInfo.dates;
-    }
+    } 
     // Pour les villes avec plusieurs jours de collecte (Fourmies)
     else if (verreInfo[jour.toLowerCase()]) {
         datesToUse = verreInfo[jour.toLowerCase()];
     }
-
+    
     if (!datesToUse || !Array.isArray(datesToUse)) return '';
-
+    
     const futureDates = datesToUse.filter(date => new Date(date) >= currentDate);
-
+    
     if (futureDates.length === 0) return 'Prochaines dates à venir';
-
+    
     return futureDates.slice(0, 3).map(date => {
         const dateObj = new Date(date);
         const jour = dateObj.toLocaleDateString('fr-FR', { weekday: 'long' });
@@ -928,7 +928,7 @@ window.searchStreet = function searchStreet() {
     const suggestionsDiv = document.getElementById('suggestions');
     const resultDiv = document.getElementById('result');
     const selectedCity = document.getElementById('citySelect').value;
-
+    
     if (!selectedCity) {
         alert('Veuillez sélectionner une ville');
         return;
@@ -937,20 +937,20 @@ window.searchStreet = function searchStreet() {
     const cityInfo = cityData[selectedCity];
     let searchText = searchInput.value.toLowerCase();
     suggestionsDiv.innerHTML = '';
-
+    
     if (searchText.length < 2) {
         resultDiv.style.display = 'none';
         return;
     }
 
     let foundStreets = [];
-
+    
     // Pour les villes avec des jours différents selon les rues
-    const streets = Object.entries(cityInfo.ordures).flatMap(([day, streets]) =>
+    const streets = Object.entries(cityInfo.ordures).flatMap(([day, streets]) => 
         streets.map(street => ({street: street, day: day}))
     );
-
-    foundStreets = streets.filter(item =>
+    
+    foundStreets = streets.filter(item => 
         item.street.toLowerCase().includes(searchText)
     );
 
@@ -973,7 +973,7 @@ window.searchStreet = function searchStreet() {
       </div>
     </div>
 `;
-
+            
             // Ajouter les informations de collecte du verre si disponibles
             if (cityInfo.verre) {
                 const prochaineDates = formatDatesVerre(cityInfo.verre, street.day);

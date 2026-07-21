@@ -1,14 +1,14 @@
-/*!
-* @package IcoFont
-* @version 1.0.1
-* @author
-* @copyright 2025
+/*! 
+* @package IcoFont 
+* @version 1.0.1 
+* @author   
+* @copyright 2025 
 * @license - https://icofont.com/license/
 */
 
 @font-face
 {
-
+ 
   font-family: "IcoFont";
 font-weight: normal;
 font-style: "Regular";
@@ -306,3 +306,4 @@ url("./fonts/icofont.3380219ab588.woff") format("woff");
 {
   color: #fff;
 }
+	
