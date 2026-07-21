@@ -1,6 +1,10 @@
 import hashlib
 import logging
 import smtplib
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+import requests
 
 from django.conf import settings
 from django.contrib import messages
@@ -13,6 +17,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -573,6 +578,178 @@ def admin_create_user(request):
         form = AdminUserCreationForm()
 
     return render(request, "accounts/admin_create_user.html", {"form": form})
+
+
+PAGE_CHECK_TIMEOUT = 15
+
+
+@login_required
+@user_passes_test(lambda u: est_moderateur(u))
+def check_pages(request):
+    """Vérifie le code HTTP de toutes les pages du site."""
+    base_url = request.build_absolute_uri("/").rstrip("/")
+    pages = _get_pages_to_check()
+
+    results = []
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_page = {
+            executor.submit(_check_page, base_url, path, name): (name, path)
+            for name, path in pages
+        }
+        for future in as_completed(future_to_page):
+            name = future_to_page[future][0]
+            try:
+                results.append(future.result())
+            except Exception as e:
+                results.append(
+                    {
+                        "name": name,
+                        "path": future_to_page[future][1],
+                        "status_code": None,
+                        "status": "error",
+                        "response_time": None,
+                        "error": str(e),
+                    }
+                )
+
+    results.sort(key=lambda r: r["path"])
+
+    total = len(results)
+    ok_count = sum(1 for r in results if r["status"] == "ok")
+    warning_count = sum(1 for r in results if r["status"] == "warning")
+    error_count = sum(1 for r in results if r["status"] == "error")
+
+    context = {
+        "results": results,
+        "total": total,
+        "ok_count": ok_count,
+        "warning_count": warning_count,
+        "error_count": error_count,
+    }
+
+    return render(request, "accounts/admin_check_pages.html", context)
+
+
+def _get_pages_to_check():
+    """Génère la liste des pages à vérifier."""
+    pages = []
+
+    static_names = [
+        ("Accueil", "home"),
+        ("Élus", "bureau-communautaire:elus"),
+        ("Conseil communautaire", "conseil_communautaire:conseil"),
+        ("Comptes rendus", "comptes_rendus:comptes_rendus"),
+        ("Procès-verbaux", "comptes_rendus:proces_verbaux"),
+        ("Présentation", "presentation"),
+        ("Compétences", "competences:competences"),
+        ("Journal", "journal:journal"),
+        ("Commissions", "commissions:commissions"),
+        ("Marchés publics", "marches_publics"),
+        ("Mobilité", "mobilite"),
+        ("Habitat", "habitat"),
+        ("Collecte des déchets", "collecte_dechets"),
+        ("Encombrants", "encombrants"),
+        ("Déchetteries", "dechetteries"),
+        ("Maisons de santé", "maisons_sante"),
+        ("Mutuelle", "mutuelle"),
+        ("Contrat local de santé", "contrat_local_sante"),
+        ("PLUi", "plui"),
+        ("Guide des services", "equipe"),
+        ("Semestriels", "semestriels:semestriel"),
+        ("Rapports d'activité", "rapports_activite:rapports_activite"),
+        ("Mentions légales", "mentions_legales"),
+        ("Politique de confidentialité", "politique_confidentialite"),
+        ("Politique des cookies", "cookies"),
+        ("Plan du site", "plan_du_site"),
+        ("Accessibilité", "accessibilite"),
+        ("Médi@'pass", "mediapass"),
+        ("CTG", "ctg"),
+        ("Guide éco-citoyen", "guide_eco_citoyen"),
+        ("CLÉA", "clea"),
+        ("Développement économique", "dev_eco"),
+        ("Kit logos", "kit_logos"),
+        ("Liens utiles", "linktree:linktree_page"),
+        ("Communes membres", "communes-membres:list"),
+        ("Partenaires", "partenaires:partenaires"),
+    ]
+
+    for name, url_name in static_names:
+        try:
+            path = reverse(url_name)
+            pages.append((name, path))
+        except Exception:
+            pass
+
+    # Pages dynamiques : communes
+    try:
+        from conseil_communautaire.models import ConseilVille
+
+        for ville in ConseilVille.objects.all():
+            try:
+                path = reverse("communes-membres:commune", kwargs={"slug": ville.slug})
+                pages.append((f"Commune : {ville.city_name}", path))
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # Pages dynamiques : journaux
+    try:
+        from journal.models import Journal
+
+        for journal in Journal.objects.all():
+            try:
+                path = reverse("journal:journal_detail", kwargs={"id": journal.id})
+                pages.append((f"Journal : {journal.title}", path))
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    return pages
+
+
+def _check_page(base_url, path, name):
+    """Vérifie statut HTTP et temps de réponse d'une page."""
+    url = f"{base_url}{path}"
+    start = time.time()
+    try:
+        resp = requests.get(url, timeout=PAGE_CHECK_TIMEOUT, allow_redirects=True)
+        elapsed = round(time.time() - start, 2)
+
+        if resp.status_code == 200:
+            status = "ok"
+        elif resp.status_code in (301, 302, 307, 308):
+            status = "warning"
+        else:
+            status = "error"
+
+        return {
+            "name": name,
+            "path": path,
+            "status_code": resp.status_code,
+            "status": status,
+            "response_time": elapsed,
+            "error": None,
+        }
+    except requests.exceptions.Timeout:
+        return {
+            "name": name,
+            "path": path,
+            "status_code": None,
+            "status": "error",
+            "response_time": round(time.time() - start, 2),
+            "error": "Timeout (>15s)",
+        }
+    except requests.exceptions.RequestException as e:
+        return {
+            "name": name,
+            "path": path,
+            "status_code": None,
+            "status": "error",
+            "response_time": round(time.time() - start, 2),
+            "error": str(e),
+        }
 
 
 def _send_welcome_email(user, password: str, request) -> bool:

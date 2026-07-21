@@ -1,0 +1,137 @@
+{% extends 'admin_base.html' %}
+{% load group_tags %}
+
+{% block title %}Vérification des pages{% endblock %}
+{% block breadcrumb %}Vérification des pages{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+            Vérification des pages
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
+            Scan des URLs du site pour détecter les erreurs (500, 404, timeout…)
+        </p>
+    </div>
+    <a href="{% url 'accounts:check_pages' %}"
+       class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 min-h-[44px]">
+        <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Relancer la vérification
+    </a>
+</div>
+
+<!-- Résumé -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ total }}</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">Pages scannées</div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-green-200 dark:border-green-800">
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ ok_count }}</div>
+        <div class="text-xs text-green-600 dark:text-green-400">✓ OK</div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+        <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ warning_count }}</div>
+        <div class="text-xs text-yellow-600 dark:text-yellow-400">⚠ Redirections</div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-red-200 dark:border-red-800">
+        <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ error_count }}</div>
+        <div class="text-xs text-red-600 dark:text-red-400">✗ Erreurs</div>
+    </div>
+</div>
+
+<!-- Tableau des résultats -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-gray-50 dark:bg-gray-700/50 text-left">
+                    <th class="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200">Page</th>
+                    <th class="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200">URL</th>
+                    <th class="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200 text-center">Code</th>
+                    <th class="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200 text-center">Temps</th>
+                    <th class="px-4 py-3 font-semibold text-gray-700 dark:text-gray-200 text-center">Statut</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                {% for r in results %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                    <td class="px-4 py-3 text-gray-900 dark:text-white font-medium max-w-xs truncate" title="{{ r.name }}">
+                        {% if r.path %}
+                        <a href="{{ r.path }}" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">
+                            {{ r.name }}
+                            <svg class="w-3 h-3 inline-block ml-1 text-gray-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                        </a>
+                        {% else %}
+                        {{ r.name }}
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-400 font-mono text-xs">
+                        {% if r.path %}
+                        <a href="{{ r.path }}" target="_blank" rel="noopener noreferrer" class="hover:text-primary">{{ r.path }}</a>
+                        {% else %}
+                        <span class="italic">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        {% if r.status_code %}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                            {% if r.status_code == 200 %}bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300
+                            {% elif r.status_code >= 300 and r.status_code < 400 %}bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300
+                            {% else %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300{% endif %}">
+                            {{ r.status_code }}
+                        </span>
+                        {% else %}
+                        <span class="text-gray-400">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-center text-gray-600 dark:text-gray-400">
+                        {% if r.response_time is not None %}
+                        {{ r.response_time }}s
+                        {% else %}
+                        <span class="text-gray-400">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        {% if r.status == "ok" %}
+                        <span class="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+                            <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            OK
+                        </span>
+                        {% elif r.status == "warning" %}
+                        <span class="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400" title="{{ r.error|default:'Redirection' }}">
+                            <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Redirection
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1 text-red-600 dark:text-red-400" title="{{ r.error|default:'Erreur' }}">
+                            <svg class="w-4 h-4" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            ERREUR
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if r.error and r.status == "error" %}
+                <tr class="bg-red-50 dark:bg-red-900/10">
+                    <td colspan="5" class="px-4 py-2 text-xs text-red-600 dark:text-red-400 font-mono">
+                        {{ r.error }}
+                    </td>
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                        Aucune page à vérifier.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
