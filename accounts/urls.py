@@ -38,10 +38,4 @@ urlpatterns = [
         views.admin_create_user,
         name="admin_create_user",
     ),
-    # Vérification des pages
-    path(
-        "adminccsa/verification-pages/",
-        views.check_pages,
-        name="check_pages",
-    ),
 ]

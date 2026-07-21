@@ -2,9 +2,6 @@ import hashlib
 import logging
 import smtplib
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-import requests
 
 from django.conf import settings
 from django.contrib import messages
@@ -361,8 +358,7 @@ def password_reset_complete_view(request):
 DASHBOARD_STATS_CACHE_KEY = "admin_dashboard_stats"
 DASHBOARD_STATS_CACHE_TTL = 60  # secondes
 
-CHECK_PAGES_CACHE_KEY = "check_pages_results"
-CHECK_PAGES_CACHE_TTL = 300  # 5 minutes
+
 
 
 def _compute_dashboard_stats():
@@ -581,187 +577,6 @@ def admin_create_user(request):
         form = AdminUserCreationForm()
 
     return render(request, "accounts/admin_create_user.html", {"form": form})
-
-
-@login_required
-@user_passes_test(lambda u: est_moderateur(u))
-def check_pages(request):
-    """Vérifie le statut HTTP de toutes les pages du site avec cache 5 min."""
-    cached = cache.get(CHECK_PAGES_CACHE_KEY)
-    if cached and request.GET.get("refresh") != "1":
-        return render(request, "accounts/admin_check_pages.html", cached)
-
-    base_url = request.build_absolute_uri("/").rstrip("/")
-    pages = _get_pages_to_check()
-    results = []
-
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = {}
-        for name, path in pages:
-            futures[executor.submit(_check_page, base_url, path, name)] = (name, path)
-        for future in as_completed(futures):
-            results.append(future.result())
-
-    results.sort(key=lambda r: r["path"])
-
-    context = {
-        "results": results,
-        "total": len(results),
-        "ok_count": sum(1 for r in results if r["status"] == "ok"),
-        "warning_count": sum(1 for r in results if r["status"] == "warning"),
-        "error_count": sum(1 for r in results if r["status"] == "error"),
-    }
-    cache.set(CHECK_PAGES_CACHE_KEY, context, CHECK_PAGES_CACHE_TTL)
-
-    return render(request, "accounts/admin_check_pages.html", context)
-
-
-def _get_pages_to_check():
-    """Génère la liste des pages à vérifier."""
-    pages = []
-
-    static_names = [
-        ("Accueil", "home"),
-        ("Élus", "bureau-communautaire:elus"),
-        ("Conseil communautaire", "conseil_communautaire:conseil"),
-        ("Comptes rendus", "comptes_rendus:comptes_rendus"),
-        ("Procès-verbaux", "comptes_rendus:proces_verbaux"),
-        ("Présentation", "presentation"),
-        ("Compétences", "competences:competences"),
-        ("Journal", "journal:journal"),
-        ("Commissions", "commissions:commissions"),
-        ("Marchés publics", "marches_publics"),
-        ("Mobilité", "mobilite"),
-        ("Habitat", "habitat"),
-        ("Collecte des déchets", "collecte_dechets"),
-        ("Encombrants", "encombrants"),
-        ("Déchetteries", "dechetteries"),
-        ("Maisons de santé", "maisons_sante"),
-        ("Mutuelle", "mutuelle"),
-        ("Contrat local de santé", "contrat_local_sante"),
-        ("PLUi", "plui"),
-        ("Guide des services", "equipe"),
-        ("Semestriels", "semestriels:semestriel"),
-        ("Rapports d'activité", "rapports_activite:rapports_activite"),
-        ("Mentions légales", "mentions_legales"),
-        ("Politique de confidentialité", "politique_confidentialite"),
-        ("Politique des cookies", "cookies"),
-        ("Plan du site", "plan_du_site"),
-        ("Accessibilité", "accessibilite"),
-        ("Médi@'pass", "mediapass"),
-        ("CTG", "ctg"),
-        ("Guide éco-citoyen", "guide_eco_citoyen"),
-        ("CLÉA", "clea"),
-        ("Développement économique", "dev_eco"),
-        ("Kit logos", "kit_logos"),
-        ("Liens utiles", "linktree:linktree_page"),
-        ("Communes membres", "communes-membres:list"),
-        ("Partenaires", "partenaires:partenaires"),
-    ]
-
-    for name, url_name in static_names:
-        try:
-            path = reverse(url_name)
-            pages.append((name, path))
-        except Exception:
-            pass
-
-    # Pages dynamiques : communes
-    try:
-        from conseil_communautaire.models import ConseilVille
-
-        for ville in ConseilVille.objects.all():
-            try:
-                path = reverse("communes-membres:commune", kwargs={"slug": ville.slug})
-                pages.append((f"Commune : {ville.city_name}", path))
-            except Exception:
-                pass
-    except Exception:
-        pass
-
-    # Pages dynamiques : journaux
-    try:
-        from journal.models import Journal
-
-        for journal in Journal.objects.all():
-            try:
-                path = reverse("journal:journal_detail", kwargs={"id": journal.id})
-                pages.append((f"Journal : {journal.title}", path))
-            except Exception:
-                pass
-    except Exception:
-        pass
-
-    return pages
-
-
-def _check_page(base_url, path, name):
-    """Vérifie statut HTTP et temps de réponse d'une page."""
-    url = f"{base_url}{path}"
-    start = time.time()
-    try:
-        resp = requests.get(url, timeout=8)
-        elapsed = round(time.time() - start, 2)
-        code = resp.status_code
-
-        if code == 200:
-            status = "ok"
-        elif 300 <= code < 400:
-            status = "warning"
-        else:
-            status = "error"
-
-        return {
-            "name": name,
-            "path": path,
-            "status_code": code,
-            "status": status,
-            "response_time": elapsed,
-            "error": None,
-        }
-    except requests.exceptions.SSLError:
-        elapsed = round(time.time() - start, 2)
-        try:
-            resp = requests.get(url, timeout=8, verify=False)
-            elapsed = round(time.time() - start, 2)
-            code = resp.status_code
-            return {
-                "name": name,
-                "path": path,
-                "status_code": code,
-                "status": "error" if code >= 400 else "warning",
-                "response_time": elapsed,
-                "error": None,
-            }
-        except Exception as e2:
-            return {
-                "name": name,
-                "path": path,
-                "status_code": None,
-                "status": "error",
-                "response_time": round(time.time() - start, 2),
-                "error": str(e2),
-            }
-    except requests.exceptions.RequestException as e:
-        elapsed = round(time.time() - start, 2)
-        return {
-            "name": name,
-            "path": path,
-            "status_code": None,
-            "status": "error",
-            "response_time": elapsed,
-            "error": str(e),
-        }
-    except Exception as e:
-        elapsed = round(time.time() - start, 2)
-        return {
-            "name": name,
-            "path": path,
-            "status_code": None,
-            "status": "error",
-            "response_time": elapsed,
-            "error": str(e),
-        }
 
 
 def _send_welcome_email(user, password: str, request) -> bool:
