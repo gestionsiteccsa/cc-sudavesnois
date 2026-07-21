@@ -2,6 +2,9 @@ import hashlib
 import logging
 import smtplib
 import time
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from django.conf import settings
 from django.contrib import messages
@@ -580,30 +583,45 @@ def admin_create_user(request):
 @login_required
 @user_passes_test(lambda u: est_moderateur(u))
 def check_pages(request):
-    """Vérifie le code HTTP de toutes les pages du site."""
-    from django.test import Client
+    """Vérifie le code HTTP de toutes les pages du site avec cache 5 min."""
+    cached = cache.get(CHECK_PAGES_CACHE_KEY)
+    if cached and request.GET.get("refresh") != "1":
+        return render(request, "accounts/admin_check_pages.html", cached)
 
+    base_url = request.build_absolute_uri("/").rstrip("/")
     pages = _get_pages_to_check()
-    client = Client(HTTP_HOST=request.get_host())
     results = []
 
-    for name, path in pages:
-        results.append(_check_page(client, path, name))
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        future_map = {
+            executor.submit(_check_page, base_url, path, name): (name, path)
+            for name, path in pages
+        }
+        for future in as_completed(future_map):
+            try:
+                results.append(future.result())
+            except Exception as e:
+                results.append(
+                    {
+                        "name": future_map[future][0],
+                        "path": future_map[future][1],
+                        "status_code": None,
+                        "status": "error",
+                        "response_time": None,
+                        "error": str(e),
+                    }
+                )
 
     results.sort(key=lambda r: r["path"])
 
-    total = len(results)
-    ok_count = sum(1 for r in results if r["status"] == "ok")
-    warning_count = sum(1 for r in results if r["status"] == "warning")
-    error_count = sum(1 for r in results if r["status"] == "error")
-
     context = {
         "results": results,
-        "total": total,
-        "ok_count": ok_count,
-        "warning_count": warning_count,
-        "error_count": error_count,
+        "total": len(results),
+        "ok_count": sum(1 for r in results if r["status"] == "ok"),
+        "warning_count": sum(1 for r in results if r["status"] == "warning"),
+        "error_count": sum(1 for r in results if r["status"] == "error"),
     }
+    cache.set(CHECK_PAGES_CACHE_KEY, context, CHECK_PAGES_CACHE_TTL)
 
     return render(request, "accounts/admin_check_pages.html", context)
 
@@ -687,16 +705,19 @@ def _get_pages_to_check():
     return pages
 
 
-def _check_page(client, path, name):
-    """Vérifie statut HTTP et temps de réponse d'une page en interne."""
+def _check_page(base_url, path, name):
+    """Vérifie statut HTTP et temps de réponse d'une page."""
+    url = f"{base_url}{path}"
     start = time.time()
+    req = urllib.request.Request(url)
     try:
-        resp = client.get(path)
-        elapsed = round(time.time() - start, 2)
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            code = resp.status
+            elapsed = round(time.time() - start, 2)
 
-        if resp.status_code == 200:
+        if code == 200:
             status = "ok"
-        elif resp.status_code in (301, 302, 307, 308):
+        elif 300 <= code < 400:
             status = "warning"
         else:
             status = "error"
@@ -704,18 +725,40 @@ def _check_page(client, path, name):
         return {
             "name": name,
             "path": path,
-            "status_code": resp.status_code,
+            "status_code": code,
             "status": status,
             "response_time": elapsed,
             "error": None,
         }
-    except Exception as e:
+    except urllib.error.HTTPError as e:
+        elapsed = round(time.time() - start, 2)
+        code = e.code
+        return {
+            "name": name,
+            "path": path,
+            "status_code": code,
+            "status": "error" if code >= 400 else "warning",
+            "response_time": elapsed,
+            "error": None,
+        }
+    except urllib.error.URLError as e:
+        elapsed = round(time.time() - start, 2)
         return {
             "name": name,
             "path": path,
             "status_code": None,
             "status": "error",
-            "response_time": round(time.time() - start, 2),
+            "response_time": elapsed,
+            "error": str(e.reason),
+        }
+    except Exception as e:
+        elapsed = round(time.time() - start, 2)
+        return {
+            "name": name,
+            "path": path,
+            "status_code": None,
+            "status": "error",
+            "response_time": elapsed,
             "error": str(e),
         }
 
