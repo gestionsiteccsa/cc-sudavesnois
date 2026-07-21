@@ -361,6 +361,9 @@ def password_reset_complete_view(request):
 DASHBOARD_STATS_CACHE_KEY = "admin_dashboard_stats"
 DASHBOARD_STATS_CACHE_TTL = 60  # secondes
 
+CHECK_PAGES_CACHE_KEY = "check_pages_results"
+CHECK_PAGES_CACHE_TTL = 300  # 5 minutes
+
 
 def _compute_dashboard_stats():
     """
