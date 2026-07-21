@@ -584,7 +584,7 @@ def check_pages(request):
     from django.test import Client
 
     pages = _get_pages_to_check()
-    client = Client()
+    client = Client(HTTP_HOST=request.get_host())
     results = []
 
     for name, path in pages:
