@@ -2,9 +2,6 @@ import hashlib
 import logging
 import smtplib
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-import requests
 
 from django.conf import settings
 from django.contrib import messages
@@ -580,37 +577,18 @@ def admin_create_user(request):
     return render(request, "accounts/admin_create_user.html", {"form": form})
 
 
-PAGE_CHECK_TIMEOUT = 15
-
-
 @login_required
 @user_passes_test(lambda u: est_moderateur(u))
 def check_pages(request):
     """Vérifie le code HTTP de toutes les pages du site."""
-    base_url = request.build_absolute_uri("/").rstrip("/")
-    pages = _get_pages_to_check()
+    from django.test import Client
 
+    pages = _get_pages_to_check()
+    client = Client()
     results = []
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_page = {
-            executor.submit(_check_page, base_url, path, name): (name, path)
-            for name, path in pages
-        }
-        for future in as_completed(future_to_page):
-            name = future_to_page[future][0]
-            try:
-                results.append(future.result())
-            except Exception as e:
-                results.append(
-                    {
-                        "name": name,
-                        "path": future_to_page[future][1],
-                        "status_code": None,
-                        "status": "error",
-                        "response_time": None,
-                        "error": str(e),
-                    }
-                )
+
+    for name, path in pages:
+        results.append(_check_page(client, path, name))
 
     results.sort(key=lambda r: r["path"])
 
@@ -709,12 +687,11 @@ def _get_pages_to_check():
     return pages
 
 
-def _check_page(base_url, path, name):
-    """Vérifie statut HTTP et temps de réponse d'une page."""
-    url = f"{base_url}{path}"
+def _check_page(client, path, name):
+    """Vérifie statut HTTP et temps de réponse d'une page en interne."""
     start = time.time()
     try:
-        resp = requests.get(url, timeout=PAGE_CHECK_TIMEOUT, allow_redirects=True)
+        resp = client.get(path)
         elapsed = round(time.time() - start, 2)
 
         if resp.status_code == 200:
@@ -732,16 +709,7 @@ def _check_page(base_url, path, name):
             "response_time": elapsed,
             "error": None,
         }
-    except requests.exceptions.Timeout:
-        return {
-            "name": name,
-            "path": path,
-            "status_code": None,
-            "status": "error",
-            "response_time": round(time.time() - start, 2),
-            "error": "Timeout (>15s)",
-        }
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         return {
             "name": name,
             "path": path,
