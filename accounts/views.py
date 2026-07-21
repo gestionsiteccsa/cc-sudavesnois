@@ -2,9 +2,6 @@ import hashlib
 import logging
 import smtplib
 import time
-import urllib.error
-import urllib.request
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from django.conf import settings
 from django.contrib import messages
@@ -586,34 +583,16 @@ def admin_create_user(request):
 @login_required
 @user_passes_test(lambda u: est_moderateur(u))
 def check_pages(request):
-    """Vérifie le code HTTP de toutes les pages du site avec cache 5 min."""
+    """Vérifie le statut de toutes les pages du site avec cache 5 min."""
+    from django.test import Client
+
     cached = cache.get(CHECK_PAGES_CACHE_KEY)
     if cached and request.GET.get("refresh") != "1":
         return render(request, "accounts/admin_check_pages.html", cached)
 
-    base_url = request.build_absolute_uri("/").rstrip("/")
     pages = _get_pages_to_check()
-    results = []
-
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        future_map = {
-            executor.submit(_check_page, base_url, path, name): (name, path)
-            for name, path in pages
-        }
-        for future in as_completed(future_map):
-            try:
-                results.append(future.result())
-            except Exception as e:
-                results.append(
-                    {
-                        "name": future_map[future][0],
-                        "path": future_map[future][1],
-                        "status_code": None,
-                        "status": "error",
-                        "response_time": None,
-                        "error": str(e),
-                    }
-                )
+    client = Client(HTTP_HOST=request.get_host())
+    results = [_check_page(client, path, name) for name, path in pages]
 
     results.sort(key=lambda r: r["path"])
 
@@ -708,15 +687,13 @@ def _get_pages_to_check():
     return pages
 
 
-def _check_page(base_url, path, name):
-    """Vérifie statut HTTP et temps de réponse d'une page."""
-    url = f"{base_url}{path}"
+def _check_page(client, path, name):
+    """Vérifie statut HTTP d'une page via le client de test Django."""
     start = time.time()
-    req = urllib.request.Request(url)
     try:
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            code = resp.status
-            elapsed = round(time.time() - start, 2)
+        resp = client.get(path, secure=True)
+        elapsed = round(time.time() - start, 2)
+        code = resp.status_code
 
         if code == 200:
             status = "ok"
@@ -732,27 +709,6 @@ def _check_page(base_url, path, name):
             "status": status,
             "response_time": elapsed,
             "error": None,
-        }
-    except urllib.error.HTTPError as e:
-        elapsed = round(time.time() - start, 2)
-        code = e.code
-        return {
-            "name": name,
-            "path": path,
-            "status_code": code,
-            "status": "error" if code >= 400 else "warning",
-            "response_time": elapsed,
-            "error": None,
-        }
-    except urllib.error.URLError as e:
-        elapsed = round(time.time() - start, 2)
-        return {
-            "name": name,
-            "path": path,
-            "status_code": None,
-            "status": "error",
-            "response_time": elapsed,
-            "error": str(e.reason),
         }
     except Exception as e:
         elapsed = round(time.time() - start, 2)
