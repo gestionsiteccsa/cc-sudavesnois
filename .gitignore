@@ -54,7 +54,6 @@ Thumbs.db
 
 # Fichiers de débogage
 *.log
-logs/
 test_results/
 
 # Fichiers spécifiques à Heroku
