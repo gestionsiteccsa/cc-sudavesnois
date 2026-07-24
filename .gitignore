@@ -57,6 +57,9 @@ Thumbs.db
 
 # Données analytics (générées par le middleware)
 analytics_data/
+
+# Base GeoIP (téléchargée via update_geoip_db)
+geoip/
 test_results/
 
 # Fichiers spécifiques à Heroku

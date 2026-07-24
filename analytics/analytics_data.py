@@ -79,6 +79,9 @@ def _update_summary(entries: list[dict]):
     device_types: dict[str, int] = {}
     languages: dict[str, int] = {}
     referrers: dict[str, int] = {}
+    cities: dict[str, int] = {}
+    regions: dict[str, int] = {}
+    countries: dict[str, int] = {}
 
     for e in entries:
         url = e.get("url", "/")
@@ -97,11 +100,24 @@ def _update_summary(entries: list[dict]):
         if ref:
             domain = ref.split("/")[2] if "//" in ref else ref
             referrers[domain] = referrers.get(domain, 0) + 1
+        geo = e.get("geo") or {}
+        city = geo.get("city")
+        if city:
+            cities[city] = cities.get(city, 0) + 1
+        region = geo.get("region")
+        if region:
+            regions[region] = regions.get(region, 0) + 1
+        country = geo.get("country")
+        if country:
+            countries[country] = countries.get(country, 0) + 1
 
     top_pages = sorted(pages.items(), key=lambda x: -x[1])[:20]
     top_browsers = sorted(browsers.items(), key=lambda x: -x[1])[:10]
     top_os = sorted(oss.items(), key=lambda x: -x[1])[:10]
     top_refs = sorted(referrers.items(), key=lambda x: -x[1])[:10]
+    top_cities = sorted(cities.items(), key=lambda x: -x[1])[:10]
+    top_regions = sorted(regions.items(), key=lambda x: -x[1])[:10]
+    top_countries = sorted(countries.items(), key=lambda x: -x[1])[:10]
 
     summary = {
         "total": total,
@@ -114,6 +130,11 @@ def _update_summary(entries: list[dict]):
         "device_types": dict(device_types),
         "languages": dict(languages),
         "referrers": dict(top_refs),
+        "geo": {
+            "cities": [{"name": n, "count": c} for n, c in top_cities],
+            "regions": [{"name": n, "count": c} for n, c in top_regions],
+            "countries": [{"code": n, "count": c} for n, c in top_countries],
+        },
     }
     try:
         with open(_summary_path(), "w", encoding="utf-8") as f:

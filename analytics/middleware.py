@@ -4,6 +4,7 @@ from django.conf import settings
 
 from analytics.analytics_data import append
 from analytics.device_parser import parse_user_agent
+from analytics.geo import lookup as geo_lookup
 from app.utils import get_client_ip, hash_ip
 
 IGNORE_PREFIXES = frozenset(
@@ -38,6 +39,8 @@ class PageTrackingMiddleware:
             referrer = request.META.get("HTTP_REFERER", "")
             lang = request.META.get("HTTP_ACCEPT_LANGUAGE", "")
 
+            geo = geo_lookup(ip)
+
             entry = {
                 "url": path,
                 "status": response.status_code,
@@ -50,6 +53,7 @@ class PageTrackingMiddleware:
                 "referrer": referrer,
                 "language": lang,
                 "device": parse_user_agent(ua),
+                "geo": geo,
             }
             append(entry)
         except Exception:

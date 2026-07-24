@@ -36,6 +36,9 @@ def admin_stats(request):
     devices_agg: dict[str, int] = {}
     languages_agg: dict[str, int] = {}
     referrers_agg: dict[str, int] = {}
+    cities_agg: dict[str, int] = {}
+    regions_agg: dict[str, int] = {}
+    countries_agg: dict[str, int] = {}
 
     for day_str, entries in sorted(raw.items()):
         day_total = len(entries)
@@ -60,6 +63,16 @@ def admin_stats(request):
             lang = e.get("language", "").split(",")[0].split(";")[0]
             if lang:
                 languages_agg[lang] = languages_agg.get(lang, 0) + 1
+            geo = e.get("geo") or {}
+            c = geo.get("city")
+            if c:
+                cities_agg[c] = cities_agg.get(c, 0) + 1
+            r = geo.get("region")
+            if r:
+                regions_agg[r] = regions_agg.get(r, 0) + 1
+            cc = geo.get("country")
+            if cc:
+                countries_agg[cc] = countries_agg.get(cc, 0) + 1
             ref = e.get("referrer", "")
             if ref:
                 try:
@@ -85,6 +98,9 @@ def admin_stats(request):
     top_devices = sorted(devices_agg.items(), key=lambda x: -x[1])
     top_languages = sorted(languages_agg.items(), key=lambda x: -x[1])
     top_referrers = sorted(referrers_agg.items(), key=lambda x: -x[1])[:20]
+    top_cities = sorted(cities_agg.items(), key=lambda x: -x[1])[:15]
+    top_regions = sorted(regions_agg.items(), key=lambda x: -x[1])[:10]
+    top_countries = sorted(countries_agg.items(), key=lambda x: -x[1])[:15]
 
     response_time_avg = 0
     count_with_time = 0
@@ -108,6 +124,9 @@ def admin_stats(request):
         "top_devices": dict(top_devices),
         "top_languages": dict(top_languages),
         "top_referrers": [{"source": s, "count": c} for s, c in top_referrers],
+        "top_cities": [{"name": n, "count": c} for n, c in top_cities],
+        "top_regions": [{"name": n, "count": c} for n, c in top_regions],
+        "top_countries": [{"name": n, "count": c} for n, c in top_countries],
         "period": period,
         "available_dates": available,
         "start_date": start.isoformat(),

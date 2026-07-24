@@ -36,6 +36,9 @@ bleach>=6.2
 requests>=2.32.4
 urllib3>=2.2
 
+# --- Géolocalisation IP (analytics) ---
+geoip2>=5.0
+
 # --- Génération PDF (calendrier de collecte) ---
 reportlab>=4.2
 
