@@ -44,6 +44,7 @@ class PageTrackingMiddleware:
                 "response_time_ms": elapsed,
                 "ip_hash": hash_ip(ip),
                 "session_key": request.session.session_key or "",
+                "visitor_id": request.COOKIES.get("visitor_id") or None,
                 "user_id": request.user.pk if request.user.is_authenticated else None,
                 "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "referrer": referrer,

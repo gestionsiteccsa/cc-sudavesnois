@@ -105,16 +105,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Fonction à appeler pour désactiver/supprimer les cookies non essentiels si besoin
-  function disableNonEssentialCookies() {
-    // Exemple : suppression des cookies d'audience si déjà présents
-    // document.cookie = '_pk_id=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
-    // document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
+  // Génère un UUID v4 pour le cookie visitor_id
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
-  // Accepter tous les cookies
+  // Pose le cookie visitor_id (1 an)
+  function setVisitorIdCookie() {
+    if (!document.cookie.includes('visitor_id=')) {
+      var uuid = generateUUID();
+      document.cookie = 'visitor_id=' + uuid + '; max-age=31536000; path=/; SameSite=Lax';
+    }
+  }
+
+  // Supprime le cookie visitor_id
+  function deleteVisitorIdCookie() {
+    document.cookie = 'visitor_id=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; SameSite=Lax';
+  }
+
+  // Fonction à appeler pour désactiver/supprimer les cookies non essentiels si besoin
+  function disableNonEssentialCookies() {
+    deleteVisitorIdCookie();
+  }
+
+  // Accepter tous les cookies (dont le cookie de mesure d'audience visitor_id)
   acceptBtn.addEventListener('click', function () {
     localStorage.setItem('cookieConsent', 'accepted');
+    setVisitorIdCookie();
     enableNonEssentialCookies();
     hideBanner();
   });

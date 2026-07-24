@@ -28,6 +28,7 @@ def admin_stats(request):
 
     daily: list[dict] = []
     total_views = 0
+    unique_visitors: set[str] = set()
     unique_ips: set[str] = set()
     pages_agg: dict[str, int] = {}
     browsers_agg: dict[str, int] = {}
@@ -41,6 +42,8 @@ def admin_stats(request):
         total_views += day_total
         day_ips = {e.get("ip_hash", "") for e in entries if e.get("ip_hash")}
         unique_ips.update(day_ips)
+        day_visitors = {e.get("visitor_id", "") for e in entries if e.get("visitor_id")}
+        unique_visitors.update(day_visitors)
 
         day_pages: dict[str, int] = {}
         for e in entries:
@@ -71,6 +74,7 @@ def admin_stats(request):
                 "date": day_str,
                 "views": day_total,
                 "unique": len(day_ips),
+                "visitors": len(day_visitors),
                 "top_pages": [{"url": u, "count": c} for u, c in top_day],
             }
         )
@@ -97,6 +101,7 @@ def admin_stats(request):
         "daily": daily,
         "total_views": total_views,
         "total_unique": len(unique_ips),
+        "total_visitors": len(unique_visitors),
         "top_pages": [{"url": u, "count": c} for u, c in top_pages],
         "top_browsers": dict(top_browsers),
         "top_os": dict(top_os),

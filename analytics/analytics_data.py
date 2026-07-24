@@ -72,6 +72,7 @@ def _update_summary(entries: list[dict]):
     total = len(entries)
     sessions = len({e.get("session_key") for e in entries if e.get("session_key")})
     ip_hashes = len({e.get("ip_hash") for e in entries if e.get("ip_hash")})
+    visitors = len({e.get("visitor_id") for e in entries if e.get("visitor_id")})
     pages: dict[str, int] = {}
     browsers: dict[str, int] = {}
     oss: dict[str, int] = {}
@@ -106,6 +107,7 @@ def _update_summary(entries: list[dict]):
         "total": total,
         "unique_sessions": sessions,
         "unique_ips": ip_hashes,
+        "unique_visitors": visitors,
         "top_pages": [{"url": u, "count": c} for u, c in top_pages],
         "browsers": dict(top_browsers),
         "os": dict(top_os),
@@ -174,6 +176,9 @@ def compute_summary_for_dashboard() -> dict:
 
     total_today = today_summary["total"] if today_summary else len(today_entries)
     unique_today = today_summary["unique_ips"] if today_summary else 0
+    unique_visitors_today = (
+        today_summary.get("unique_visitors", 0) if today_summary else 0
+    )
 
     total_30d = 0
     top_pages_30d: dict[str, int] = {}
@@ -196,6 +201,7 @@ def compute_summary_for_dashboard() -> dict:
     return {
         "today": total_today,
         "today_unique": unique_today,
+        "today_visitors": unique_visitors_today,
         "month": total_30d,
         "top_pages": [{"url": u, "count": c} for u, c in top],
         "today_top": today_top,
