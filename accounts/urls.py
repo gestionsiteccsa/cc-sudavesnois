@@ -38,4 +38,6 @@ urlpatterns = [
         views.admin_create_user,
         name="admin_create_user",
     ),
+    # Consultation des logs
+    path("adminccsa/logs/", views.admin_logs, name="admin_logs"),
 ]

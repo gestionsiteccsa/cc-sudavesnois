@@ -1,7 +1,6 @@
 import hashlib
 import logging
 import smtplib
-import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -14,7 +13,6 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -359,8 +357,6 @@ DASHBOARD_STATS_CACHE_KEY = "admin_dashboard_stats"
 DASHBOARD_STATS_CACHE_TTL = 60  # secondes
 
 
-
-
 def _compute_dashboard_stats():
     """
     Calcule les statistiques du dashboard en effectuant un COUNT par modèle.
@@ -577,6 +573,54 @@ def admin_create_user(request):
         form = AdminUserCreationForm()
 
     return render(request, "accounts/admin_create_user.html", {"form": form})
+
+
+LOG_FILE_NAMES = {"app": "app.log", "error": "error.log"}
+LOG_MAX_BYTES = 512 * 1024  # 512 Ko lus à la fois
+
+
+@login_required
+@user_passes_test(lambda u: est_moderateur(u))
+def admin_logs(request):
+    """Vue de consultation des logs applicatifs."""
+    from pathlib import Path as _Path
+
+    log_dir = settings.BASE_DIR / "logs"
+    selected = request.GET.get("file", "app")
+    level_filter = request.GET.get("level", "").upper()
+
+    log_filename = LOG_FILE_NAMES.get(selected, "app.log")
+    log_path = _Path(log_dir) / log_filename
+
+    lines = []
+    file_size = 0
+    if log_path.exists():
+        file_size = log_path.stat().st_size
+        tail_size = min(file_size, LOG_MAX_BYTES)
+        with open(log_path, "r", encoding="utf-8", errors="replace") as f:
+            if tail_size < file_size:
+                f.seek(file_size - tail_size)
+                f.readline()
+            for line in f:
+                line = line.rstrip("\n\r")
+                if level_filter and level_filter not in line:
+                    continue
+                lines.append(line)
+
+    lines.reverse()
+
+    paginator = Paginator(lines, 200)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj,
+        "selected_file": selected,
+        "log_files": list(LOG_FILE_NAMES.keys()),
+        "level_filter": level_filter,
+        "file_size": file_size,
+    }
+    return render(request, "accounts/admin_logs.html", context)
 
 
 def _send_welcome_email(user, password: str, request) -> bool:
