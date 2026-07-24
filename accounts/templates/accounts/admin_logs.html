@@ -1,0 +1,113 @@
+{% extends 'admin_base.html' %}
+{% load group_tags %}
+
+{% block title %}Logs applicatifs{% endblock %}
+{% block breadcrumb %}Logs{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+  <nav class="flex text-sm text-gray-600 gap-2" aria-label="Fil d'Ariane">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="hover:underline">Accueil</a>
+    <span class="mx-1">/</span>
+    <span class="text-primary font-semibold">Logs</span>
+  </nav>
+  <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-primary transition font-medium" title="Retour Admin centrale">
+    <svg class="w-5 h-5 mr-2" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Admin
+  </a>
+</div>
+
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <h1 class="text-xl font-bold text-gray-900 dark:text-white">Logs applicatifs</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+      Fichier : <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-xs">{{ selected_file }}.log</code>
+      {% if file_size > 0 %}
+        ({{ file_size|filesizeformat }})
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+    <form method="get" class="flex flex-wrap items-center gap-3">
+      <label for="log-file" class="text-sm font-medium text-gray-700 dark:text-gray-300">Fichier</label>
+      <select name="file" id="log-file" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        {% for key in log_files %}
+        <option value="{{ key }}" {% if key == selected_file %}selected{% endif %}>
+          {{ key }}.log
+        </option>
+        {% endfor %}
+      </select>
+
+      <label for="log-level" class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2">Niveau</label>
+      <select name="level" id="log-level" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        <option value="">Tous</option>
+        <option value="INFO" {% if level_filter == 'INFO' %}selected{% endif %}>INFO</option>
+        <option value="WARNING" {% if level_filter == 'WARNING' %}selected{% endif %}>WARNING</option>
+        <option value="ERROR" {% if level_filter == 'ERROR' %}selected{% endif %}>ERROR</option>
+        <option value="CRITICAL" {% if level_filter == 'CRITICAL' %}selected{% endif %}>CRITICAL</option>
+      </select>
+
+      <button type="submit" class="px-4 py-1.5 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+        Filtrer
+      </button>
+
+      <a href="{% url 'accounts:admin_logs' %}?file={{ selected_file }}" class="px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg transition-colors">
+        Réinitialiser
+      </a>
+    </form>
+  </div>
+
+  <div class="overflow-x-auto">
+    {% if page_obj %}
+    <table class="w-full text-sm font-mono">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-700 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          <th class="px-4 py-2 w-20">Niveau</th>
+          <th class="px-4 py-2">Message</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for line in page_obj %}
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 {% if 'ERROR' in line or 'CRITICAL' in line %}bg-red-50 dark:bg-red-900/10{% elif 'WARNING' in line %}bg-yellow-50 dark:bg-yellow-900/10{% endif %}">
+          <td class="px-4 py-1.5 whitespace-nowrap">
+            {% if 'CRITICAL' in line %}
+            <span class="inline-block px-1.5 py-0.5 text-xs font-semibold bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200 rounded">CRITICAL</span>
+            {% elif 'ERROR' in line %}
+            <span class="inline-block px-1.5 py-0.5 text-xs font-semibold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 rounded">ERROR</span>
+            {% elif 'WARNING' in line %}
+            <span class="inline-block px-1.5 py-0.5 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-300 rounded">WARNING</span>
+            {% else %}
+            <span class="inline-block px-1.5 py-0.5 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded">INFO</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-1.5 text-gray-800 dark:text-gray-200 break-all whitespace-pre-wrap">{{ line }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">
+      Aucune entrée pour ce fichier et ce filtre.
+    </div>
+    {% endif %}
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <span class="text-sm text-gray-600 dark:text-gray-400">
+      Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+      ({{ page_obj.paginator.count }} lignes)
+    </span>
+    <div class="flex gap-1">
+      {% if page_obj.has_previous %}
+      <a href="?file={{ selected_file }}&level={{ level_filter }}&page={{ page_obj.previous_page_number }}" class="px-3 py-1.5 text-sm rounded-lg bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300">&laquo; Précédent</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+      <a href="?file={{ selected_file }}&level={{ level_filter }}&page={{ page_obj.next_page_number }}" class="px-3 py-1.5 text-sm rounded-lg bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300">Suivant &raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

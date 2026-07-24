@@ -176,6 +176,15 @@ python manage.py buildwatson
 
 # Créer une sauvegarde
 python manage.py create_backup
+
+# Vérifier que toutes les pages répondent (200, redirections, erreurs)
+python manage.py check_pages
+
+# Voir toutes les pages, y compris celles en OK
+python manage.py check_pages --all
+
+# Vérifier sur le domaine de production
+python manage.py check_pages --base-url https://cc-sudavesnois.fr
 ```
 
 ### Build CSS (Tailwind)
