@@ -54,6 +54,9 @@ Thumbs.db
 
 # Fichiers de débogage
 *.log
+
+# Données analytics (générées par le middleware)
+analytics_data/
 test_results/
 
 # Fichiers spécifiques à Heroku

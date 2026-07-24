@@ -404,9 +404,18 @@ def admin_dashboard(request):
     # Derniers journaux publiés
     recent_journals = Journal.objects.order_by("-release_date")[:5]
 
+    # Statistiques de visites (depuis fichiers JSON)
+    from analytics.analytics_data import compute_summary_for_dashboard
+
+    analytics_stats = cache.get("admin_analytics_dashboard")
+    if analytics_stats is None:
+        analytics_stats = compute_summary_for_dashboard()
+        cache.set("admin_analytics_dashboard", analytics_stats, 60)
+
     context = {
         "stats": stats,
         "recent_journals": recent_journals,
+        "analytics": analytics_stats,
     }
 
     return render(request, "accounts/admin.html", context)

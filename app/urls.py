@@ -44,6 +44,7 @@ urlpatterns = [
     path("services/", include("services.urls", namespace="services")),
     path("", include("contact.urls", namespace="contact")),
     path("", include("backup.urls", namespace="backup")),
+    path("", include("analytics.urls", namespace="analytics")),
     # Redirections pour les URLs courtes
     path(
         "login/",

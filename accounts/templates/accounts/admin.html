@@ -154,6 +154,54 @@
     </div>
 </div>
 
+<!-- Statistiques de visites -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+    <a href="{% url 'analytics:admin_stats' %}?period=1" class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-700 transition-all block">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </div>
+            <div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ analytics.today }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">Visites aujourd'hui</div>
+            </div>
+        </div>
+    </a>
+    <a href="{% url 'analytics:admin_stats' %}?period=1" class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-700 transition-all block">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ analytics.today_unique }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">Visiteurs uniques</div>
+            </div>
+        </div>
+    </a>
+    <a href="{% url 'analytics:admin_stats' %}?period=30" class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-700 transition-all block">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ analytics.month }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">Visites 30 jours</div>
+            </div>
+        </div>
+    </a>
+    <a href="{% url 'analytics:admin_stats' %}" class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-700 transition-all block">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            </div>
+            <div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">Voir les stats</div>
+                <div class="text-xs font-medium text-primary-600 dark:text-primary-400">Statistiques détaillées →</div>
+            </div>
+        </div>
+    </a>
+</div>
+
 <!-- Contenu principal en 2 colonnes -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Colonne principale - Actions rapides -->

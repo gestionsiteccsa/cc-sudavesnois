@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "backup",
     "partenaires",
     "search",
+    "analytics",
 ]
 
 MIDDLEWARE = [
@@ -62,6 +63,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "watson.middleware.SearchContextMiddleware",
     "csp.middleware.CSPMiddleware",
+    "analytics.middleware.PageTrackingMiddleware",
 ]
 
 APPEND_SLASH = True
