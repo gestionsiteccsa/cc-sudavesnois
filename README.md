@@ -58,6 +58,7 @@ Le site permet aux habitants et usagers d'accéder aux informations et services 
 | `linktree` | Page de liens (Linktree) |
 | `backup` | Sauvegarde de la base de données |
 | `search` | Indexation et recherche full-text |
+| `analytics` | Statistiques de visites (serveur, sans base de données) |
 
 ---
 
@@ -84,6 +85,9 @@ Le site permet aux habitants et usagers d'accéder aux informations et services 
 - **Sauvegarde de la base** : création et téléchargement de backups
 - **Statut de page** : activation/désactivation des pages avec message de maintenance
 - **Drag & drop** : réordonnancement des services
+- **Statistiques de visites** : pages vues, visiteurs uniques, navigateurs, OS, géolocalisation (sans base de données, stockage JSON)
+- **Logs applicatifs** : consultation des logs en temps réel dans l'interface admin
+- **Vérification des pages** : commande pour tester toutes les pages du site (200, redirections, erreurs)
 
 ---
 
@@ -185,6 +189,13 @@ python manage.py check_pages --all
 
 # Vérifier sur le domaine de production
 python manage.py check_pages --base-url https://cc-sudavesnois.fr
+
+# Télécharger la base de géolocalisation IP (GeoIP)
+# --mirror pour utiliser le miroir GitHub (pas de clé requise)
+python manage.py update_geoip_db --mirror
+
+# Ou avec une clé MaxMind (gratuite sur maxmind.com)
+python manage.py update_geoip_db --license-key VOTRE_CLE
 ```
 
 ### Build CSS (Tailwind)
@@ -253,6 +264,7 @@ cc-sudavesnois/
 ├── search/                 # Indexation de recherche
 ├── semestriels/            # Calendrier semestriel
 ├── services/               # Guide des services
+├── analytics/              # Statistiques de visites (JSON, middleware, GeoIP)
 │
 ├── static/                 # Fichiers statiques (CSS, JS, images)
 ├── templates/              # Templates globaux (base.html, header, footer)
