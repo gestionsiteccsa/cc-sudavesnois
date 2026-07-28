@@ -1,4 +1,3 @@
-import json
 import zipfile
 from datetime import date, timedelta
 from io import BytesIO
@@ -171,10 +170,14 @@ def admin_stats(request):
     top_languages = sorted(languages_agg.items(), key=lambda x: -x[1])
     top_referrers = sorted(referrers_agg.items(), key=lambda x: -x[1])[:20]
     top_cities = sorted(cities_agg.items(), key=lambda x: -x[1])[:15]
-    geo_points = [
-        v
-        for v in city_details.values()
-        if v["lat"] is not None and v["lon"] is not None
+    max_city_count = top_cities[0][1] if top_cities else 0
+    top_cities_details = [
+        {
+            "name": name,
+            "count": count,
+            "country": city_details.get(name, {}).get("country", ""),
+        }
+        for name, count in top_cities
     ]
     top_regions = sorted(regions_agg.items(), key=lambda x: -x[1])[:10]
     top_countries = sorted(countries_agg.items(), key=lambda x: -x[1])[:15]
@@ -214,9 +217,10 @@ def admin_stats(request):
         "start_date": start.isoformat(),
         "end_date": end.isoformat(),
         "top_ips": top_ips,
+        "top_cities_details": top_cities_details,
+        "max_city_count": max_city_count,
         "active_visitors": count_recent_ips(),
         "response_time_avg": response_time_avg,
-        "geo_points_json": mark_safe(json.dumps(geo_points)),
         "diagnostics": run_diagnostics() if request.GET.get("debug") == "1" else None,
     }
     return render(request, "analytics/admin_stats.html", context)

@@ -5,9 +5,7 @@
 {% block title %}Statistiques de visites{% endblock %}
 {% block breadcrumb %}Statistiques{% endblock %}
 
-{% block styles %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-{% endblock %}
+{% block styles %}{% endblock %}
 
 {% block content %}
 <div class="flex items-center justify-between mb-8">
@@ -211,12 +209,34 @@
   </div>
 </div>
 
-<!-- Carte géographique -->
+<!-- Villes des visiteurs -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Provenance géographique</h2>
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Villes des visiteurs</h2>
+    <span class="text-xs text-gray-500 dark:text-gray-400">{{ top_cities_details|length }} ville{{ top_cities_details|pluralize }}</span>
   </div>
-  <div id="map" class="h-72 w-full" aria-label="Carte des visiteurs"></div>
+  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for city in top_cities_details %}
+    <div class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+      <div class="flex items-center gap-3 min-w-0 flex-1">
+        {% if city.country %}
+        <span class="text-base">{{ city.country|flag_emoji }}</span>
+        {% endif %}
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ city.name }}</span>
+      </div>
+      <div class="flex items-center gap-3 ml-4">
+        <div class="w-20 sm:w-28 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden hidden sm:block">
+          <div class="h-full rounded-full bg-primary" style="width: {% widthratio city.count max_city_count 100 %}%"></div>
+        </div>
+        <span class="text-sm font-semibold text-gray-900 dark:text-white w-10 text-right shrink-0">{{ city.count }}</span>
+      </div>
+    </div>
+    {% empty %}
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">
+      Aucune donnée — lancer <code class="text-xs font-mono bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">python manage.py update_geoip_db --mirror</code>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 
 <!-- Graphique -->
@@ -514,28 +534,6 @@
 
 {% block javascript %}
 <script>
-var GEO_POINTS = {{ geo_points_json|default:'[]' }};
-function initMap() {
-  if (typeof L === 'undefined' || !GEO_POINTS.length) return;
-  var map = L.map('map').setView([46.6, 2.4], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(map);
-  var bounds = [];
-  GEO_POINTS.forEach(function(p) {
-    var marker = L.circleMarker([p.lat, p.lon], {
-      radius: Math.min(20, 3 + Math.sqrt(p.count) * 3),
-      color: '#6366f1',
-      fillColor: '#818cf8',
-      fillOpacity: 0.6,
-      weight: 1
-    }).addTo(map);
-    marker.bindPopup('<strong>' + p.city + '</strong> (' + p.country + ')<br>' + p.count + ' visite' + (p.count > 1 ? 's' : ''));
-    bounds.push([p.lat, p.lon]);
-  });
-  if (bounds.length > 1) map.fitBounds(bounds, {padding: [30, 30]});
-}
 function toggleIP(el) {
   var detail = el.nextElementSibling;
   var chevron = el.querySelector('.chevron');
@@ -557,5 +555,4 @@ function confirmDeleteStats(date) {
   form.submit();
 }
 </script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onload="initMap()"></script>
 {% endblock %}
