@@ -265,10 +265,18 @@
 <!-- Villes des visiteurs -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
   <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Villes des visiteurs</h2>
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Villes</h2>
+    {% if has_bots %}
+    <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+      <button onclick="switchTabGeo('villes', 'visiteurs')" class="tab-btn-villes px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-colors">Visiteurs ({{ top_cities_details|length }})</button>
+      <button onclick="switchTabGeo('villes', 'bots')" class="tab-btn-villes px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Bots ({{ bot_cities_list|length }})</button>
+    </div>
+    {% else %}
     <span class="text-xs text-gray-500 dark:text-gray-400">{{ top_cities_details|length }} ville{{ top_cities_details|pluralize }}</span>
+    {% endif %}
   </div>
-  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+
+  <div id="tab-villes-visiteurs" class="divide-y divide-gray-200 dark:divide-gray-700">
     {% for city in top_cities_details %}
     <div class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
       <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -285,11 +293,29 @@
       </div>
     </div>
     {% empty %}
-    <div class="p-8 text-center text-gray-500 dark:text-gray-400">
-      Aucune donnée — lancer <code class="text-xs font-mono bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">python manage.py update_geoip_db --mirror</code>
-    </div>
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
     {% endfor %}
   </div>
+
+  {% if has_bots %}
+  <div id="tab-villes-bots" class="divide-y divide-gray-200 dark:divide-gray-700 hidden">
+    {% for city in bot_cities_list %}
+    <div class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+      <div class="flex items-center gap-3 min-w-0 flex-1">
+        {% if city.name %}
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2">
+          <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full">BOT</span>
+          {{ city.name }}
+        </span>
+        {% endif %}
+      </div>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ city.count }}</span>
+    </div>
+    {% empty %}
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucun bot</div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </div>
 
 <!-- Graphique -->
@@ -385,56 +411,122 @@
 
 <!-- Géolocalisation -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Pays</h2>
+  <!-- Pays -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Pays</h2>
+    {% if has_bots %}
+    <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+      <button onclick="switchTabGeo('pays', 'visiteurs')" class="tab-btn-pays px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-colors">Visiteurs</button>
+      <button onclick="switchTabGeo('pays', 'bots')" class="tab-btn-pays px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Bots</button>
     </div>
-    <div class="divide-y divide-gray-200 dark:divide-gray-700">
-      {% for c in top_countries %}
-      <div class="flex items-center justify-between px-5 py-2.5">
-        <div class="flex items-center gap-2">
-          <span class="text-lg" aria-hidden="true">{{ c.name|flag_emoji }}</span>
-          <span class="text-sm text-gray-700 dark:text-gray-200">{{ c.name|country_name }}</span>
-        </div>
-        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ c.count }}</span>
-      </div>
-      {% empty %}
-      <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
-      {% endfor %}
-    </div>
+    {% endif %}
   </div>
-
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Régions</h2>
+  <div id="tab-pays-visiteurs" class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for c in top_countries %}
+    <div class="flex items-center justify-between px-5 py-2.5">
+      <div class="flex items-center gap-2">
+        <span class="text-lg" aria-hidden="true">{{ c.name|flag_emoji }}</span>
+        <span class="text-sm text-gray-700 dark:text-gray-200">{{ c.name|country_name }}</span>
+      </div>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ c.count }}</span>
     </div>
-    <div class="divide-y divide-gray-200 dark:divide-gray-700">
-      {% for r in top_regions %}
-      <div class="flex items-center justify-between px-5 py-2.5">
+    {% empty %}
+    <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+    {% endfor %}
+  </div>
+  {% if has_bots %}
+  <div id="tab-pays-bots" class="divide-y divide-gray-200 dark:divide-gray-700 hidden">
+    {% for c in bot_countries_list %}
+    <div class="flex items-center justify-between px-5 py-2.5">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full">BOT</span>
+        <span class="text-sm text-gray-700 dark:text-gray-200">{{ c.name }}</span>
+      </div>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ c.count }}</span>
+    </div>
+    {% empty %}
+    <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucun bot</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- Régions -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Régions</h2>
+    {% if has_bots %}
+    <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+      <button onclick="switchTabGeo('regions', 'visiteurs')" class="tab-btn-regions px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-colors">Visiteurs</button>
+      <button onclick="switchTabGeo('regions', 'bots')" class="tab-btn-regions px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Bots</button>
+    </div>
+    {% endif %}
+  </div>
+  <div id="tab-regions-visiteurs" class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for r in top_regions %}
+    <div class="flex items-center justify-between px-5 py-2.5">
+      <span class="text-sm text-gray-700 dark:text-gray-200">{{ r.name }}</span>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ r.count }}</span>
+    </div>
+    {% empty %}
+    <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+    {% endfor %}
+  </div>
+  {% if has_bots %}
+  <div id="tab-regions-bots" class="divide-y divide-gray-200 dark:divide-gray-700 hidden">
+    {% for r in bot_regions_list %}
+    <div class="flex items-center justify-between px-5 py-2.5">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full">BOT</span>
         <span class="text-sm text-gray-700 dark:text-gray-200">{{ r.name }}</span>
-        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ r.count }}</span>
       </div>
-      {% empty %}
-      <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
-      {% endfor %}
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ r.count }}</span>
     </div>
+    {% empty %}
+    <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucun bot</div>
+    {% endfor %}
   </div>
+  {% endif %}
+</div>
 
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Villes</h2>
+<!-- Villes (3-col) -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Villes</h2>
+    {% if has_bots %}
+    <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+      <button onclick="switchTabGeo('villes2', 'visiteurs')" class="tab-btn-villes2 px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-colors">Visiteurs</button>
+      <button onclick="switchTabGeo('villes2', 'bots')" class="tab-btn-villes2 px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Bots</button>
     </div>
-    <div class="divide-y divide-gray-200 dark:divide-gray-700">
-      {% for v in top_cities %}
-      <div class="flex items-center justify-between px-5 py-2.5">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ v.name }}</span>
-        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ v.count }}</span>
-      </div>
-      {% empty %}
-      <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
-      {% endfor %}
-    </div>
+    {% endif %}
   </div>
+  <div id="tab-villes2-visiteurs" class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for v in top_cities %}
+    <div class="flex items-center justify-between px-5 py-2.5">
+      <span class="text-sm text-gray-700 dark:text-gray-200">{{ v.name }}</span>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ v.count }}</span>
+    </div>
+    {% empty %}
+    <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+    {% endfor %}
+  </div>
+  {% if has_bots %}
+  <div id="tab-villes2-bots" class="divide-y divide-gray-200 dark:divide-gray-700 hidden">
+    {% for v in bot_cities_list %}
+    <div class="flex items-center justify-between px-5 py-2.5">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full">BOT</span>
+        <span class="text-sm text-gray-700 dark:text-gray-200">{{ v.name }}</span>
+      </div>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ v.count }}</span>
+    </div>
+    {% empty %}
+    <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucun bot</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
 </div>
 
 <!-- OS & Langues & Sources -->
@@ -617,6 +709,19 @@ function switchTab(tab) {
   document.getElementById('tab-content-visiteurs').classList.add('hidden');
   document.getElementById('tab-content-bots').classList.add('hidden');
   document.getElementById('tab-content-' + tab).classList.remove('hidden');
+}
+function switchTabGeo(card, tab) {
+  document.querySelectorAll('.tab-btn-' + card).forEach(function(b) {
+    b.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+    b.classList.add('text-gray-500', 'dark:text-gray-400');
+  });
+  document.getElementById('tab-' + card + '-' + tab).classList.add('bg-white', 'dark:bg-gray-600', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+  document.getElementById('tab-' + card + '-' + tab).classList.remove('text-gray-500', 'dark:text-gray-400');
+  ['visiteurs', 'bots'].forEach(function(t) {
+    var el = document.getElementById('tab-' + card + '-' + t);
+    if (el) el.classList.add('hidden');
+  });
+  document.getElementById('tab-' + card + '-' + tab).classList.remove('hidden');
 }
 </script>
 {% endblock %}

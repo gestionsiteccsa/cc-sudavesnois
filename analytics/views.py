@@ -70,6 +70,9 @@ def admin_stats(request):
     city_details: dict[str, dict] = {}
     regions_agg: dict[str, int] = {}
     countries_agg: dict[str, int] = {}
+    bot_countries: dict[str, int] = {}
+    bot_regions: dict[str, int] = {}
+    bot_cities: dict[str, int] = {}
 
     for day_str, entries in sorted(raw.items()):
         day_total = len(entries)
@@ -95,14 +98,21 @@ def admin_stats(request):
             _inc(devices_agg, device.get("type"))
             _inc(languages_agg, e.get("language", "").split(",")[0].split(";")[0])
             city = geo.get("city", "")
-            _inc(cities_agg, city)
+            cc = geo.get("country", "")
+            is_bot = cc == "US" or (
+                not cc and device.get("browser", "") in ("Inconnu", "")
+            )
+            geo_target_cities = bot_cities if is_bot else cities_agg
+            geo_target_regions = bot_regions if is_bot else regions_agg
+            geo_target_countries = bot_countries if is_bot else countries_agg
+            _inc(geo_target_cities, city)
             if city:
                 lat = geo.get("lat")
                 lon = geo.get("lon")
                 if city not in city_details:
                     city_details[city] = {
                         "city": city,
-                        "country": geo.get("country", ""),
+                        "country": cc,
                         "lat": lat,
                         "lon": lon,
                         "count": 0,
@@ -112,8 +122,8 @@ def admin_stats(request):
                     city_details[city]["lat"] = lat
                 if lon is not None and city_details[city]["lon"] is None:
                     city_details[city]["lon"] = lon
-            _inc(regions_agg, geo.get("region"))
-            _inc(countries_agg, geo.get("country"))
+            _inc(geo_target_regions, geo.get("region"))
+            _inc(geo_target_countries, cc)
 
             ref = e.get("referrer", "")
             if ref:
@@ -123,14 +133,12 @@ def admin_stats(request):
                     pass
 
             if ip_h not in ip_details:
-                cc = geo.get("country", "")
                 ip_details[ip_h] = {
                     "ip": e.get("ip", ""),
                     "ip_hash": ip_h,
                     "country": cc,
                     "country_name": geo.get("country_name"),
-                    "probable_bot": cc == "US"
-                    or (not cc and device.get("browser", "") in ("Inconnu", "")),
+                    "probable_bot": is_bot,
                     "pages": 0,
                     "pages_list": {},
                 }
@@ -181,6 +189,9 @@ def admin_stats(request):
     ]
     top_regions = sorted(regions_agg.items(), key=lambda x: -x[1])[:10]
     top_countries = sorted(countries_agg.items(), key=lambda x: -x[1])[:15]
+    bot_cities_list = sorted(bot_cities.items(), key=lambda x: -x[1])[:15]
+    bot_regions_list = sorted(bot_regions.items(), key=lambda x: -x[1])[:10]
+    bot_countries_list = sorted(bot_countries.items(), key=lambda x: -x[1])[:15]
 
     top_ips = sorted(ip_details.values(), key=lambda x: -x["pages"])[:50]
     for ip in top_ips:
@@ -213,6 +224,9 @@ def admin_stats(request):
         "top_cities": [{"name": n, "count": c} for n, c in top_cities],
         "top_regions": [{"name": n, "count": c} for n, c in top_regions],
         "top_countries": [{"name": n, "count": c} for n, c in top_countries],
+        "bot_cities_list": [{"name": n, "count": c} for n, c in bot_cities_list],
+        "bot_regions_list": [{"name": n, "count": c} for n, c in bot_regions_list],
+        "bot_countries_list": [{"name": n, "count": c} for n, c in bot_countries_list],
         "period": period,
         "selected_date": selected_date,
         "available_dates": available,
