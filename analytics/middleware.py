@@ -1,3 +1,4 @@
+import logging
 import time
 
 from django.conf import settings
@@ -6,6 +7,8 @@ from analytics.analytics_data import append
 from analytics.device_parser import parse_user_agent
 from analytics.geo import lookup as geo_lookup
 from app.utils import get_client_ip, hash_ip
+
+logger = logging.getLogger(__name__)
 
 IGNORE_PREFIXES = frozenset(
     {
@@ -57,7 +60,9 @@ class PageTrackingMiddleware:
             }
             append(entry)
         except Exception:
-            pass
+            logger.exception(
+                "Erreur analytics pour %s (status=%s)", path, response.status_code
+            )
 
         return response
 

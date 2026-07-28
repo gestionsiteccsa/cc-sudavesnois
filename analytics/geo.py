@@ -1,17 +1,33 @@
+import logging
+
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 GEOIP_DB = settings.BASE_DIR / "geoip" / "GeoLite2-City.mmdb"
 _reader = None
+
+try:
+    import geoip2.database  # noqa: F401
+
+    geoip2_available = True
+except ImportError:
+    geoip2_available = False
+    logger.warning("geoip2 non installe - geolocalisation desactivee")
 
 
 def _get_reader():
     global _reader
     if _reader is None:
-        import geoip2.database
-
+        if not geoip2_available:
+            return None
         if GEOIP_DB.exists():
             _reader = geoip2.database.Reader(str(GEOIP_DB))
     return _reader
+
+
+def is_available() -> bool:
+    return geoip2_available and GEOIP_DB.exists()
 
 
 def lookup(ip: str) -> dict | None:

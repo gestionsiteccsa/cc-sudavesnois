@@ -232,6 +232,62 @@ def run_diagnostics() -> dict:
         }
     )
 
+    try:
+        from analytics.device_parser import parse_user_agent
+        from analytics.geo import is_available as geo_available
+        from analytics.geo import lookup as geo_lookup
+        from app.utils import hash_ip
+
+        checks.append(
+            {
+                "label": "geoip2 installe",
+                "status": "ok" if geo_available() else "warning",
+                "detail": "Base GeoIP absente ou paquet manquant"
+                if not geo_available()
+                else "OK",
+            }
+        )
+
+        ua_test = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120"
+        )
+        device = parse_user_agent(ua_test)
+        checks.append(
+            {
+                "label": "parse_user_agent fonctionne",
+                "status": "ok" if device.get("browser") == "Chrome" else "error",
+                "detail": f"browser={device.get('browser')}",
+            }
+        )
+
+        ip_test = geo_lookup("8.8.8.8")
+        checks.append(
+            {
+                "label": "geo_lookup fonctionne",
+                "status": "ok" if ip_test is not None else "warning",
+                "detail": "GeoIP non resolvable (pas de base ou IP privée)"
+                if ip_test is None
+                else f"pays={ip_test.get('country', '?')}",
+            }
+        )
+
+        hash_test = hash_ip("192.168.1.1")
+        checks.append(
+            {
+                "label": "hash_ip fonctionne",
+                "status": "ok" if hash_test else "error",
+                "detail": hash_test[:16] + "..." if hash_test else "vide",
+            }
+        )
+    except Exception as e:
+        checks.append(
+            {
+                "label": "Pipeline middleware",
+                "status": "error",
+                "detail": f"Exception: {e}",
+            }
+        )
+
     test_entry = {"url": "/__diag__", "ip_hash": "diag", "timestamp": "now"}
     try:
         append(test_entry)
