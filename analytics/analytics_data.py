@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from django.conf import settings
@@ -28,6 +28,32 @@ def purge_old_data():
                 f.unlink(missing_ok=True)
         except (ValueError, OSError):
             pass
+
+
+def count_recent_ips(minutes: int = 15) -> int:
+    """Nombre d'IP uniques ayant visité le site dans les N dernières minutes."""
+    depuis = (datetime.now() - timedelta(minutes=minutes)).strftime("%Y-%m-%dT%H:%M:%S")
+    path = _today_path()
+    if not path.exists():
+        return 0
+    ips: set[str] = set()
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    e = json.loads(line)
+                    if e.get("timestamp", "") >= depuis:
+                        ip = e.get("ip", "")
+                        if ip:
+                            ips.add(ip)
+                except json.JSONDecodeError:
+                    continue
+    except OSError:
+        pass
+    return len(ips)
 
 
 def _today_path() -> Path:

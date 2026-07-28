@@ -14,6 +14,7 @@ from markdown_it import MarkdownIt
 from accounts.views import est_moderateur
 from analytics.analytics_data import (
     ANALYTICS_DIR,
+    count_recent_ips,
     list_available_dates,
     load_day,
     load_range,
@@ -178,6 +179,7 @@ def admin_stats(request):
         "start_date": start.isoformat(),
         "end_date": end.isoformat(),
         "top_ips": top_ips,
+        "active_visitors": count_recent_ips(),
         "response_time_avg": response_time_avg,
         "diagnostics": run_diagnostics() if request.GET.get("debug") == "1" else None,
     }
