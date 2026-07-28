@@ -2,11 +2,20 @@
 
 ## [Non publié]
 
+### Ajouté (28/07/2026)
+- **Page Changelog** : `/adminccsa/changelog/` avec rendu professionnel du CHANGELOG.md (markdown-it-py, badges par type, dark mode).
+- **Mode debug** : `/adminccsa/statistiques/?debug=1` avec panneau de diagnostic complet (dossier, fichiers, middleware, pipeline GeoIP/device/hash).
+- **Documentation** : section Analytics dans le README.md.
+
 ### Corrigé (28/07/2026)
 - **Analytics** : les statistiques de visites ne s'enregistraient pas à cause d'un buffer mémoire jamais écrit sur le disque.
   - Remplacement du buffer (`_buffer`, `FLUSH_EVERY=10`) par une écriture directe en mode append (format JSON Lines `.jsonl`).
   - Création automatique du dossier `analytics_data/` au démarrage de Django (`AppConfig.ready()`).
   - Suppression des anciens fichiers `.summary.json` (le résumé est calculé à la volée à la lecture).
+  - Compatibilité ascendante : lecture des anciens fichiers `.json` (format tableau) et du nouveau format `.jsonl`.
+  - Correction de l'ordre des routes : `telecharger/tout/` passait avant `<str:day_str>` (résolvait "Date invalide").
+  - Logging des erreurs middleware au lieu du `except Exception: pass` silencieux.
+  - Import `geoip2` sécurisé avec `try/except ImportError` pour éviter un plantage silencieux.
 
 ### Ajouté (03/06/2025)
 - Documentation : mise à jour de la date de dernière mise à jour dans le README.md.

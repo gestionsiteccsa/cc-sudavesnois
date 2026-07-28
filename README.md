@@ -196,7 +196,34 @@ python manage.py update_geoip_db --mirror
 
 # Ou avec une clé MaxMind (gratuite sur maxmind.com)
 python manage.py update_geoip_db --license-key VOTRE_CLE
+
+# Diagnostic des statistiques de visites
+# Affiche l'état du dossier, des fichiers, du middleware et teste chaque
+# étape du pipeline (geoip2, device parser, hash IP, écriture)
+# Accessible aussi depuis l'interface admin avec ?debug=1
+python manage.py shell -c "from analytics.analytics_data import run_diagnostics; run_diagnostics()"
 ```
+
+### Analytics (Statistiques de visites)
+
+Les statistiques sont collectées côté serveur via un middleware Django et stockées dans `analytics_data/` au format JSON Lines (`.jsonl`).
+
+**Pages accessibles aux modérateurs :**
+- `/adminccsa/statistiques/` — tableau de bord des statistiques
+- `/adminccsa/statistiques/?debug=1` — avec panneau de diagnostic
+- `/adminccsa/changelog/` — historique des modifications
+- `/adminccsa/statistiques/telecharger/tout/` — téléchargement ZIP de toutes les données
+
+**Commandes :**
+```bash
+# Télécharger la base GeoIP (géolocalisation des visiteurs)
+python manage.py update_geoip_db --mirror
+
+# Diagnostic complet en ligne de commande
+python manage.py shell -c "from analytics.analytics_data import run_diagnostics; run_diagnostics()"
+```
+
+> **Note** : Les pages d'administration (`/adminccsa/*`) sont automatiquement exclues des statistiques.
 
 ### Build CSS (Tailwind)
 
