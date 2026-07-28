@@ -31,6 +31,8 @@
   },
   "dependencies": {
     "browserslist": "^4.25.0",
+    "chart.js": "^4.5.1",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "electron-to-chromium": "^1.5.161",
     "escalade": "^3.2.0",
     "fraction.js": "^4.3.7",

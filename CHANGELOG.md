@@ -2,7 +2,33 @@
 
 ## [Non publié]
 
-### Ajouté (28/07/2026)
+### Ajouté (28/07/2026) — Refonte complète des statistiques
+
+#### Visualisations
+- **Graphique interactif Chart.js** : remplacement des barres CSS statiques par un graphique linéaire avec tooltips, zoom par clic sur une date, séries multiples (vues, IP uniques, visiteurs).
+- **Heatmap horaire** : carte de chaleur 24h × 7 jours montrant l'activité par heure et jour de la semaine.
+- **Calendrier annuel** : grille de contribution type GitHub (365 jours) avec intensité verte proportionnelle.
+- **Carte des régions France** : bar chart horizontal avec mapping GeoIP → 13 régions métropolitaines (250+ villes mappées).
+- **Donut profondeur de session** : distribution du nombre de pages par visite (1, 2-3, 4-5, 6-10, 10+).
+- **Évolution appareils** : barres empilées desktop/mobile/tablette par jour.
+- **Nouveaux vs Revenants** : courbes superposées de rétention basées sur le `visitor_id`.
+- **Catégories de référents** : donut classifiant les sources (moteurs de recherche, réseaux sociaux, sites externes, accès direct).
+
+#### Analyses
+- **Indicateurs de tendance** : flèches ▲▼ avec % de variation sur chaque carte résumé (vs période précédente).
+- **Comparaison de périodes** : toggle pour afficher la période précédente en superposition (graphique + cartes).
+- **Parcours utilisateurs** : top 20 des transitions de pages (funnel de navigation) basé sur les `session_key`.
+- **Dashboard erreurs 404** : tableau des URLs introuvables les plus demandées avec referrer, première/dernière occurrence.
+- **Performance par page** : temps de réponse moyen/médian/P95/max par URL avec code couleur (rouge > 500ms).
+- **Détection d'anomalies** : alerte automatique quand le trafic dévie de ±50% par rapport à la moyenne 30 jours.
+- **Pages d'entrée / sortie** : landing pages et pages de départ par session.
+
+#### Utilitaires
+- **Export PDF** : génération d'un rapport PDF A4 via WeasyPrint (`/adminccsa/statistiques/export-pdf/`).
+- **Rapport email** : envoi de résumé HTML par email (web + management command `send_stats_report`).
+- **Gestion par lot** : téléchargement (JSON/CSV/ZIP) et suppression de données par plage de dates.
+- **Live polling** : compteur de visiteurs actifs mis à jour toutes les 30 secondes.
+- **Suivi recherches internes** : logging des requêtes de recherche dans le flux analytics.
 - **Page Changelog** : `/adminccsa/changelog/` avec rendu professionnel du CHANGELOG.md (markdown-it-py, badges par type, dark mode).
 - **Mode debug** : `/adminccsa/statistiques/?debug=1` avec panneau de diagnostic complet (dossier, fichiers, middleware, pipeline GeoIP/device/hash).
 - **Sélecteur de date** : possibilité de choisir une date précise via un calendrier dans les statistiques.
@@ -10,6 +36,10 @@
 - **Liens cliquables** : les URLs des pages les plus visitées sont maintenant des liens.
 - **Conformité RGPD** : stockage IP en clair (avec information des visiteurs), rétention automatique 1 an, commande `python manage.py supprimer_ip <IP>` pour le droit à l'oubli.
 - **Documentation** : section Analytics dans le README.md.
+
+#### Dépendances
+- `chart.js` v4.4.7 + `chartjs-adapter-date-fns` (npm)
+- `weasyprint` (pip) pour l'export PDF
 
 ### Corrigé (28/07/2026)
 - **Analytics** : les statistiques de visites ne s'enregistraient pas à cause d'un buffer mémoire jamais écrit sur le disque.

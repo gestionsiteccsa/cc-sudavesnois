@@ -46,6 +46,13 @@ def search_view(request):
     page_number = request.GET.get("page", 1)
     page_obj = result["paginator"].get_page(page_number)
 
+    try:
+        from analytics.analytics_data import log_search_query
+
+        log_search_query(result["query"], ip=client_ip, results_count=result["count"])
+    except Exception:
+        pass
+
     return render(
         request,
         "home/search_results.html",

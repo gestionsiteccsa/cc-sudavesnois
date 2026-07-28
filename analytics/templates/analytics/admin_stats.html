@@ -5,7 +5,9 @@
 {% block title %}Statistiques de visites{% endblock %}
 {% block breadcrumb %}Statistiques{% endblock %}
 
-{% block styles %}{% endblock %}
+{% block styles %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+{% endblock %}
 
 {% block content %}
 <div class="flex items-center justify-between mb-8">
@@ -82,7 +84,7 @@
 </div>
 
 <!-- Cartes résumé -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
   <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
@@ -90,7 +92,13 @@
       </div>
       <div>
         <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_views }}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">Pages vues</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">Pages vues
+          {% if trends.views.pct is not None %}
+            <span class="{% if trends.views.neutral %}text-gray-400{% elif trends.views.up %}text-green-500{% else %}text-red-500{% endif %} font-medium ml-1">
+              {% if trends.views.up %}▲{% elif trends.views.neutral %}-{% else %}▼{% endif %} {{ trends.views.pct }}%
+            </span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -102,7 +110,13 @@
       </div>
       <div>
         <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_unique }}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">IP uniques</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">IP uniques
+          {% if trends.ips.pct is not None %}
+            <span class="{% if trends.ips.neutral %}text-gray-400{% elif trends.ips.up %}text-green-500{% else %}text-red-500{% endif %} font-medium ml-1">
+              {% if trends.ips.up %}▲{% elif trends.ips.neutral %}-{% else %}▼{% endif %} {{ trends.ips.pct }}%
+            </span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -114,7 +128,13 @@
       </div>
       <div>
         <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ response_time_avg }} ms</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">Temps moyen</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">Temps moyen
+          {% if trends.response_time.pct is not None %}
+            <span class="{% if trends.response_time.neutral %}text-gray-400{% elif trends.response_time.up %}text-red-500{% else %}text-green-500{% endif %} font-medium ml-1">
+              {% if trends.response_time.up %}▲{% elif trends.response_time.neutral %}-{% else %}▼{% endif %} {{ trends.response_time.pct }}%
+            </span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -126,7 +146,13 @@
       </div>
       <div>
         <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_visitors }}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">Visiteurs uniques (cookie)</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">Visiteurs (cookie)
+          {% if trends.visitors.pct is not None %}
+            <span class="{% if trends.visitors.neutral %}text-gray-400{% elif trends.visitors.up %}text-green-500{% else %}text-red-500{% endif %} font-medium ml-1">
+              {% if trends.visitors.up %}▲{% elif trends.visitors.neutral %}-{% else %}▼{% endif %} {{ trends.visitors.pct }}%
+            </span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -137,8 +163,8 @@
         <svg class="w-5 h-5 text-rose-600 dark:text-rose-400" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       </div>
       <div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ active_visitors }}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">Visiteurs actifs (15 min)</div>
+        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="live-active">{{ active_visitors }}</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">Actifs (15 min) <span class="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse ml-1"></span></div>
       </div>
     </div>
   </div>
@@ -318,34 +344,169 @@
   {% endif %}
 </div>
 
-<!-- Graphique -->
+<!-- Anomalies détectées -->
+{% if anomalies %}
+<div class="mb-8 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+  <div class="flex items-center gap-2 mb-2">
+    <svg class="w-5 h-5 text-amber-600" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+    <span class="text-sm font-semibold text-amber-800 dark:text-amber-200">{{ anomalies|length }} anomalie{{ anomalies|pluralize }} détectée{{ anomalies|pluralize }}</span>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    {% for a in anomalies %}
+    <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium {% if a.type == 'spike' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300{% else %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300{% endif %}">
+      {% if a.type == 'spike' %}📈 Pic{% else %}📉 Chute{% endif %}
+      {{ a.date }}: {{ a.count }} vues
+      ({% if a.type == 'spike' %}+{% else %}-{% endif %}{{ a.change_pct }}% vs moyenne {{ a.baseline_avg }})
+    </span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Graphique d'évolution + Comparaison -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Évolution des visites</h2>
+    <div class="flex items-center gap-3">
+      <label class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 cursor-pointer">
+        <input type="checkbox" id="compare-toggle" {% if show_compare %}checked{% endif %} onchange="toggleCompare(this)" class="rounded border-gray-300 dark:border-gray-600">
+        Comparer période précédente
+      </label>
+      {% if show_compare %}
+      <span class="text-xs text-gray-400 dark:text-gray-500">({{ comparison.start }} au {{ comparison.end }})</span>
+      {% endif %}
+    </div>
   </div>
   <div class="p-5">
     {% if daily %}
-    <div class="flex items-end gap-1" style="height: 120px;">
-      {% with max_views=daily.0.views %}
-      {% for d in daily %}
-        {% with h=d.views %}
-        {% if max_views > 0 %}
-        <div class="flex-1 flex flex-col items-center">
-          <div class="w-full bg-primary-200 dark:bg-primary-900/30 hover:bg-primary-400 dark:hover:bg-primary-700 rounded-t transition-colors relative group" style="height: {{ h }}%; min-height: {% if h > 0 %}4px{% else %}0{% endif %};" title="{{ d.date }}: {{ d.views }} vues">
-            <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity z-10 pointer-events-none">
-              {{ d.date }}<br>{{ d.views }} vues ({{ d.unique }} uniques)
-            </div>
-          </div>
-          <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 {% if daily|length > 14 %}hidden sm:block{% endif %}">{{ d.date|slice:"5:" }}</span>
-        </div>
-        {% endif %}
-        {% endwith %}
-      {% endfor %}
-      {% endwith %}
-    </div>
+    <canvas id="evolutionChart" height="120" aria-label="Graphique d'évolution des visites" role="img"></canvas>
     {% else %}
     <p class="text-gray-500 dark:text-gray-400 text-center py-8">Aucune donnée pour cette période.</p>
     {% endif %}
+  </div>
+</div>
+
+<!-- Mode comparaison : cartes résumé -->
+{% if show_compare and comparison %}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+  <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600">
+    <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Période précédente</div>
+    <div class="text-xl font-bold text-gray-600 dark:text-gray-300">{{ comparison.total }}</div>
+    <div class="text-[10px] text-gray-400">Pages vues · {{ comparison.start }} → {{ comparison.end }}</div>
+  </div>
+  <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600">
+    <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">IP uniques</div>
+    <div class="text-xl font-bold text-gray-600 dark:text-gray-300">{{ comparison.unique_ips }}</div>
+  </div>
+  <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600">
+    <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Visiteurs</div>
+    <div class="text-xl font-bold text-gray-600 dark:text-gray-300">{{ comparison.visitors }}</div>
+  </div>
+  <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600">
+    <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Top pages</div>
+    {% for p in comparison.top_pages|slice:":3" %}
+    <div class="text-[10px] text-gray-400 truncate">{{ p.url }} ({{ p.count }})</div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Heatmap horaire -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Activité horaire (heatmap)</h2>
+  </div>
+  <div class="p-5">
+    <canvas id="heatmapChart" height="160" aria-label="Carte de chaleur de l'activité horaire" role="img"></canvas>
+  </div>
+</div>
+
+<!-- Calendrier annuel -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Calendrier des visites (365 jours)</h2>
+  </div>
+  <div class="p-5 overflow-x-auto">
+    <div class="flex gap-1" id="calendar-grid">
+      {% with cal_data=calendar.data max_cal=calendar.max %}
+      {% for date_str, count in cal_data.items %}
+      {% if forloop.counter0|divisibleby:7 %}
+      <div class="flex flex-col gap-1" style="min-width:11px">
+      {% endif %}
+        {% if max_cal > 0 %}
+        {% widthratio count max_cal 100 as intensity %}
+        <div class="w-2.5 h-2.5 rounded-sm cursor-default relative group
+          {% if count == 0 %}bg-gray-100 dark:bg-gray-700
+          {% elif intensity|floatformat:0|add:0 <= 20 %}bg-green-100 dark:bg-green-900/30
+          {% elif intensity|floatformat:0|add:0 <= 40 %}bg-green-300 dark:bg-green-700/50
+          {% elif intensity|floatformat:0|add:0 <= 60 %}bg-green-400 dark:bg-green-600
+          {% elif intensity|floatformat:0|add:0 <= 80 %}bg-green-600 dark:bg-green-500
+          {% else %}bg-green-800 dark:bg-green-400
+          {% endif %}"
+          title="{{ date_str }}: {{ count }} vues">
+          <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity z-10 pointer-events-none">{{ date_str }} — {{ count }} vues</span>
+        </div>
+        {% endif %}
+      {% if forloop.counter|divisibleby:7 or forloop.last %}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endwith %}
+    </div>
+  </div>
+</div>
+
+<!-- Régions France -->
+{% if france_regions %}
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Visites par région (France)</h2>
+  </div>
+  <div class="p-5">
+    <canvas id="franceRegionsChart" height="200" aria-label="Répartition des visites par région française" role="img"></canvas>
+  </div>
+</div>
+{% endif %}
+
+<!-- Profondeur de session + Pages entrée/sortie -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Pages par visite</h2>
+    </div>
+    <div class="p-5">
+      <canvas id="sessionDepthChart" height="150" aria-label="Profondeur de session" role="img"></canvas>
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Pages d'entrée</h2>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+      {% for url, count in entry_pages %}
+      <div class="flex items-center justify-between px-5 py-2.5">
+        <a href="{{ url }}" class="text-sm text-primary hover:underline truncate" target="_blank" rel="noopener">{{ url }}</a>
+        <span class="text-sm font-semibold text-gray-900 dark:text-white ml-2 whitespace-nowrap">{{ count }}</span>
+      </div>
+      {% empty %}
+      <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Pages de sortie</h2>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+      {% for url, count in exit_pages %}
+      <div class="flex items-center justify-between px-5 py-2.5">
+        <a href="{{ url }}" class="text-sm text-primary hover:underline truncate" target="_blank" rel="noopener">{{ url }}</a>
+        <span class="text-sm font-semibold text-gray-900 dark:text-white ml-2 whitespace-nowrap">{{ count }}</span>
+      </div>
+      {% empty %}
+      <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 
@@ -580,6 +741,213 @@
   </div>
 </div>
 
+<!-- Parcours utilisateurs (funnel) -->
+{% if journeys %}
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Parcours utilisateurs (transitions de pages)</h2>
+  </div>
+  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for j in journeys %}
+    <div class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+      <div class="flex items-center gap-2 min-w-0 flex-1 text-sm">
+        <a href="{{ j.from_url }}" class="text-primary hover:underline truncate max-w-[45%]" target="_blank" rel="noopener">{{ j.from_url }}</a>
+        <span class="text-gray-400 shrink-0">→</span>
+        <a href="{{ j.to_url }}" class="text-primary hover:underline truncate max-w-[45%]" target="_blank" rel="noopener">{{ j.to_url }}</a>
+      </div>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white ml-2 whitespace-nowrap">{{ j.count }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Évolution appareils + Rétention -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Évolution appareils</h2>
+    </div>
+    <div class="p-5">
+      <canvas id="deviceEvoChart" height="160" aria-label="Évolution desktop/mobile/tablette" role="img"></canvas>
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Nouveaux vs Revenants</h2>
+    </div>
+    <div class="p-5">
+      <canvas id="retentionChart" height="160" aria-label="Nouveaux vs visiteurs revenants" role="img"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Référents catégories + Recherches internes -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Sources de trafic</h2>
+    </div>
+    <div class="p-5">
+      <canvas id="referrerCategoriesChart" height="160" aria-label="Catégories de sources de trafic" role="img"></canvas>
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recherches internes</h2>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+      {% for sq in search_queries %}
+      <div class="flex items-center justify-between px-5 py-2.5">
+        <span class="text-sm text-gray-700 dark:text-gray-200">🔍 {{ sq.query }}</span>
+        <span class="text-sm font-semibold text-gray-900 dark:text-white ml-2 whitespace-nowrap">{{ sq.count }}</span>
+      </div>
+      {% empty %}
+      <div class="p-5 text-center text-gray-500 dark:text-gray-400">Aucune recherche enregistrée</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Erreurs 404 -->
+{% if error_stats.pages %}
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Pages 404 les plus demandées</h2>
+    <span class="text-sm text-gray-500 dark:text-gray-400">{{ error_stats.total_404 }} erreur{{ error_stats.total_404|pluralize }}</span>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-700 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          <th class="px-4 py-2">URL</th>
+          <th class="px-4 py-2 text-right">Erreurs</th>
+          <th class="px-4 py-2">Referrer principal</th>
+          <th class="px-4 py-2">Première vu</th>
+          <th class="px-4 py-2">Dernière vu</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for err in error_stats.pages %}
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+          <td class="px-4 py-2 text-primary text-xs font-mono truncate max-w-[200px]">{{ err.url }}</td>
+          <td class="px-4 py-2 text-right text-red-600 dark:text-red-400 font-semibold">{{ err.count }}</td>
+          <td class="px-4 py-2 text-xs text-gray-400 truncate max-w-[200px]">{{ err.top_ref|default:"-" }}</td>
+          <td class="px-4 py-2 text-xs text-gray-400 whitespace-nowrap">{{ err.first_seen|slice:":10" }}</td>
+          <td class="px-4 py-2 text-xs text-gray-400 whitespace-nowrap">{{ err.last_seen|slice:":10" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Performance par page -->
+{% if page_perf %}
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Performance par page (temps de réponse)</h2>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-700 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          <th class="px-4 py-2">URL</th>
+          <th class="px-4 py-2 text-right">Vues</th>
+          <th class="px-4 py-2 text-right">Moyenne</th>
+          <th class="px-4 py-2 text-right">Médiane</th>
+          <th class="px-4 py-2 text-right">P95</th>
+          <th class="px-4 py-2 text-right">Max</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for perf in page_perf %}
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+          <td class="px-4 py-2 text-xs font-mono text-gray-700 dark:text-gray-300 truncate max-w-[250px]" title="{{ perf.url }}">{{ perf.url }}</td>
+          <td class="px-4 py-2 text-right text-gray-700 dark:text-gray-200">{{ perf.views }}</td>
+          <td class="px-4 py-2 text-right font-medium {% if perf.avg_ms > 500 %}text-red-600 dark:text-red-400{% elif perf.avg_ms > 200 %}text-amber-600 dark:text-amber-400{% else %}text-gray-700 dark:text-gray-200{% endif %}">{{ perf.avg_ms }} ms</td>
+          <td class="px-4 py-2 text-right text-gray-500 dark:text-gray-400">{{ perf.p50_ms }} ms</td>
+          <td class="px-4 py-2 text-right text-gray-500 dark:text-gray-400">{{ perf.p95_ms }} ms</td>
+          <td class="px-4 py-2 text-right text-gray-500 dark:text-gray-400">{{ perf.max_ms }} ms</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Gestion par lot (batch) -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Gestion par lot</h2>
+  </div>
+  <div class="p-5">
+    <div class="flex flex-wrap gap-6">
+      <form method="get" action="{% url 'analytics:batch_export' %}" class="flex flex-wrap items-end gap-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Du</label>
+          <input type="date" name="date_start" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Au</label>
+          <input type="date" name="date_end" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Format</label>
+          <select name="format" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="zip">ZIP (brut)</option>
+          </select>
+        </div>
+        <button type="submit" class="px-4 py-1.5 bg-gray-800 text-white text-sm rounded-md hover:bg-primary transition font-medium">Télécharger</button>
+      </form>
+      <form method="post" action="{% url 'analytics:batch_delete' %}" onsubmit="return confirm('Supprimer toutes les données de cette période ? Action irréversible.')" class="flex flex-wrap items-end gap-3">
+        {% csrf_token %}
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Du</label>
+          <input type="date" name="date_start" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Au</label>
+          <input type="date" name="date_end" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        </div>
+        <button type="submit" class="px-4 py-1.5 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition font-medium">Supprimer</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Envoi rapport email + PDF -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Rapports</h2>
+  </div>
+  <div class="p-5 flex flex-wrap gap-6">
+    <form method="post" action="{% url 'analytics:send_email_report' %}" class="flex flex-wrap items-end gap-3">
+      {% csrf_token %}
+      <div>
+        <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Période</label>
+        <select name="period" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+          <option value="7">7 jours</option>
+          <option value="30">30 jours</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Email</label>
+        <input type="email" name="email" placeholder="admin@cc-sudavesnois.fr" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 w-64">
+      </div>
+      <button type="submit" class="px-4 py-1.5 bg-primary text-white text-sm rounded-md hover:bg-primary-600 transition font-medium">Envoyer par email</button>
+    </form>
+    <a href="{% url 'analytics:export_pdf' %}?period=7" class="inline-flex items-center px-4 py-1.5 bg-gray-800 text-white text-sm rounded-md hover:bg-primary transition font-medium">
+      <svg class="w-4 h-4 mr-2" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+      Export PDF (7j)
+    </a>
+  </div>
+</div>
+
 <!-- Détail journalier -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
   <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -679,6 +1047,330 @@
 
 {% block javascript %}
 <script>
+(function() {
+  var isDark = document.documentElement.classList.contains('dark');
+  var gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+  var textColor = isDark ? '#9ca3af' : '#6b7280';
+  var primaryColor = '#006ab3';
+  var primaryLight = 'rgba(0,106,179,0.15)';
+
+  // --- Évolution ---
+  {% if daily %}
+  (function() {
+    var labels = {{ chart_labels|safe }};
+    var views = {{ chart_views|safe }};
+    var uniques = {{ chart_unique|safe }};
+    var visitors = {{ chart_visitors|safe }};
+    var maxVal = Math.max.apply(null, views) || 1;
+
+    var datasets = [
+      {
+        label: 'Pages vues',
+        data: views,
+        borderColor: '#006ab3',
+        backgroundColor: 'rgba(0,106,179,0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+        pointBackgroundColor: '#006ab3',
+        order: 1
+      },
+      {
+        label: 'IP uniques',
+        data: uniques,
+        borderColor: '#10b981',
+        backgroundColor: 'transparent',
+        borderDash: [4, 3],
+        tension: 0.3,
+        pointRadius: 2,
+        pointBackgroundColor: '#10b981',
+        order: 2
+      },
+      {
+        label: 'Visiteurs (cookie)',
+        data: visitors,
+        borderColor: '#8b5cf6',
+        backgroundColor: 'transparent',
+        borderDash: [2, 2],
+        tension: 0.3,
+        pointRadius: 2,
+        pointBackgroundColor: '#8b5cf6',
+        order: 3
+      }
+    ];
+
+    {% if show_compare and comparison %}
+    var compViews = {{ comparison_views|safe }};
+    var compLabels = {{ comparison_labels|safe }};
+    if (compViews.length > 0) {
+      datasets.push({
+        label: 'Vues (période préc.)',
+        data: compViews,
+        borderColor: '#d1d5db',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderDash: [6, 4],
+        tension: 0.3,
+        pointRadius: 1,
+        pointBackgroundColor: '#d1d5db',
+        order: 4
+      });
+    }
+    {% endif %}
+
+    var ctx = document.getElementById('evolutionChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels: labels, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        onClick: function(evt, elements) {
+          if (elements.length > 0) {
+            var idx = elements[0].index;
+            var d = labels[idx];
+            window.location.href = '?date=' + d;
+          }
+        },
+        plugins: {
+          tooltip: {
+            backgroundColor: isDark ? '#1f2937' : '#111827',
+            titleColor: '#fff',
+            bodyColor: '#e5e7eb'
+          },
+          legend: {
+            labels: { color: textColor, usePointStyle: true, padding: 20 }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            ticks: { color: textColor, maxTicksLimit: 14, maxRotation: 0 }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: gridColor },
+            ticks: { color: textColor }
+          }
+        }
+      }
+    });
+  })();
+  {% endif %}
+
+  // --- Heatmap ---
+  (function() {
+    var matrix = {{ heatmap|safe }};
+    var dayLabels = {{ heatmap_labels|safe }};
+    var hourLabels = [];
+    for (var h = 0; h < 24; h++) { hourLabels.push(h + 'h'); }
+
+    var datasets = [];
+    var colors = ['#e5e7eb','#dbeafe','#bfdbfe','#93c5fd','#60a5fa','#3b82f6','#2563eb','#1d4ed8','#1e40af'];
+    for (var d = 0; d < 7; d++) {
+      datasets.push({
+        label: dayLabels[d],
+        data: matrix[d],
+        backgroundColor: matrix[d].map(function(v) {
+          var max_ = Math.max.apply(null, matrix[d]) || 1;
+          var idx = Math.min(colors.length - 1, Math.floor(v / max_ * (colors.length - 1)));
+          return colors[v === 0 ? 0 : Math.max(1, idx)];
+        }),
+        borderWidth: 1,
+        borderColor: isDark ? '#374151' : '#fff'
+      });
+    }
+
+    var ctx = document.getElementById('heatmapChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: { labels: hourLabels, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: textColor, usePointStyle: true } },
+          tooltip: {
+            callbacks: {
+              title: function(items) { return items[0].label + ' - ' + items[0].dataset.label; },
+              label: function(item) { return item.raw + ' vues'; }
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor, maxRotation: 0 } },
+          y: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor } }
+        }
+      }
+    });
+  })();
+
+  // --- Régions France ---
+  {% if france_regions %}
+  (function() {
+    var data = {{ france_regions_json|safe }};
+    var labels = Object.keys(data);
+    var values = Object.values(data).map(function(d) { return d.count; });
+    var ctx = document.getElementById('franceRegionsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Visites',
+          data: values,
+          backgroundColor: labels.map(function(_, i) {
+            var hue = (210 + i * 25) % 360;
+            return 'hsla(' + hue + ', 65%, 55%, 0.75)';
+          }),
+          borderColor: labels.map(function() { return 'transparent'; }),
+          borderWidth: 0,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function(item) { return item.raw + ' visites'; } } }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor } },
+          y: { grid: { display: false }, ticks: { color: textColor } }
+        }
+      }
+    });
+  })();
+  {% endif %}
+
+  // --- Profondeur de session ---
+  (function() {
+    var sd = JSON.parse('{{ session_depth_json|safe|escapejs }}');
+    var labels = ['1 page','2-3 pages','4-5 pages','6-10 pages','10+ pages'];
+    var data = [sd['1'] || 0, sd['2-3'] || 0, sd['4-5'] || 0, sd['6-10'] || 0, sd['10+'] || 0];
+    var pieColors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6'];
+
+    var ctx = document.getElementById('sessionDepthChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{ data: data, backgroundColor: pieColors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: textColor, padding: 12, usePointStyle: true, boxWidth: 8 }
+          }
+        }
+      }
+    });
+  })();
+
+  // --- Évolution appareils ---
+  (function() {
+    var el = document.getElementById('deviceEvoChart');
+    if (!el) return;
+    var data = {{ device_evo|safe }};
+    var labels = data.map(function(d) { return d.date; });
+    var desktop = data.map(function(d) { return d.desktop || 0; });
+    var mobile = data.map(function(d) { return d.mobile || 0; });
+    var tablet = data.map(function(d) { return d.tablet || 0; });
+
+    new Chart(el.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'Desktop', data: desktop, backgroundColor: '#3b82f6', borderRadius: 2 },
+          { label: 'Mobile', data: mobile, backgroundColor: '#10b981', borderRadius: 2 },
+          { label: 'Tablette', data: tablet, backgroundColor: '#f59e0b', borderRadius: 2 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: textColor, usePointStyle: true } } },
+        scales: {
+          x: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor, maxRotation: 0, maxTicksLimit: 14 } },
+          y: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor } }
+        }
+      }
+    });
+  })();
+
+  // --- Rétention (nouveaux vs revenants) ---
+  (function() {
+    var el = document.getElementById('retentionChart');
+    if (!el) return;
+    var data = {{ retention|safe }};
+    var labels = Object.keys(data['new']).sort();
+    var newVisitors = labels.map(function(k) { return data['new'][k] || 0; });
+    var returning = labels.map(function(k) { return data['returning'][k] || 0; });
+
+    new Chart(el.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'Nouveaux', data: newVisitors, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.08)', fill: true, tension: 0.3, pointRadius: 2 },
+          { label: 'Revenants', data: returning, borderColor: '#6b7280', borderDash: [4, 3], tension: 0.3, pointRadius: 2 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: textColor, usePointStyle: true } } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor, maxRotation: 0, maxTicksLimit: 14 } },
+          y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } }
+        }
+      }
+    });
+  })();
+
+  // --- Catégories de référents ---
+  (function() {
+    var el = document.getElementById('referrerCategoriesChart');
+    if (!el) return;
+    var data = {{ referrer_categories_json|safe }};
+    var labels = Object.keys(data).filter(function(k) { return k !== 'Accès direct'; });
+    var values = labels.map(function(k) { return data[k] || 0; });
+    var colors = ['#3b82f6','#10b981','#f59e0b','#ef4444'];
+
+    new Chart(el.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{ data: values, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: textColor, padding: 12, usePointStyle: true } }
+        }
+      }
+    });
+  })();
+
+  // --- Live polling ---
+  (function() {
+    var el = document.getElementById('live-active');
+    if (!el) return;
+    setInterval(function() {
+      fetch('{% url "analytics:live_stats" %}')
+        .then(function(r) { return r.json(); })
+        .then(function(d) { el.textContent = d.active_15m; })
+        .catch(function() {});
+    }, 30000);
+  })();
+
+})();
+
 function toggleIP(el) {
   var detail = el.nextElementSibling;
   var chevron = el.querySelector('.chevron');
@@ -686,6 +1378,7 @@ function toggleIP(el) {
   detail.classList.toggle('hidden');
   chevron.classList.toggle('rotate-180', !isHidden);
 }
+
 function confirmDeleteStats(date) {
   if (!confirm('Supprimer toutes les statistiques du ' + date + ' ? Cette action est irreversible.')) return;
   var form = document.createElement('form');
@@ -699,6 +1392,7 @@ function confirmDeleteStats(date) {
   document.body.appendChild(form);
   form.submit();
 }
+
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(function(b) {
     b.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-900', 'dark:text-white', 'shadow-sm');
@@ -710,6 +1404,7 @@ function switchTab(tab) {
   document.getElementById('tab-content-bots').classList.add('hidden');
   document.getElementById('tab-content-' + tab).classList.remove('hidden');
 }
+
 function switchTabGeo(card, tab) {
   document.querySelectorAll('.tab-btn-' + card).forEach(function(b) {
     b.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-900', 'dark:text-white', 'shadow-sm');
@@ -722,6 +1417,16 @@ function switchTabGeo(card, tab) {
     if (el) el.classList.add('hidden');
   });
   document.getElementById('tab-' + card + '-' + tab).classList.remove('hidden');
+}
+
+function toggleCompare(checkbox) {
+  var url = new URL(window.location.href);
+  if (checkbox.checked) {
+    url.searchParams.set('compare', 'on');
+  } else {
+    url.searchParams.delete('compare');
+  }
+  window.location.href = url.toString();
 }
 </script>
 {% endblock %}

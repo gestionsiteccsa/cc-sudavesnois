@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport statistiques CCSA</title>
+  <style>
+    @page { size: A4 landscape; margin: 1.5cm; }
+    body { font-family: system-ui, -apple-system, sans-serif; color: #1f2937; font-size: 11pt; }
+    h1 { color: #006ab3; font-size: 20pt; margin: 0 0 4pt; }
+    .subtitle { color: #6b7280; font-size: 10pt; margin-bottom: 20pt; }
+    .cards { display: flex; gap: 12pt; margin-bottom: 24pt; }
+    .card { flex: 1; padding: 14pt; border-radius: 8pt; background: #f9fafb; border: 1px solid #e5e7eb; text-align: center; }
+    .card .value { font-size: 22pt; font-weight: 700; color: #111827; }
+    .card .label { font-size: 9pt; color: #6b7280; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16pt; }
+    th { background: #f3f4f6; text-align: left; padding: 6pt 8pt; font-size: 9pt; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5pt; }
+    td { padding: 6pt 8pt; font-size: 10pt; border-bottom: 1px solid #f3f4f6; }
+    .footer { margin-top: 24pt; text-align: center; font-size: 8pt; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <h1>CCSA — Rapport statistiques</h1>
+  <p class="subtitle">Periode : {{ start.isoformat }} au {{ end.isoformat }} — Genere le {{ generated|date:"d/m/Y" }}</p>
+
+  <div class="cards">
+    <div class="card"><div class="value">{{ total_views|default:"-" }}</div><div class="label">Pages vues</div></div>
+    <div class="card"><div class="value">{{ total_unique|default:"-" }}</div><div class="label">IP uniques</div></div>
+    <div class="card"><div class="value">{{ total_visitors|default:"-" }}</div><div class="label">Visiteurs</div></div>
+    <div class="card"><div class="value">{{ response_time_avg|default:"-" }} ms</div><div class="label">Temps moyen</div></div>
+  </div>
+
+  <h2 style="font-size: 13pt; color: #111827;">Top pages</h2>
+  <table>
+    <thead><tr><th>URL</th><th style="text-align:right;">Vues</th></tr></thead>
+    <tbody>
+      {% for p in top_pages|slice:":15" %}
+      <tr><td>{{ p.url }}</td><td style="text-align:right;font-weight:600;">{{ p.count }}</td></tr>
+      {% empty %}
+      <tr><td colspan="2" style="text-align:center;color:#9ca3af;">Aucune donnee</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 style="font-size: 13pt; color: #111827;">Appareils</h2>
+  <table>
+    <thead><tr><th>Type</th><th style="text-align:right;">Total</th></tr></thead>
+    <tbody>
+      {% for key, count in top_devices.items %}
+      <tr><td>{{ key|capfirst }}</td><td style="text-align:right;font-weight:600;">{{ count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 style="font-size: 13pt; color: #111827;">Navigateurs</h2>
+  <table>
+    <thead><tr><th>Navigateur</th><th style="text-align:right;">Total</th></tr></thead>
+    <tbody>
+      {% for key, count in top_browsers.items %}
+      <tr><td>{{ key }}</td><td style="text-align:right;font-weight:600;">{{ count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="footer">
+    Rapport genere automatiquement — CCSA &copy; {% now "Y" %}<br>
+    cc-sudavesnois.fr/adminccsa/statistiques/
+  </div>
+</body>
+</html>
