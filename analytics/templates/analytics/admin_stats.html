@@ -5,6 +5,10 @@
 {% block title %}Statistiques de visites{% endblock %}
 {% block breadcrumb %}Statistiques{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+{% endblock %}
+
 {% block content %}
 <div class="flex items-center justify-between mb-8">
   <nav class="flex text-sm text-gray-600 gap-2" aria-label="Fil d'Ariane">
@@ -205,6 +209,14 @@
     <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
     {% endfor %}
   </div>
+</div>
+
+<!-- Carte géographique -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Provenance géographique</h2>
+  </div>
+  <div id="map" class="h-72 w-full" aria-label="Carte des visiteurs"></div>
 </div>
 
 <!-- Graphique -->
@@ -501,6 +513,7 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 function toggleIP(el) {
   var detail = el.nextElementSibling;
@@ -523,5 +536,28 @@ function confirmDeleteStats(date) {
   document.body.appendChild(form);
   form.submit();
 }
+
+(function() {
+  var points = {{ geo_points_json|default:'[]' }};
+  if (!points.length) return;
+  var map = L.map('map').setView([46.6, 2.4], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+  var bounds = [];
+  points.forEach(function(p) {
+    var marker = L.circleMarker([p.lat, p.lon], {
+      radius: Math.min(20, 3 + Math.sqrt(p.count) * 3),
+      color: '#6366f1',
+      fillColor: '#818cf8',
+      fillOpacity: 0.6,
+      weight: 1
+    }).addTo(map);
+    marker.bindPopup('<strong>' + p.city + '</strong> (' + p.country + ')<br>' + p.count + ' visite' + (p.count > 1 ? 's' : ''));
+    bounds.push([p.lat, p.lon]);
+  });
+  if (bounds.length > 1) map.fitBounds(bounds, {padding: [30, 30]});
+})();
 </script>
 {% endblock %}

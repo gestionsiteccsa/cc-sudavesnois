@@ -1,3 +1,4 @@
+import json
 import zipfile
 from datetime import date, timedelta
 from io import BytesIO
@@ -67,6 +68,7 @@ def admin_stats(request):
     languages_agg: dict[str, int] = {}
     referrers_agg: dict[str, int] = {}
     cities_agg: dict[str, int] = {}
+    city_details: dict[str, dict] = {}
     regions_agg: dict[str, int] = {}
     countries_agg: dict[str, int] = {}
 
@@ -93,7 +95,24 @@ def admin_stats(request):
             _inc(os_agg, device.get("os"))
             _inc(devices_agg, device.get("type"))
             _inc(languages_agg, e.get("language", "").split(",")[0].split(";")[0])
-            _inc(cities_agg, geo.get("city"))
+            city = geo.get("city", "")
+            _inc(cities_agg, city)
+            if city:
+                lat = geo.get("lat")
+                lon = geo.get("lon")
+                if city not in city_details:
+                    city_details[city] = {
+                        "city": city,
+                        "country": geo.get("country", ""),
+                        "lat": lat,
+                        "lon": lon,
+                        "count": 0,
+                    }
+                city_details[city]["count"] += 1
+                if lat is not None and city_details[city]["lat"] is None:
+                    city_details[city]["lat"] = lat
+                if lon is not None and city_details[city]["lon"] is None:
+                    city_details[city]["lon"] = lon
             _inc(regions_agg, geo.get("region"))
             _inc(countries_agg, geo.get("country"))
 
@@ -152,6 +171,11 @@ def admin_stats(request):
     top_languages = sorted(languages_agg.items(), key=lambda x: -x[1])
     top_referrers = sorted(referrers_agg.items(), key=lambda x: -x[1])[:20]
     top_cities = sorted(cities_agg.items(), key=lambda x: -x[1])[:15]
+    geo_points = [
+        v
+        for v in city_details.values()
+        if v["lat"] is not None and v["lon"] is not None
+    ]
     top_regions = sorted(regions_agg.items(), key=lambda x: -x[1])[:10]
     top_countries = sorted(countries_agg.items(), key=lambda x: -x[1])[:15]
 
@@ -192,6 +216,7 @@ def admin_stats(request):
         "top_ips": top_ips,
         "active_visitors": count_recent_ips(),
         "response_time_avg": response_time_avg,
+        "geo_points_json": mark_safe(json.dumps(geo_points)),
         "diagnostics": run_diagnostics() if request.GET.get("debug") == "1" else None,
     }
     return render(request, "analytics/admin_stats.html", context)
