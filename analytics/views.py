@@ -117,7 +117,11 @@ def admin_stats(request):
                     "browser": device.get("browser", "?"),
                     "os": device.get("os", "?"),
                     "last_seen": timestamp,
+                    "referrer": ref,
                 }
+            else:
+                if ref:
+                    ip_details[ip_h]["pages_list"][u]["referrer"] = ref
             ip_details[ip_h]["pages_list"][u]["count"] += 1
             ip_details[ip_h]["pages_list"][u]["last_seen"] = max(
                 ip_details[ip_h]["pages_list"][u]["last_seen"], timestamp
