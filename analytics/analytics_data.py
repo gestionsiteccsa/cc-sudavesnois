@@ -10,6 +10,25 @@ logger = logging.getLogger(__name__)
 
 ANALYTICS_DIR = settings.BASE_DIR / "analytics_data"
 RETENTION_DAYS = 365
+BOT_URL_PREFIXES = frozenset(
+    {
+        "/wp-",
+        "/wordpress",
+        "/xmlrpc",
+        "/wp-login",
+        "/wp-admin",
+        "/wp-content",
+        "/wp-includes",
+        "/wp-json",
+    }
+)
+
+
+def is_bot_url(url: str) -> bool:
+    for prefix in BOT_URL_PREFIXES:
+        if url.startswith(prefix):
+            return True
+    return False
 
 
 def ensure_dir():

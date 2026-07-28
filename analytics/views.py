@@ -15,6 +15,7 @@ from accounts.views import est_moderateur
 from analytics.analytics_data import (
     ANALYTICS_DIR,
     count_recent_ips,
+    is_bot_url,
     list_available_dates,
     load_day,
     load_range,
@@ -79,6 +80,8 @@ def admin_stats(request):
         day_pages: dict[str, int] = {}
         for e in entries:
             u = e.get("url", "/")
+            if is_bot_url(u):
+                continue
             device = e.get("device", {})
             geo = e.get("geo") or {}
             timestamp = e.get("timestamp", "")
