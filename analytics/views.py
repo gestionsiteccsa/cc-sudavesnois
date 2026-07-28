@@ -105,11 +105,14 @@ def admin_stats(request):
                     pass
 
             if ip_h not in ip_details:
+                cc = geo.get("country", "")
                 ip_details[ip_h] = {
                     "ip": e.get("ip", ""),
                     "ip_hash": ip_h,
-                    "country": geo.get("country"),
+                    "country": cc,
                     "country_name": geo.get("country_name"),
+                    "probable_bot": cc == "US"
+                    or (not cc and device.get("browser", "") in ("Inconnu", "")),
                     "pages": 0,
                     "pages_list": {},
                 }
