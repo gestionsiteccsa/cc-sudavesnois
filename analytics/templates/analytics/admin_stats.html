@@ -513,8 +513,10 @@
 {% endblock %}
 
 {% block javascript %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onload="initMap()"></script>
 <script>
+var GEO_POINTS = {{ geo_points_json|default:'[]' }};
+
 function toggleIP(el) {
   var detail = el.nextElementSibling;
   var chevron = el.querySelector('.chevron');
@@ -537,16 +539,15 @@ function confirmDeleteStats(date) {
   form.submit();
 }
 
-(function() {
-  var points = {{ geo_points_json|default:'[]' }};
-  if (!points.length) return;
+function initMap() {
+  if (typeof L === 'undefined' || !GEO_POINTS.length) return;
   var map = L.map('map').setView([46.6, 2.4], 5);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: '&copy; OpenStreetMap'
   }).addTo(map);
   var bounds = [];
-  points.forEach(function(p) {
+  GEO_POINTS.forEach(function(p) {
     var marker = L.circleMarker([p.lat, p.lon], {
       radius: Math.min(20, 3 + Math.sqrt(p.count) * 3),
       color: '#6366f1',
@@ -558,6 +559,6 @@ function confirmDeleteStats(date) {
     bounds.push([p.lat, p.lon]);
   });
   if (bounds.length > 1) map.fitBounds(bounds, {padding: [30, 30]});
-})();
+}
 </script>
 {% endblock %}

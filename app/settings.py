@@ -231,9 +231,20 @@ CSP_SCRIPT_SRC = (
     "https://cdn.tailwindcss.com",
     "https://cdnjs.cloudflare.com",
     "https://cdn.jsdelivr.net",
+    "https://unpkg.com",
 )
-CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com", "'unsafe-inline'")
-CSP_IMG_SRC = ("'self'", "data:", "https://cc-sudavesnois.fr")
+CSP_STYLE_SRC = (
+    "'self'",
+    "https://fonts.googleapis.com",
+    "https://unpkg.com",
+    "'unsafe-inline'",
+)
+CSP_IMG_SRC = (
+    "'self'",
+    "data:",
+    "https://cc-sudavesnois.fr",
+    "https://tile.openstreetmap.org",
+)
 CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
 CSP_CONNECT_SRC = ("'self'", "https://www.google-analytics.com")
 CSP_WORKER_SRC = ("'self'", "https://cdnjs.cloudflare.com")
