@@ -44,6 +44,9 @@ class PageTrackingMiddleware:
 
             geo = geo_lookup(ip)
 
+            if geo and geo.get("country") and geo.get("country") != "FR":
+                return response
+
             entry = {
                 "url": path,
                 "status": response.status_code,

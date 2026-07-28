@@ -4,6 +4,9 @@
 
 ### Ajouté (28/07/2026) — Refonte complète des statistiques
 
+#### Filtre IP étrangères (28/07/2026)
+- **Middleware** : les IP géolocalisées hors France (`geo.country != "FR"`) ne sont plus enregistrées.
+
 #### Visualisations
 - **Graphique interactif Chart.js** : remplacement des barres CSS statiques par un graphique linéaire avec tooltips, zoom par clic sur une date, séries multiples (vues, IP uniques, visiteurs).
 - **Heatmap horaire** : carte de chaleur 24h × 7 jours montrant l'activité par heure et jour de la semaine.
