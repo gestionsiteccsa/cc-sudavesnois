@@ -16,5 +16,10 @@ urlpatterns = [
         views.download_day_json,
         name="download_day",
     ),
+    path(
+        "adminccsa/statistiques/supprimer/<str:day_str>/",
+        views.delete_day_stats,
+        name="delete_day",
+    ),
     path("adminccsa/changelog/", views.admin_changelog, name="admin_changelog"),
 ]

@@ -4,9 +4,10 @@ from io import BytesIO
 from pathlib import Path
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 
 from markdown_it import MarkdownIt
@@ -241,3 +242,28 @@ def admin_changelog(request):
         "analytics/admin_changelog.html",
         {"changelog_html": mark_safe(html)},
     )
+
+
+@login_required
+@user_passes_test(lambda u: est_moderateur(u))
+def delete_day_stats(request, day_str):
+    if request.method != "POST":
+        return HttpResponse("Methode non autorisee", status=405)
+    try:
+        date.fromisoformat(day_str)
+    except ValueError:
+        return HttpResponse("Date invalide", status=400)
+
+    deleted = False
+    for ext in (".jsonl", ".json"):
+        path = ANALYTICS_DIR / f"{day_str}{ext}"
+        if path.exists():
+            path.unlink()
+            deleted = True
+
+    if not deleted:
+        messages.warning(request, f"Aucune donnee trouvee pour le {day_str}")
+    else:
+        messages.success(request, f"Statistiques du {day_str} supprimees")
+
+    return redirect("analytics:admin_stats")
