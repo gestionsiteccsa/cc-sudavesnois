@@ -52,6 +52,7 @@ def admin_stats(request):
     total_views = 0
     unique_visitors: set[str] = set()
     unique_ips: set[str] = set()
+    ip_details: dict[str, dict] = {}
     pages_agg: dict[str, int] = {}
     browsers_agg: dict[str, int] = {}
     os_agg: dict[str, int] = {}
@@ -86,6 +87,16 @@ def admin_stats(request):
             if lang:
                 languages_agg[lang] = languages_agg.get(lang, 0) + 1
             geo = e.get("geo") or {}
+            ip_h = e.get("ip_hash", "")
+            if ip_h not in ip_details:
+                ip_details[ip_h] = {
+                    "ip_hash": ip_h,
+                    "country": geo.get("country"),
+                    "country_name": geo.get("country_name"),
+                    "pages": 1,
+                }
+            else:
+                ip_details[ip_h]["pages"] += 1
             c = geo.get("city")
             if c:
                 cities_agg[c] = cities_agg.get(c, 0) + 1
@@ -124,6 +135,8 @@ def admin_stats(request):
     top_regions = sorted(regions_agg.items(), key=lambda x: -x[1])[:10]
     top_countries = sorted(countries_agg.items(), key=lambda x: -x[1])[:15]
 
+    top_ips = sorted(ip_details.values(), key=lambda x: -x["pages"])[:50]
+
     response_time_avg = 0
     count_with_time = 0
     for entries in raw.values():
@@ -154,6 +167,7 @@ def admin_stats(request):
         "available_dates": available,
         "start_date": start.isoformat(),
         "end_date": end.isoformat(),
+        "top_ips": top_ips,
         "response_time_avg": response_time_avg,
         "diagnostics": run_diagnostics() if request.GET.get("debug") == "1" else None,
     }

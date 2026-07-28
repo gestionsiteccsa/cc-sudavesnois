@@ -130,6 +130,35 @@
   </div>
 </div>
 
+<!-- Visiteurs (IP) -->
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Visiteurs</h2>
+  </div>
+  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for ip in top_ips %}
+    <div class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+      <div class="flex items-center gap-3 min-w-0 flex-1">
+        {% if ip.country %}
+        <span class="text-base">{{ ip.country|flag_emoji }}</span>
+        {% endif %}
+        <code class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ ip.ip_hash|truncatechars:16 }}</code>
+        {% if ip.country_name %}
+        <span class="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">{{ ip.country_name }}</span>
+        {% elif not ip.ip_hash %}
+        <span class="text-xs text-gray-400 italic">Anonyme</span>
+        {% else %}
+        <span class="text-xs text-gray-400 italic">Inconnu</span>
+        {% endif %}
+      </div>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white ml-2 whitespace-nowrap">{{ ip.pages }} vue{{ ip.pages|pluralize }}</span>
+    </div>
+    {% empty %}
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+    {% endfor %}
+  </div>
+</div>
+
 <!-- Graphique -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
   <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
