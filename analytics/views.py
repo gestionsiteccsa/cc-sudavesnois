@@ -1,10 +1,15 @@
 import zipfile
 from datetime import date, timedelta
 from io import BytesIO
+from pathlib import Path
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.utils.safestring import mark_safe
+
+from markdown_it import MarkdownIt
 
 from accounts.views import est_moderateur
 from analytics.analytics_data import (
@@ -154,7 +159,9 @@ def download_day_json(request, day_str: str):
 def download_all_json(request):
     buffer = BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
-        for fpath in sorted(ANALYTICS_DIR.glob("*.jsonl")):
+        for fpath in sorted(ANALYTICS_DIR.glob("*.json*")):
+            if ".summary" in fpath.stem:
+                continue
             rel_name = fpath.name
             zf.write(fpath, rel_name)
     buffer.seek(0)
@@ -162,4 +169,23 @@ def download_all_json(request):
         buffer.getvalue(),
         content_type="application/zip",
         headers={"Content-Disposition": "attachment; filename=analytics_data.zip"},
+    )
+
+
+@login_required
+@user_passes_test(lambda u: est_moderateur(u))
+def admin_changelog(request):
+    changelog_path = Path(settings.BASE_DIR / "CHANGELOG.md")
+    raw = changelog_path.read_text(encoding="utf-8")
+
+    md = MarkdownIt(
+        "commonmark",
+        {"html": True, "linkify": True, "typographer": True},
+    )
+    html = md.render(raw)
+
+    return render(
+        request,
+        "analytics/admin_changelog.html",
+        {"changelog_html": mark_safe(html)},
     )

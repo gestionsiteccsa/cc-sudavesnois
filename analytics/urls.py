@@ -16,4 +16,5 @@ urlpatterns = [
         views.download_all_json,
         name="download_all",
     ),
+    path("adminccsa/changelog/", views.admin_changelog, name="admin_changelog"),
 ]

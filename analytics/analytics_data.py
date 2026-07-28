@@ -30,22 +30,31 @@ def append(entry: dict):
 
 def _load_entries(d: date) -> list[dict]:
     path = ANALYTICS_DIR / f"{d.isoformat()}.jsonl"
-    if not path.exists():
-        return []
-    entries: list[dict] = []
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    entries.append(json.loads(line))
-                except json.JSONDecodeError:
-                    continue
-    except OSError as e:
-        logger.error("Erreur lecture analytics: %s", e)
-    return entries
+    if path.exists():
+        entries: list[dict] = []
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entries.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+        except OSError as e:
+            logger.error("Erreur lecture analytics: %s", e)
+        return entries
+    legacy_path = ANALYTICS_DIR / f"{d.isoformat()}.json"
+    if legacy_path.exists():
+        try:
+            with open(legacy_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+        except (OSError, json.JSONDecodeError) as e:
+            logger.error("Erreur lecture analytics (legacy): %s", e)
+    return []
 
 
 def _compute_summary(entries: list[dict]) -> dict | None:
@@ -145,10 +154,12 @@ def load_range(start: date, end: date) -> dict:
 
 def list_available_dates() -> list[str]:
     ensure_dir()
-    files = sorted(ANALYTICS_DIR.glob("*.jsonl"))
+    files = sorted(ANALYTICS_DIR.glob("*.json*"))
     seen: set[str] = set()
     dates: list[str] = []
     for f in files:
+        if ".summary" in f.stem:
+            continue
         stem = f.stem
         if stem not in seen:
             seen.add(stem)
