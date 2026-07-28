@@ -132,33 +132,51 @@
 
 <!-- Visiteurs (IP) -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Visiteurs</h2>
+    <span class="text-xs text-gray-500 dark:text-gray-400">{{ top_ips|length }} IP unique{{ top_ips|pluralize }}</span>
   </div>
   <div class="divide-y divide-gray-200 dark:divide-gray-700">
     {% for ip in top_ips %}
-    <div class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-      <div class="flex items-center gap-3 min-w-0 flex-1">
-        {% if ip.country %}
-        <span class="text-base">{{ ip.country|flag_emoji }}</span>
-        {% endif %}
-        {% if ip.ip %}
-        <code class="text-sm font-mono text-gray-800 dark:text-gray-200 font-semibold">{{ ip.ip }}</code>
-        <button onclick="navigator.clipboard.writeText('python manage.py supprimer_ip {{ ip.ip }}')" class="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Copier la commande de suppression">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-        </button>
-        {% else %}
-        <code class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ ip.ip_hash|truncatechars:16 }}</code>
-        {% endif %}
-        {% if ip.country_name %}
-        <span class="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">{{ ip.country_name }}</span>
-        {% elif not ip.ip and not ip.ip_hash %}
-        <span class="text-xs text-gray-400 italic">Anonyme</span>
-        {% elif not ip.ip %}
-        <span class="text-xs text-gray-400 italic">Inconnu</span>
-        {% endif %}
+    <div class="select-none">
+      <div onclick="toggleIP(this)" class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+          {% if ip.country %}
+          <span class="text-base">{{ ip.country|flag_emoji }}</span>
+          {% endif %}
+          {% if ip.ip %}
+          <code class="text-sm font-mono text-gray-800 dark:text-gray-200 font-semibold">{{ ip.ip }}</code>
+          <button onclick="event.stopPropagation(); navigator.clipboard.writeText('python manage.py supprimer_ip {{ ip.ip }}')" class="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Copier la commande de suppression">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          </button>
+          {% else %}
+          <code class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ ip.ip_hash|truncatechars:16 }}</code>
+          {% endif %}
+          {% if ip.country_name %}
+          <span class="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">{{ ip.country_name }}</span>
+          {% elif not ip.ip and not ip.ip_hash %}
+          <span class="text-xs text-gray-400 italic">Anonyme</span>
+          {% elif not ip.ip %}
+          <span class="text-xs text-gray-400 italic">Inconnu</span>
+          {% endif %}
+        </div>
+        <div class="flex items-center gap-2 ml-2 shrink-0">
+          <span class="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">{{ ip.pages }} vue{{ ip.pages|pluralize }}</span>
+          <svg class="chevron w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
       </div>
-      <span class="text-sm font-semibold text-gray-900 dark:text-white ml-2 whitespace-nowrap">{{ ip.pages }} vue{{ ip.pages|pluralize }}</span>
+      <div class="pages-detail hidden bg-gray-50 dark:bg-gray-900/50">
+        {% for p in ip.pages_list|slice:":20" %}
+        <a href="{{ p.url }}" target="_blank" rel="noopener" class="flex items-center justify-between px-5 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-t border-gray-100 dark:border-gray-800">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <span class="text-xs text-gray-400 w-5 shrink-0 text-right">{{ forloop.counter }}.</span>
+            <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ p.url }}</span>
+            <span class="text-xs text-gray-400 shrink-0 hidden sm:inline">{{ p.browser }} · {{ p.os }}</span>
+          </div>
+          <span class="text-xs font-medium text-gray-500 dark:text-gray-400 ml-2 shrink-0">{{ p.count }} vue{{ p.count|pluralize }}</span>
+        </a>
+        {% endfor %}
+      </div>
     </div>
     {% empty %}
     <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
@@ -452,4 +470,16 @@
     pour plus d'informations.
   </p>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+function toggleIP(el) {
+  var detail = el.nextElementSibling;
+  var chevron = el.querySelector('.chevron');
+  var isHidden = detail.classList.contains('hidden');
+  detail.classList.toggle('hidden');
+  chevron.classList.toggle('rotate-180', !isHidden);
+}
+</script>
 {% endblock %}

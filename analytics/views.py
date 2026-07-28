@@ -48,6 +48,10 @@ def admin_stats(request):
         end = today
         raw = load_range(start, end)
 
+    def _inc(d: dict, key):
+        if key:
+            d[key] = d.get(key, 0) + 1
+
     daily: list[dict] = []
     total_views = 0
     unique_visitors: set[str] = set()
@@ -74,46 +78,49 @@ def admin_stats(request):
         day_pages: dict[str, int] = {}
         for e in entries:
             u = e.get("url", "/")
-            pages_agg[u] = pages_agg.get(u, 0) + 1
-            day_pages[u] = day_pages.get(u, 0) + 1
-            d = e.get("device", {})
-            br = d.get("browser", "Inconnu")
-            browsers_agg[br] = browsers_agg.get(br, 0) + 1
-            os_name = d.get("os", "Inconnu")
-            os_agg[os_name] = os_agg.get(os_name, 0) + 1
-            dt = d.get("type", "desktop")
-            devices_agg[dt] = devices_agg.get(dt, 0) + 1
-            lang = e.get("language", "").split(",")[0].split(";")[0]
-            if lang:
-                languages_agg[lang] = languages_agg.get(lang, 0) + 1
+            device = e.get("device", {})
             geo = e.get("geo") or {}
+            timestamp = e.get("timestamp", "")
             ip_h = e.get("ip_hash", "")
+            _inc(pages_agg, u)
+            _inc(day_pages, u)
+            _inc(browsers_agg, device.get("browser"))
+            _inc(os_agg, device.get("os"))
+            _inc(devices_agg, device.get("type"))
+            _inc(languages_agg, e.get("language", "").split(",")[0].split(";")[0])
+            _inc(cities_agg, geo.get("city"))
+            _inc(regions_agg, geo.get("region"))
+            _inc(countries_agg, geo.get("country"))
+
+            ref = e.get("referrer", "")
+            if ref:
+                try:
+                    _inc(referrers_agg, ref.split("/")[2])
+                except IndexError:
+                    pass
+
             if ip_h not in ip_details:
                 ip_details[ip_h] = {
                     "ip": e.get("ip", ""),
                     "ip_hash": ip_h,
                     "country": geo.get("country"),
                     "country_name": geo.get("country_name"),
-                    "pages": 1,
+                    "pages": 0,
+                    "pages_list": {},
                 }
-            else:
-                ip_details[ip_h]["pages"] += 1
-            c = geo.get("city")
-            if c:
-                cities_agg[c] = cities_agg.get(c, 0) + 1
-            r = geo.get("region")
-            if r:
-                regions_agg[r] = regions_agg.get(r, 0) + 1
-            cc = geo.get("country")
-            if cc:
-                countries_agg[cc] = countries_agg.get(cc, 0) + 1
-            ref = e.get("referrer", "")
-            if ref:
-                try:
-                    domain = ref.split("/")[2]
-                    referrers_agg[domain] = referrers_agg.get(domain, 0) + 1
-                except IndexError:
-                    pass
+            ip_details[ip_h]["pages"] += 1
+            if u not in ip_details[ip_h]["pages_list"]:
+                ip_details[ip_h]["pages_list"][u] = {
+                    "url": u,
+                    "count": 0,
+                    "browser": device.get("browser", "?"),
+                    "os": device.get("os", "?"),
+                    "last_seen": timestamp,
+                }
+            ip_details[ip_h]["pages_list"][u]["count"] += 1
+            ip_details[ip_h]["pages_list"][u]["last_seen"] = max(
+                ip_details[ip_h]["pages_list"][u]["last_seen"], timestamp
+            )
 
         top_day = sorted(day_pages.items(), key=lambda x: -x[1])[:5]
         daily.append(
@@ -137,6 +144,8 @@ def admin_stats(request):
     top_countries = sorted(countries_agg.items(), key=lambda x: -x[1])[:15]
 
     top_ips = sorted(ip_details.values(), key=lambda x: -x["pages"])[:50]
+    for ip in top_ips:
+        ip["pages_list"] = sorted(ip["pages_list"].values(), key=lambda x: -x["count"])
 
     response_time_avg = 0
     count_with_time = 0
