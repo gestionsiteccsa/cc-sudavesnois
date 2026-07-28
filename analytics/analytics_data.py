@@ -9,10 +9,25 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 ANALYTICS_DIR = settings.BASE_DIR / "analytics_data"
+RETENTION_DAYS = 365
 
 
 def ensure_dir():
     ANALYTICS_DIR.mkdir(parents=True, exist_ok=True)
+    purge_old_data()
+
+
+def purge_old_data():
+    limite = date.today() - timedelta(days=RETENTION_DAYS)
+    for f in sorted(ANALYTICS_DIR.glob("*.json*")):
+        if ".summary" in f.stem:
+            continue
+        try:
+            d = date.fromisoformat(f.stem)
+            if d < limite:
+                f.unlink(missing_ok=True)
+        except (ValueError, OSError):
+            pass
 
 
 def _today_path() -> Path:

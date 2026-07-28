@@ -90,6 +90,7 @@ def admin_stats(request):
             ip_h = e.get("ip_hash", "")
             if ip_h not in ip_details:
                 ip_details[ip_h] = {
+                    "ip": e.get("ip", ""),
                     "ip_hash": ip_h,
                     "country": geo.get("country"),
                     "country_name": geo.get("country_name"),

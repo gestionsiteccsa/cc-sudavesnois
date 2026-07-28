@@ -48,6 +48,7 @@ class PageTrackingMiddleware:
                 "url": path,
                 "status": response.status_code,
                 "response_time_ms": elapsed,
+                "ip": ip,
                 "ip_hash": hash_ip(ip),
                 "session_key": request.session.session_key or "",
                 "visitor_id": request.COOKIES.get("visitor_id") or None,

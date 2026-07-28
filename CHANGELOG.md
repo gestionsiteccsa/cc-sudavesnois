@@ -8,6 +8,7 @@
 - **Sélecteur de date** : possibilité de choisir une date précise via un calendrier dans les statistiques.
 - **Carte visiteurs (IP)** : liste des IP uniques avec drapeau du pays, nom du pays et nombre de pages vues.
 - **Liens cliquables** : les URLs des pages les plus visitées sont maintenant des liens.
+- **Conformité RGPD** : stockage IP en clair (avec information des visiteurs), rétention automatique 1 an, commande `python manage.py supprimer_ip <IP>` pour le droit à l'oubli.
 - **Documentation** : section Analytics dans le README.md.
 
 ### Corrigé (28/07/2026)
