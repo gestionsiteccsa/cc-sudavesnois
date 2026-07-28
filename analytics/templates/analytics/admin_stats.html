@@ -144,14 +144,22 @@
   </div>
 </div>
 
-<!-- Visiteurs (IP) -->
+<!-- Visiteurs / Bots (IP) -->
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Visiteurs</h2>
-    <span class="text-xs text-gray-500 dark:text-gray-400">{{ top_ips|length }} IP unique{{ top_ips|pluralize }}</span>
+  <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">IP</h2>
+      <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+        <button onclick="switchTab('visiteurs')" id="tab-visiteurs" class="tab-btn px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-colors">Visiteurs ({{ visitor_ips|length }})</button>
+        {% if has_bots %}
+        <button onclick="switchTab('bots')" id="tab-bots" class="tab-btn px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Bots ({{ bot_ips|length }})</button>
+        {% endif %}
+      </div>
+    </div>
   </div>
-  <div class="divide-y divide-gray-200 dark:divide-gray-700">
-    {% for ip in top_ips %}
+
+  <div id="tab-content-visiteurs" class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for ip in visitor_ips %}
     <div class="select-none">
       <div onclick="toggleIP(this)" class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
         <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -172,9 +180,6 @@
           <span class="text-xs text-gray-400 italic">Anonyme</span>
           {% elif not ip.ip %}
           <span class="text-xs text-gray-400 italic">Inconnu</span>
-          {% endif %}
-          {% if ip.probable_bot %}
-          <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full">BOT</span>
           {% endif %}
         </div>
         <div class="flex items-center gap-2 ml-2 shrink-0">
@@ -204,9 +209,57 @@
       </div>
     </div>
     {% empty %}
-    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucune donnée</div>
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucun visiteur</div>
     {% endfor %}
   </div>
+
+  {% if has_bots %}
+  <div id="tab-content-bots" class="divide-y divide-gray-200 dark:divide-gray-700 hidden">
+    {% for ip in bot_ips %}
+    <div class="select-none">
+      <div onclick="toggleIP(this)" class="flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+          {% if ip.country %}
+          <span class="text-base">{{ ip.country|flag_emoji }}</span>
+          {% endif %}
+          {% if ip.ip %}
+          <code class="text-sm font-mono text-gray-800 dark:text-gray-200 font-semibold">{{ ip.ip }}</code>
+          <button onclick="event.stopPropagation(); navigator.clipboard.writeText('python manage.py supprimer_ip {{ ip.ip }}')" class="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Copier la commande de suppression">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          </button>
+          {% else %}
+          <code class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ ip.ip_hash|truncatechars:16 }}</code>
+          {% endif %}
+          <span class="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full">BOT</span>
+          {% if ip.country_name %}
+          <span class="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">{{ ip.country_name }}</span>
+          {% endif %}
+        </div>
+        <div class="flex items-center gap-2 ml-2 shrink-0">
+          <span class="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">{{ ip.pages }} vue{{ ip.pages|pluralize }}</span>
+          <svg class="chevron w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+      </div>
+      <div class="pages-detail hidden bg-gray-50 dark:bg-gray-900/50">
+        {% for p in ip.pages_list|slice:":20" %}
+        <div class="px-5 py-2 border-t border-gray-100 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <span class="text-xs text-gray-400 w-5 shrink-0 text-right">{{ forloop.counter }}.</span>
+              <a href="{{ p.url }}" target="_blank" rel="noopener" class="text-sm text-gray-700 dark:text-gray-300 truncate hover:text-primary hover:underline">{{ p.url }}</a>
+              <span class="text-xs text-gray-400 shrink-0 hidden sm:inline">{{ p.browser }} · {{ p.os }}</span>
+            </div>
+            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 ml-2 shrink-0">{{ p.count }} vue{{ p.count|pluralize }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Aucun bot</div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </div>
 
 <!-- Villes des visiteurs -->
@@ -553,6 +606,17 @@ function confirmDeleteStats(date) {
   form.appendChild(csrf);
   document.body.appendChild(form);
   form.submit();
+}
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+    b.classList.add('text-gray-500', 'dark:text-gray-400');
+  });
+  document.getElementById('tab-' + tab).classList.add('bg-white', 'dark:bg-gray-600', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+  document.getElementById('tab-' + tab).classList.remove('text-gray-500', 'dark:text-gray-400');
+  document.getElementById('tab-content-visiteurs').classList.add('hidden');
+  document.getElementById('tab-content-bots').classList.add('hidden');
+  document.getElementById('tab-content-' + tab).classList.remove('hidden');
 }
 </script>
 {% endblock %}

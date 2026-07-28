@@ -185,6 +185,8 @@ def admin_stats(request):
     top_ips = sorted(ip_details.values(), key=lambda x: -x["pages"])[:50]
     for ip in top_ips:
         ip["pages_list"] = sorted(ip["pages_list"].values(), key=lambda x: -x["count"])
+    visitor_ips = [ip for ip in top_ips if not ip.get("probable_bot")]
+    bot_ips = [ip for ip in top_ips if ip.get("probable_bot")]
 
     response_time_avg = 0
     count_with_time = 0
@@ -217,6 +219,9 @@ def admin_stats(request):
         "start_date": start.isoformat(),
         "end_date": end.isoformat(),
         "top_ips": top_ips,
+        "visitor_ips": visitor_ips,
+        "bot_ips": bot_ips,
+        "has_bots": len(bot_ips) > 0,
         "top_cities_details": top_cities_details,
         "max_city_count": max_city_count,
         "active_visitors": count_recent_ips(),
