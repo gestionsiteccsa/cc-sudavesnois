@@ -5,6 +5,8 @@
 ### Ajouté (28/07/2026)
 - **Page Changelog** : `/adminccsa/changelog/` avec rendu professionnel du CHANGELOG.md (markdown-it-py, badges par type, dark mode).
 - **Mode debug** : `/adminccsa/statistiques/?debug=1` avec panneau de diagnostic complet (dossier, fichiers, middleware, pipeline GeoIP/device/hash).
+- **Sélecteur de date** : possibilité de choisir une date précise via un calendrier dans les statistiques.
+- **Liens cliquables** : les URLs des pages les plus visitées sont maintenant des liens.
 - **Documentation** : section Analytics dans le README.md.
 
 ### Corrigé (28/07/2026)

@@ -63,12 +63,19 @@
 <div class="mb-6">
   <form method="get" class="flex flex-wrap items-center gap-3">
     <label for="period" class="text-sm font-medium text-gray-700 dark:text-gray-300">Période</label>
-    <select name="period" id="period" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" onchange="this.form.submit()">
-      <option value="1" {% if period == '1' %}selected{% endif %}>Aujourd'hui</option>
-      <option value="7" {% if period == '7' %}selected{% endif %}>7 jours</option>
-      <option value="30" {% if period == '30' %}selected{% endif %}>30 jours</option>
-      <option value="90" {% if period == '90' %}selected{% endif %}>90 jours</option>
+    <select name="period" id="period" class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" onchange="document.getElementById('date').value=''; this.form.submit()">
+      <option value="1" {% if period == '1' and not selected_date %}selected{% endif %}>Aujourd'hui</option>
+      <option value="7" {% if period == '7' and not selected_date %}selected{% endif %}>7 jours</option>
+      <option value="30" {% if period == '30' and not selected_date %}selected{% endif %}>30 jours</option>
+      <option value="90" {% if period == '90' and not selected_date %}selected{% endif %}>90 jours</option>
     </select>
+
+    <span class="text-sm text-gray-400 dark:text-gray-500">ou</span>
+
+    <label for="date" class="text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+    <input type="date" name="date" id="date" value="{{ selected_date }}"
+           class="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+           onchange="document.getElementById('period').value='1'; this.form.submit()">
   </form>
 </div>
 

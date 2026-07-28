@@ -25,12 +25,28 @@ from analytics.analytics_data import (
 @user_passes_test(lambda u: est_moderateur(u))
 def admin_stats(request):
     available = list_available_dates()
-    period = request.GET.get("period", "7")
     today = date.today()
-    days = int(period) if period.isdigit() else 7
+    selected_date = request.GET.get("date", "")
 
-    start = today - timedelta(days=days - 1)
-    raw = load_range(start, today)
+    if selected_date:
+        try:
+            d = date.fromisoformat(selected_date)
+            entries, _summary = load_day(d)
+            raw = {d.isoformat(): entries} if entries else {}
+            start = end = d
+            period = "1"
+        except (ValueError, TypeError):
+            selected_date = ""
+            raw = {}
+            start = end = today
+            period = "1"
+    else:
+        selected_date = ""
+        period = request.GET.get("period", "7")
+        days = int(period) if period.isdigit() else 7
+        start = today - timedelta(days=days - 1)
+        end = today
+        raw = load_range(start, end)
 
     daily: list[dict] = []
     total_views = 0
@@ -134,9 +150,10 @@ def admin_stats(request):
         "top_regions": [{"name": n, "count": c} for n, c in top_regions],
         "top_countries": [{"name": n, "count": c} for n, c in top_countries],
         "period": period,
+        "selected_date": selected_date,
         "available_dates": available,
         "start_date": start.isoformat(),
-        "end_date": today.isoformat(),
+        "end_date": end.isoformat(),
         "response_time_avg": response_time_avg,
         "diagnostics": run_diagnostics() if request.GET.get("debug") == "1" else None,
     }
