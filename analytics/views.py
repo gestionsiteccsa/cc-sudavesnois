@@ -154,9 +154,7 @@ def download_day_json(request, day_str: str):
 def download_all_json(request):
     buffer = BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
-        for fpath in sorted(ANALYTICS_DIR.glob("*.json")):
-            if fpath.name.endswith(".summary.json"):
-                continue
+        for fpath in sorted(ANALYTICS_DIR.glob("*.jsonl")):
             rel_name = fpath.name
             zf.write(fpath, rel_name)
     buffer.seek(0)

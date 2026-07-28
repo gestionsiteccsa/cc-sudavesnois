@@ -1,6 +1,5 @@
 import json
 import logging
-import threading
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -9,70 +8,55 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 ANALYTICS_DIR = settings.BASE_DIR / "analytics_data"
-FLUSH_EVERY = 10
-_buffer: list[dict] = []
-_buffer_lock = threading.Lock()
-_request_count = 0
-
-
-def _today_path() -> Path:
-    return ANALYTICS_DIR / f"{date.today().isoformat()}.json"
-
-
-def _summary_path(d: date | None = None) -> Path:
-    d = d or date.today()
-    return ANALYTICS_DIR / f"{d.isoformat()}.summary.json"
 
 
 def ensure_dir():
     ANALYTICS_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _today_path() -> Path:
+    return ANALYTICS_DIR / f"{date.today().isoformat()}.jsonl"
+
+
 def append(entry: dict):
-    global _request_count
-    with _buffer_lock:
-        _buffer.append(entry)
-        _request_count += 1
-        if _request_count >= FLUSH_EVERY:
-            _flush_locked()
-            _request_count = 0
-
-
-def flush():
-    with _buffer_lock:
-        if _buffer:
-            _flush_locked()
-
-
-def _flush_locked():
-    if not _buffer:
-        return
     ensure_dir()
     path = _today_path()
     try:
-        existing = []
-        if path.exists():
-            with open(path, "r", encoding="utf-8") as f:
-                try:
-                    existing = json.load(f)
-                except json.JSONDecodeError:
-                    existing = []
-        all_entries = existing + _buffer
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(all_entries, f, ensure_ascii=False, indent=None)
-        _update_summary(all_entries)
-        _buffer.clear()
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     except OSError as e:
         logger.error("Erreur écriture analytics: %s", e)
 
 
-def _update_summary(entries: list[dict]):
+def _load_entries(d: date) -> list[dict]:
+    path = ANALYTICS_DIR / f"{d.isoformat()}.jsonl"
+    if not path.exists():
+        return []
+    entries: list[dict] = []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entries.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+    except OSError as e:
+        logger.error("Erreur lecture analytics: %s", e)
+    return entries
+
+
+def _compute_summary(entries: list[dict]) -> dict | None:
     if not entries:
-        return
+        return None
+
     total = len(entries)
     sessions = len({e.get("session_key") for e in entries if e.get("session_key")})
     ip_hashes = len({e.get("ip_hash") for e in entries if e.get("ip_hash")})
     visitors = len({e.get("visitor_id") for e in entries if e.get("visitor_id")})
+
     pages: dict[str, int] = {}
     browsers: dict[str, int] = {}
     oss: dict[str, int] = {}
@@ -111,55 +95,40 @@ def _update_summary(entries: list[dict]):
         if country:
             countries[country] = countries.get(country, 0) + 1
 
-    top_pages = sorted(pages.items(), key=lambda x: -x[1])[:20]
-    top_browsers = sorted(browsers.items(), key=lambda x: -x[1])[:10]
-    top_os = sorted(oss.items(), key=lambda x: -x[1])[:10]
-    top_refs = sorted(referrers.items(), key=lambda x: -x[1])[:10]
-    top_cities = sorted(cities.items(), key=lambda x: -x[1])[:10]
-    top_regions = sorted(regions.items(), key=lambda x: -x[1])[:10]
-    top_countries = sorted(countries.items(), key=lambda x: -x[1])[:10]
-
-    summary = {
+    return {
         "total": total,
         "unique_sessions": sessions,
         "unique_ips": ip_hashes,
         "unique_visitors": visitors,
-        "top_pages": [{"url": u, "count": c} for u, c in top_pages],
-        "browsers": dict(top_browsers),
-        "os": dict(top_os),
+        "top_pages": [
+            {"url": u, "count": c}
+            for u, c in sorted(pages.items(), key=lambda x: -x[1])[:20]
+        ],
+        "browsers": dict(sorted(browsers.items(), key=lambda x: -x[1])[:10]),
+        "os": dict(sorted(oss.items(), key=lambda x: -x[1])[:10]),
         "device_types": dict(device_types),
         "languages": dict(languages),
-        "referrers": dict(top_refs),
+        "referrers": dict(sorted(referrers.items(), key=lambda x: -x[1])[:10]),
         "geo": {
-            "cities": [{"name": n, "count": c} for n, c in top_cities],
-            "regions": [{"name": n, "count": c} for n, c in top_regions],
-            "countries": [{"code": n, "count": c} for n, c in top_countries],
+            "cities": [
+                {"name": n, "count": c}
+                for n, c in sorted(cities.items(), key=lambda x: -x[1])[:10]
+            ],
+            "regions": [
+                {"name": n, "count": c}
+                for n, c in sorted(regions.items(), key=lambda x: -x[1])[:10]
+            ],
+            "countries": [
+                {"code": n, "count": c}
+                for n, c in sorted(countries.items(), key=lambda x: -x[1])[:10]
+            ],
         },
     }
-    try:
-        with open(_summary_path(), "w", encoding="utf-8") as f:
-            json.dump(summary, f, ensure_ascii=False, indent=2)
-    except OSError as e:
-        logger.error("Erreur écriture summary analytics: %s", e)
 
 
 def load_day(d: date) -> tuple[list[dict], dict | None]:
-    path = ANALYTICS_DIR / f"{d.isoformat()}.json"
-    summary_path = _summary_path(d)
-    entries: list[dict] = []
-    summary: dict | None = None
-    if path.exists():
-        with open(path, "r", encoding="utf-8") as f:
-            try:
-                entries = json.load(f)
-            except json.JSONDecodeError:
-                entries = []
-    if summary_path.exists():
-        with open(summary_path, "r", encoding="utf-8") as f:
-            try:
-                summary = json.load(f)
-            except json.JSONDecodeError:
-                pass
+    entries = _load_entries(d)
+    summary = _compute_summary(entries)
     return entries, summary
 
 
@@ -167,7 +136,7 @@ def load_range(start: date, end: date) -> dict:
     data: dict[str, list[dict]] = {}
     d = start
     while d <= end:
-        entries, _summary = load_day(d)
+        entries = _load_entries(d)
         if entries:
             data[d.isoformat()] = entries
         d += timedelta(days=1)
@@ -176,13 +145,11 @@ def load_range(start: date, end: date) -> dict:
 
 def list_available_dates() -> list[str]:
     ensure_dir()
-    files = sorted(ANALYTICS_DIR.glob("*.json"))
+    files = sorted(ANALYTICS_DIR.glob("*.jsonl"))
     seen: set[str] = set()
     dates: list[str] = []
     for f in files:
         stem = f.stem
-        if stem.endswith(".summary"):
-            continue
         if stem not in seen:
             seen.add(stem)
             dates.append(stem)
@@ -193,31 +160,29 @@ def list_available_dates() -> list[str]:
 def compute_summary_for_dashboard() -> dict:
     ensure_dir()
     today = date.today()
-    today_entries, today_summary = load_day(today)
+    today_entries, today_metrics = load_day(today)
 
-    total_today = today_summary["total"] if today_summary else len(today_entries)
-    unique_today = today_summary["unique_ips"] if today_summary else 0
+    total_today = today_metrics["total"] if today_metrics else len(today_entries)
+    unique_today = today_metrics["unique_ips"] if today_metrics else 0
     unique_visitors_today = (
-        today_summary.get("unique_visitors", 0) if today_summary else 0
+        today_metrics.get("unique_visitors", 0) if today_metrics else 0
     )
 
     total_30d = 0
     top_pages_30d: dict[str, int] = {}
     d = today
     for _ in range(30):
-        _, s = load_day(d)
-        if s:
-            total_30d += s["total"]
-            for p in s.get("top_pages", []):
-                url = p["url"]
-                top_pages_30d[url] = top_pages_30d.get(url, 0) + p["count"]
+        entries = _load_entries(d)
+        if entries:
+            total_30d += len(entries)
+            for e in entries:
+                url = e.get("url", "/")
+                top_pages_30d[url] = top_pages_30d.get(url, 0) + 1
         d -= timedelta(days=1)
 
     top = sorted(top_pages_30d.items(), key=lambda x: -x[1])[:5]
 
-    today_top = []
-    if today_summary:
-        today_top = today_summary.get("top_pages", [])[:3]
+    today_top = today_metrics.get("top_pages", [])[:3] if today_metrics else []
 
     return {
         "today": total_today,

@@ -2,6 +2,12 @@
 
 ## [Non publié]
 
+### Corrigé (28/07/2026)
+- **Analytics** : les statistiques de visites ne s'enregistraient pas à cause d'un buffer mémoire jamais écrit sur le disque.
+  - Remplacement du buffer (`_buffer`, `FLUSH_EVERY=10`) par une écriture directe en mode append (format JSON Lines `.jsonl`).
+  - Création automatique du dossier `analytics_data/` au démarrage de Django (`AppConfig.ready()`).
+  - Suppression des anciens fichiers `.summary.json` (le résumé est calculé à la volée à la lecture).
+
 ### Ajouté (03/06/2025)
 - Documentation : mise à jour de la date de dernière mise à jour dans le README.md.
 - Ajout d'une section "Nouveautés et améliorations récentes" pour le 03/06/2025 dans le README.md.
@@ -126,3 +132,379 @@
 - Problèmes de contraste en mode nuit sur les pages des élus et des communes
 - Visibilité des textes et des éléments d'interface en mode nuit
 - Erreur de lint dans `urls.py` (ligne trop longue)
+
+## Août 2025
+
+### Technique / Maintenance
+- remplacer psycopg2 par psycopg2-binary pour éviter la compilation (pg_config) sur o2switch
+
+## Septembre 2025
+
+### Modifié
+- file size
+- page 404
+- menu & pages
+- mediapass..., add dev-eco
+- css
+- ajout formulaire plui
+
+### Corrigé
+- ulrs.py
+- Responsivité du footer sur mobile
+- Corriger les liens PDF des rapports d'activité
+
+### Supprimé
+- Explications
+
+## Octobre 2025
+
+### Ajouté
+- slash url
+
+### Modifié
+- requirements.txt
+- requirements.txt delete psycopg2
+- requirements.txt delete psycopg2
+- request
+- openssl
+- requirements
+- urls slash
+- plan du site
+- **security** : Suppression des console.log du code production
+
+### Corrigé
+- slash url
+- delete slash
+- bug ordre url
+- ortographe
+- **security** : Remplacement des print() par logging sécurisé
+- **security** : Bureau com
+- **security** : Ajout rate limiting sur login et headers de sécurité manquants
+
+### Supprimé
+- requirements.txt delete psycopg2
+- python windows
+
+## Novembre 2025
+
+### Modifié
+- img faebook link
+- numéro
+- organi
+- mail & menu
+
+## Décembre 2025
+
+### Ajouté
+- remplacer le bouton unique par 3 boutons pour les comptes-rendus
+- link pv
+- **presentation** : ajout de liens vers les pages des communes
+- agenda lien, plui liens
+- analytic
+- **elus** : permettre la liaison a plusieurs commissions
+- **comptes_rendus** : amélioration affichage conseils - lieu optionnel, filtre dates passées, design timeline professionnel, accessibilité améliorée, responsive optimisé
+
+### Modifié
+- journal
+- link
+- og
+- adresse habitat, calendrier
+- ADIL
+
+### Corrigé
+- orthographe email
+- orthog
+- analytic del tagmanager
+- img og
+- texte + date collect
+- **elus** : corriger l'affichage des commissions multiples
+
+## Janvier 2026
+
+### Ajouté
+- **habitat** : add download icon and leaflet PDF to habitat page
+- **a11y** : intégration de la déclaration d'accessibilité officielle RGAA
+- **conseil** : intégration calendrier prochains conseils sur page conseil communautaire
+- **admin** : refonte complète du dashboard et de la navigation admin
+- **home** : ajouter page Kit de logos pour prêt de matériel
+
+### Modifié
+- name kit
+
+### Corrigé
+- habitat
+- nb caract
+- **a11y** : Corrections RGAA 4.1.2 - Score 93%
+- **accessibility** : corrections RGAA sur les pages PLUI et ajout du rapport d'audit
+- link
+- suppression des erreurs console en production
+- **accessibility** : affichage des icônes en mode contraste élevé
+- **a11y** : corrections RGAA page kit-logos
+- ajout load static manquant page kit-logos
+
+### Performances
+- optimisation Lighthouse - chargement non-bloquant des ressources
+
+### Supprimé
+- Prise rendez-vous GUH
+
+### Technique / Maintenance
+- **accessibilite** : amélioration du contraste RGAA et nettoyage
+
+## Février 2026
+
+### Ajouté
+- **home** : amélioration accessibilité et conformité RGAA des pages kit-logos et guide-eco-citoyen
+- **home** : amélioration accessibilité et conformité RGAA des pages kit-logos et guide-eco-citoyen - Amélioration des textes alternatifs des images pour une meilleure description - Remplacement des aria-label redondants par aria-describedby avec descriptions uniques - Ajout d'informations sur le format et la taille des fichiers téléchargeables - Optimisation de la hiérarchie des titres (h2 plus descriptifs) - Ajout des dimensions d'image pour éviter les décalages de mise en page (CLS) - Conformité RGAA niveau AA et WCAG 2.1 niveau AA
+- linktree app with full CRUD, RGAA compliance, and comprehensive tests
+- **backup** : Ajoute système de sauvegarde du site complet
+- Ajout de l'application Partenaires avec CRUD complet
+- **partenaires** : ajout du système de catégories avec sections Normal/Subvention
+- ajout du téléchargement PDF des calendriers de collecte du verre
+- modification affichage des conseils communautaires
+- redesign interface admin conseils + tri décroissant
+- redesign admin conseils avec tableau et pagination
+- redesign PDF calendrier verre avec mode visualisation
+- .env.example with configuration template
+- YouTube and Instagram social media icons to header and footer
+
+### Modifié
+- kit logo
+- **header** : transforme le menu 'Nos partenaires' en lien direct
+- **home** : suppression des pages PNRA et Tourisme obsolètes
+
+### Corrigé
+- correction lien dans le header
+- update URL reference in admin from /rejoignez-nous to /nos-liens/
+- function elu
+- Correction encodage UTF-8 requirements.txt - Ajout Markdown==3.10.2
+- Suppression des dépendances Windows (pywin32) du requirements.txt
+- **partenaires** : correction tri alphabétique avec accents et alt images accessibles
+- correction des erreurs JavaScript et affichage du sous-menu
+- utilisation du fichier JS non minifié pour éviter les erreurs
+- affichage des jours en français dans le PDF
+- mise à jour de l'adresse dans le PDF
+- suppression des puces dans la liste des dates de collecte
+
+### Sécurité
+- correction des vulnérabilités de sécurité
+
+### Supprimé
+- migrations
+
+### Technique / Maintenance
+- ajustement espacement et tailles police PDF calendrier verre
+- update title of upcoming council meetings section
+
+## Mars 2026
+
+### Ajouté
+- Intégration du système de recherche global avec django-watson
+- Ajout des modèles manquants et amélioration visuelle de la recherche
+- Refonte design page recherche + barre recherche header mobile
+- Ajout des URLs dans les résultats de recherche pour tous les modèles
+- Bouton recherche header + optimisation RGAA et mobile
+- **search** : Amélioration complète du système de recherche avec Watson
+- **search** : Création app dédiée 'search' avec modèle SearchConfig
+
+### Corrigé
+- Correction positionnement bouton recherche et loupe
+- Suppression des balises HTML dans les résultats de recherche
+- **competences** : correction affichage titre compétence is_big
+- **accessibility** : amélioration de l'accessibilité WCAG 2.2 AA
+- **accessibility** : corrige les erreurs WCAG identifiées
+- **accessibility** : augmente la taille des cibles tactiles
+- **accessibility** : correction RGAA - SVG et contrastes
+- **accessibility** : correction des contrastes sur fond secondary et footer
+- **accessibility** : retour au texte blanc sur les boutons verts
+- (texte)
+- **admin** : corrige la syntaxe des attributs SVG dans la sidebar admin
+
+### Performances
+- **sql** : réduit drastiquement les requêtes N+1 et ajoute cache
+
+## Avril 2026
+
+### Ajouté
+- ajout gestion statut page bureau-communautaire
+- ctg
+- **ctg** : ajoute lightbox pour image cliquable
+- **commissions** : lien membres-commissions avec accordéon accessible
+- **commissions** : affiche Vice-présidents et ordre Prénom Nom
+- add explanatory text under transferred competences section
+- img
+- **conseil-communautaire** : affichage des photos et noms des conseillers avec lightbox accessible
+- ajout photo membres conseil + optimisation page publique
+- ajout du support des images webp pour les élus
+- modernise admin liste services avec drag & drop, stats, toggle vue et optimisation SQL
+- support multi-PDF par conseil avec renommage personnalisé
+
+### Modifié
+- design elu
+- **bureau-communautaire** : redesign cartes élus avec photos en bulle et corrections accessibilité RGAA
+- remove breadcrumb navigation from commune page
+
+### Corrigé
+- corrige l'erreur ValueError lors de l'ajout d'un PDF sur un conseil sans fichier existant
+- rue saint louis
+- **accessibility** : amélioration du contraste et accessibilité RGAA/WCAG AA
+- suppression texte répétitif sur page maintenance
+- ortho
+- bug
+- ortho
+- url
+- link onedrive
+- erreur texte
+- prochain conseil
+- cr
+- **header** : Ajoute le lien Compétences dans le menu mobile
+- **commissions** : corrige le nombre de VP de 8 à 9
+- **conseil_communautaire** : corrige select_related vers prefetch_related pour linked_commission
+- **commissions** : inverse ordre affichage vice-président - Nom Prénom
+- **commissions** : suppression des effets hover et correction des couleurs
+- ortho
+- **accessibilité** : corrige contraste mode sombre et attributs dupliqués
+- **accessibilité** : corrige HTML, contraste et performance page Journal
+- **accessibility** : optimize commune page queries, WCAG AAA compliance, breadcrumb
+- **photos** : corrige affichage images élus et ajoute gestion position/zoom
+
+### Performances
+- **accessibility** : optimise SQL, contraste AAA et accessibilité selon audit RGAA/WCAG
+
+### Supprimé
+- contrainte d'unicité sur les membres du conseil
+
+## Mai 2026
+
+### Ajouté
+- ajoute popup Jeu de l'oie avec persistance quotidienne et section sondage
+- remplace tableaux horaires déchetteries par une image + icône famille section sondage
+- ajoute la page Modification Simplifiée n°1 du PLUi
+- **ctg** : ajoute section plan d'actions avec PDF téléchargeable
+- ajout competences commissions avec toggle Voir plus dans les cartes VP
+
+### Modifié
+- **documents-plui** : remplace le formulaire par un bouton renvoyant vers /plui/#formulaire-modification
+- **admin** : redesign UI/UX de toutes les pages d'administration
+
+### Corrigé
+- **commissions** : tri alphabétique des commissions/élus/membres et augmentation taille police
+- retire plui@ des destinataires email et supprime mention 'Membre titulaire'
+- **email-plui** : utilise nepasrepondre@ comme expéditeur et email déclarant en Reply-To
+- **mobilite** : corrige accessibilite RGAA et format mobile de la page mobilite
+- **accessibilite** : ajoute description textuelle détaillée des horaires dans l'alt de l'image déchetteries
+- img ctg
+- - img ctg
+- ortho
+- retire le point après Mme pour les maires femmes
+- **titles** : corrige les titres HTML des pages (manquants, erronés, suffixe dupliqué)
+- **titles** : corrige les 11 titres restants (doublons CCSA et block.super)
+- **critical** : corrige les 5 problemes critiques identifies dans le rapport
+- **security** : corrige les 9 problemes haute priorite restants
+- **media** : retablit le serveur de fichiers medias en production
+- corrige M2 (GA init apres consentement) et M4 (ordre import cache_page)
+- **R3** : ajoute indication (nouvelle fenetre) sur les target=_blank
+- corrections responsive (audit complet)
+
+### Performances
+- corrige C1, H1-H6, H9, H10, H11, H12
+- corrige N+1 partenaires et double requetes exists+get
+
+### Documentation
+- met à jour README, package.json et tailwind.config.js
+
+### Supprimé
+- msp tel fourmies
+
+## Juin 2026
+
+### Ajouté
+- ajoute un encadre 'Contacts des elus' sur la page conseil-communautaire avec lien SharePoint
+- ajoute visionneuse flipbook interactive pour les journaux PDF
+- ajoute trois options de consultation avec tooltips accessibles sur la liste des journaux
+- **search** : refactorise la recherche en app dédiée avec rate limiting et accessibilité
+- ajoute une section PLUi MS1 sur la page d'accueil avec dates de consultation publique
+- remplace GA4 gtag.js par Google Tag Manager GTM-5ZR9PFQX avec consentement RGPD
+- remplace toutapprendre.com par Mozaik
+- ajoute la page CLÉA+ accessible et responsive
+- **clea,mediapass** : accessibilite RGAA/WCAG AA et appel a candidature CLEA
+- **header** : ajoute les sous-menus CLEA et Mediapass (desktop + mobile)
+- **home** : PR6 - StaticPage: index, contrainte, is_published, timestamps
+- **home.data** : PR9 - validation et tri des dates collecte
+- **clea** : appel à candidatures en cartes côte à côte avec consultation et téléchargement
+- **admin** : Lot 1 quick wins - a11y, contrast, sidebar filter, dashboard stats
+
+### Modifié
+- **clea** : aligne l'UI/UX sur habitat.html et corrige l'accessibilité
+- **security** : PR2 - helper rate_limit() centralise
+- **forms** : PR5 - communes dynamiques, tel stricte, autocomplete
+- **bureau_communautaire** : sécurité, perf, qualité de la suite de tests
+- **accounts** : UX admin, indexes BDD, génération password, pagination
+- **services** : validation SVG, tri automatique, audit, tests complets
+
+### Corrigé
+- restaure le CSS du toggle 'Voir plus' des competences VP supprime accidentellement dans 7d8dd5e
+- ajoute prefers-reduced-motion et prefers-contrast pour les tooltips
+- **search** : corrige l'URL des resultats de recherche pour les communes
+- **accessibilite** : corrige 3 non-conformités RGAA sur la page d'accueil
+- **accessibilite** : assombrit bg-secondary (#3a4a08) pour contraste WCAG AA 4.5:1
+- **accessibilite** : retire style font-display invalide sur le h1 (NC 10.11)
+- type img
+- **header** : retablit le menu mobile en dropdown sous le header
+- **security,perf** : PR1+PR3+PR4 - securite applicative, refactor, cache
+- **a11y** : PR7 - RGAA/WCAG 2.2 AA (rel=noopener, plui form, focus)
+- **ci** : supprimer paths-ignore (interdit avec paths sur un meme event)
+- **ci** : Node 22 + git-auto-commit-action (corrige exit 9)
+- **ci** : mise a jour actions/checkout@v5 et setup-node@v5
+- **css** : deplacement input.css de staticfiles/ vers static/css/
+
+### Performances
+- **css** : minifier output.css via Tailwind CLI --minify (97 KB -> 76 KB)
+- **cache** : cache statique 1 an + hash manifest (WhiteNoise)
+- **lcp** : preload + fetchpriority high image popup Jeu de l'oie
+
+### Documentation
+- **readme** : documenter les scripts npm Tailwind et le build minifie
+- **readme** : ajouter procedure de mise a jour en production
+- **readme** : adapter la procedure de deploiement aux serveurs sans npm
+
+### Technique / Maintenance
+- accessibilite habitat, refactor clea et ajustements divers
+- wip snapshot avant audit home/
+- **home,app** : PR8 - tests pour app.utils, PLUiForm, fix obsoletes
+- **deps** : PR10 - requirements-prod.txt minimal + audit CVE
+- **home** : PR11 - suppression code mort
+- **home** : PR12 - correction tests obsoletes suite aux changements
+- **css** : workflow GitHub Actions pour regenerer output.min.css
+- sessions DB, suppression code mort home/, fix SVG admin_base
+
+## Juillet 2026
+
+### Ajouté
+- **plui** : add settings admin to manage section visibility
+- **communes-membres** : add public listing page with cards (TDD + SOLID)
+- **admin** : page verification des pages HTTP (200/404/500)
+- **admin** : ajoute page de consultation des logs dans /adminccsa/logs
+- **analytics** : ajoute système de statistiques de visites côté serveur
+- **analytics** : ajoute cookie visitor_id pour reconnaissance multi-jour
+- **analytics** : ajoute géolocalisation IP (GeoIP) avec drapeaux
+
+### Modifié
+- **admin** : remplace page verification-pages par commande check_pages
+
+### Corrigé
+- **clea** : regen manifest staticfiles apres renommage PDFs
+- **mobilite** : update TAD coordonnees, horaires, et renommage images flyers
+- **mobilite** : regen manifest staticfiles apres renommage images flyers
+- **mobilite** : correction casse noms images Flyer-Tad pour compatibilite Linux
+- **admin** : host Client Django depuis la requete pour eviter DisallowedHost
+- **admin** : urllib + cache 5min pour scan pages, abandonne Client Django
+- **admin** : ajoute constantes CHECK_PAGES_CACHE_KEY/TTL manquantes
+- **admin** : Client Django avec secure=True + host requete, abandonne urllib
+- **admin** : retour a requests avec SSL + ThreadPoolExecutor + cache 5min
+
+### Performances
+- **admin** : remplace requests.get par Client Django pour scan pages x10 plus rapide
+
+### Documentation
+- **readme** : ajoute analytics, logs, check_pages, GeoIP dans la doc
