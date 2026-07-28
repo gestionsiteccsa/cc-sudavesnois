@@ -513,32 +513,8 @@
 {% endblock %}
 
 {% block javascript %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onload="initMap()"></script>
 <script>
 var GEO_POINTS = {{ geo_points_json|default:'[]' }};
-
-function toggleIP(el) {
-  var detail = el.nextElementSibling;
-  var chevron = el.querySelector('.chevron');
-  var isHidden = detail.classList.contains('hidden');
-  detail.classList.toggle('hidden');
-  chevron.classList.toggle('rotate-180', !isHidden);
-}
-
-function confirmDeleteStats(date) {
-  if (!confirm('Supprimer toutes les statistiques du ' + date + ' ? Cette action est irreversible.')) return;
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = '/adminccsa/statistiques/supprimer/' + date + '/';
-  var csrf = document.createElement('input');
-  csrf.type = 'hidden';
-  csrf.name = 'csrfmiddlewaretoken';
-  csrf.value = '{{ csrf_token }}';
-  form.appendChild(csrf);
-  document.body.appendChild(form);
-  form.submit();
-}
-
 function initMap() {
   if (typeof L === 'undefined' || !GEO_POINTS.length) return;
   var map = L.map('map').setView([46.6, 2.4], 5);
@@ -560,5 +536,26 @@ function initMap() {
   });
   if (bounds.length > 1) map.fitBounds(bounds, {padding: [30, 30]});
 }
+function toggleIP(el) {
+  var detail = el.nextElementSibling;
+  var chevron = el.querySelector('.chevron');
+  var isHidden = detail.classList.contains('hidden');
+  detail.classList.toggle('hidden');
+  chevron.classList.toggle('rotate-180', !isHidden);
+}
+function confirmDeleteStats(date) {
+  if (!confirm('Supprimer toutes les statistiques du ' + date + ' ? Cette action est irreversible.')) return;
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/adminccsa/statistiques/supprimer/' + date + '/';
+  var csrf = document.createElement('input');
+  csrf.type = 'hidden';
+  csrf.name = 'csrfmiddlewaretoken';
+  csrf.value = '{{ csrf_token }}';
+  form.appendChild(csrf);
+  document.body.appendChild(form);
+  form.submit();
+}
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onload="initMap()"></script>
 {% endblock %}
