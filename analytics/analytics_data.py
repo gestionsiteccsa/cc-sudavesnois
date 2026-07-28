@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -166,6 +167,115 @@ def list_available_dates() -> list[str]:
             dates.append(stem)
     dates.sort(reverse=True)
     return dates
+
+
+def run_diagnostics() -> dict:
+    checks: list[dict] = []
+
+    checks.append(
+        {
+            "label": "Dossier analytics_data",
+            "status": "ok" if ANALYTICS_DIR.exists() else "error",
+            "detail": str(ANALYTICS_DIR)
+            if ANALYTICS_DIR.exists()
+            else f"Introuvable : {ANALYTICS_DIR}",
+        }
+    )
+    if ANALYTICS_DIR.exists():
+        writable = os.access(str(ANALYTICS_DIR), os.W_OK)
+        checks.append(
+            {
+                "label": "Dossier accessible en ecriture",
+                "status": "ok" if writable else "error",
+                "detail": "",
+            }
+        )
+
+    files = sorted(ANALYTICS_DIR.glob("*.json*"))
+    data_files = [f for f in files if ".summary" not in f.stem]
+    names = ", ".join(f.name for f in data_files[:10])
+    if data_files:
+        detail = f"{len(data_files)} fichier(s) : {names}"
+        if len(data_files) > 10:
+            detail += "..."
+    else:
+        detail = "Aucun fichier de donnees"
+    checks.append(
+        {
+            "label": "Fichiers de donnees trouves",
+            "status": "ok" if data_files else "warning",
+            "detail": detail,
+        }
+    )
+
+    total_entries = 0
+    for f in data_files:
+        try:
+            if f.suffix == ".jsonl":
+                total_entries += sum(1 for _ in open(f, encoding="utf-8") if _.strip())
+            else:
+                with open(f, encoding="utf-8") as fh:
+                    data = json.load(fh)
+                    if isinstance(data, list):
+                        total_entries += len(data)
+        except Exception:
+            pass
+    checks.append(
+        {"label": "Entrees totales", "status": "ok", "detail": str(total_entries)}
+    )
+
+    checks.append(
+        {
+            "label": "Middleware actif",
+            "status": "ok",
+            "detail": "PageTrackingMiddleware",
+        }
+    )
+
+    test_entry = {"url": "/__diag__", "ip_hash": "diag", "timestamp": "now"}
+    try:
+        append(test_entry)
+        path = ANALYTICS_DIR / f"{date.today().isoformat()}.jsonl"
+        if path.exists():
+            with open(path, encoding="utf-8") as f:
+                lines = [ln for ln in f if "__diag__" in ln]
+            if lines:
+                checks.append(
+                    {"label": "Ecriture de test reussie", "status": "ok", "detail": ""}
+                )
+            else:
+                checks.append(
+                    {
+                        "label": "Ecriture de test",
+                        "status": "error",
+                        "detail": "Entree de test introuvable apres ecriture",
+                    }
+                )
+        else:
+            checks.append(
+                {
+                    "label": "Ecriture de test",
+                    "status": "error",
+                    "detail": f"Fichier {path.name} non cree",
+                }
+            )
+    except Exception as e:
+        checks.append(
+            {"label": "Ecriture de test", "status": "error", "detail": str(e)}
+        )
+
+    today_str = date.today().isoformat()
+    for p in ANALYTICS_DIR.glob(f"{today_str}.*"):
+        try:
+            with open(p, encoding="utf-8") as f:
+                content = f.read()
+            cleaned = content.replace("__diag__", "")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(cleaned)
+        except Exception:
+            pass
+
+    return checks
 
 
 def compute_summary_for_dashboard() -> dict:

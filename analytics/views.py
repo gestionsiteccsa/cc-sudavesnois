@@ -17,6 +17,7 @@ from analytics.analytics_data import (
     list_available_dates,
     load_day,
     load_range,
+    run_diagnostics,
 )
 
 
@@ -137,6 +138,7 @@ def admin_stats(request):
         "start_date": start.isoformat(),
         "end_date": today.isoformat(),
         "response_time_avg": response_time_avg,
+        "diagnostics": run_diagnostics() if request.GET.get("debug") == "1" else None,
     }
     return render(request, "analytics/admin_stats.html", context)
 
